@@ -189,6 +189,9 @@ list(APPEND TUDAT_APPLICATION_PROPAGATION_LIBRARIES tudat_simulation_setup tudat
     tudat_basic_astrodynamics tudat_input_output tudat_basic_mathematics tudat_propagators tudat_basics ${TUDAT_APPLICATION_EXTERNAL_LIBRARIES})
 
 # Add helloWorld application.
-add_executable(application_HelloWorld2 "${SRCROOT}/helloWorld.cpp")
-setup_executable_target(application_HelloWorld2 "${SRCROOT}")
-target_link_libraries(application_HelloWorld2 tudat_gravitation tudat_basic_astrodynamics ${Boost_LIBRARIES} )
+#add_executable(application_HelloWorld2 "${SRCROOT}/helloWorld.cpp")
+#setup_executable_target(application_HelloWorld2 "${SRCROOT}")
+#target_link_libraries(application_HelloWorld2 tudat_gravitation tudat_basic_astrodynamics ${Boost_LIBRARIES} )
+add_executable(application_main "${SRCROOT}/main.cpp")
+setup_executable_target(application_main "${SRCROOT}")
+target_link_libraries(application_main tudat_gravitation tudat_basic_astrodynamics tudat_numerical_integrators ${TUDAT_CORE_LIBRARIES} ${Eigen_LIBRARIES} ${Boost_LIBRARIES} )
