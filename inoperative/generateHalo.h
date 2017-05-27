@@ -18,7 +18,7 @@
 #include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
 
 #include "thesisProject/createStateVector.h"
-#include "stateDerivativeModel.h" //NB: mass parameter needs to be changed here as well.
+#include "thesisProject/stateDerivativeModel.h" //NB: mass parameter needs to be changed here as well.
 #include "thesisProject/computeDifferentialCorrection.h"
 #include "generateHalo.cpp"
 

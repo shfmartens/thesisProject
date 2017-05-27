@@ -18,7 +18,7 @@ Eigen::VectorXd computeStateDerivative( const double time, const Eigen::VectorXd
     // Declare state derivative vector with same length as the state.
     Eigen::VectorXd stateDerivative = Eigen::VectorXd::Zero(cartesianState.size());
 
-    // Set the derivative of the position equal to the velocitities.
+    // Set the derivative of the position equal to the velocities.
     stateDerivative(0) = cartesianState(3);
     stateDerivative(1) = cartesianState(4);
     stateDerivative(2) = cartesianState(5);

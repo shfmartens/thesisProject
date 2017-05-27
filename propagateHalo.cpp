@@ -43,7 +43,7 @@
 #include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
 
 #include "propagateHalo.h"
-#include "thesisProject/inoperative/stateDerivativeModel.h"
+#include "stateDerivativeModel.h"
 
 
 // Begin function.

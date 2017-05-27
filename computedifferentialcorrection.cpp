@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include "computeDifferentialCorrection.h"
-#include "thesisProject/inoperative/stateDerivativeModel.h"
+#include "stateDerivativeModel.h"
 
 using namespace std;
 

@@ -35,11 +35,12 @@ void computeManifolds( string selected_orbit )
     boost::property_tree::ptree jsontree;
     boost::property_tree::read_json("config.json", jsontree);
 
-//    string selected_orbit = jsontree.get<string>("selected_orbit");
-    double x_0 = jsontree.get<double>("initial_states." + selected_orbit + ".x");
-    double z_0 = jsontree.get<double>("initial_states." + selected_orbit + ".z");
-    double y_dot_0 = jsontree.get<double>("initial_states." + selected_orbit + ".y_dot");
-
+    double x_0 = jsontree.get<double>("initial_states.halo." + selected_orbit + ".x");
+    double y_0 = jsontree.get<double>("initial_states.halo." + selected_orbit + ".y");
+    double z_0 = jsontree.get<double>("initial_states.halo." + selected_orbit + ".z");
+    double x_dot_0 = jsontree.get<double>("initial_states.halo." + selected_orbit + ".x_dot");
+    double y_dot_0 = jsontree.get<double>("initial_states.halo." + selected_orbit + ".y_dot");
+    double z_dot_0 = jsontree.get<double>("initial_states.halo." + selected_orbit + ".z_dot");
     double epsilon = jsontree.get<double>("manifold_parameters.epsilon");
     int numberOfOrbits = jsontree.get<int>("manifold_parameters.numberOfOrbits");
 
@@ -51,8 +52,11 @@ void computeManifolds( string selected_orbit )
     //Set-up initialStateVector and halfPeriodStateVector.
     Eigen::VectorXd state_vector_0 = Eigen::VectorXd::Zero(6);
     state_vector_0(0) = x_0;
+    state_vector_0(1) = y_0;
     state_vector_0(2) = z_0;
+    state_vector_0(3) = x_dot_0;
     state_vector_0(4) = y_dot_0;
+    state_vector_0(5) = z_dot_0;
     double jacobiEnergy_0 = tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, state_vector_0);
 
     Eigen::VectorXd initialStateVector = createStateVector(x_0, z_0, massParameter, jacobiEnergy_0);
@@ -84,8 +88,8 @@ void computeManifolds( string selected_orbit )
 
     // Write initial state to file
     jacobiEnergy_0 = tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, initialStateVector.segment(0,6));
-    jsontree.put("initial_states." + selected_orbit + ".C", jacobiEnergy_0);
-    jsontree.put("initial_states." + selected_orbit + ".T", haloPeriod);
+    jsontree.put("initial_states.halo." + selected_orbit + ".C", jacobiEnergy_0);
+    jsontree.put("initial_states.halo." + selected_orbit + ".T", haloPeriod);
     write_json("config.json", jsontree);
 
     cout << "\nFinal initial state:" << endl << initialStateVector.segment(0,6) << endl << "\nwith C: " << jacobiEnergy_0 << " and period: " << haloPeriod << endl;
