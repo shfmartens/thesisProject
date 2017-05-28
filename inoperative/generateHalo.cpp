@@ -15,7 +15,7 @@
 
 #include "thesisProject/createStateVector.h"
 #include "thesisProject/stateDerivativeModel.h" //NB: mass parameter needs to be changed here as well.
-#include "thesisProject/computeDifferentialCorrection.h"
+#include "thesisProject/computeDifferentialCorrectionHalo.h"
 
 
 

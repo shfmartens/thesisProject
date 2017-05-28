@@ -2,13 +2,13 @@
 #include <Eigen/LU>
 #include <iostream>
 
-#include "computeDifferentialCorrection.h"
+#include "computeDifferentialCorrectionHalo.h"
 #include "stateDerivativeModel.h"
 
 using namespace std;
 
 // Function to compute the differential correction
-Eigen::VectorXd computeDifferentialCorrection(Eigen::VectorXd cartesianState)
+Eigen::VectorXd computeDifferentialCorrectionHalo(Eigen::VectorXd cartesianState)
 {
     // Initiate vectors, matrices etc.
     Eigen::VectorXd differentialCorrection(6);

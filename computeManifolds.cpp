@@ -10,9 +10,9 @@
 #include <math.h>
 
 #include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
-#include "thesisProject/propagateHalo.h"
-#include "thesisProject/createStateVector.h"
-#include "thesisProject/computeDifferentialCorrection.h"
+#include "thesisProject/propagateOrbit.h"
+#include "thesisProject/computeDifferentialCorrectionHalo.h"
+#include "thesisProject/computeDifferentialCorrectionNearVertical.h"
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
@@ -25,7 +25,7 @@ double thrustAcceleration = 0.0236087689713322;
 
 namespace crtbp = tudat::gravitation::circular_restricted_three_body_problem;
 
-void computeManifolds( string selected_orbit )
+void computeManifolds( string orbit_type, string selected_orbit )
 {
 
     // Set output precision and clear screen.
@@ -34,13 +34,6 @@ void computeManifolds( string selected_orbit )
     // Load configuration parameters
     boost::property_tree::ptree jsontree;
     boost::property_tree::read_json("config.json", jsontree);
-
-    double x_0 = jsontree.get<double>("initial_states.halo." + selected_orbit + ".x");
-    double y_0 = jsontree.get<double>("initial_states.halo." + selected_orbit + ".y");
-    double z_0 = jsontree.get<double>("initial_states.halo." + selected_orbit + ".z");
-    double x_dot_0 = jsontree.get<double>("initial_states.halo." + selected_orbit + ".x_dot");
-    double y_dot_0 = jsontree.get<double>("initial_states.halo." + selected_orbit + ".y_dot");
-    double z_dot_0 = jsontree.get<double>("initial_states.halo." + selected_orbit + ".z_dot");
     double epsilon = jsontree.get<double>("manifold_parameters.epsilon");
     int numberOfOrbits = jsontree.get<int>("manifold_parameters.numberOfOrbits");
 
@@ -50,49 +43,78 @@ void computeManifolds( string selected_orbit )
     massParameter = crtbp::computeMassParameter( earthGravitationalParameter, moonGravitationalParameter ); // NB: also change in state derivative!;
 
     //Set-up initialStateVector and halfPeriodStateVector.
-    Eigen::VectorXd state_vector_0 = Eigen::VectorXd::Zero(6);
-    state_vector_0(0) = x_0;
-    state_vector_0(1) = y_0;
-    state_vector_0(2) = z_0;
-    state_vector_0(3) = x_dot_0;
-    state_vector_0(4) = y_dot_0;
-    state_vector_0(5) = z_dot_0;
-    double jacobiEnergy_0 = tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, state_vector_0);
+    Eigen::VectorXd initialStateVector = Eigen::VectorXd::Zero(42);
+    initialStateVector(0) = jsontree.get<double>("initial_states." + orbit_type + "." + selected_orbit + ".x");;
+    initialStateVector(1) = jsontree.get<double>("initial_states." + orbit_type + "." + selected_orbit + ".y");;
+    initialStateVector(2) = jsontree.get<double>("initial_states." + orbit_type + "." + selected_orbit + ".z");;
+    initialStateVector(3) = jsontree.get<double>("initial_states." + orbit_type + "." + selected_orbit + ".x_dot");;
+    initialStateVector(4) = jsontree.get<double>("initial_states." + orbit_type + "." + selected_orbit + ".y_dot");;
+    initialStateVector(5) = jsontree.get<double>("initial_states." + orbit_type + "." + selected_orbit + ".z_dot");;
+    initialStateVector(6) = 1.0;
+    initialStateVector(13) = 1.0;
+    initialStateVector(20) = 1.0;
+    initialStateVector(27) = 1.0;
+    initialStateVector(34) = 1.0;
+    initialStateVector(41) = 1.0;
 
-    Eigen::VectorXd initialStateVector = createStateVector(x_0, z_0, massParameter, jacobiEnergy_0);
-    Eigen::VectorXd halfPeriodState = propagateHalo( initialStateVector, massParameter, 0.5, 1.0 );
+//    Eigen::VectorXd initialStateVector = createStateVector(x_0, z_0, massParameter, jacobiEnergy_0);
+    Eigen::VectorXd halfPeriodState = propagateOrbit( initialStateVector, massParameter, 0.5, 1.0, orbit_type);
     Eigen::VectorXd differentialCorrection( 6 );
     Eigen::VectorXd outputVector( 43 );
-    double deviationFromPerfectHalo = 1.0;
-    double haloPeriod = 10.0;
+    double deviationFromPeriodicOrbit = 1.0;
+    double orbitalPeriod = 0.0;
     cout << "\nInitial state vector:" << endl << initialStateVector.segment(0,6) << endl << "\nDifferential correction:" << endl;
 
-                // Apply differential correction and propagate to half-period point until converged.
-                while (deviationFromPerfectHalo > 1.0e-8 ) {
 
-                    // Apply differential correction.
-                    differentialCorrection = computeDifferentialCorrection( halfPeriodState );
-                    initialStateVector( 0 ) = initialStateVector( 0 ) + differentialCorrection( 0 )/1.0;
-                    initialStateVector( 2 ) = initialStateVector( 2 ) + differentialCorrection( 2 )/1.0;
-                    initialStateVector( 4 ) = initialStateVector( 4 ) + differentialCorrection( 4 )/1.0;
+                if (orbit_type == "halo"){
+                    // Apply differential correction and propagate to half-period point until converged.
+                    while (deviationFromPeriodicOrbit > 1.0e-8 ) {
 
-                    // Propagate new state forward to half-period point
-                    outputVector = propagateHalo( initialStateVector, massParameter, 0.5, 1.0);
-                    halfPeriodState = outputVector.segment( 0, 42 );
-                    haloPeriod = 2.0 * outputVector( 42 );
+                        // Apply differential correction.
+                        differentialCorrection = computeDifferentialCorrectionHalo( halfPeriodState );
+                        initialStateVector( 0 ) = initialStateVector( 0 ) + differentialCorrection( 0 )/1.0;
+                        initialStateVector( 2 ) = initialStateVector( 2 ) + differentialCorrection( 2 )/1.0;
+                        initialStateVector( 4 ) = initialStateVector( 4 ) + differentialCorrection( 4 )/1.0;
 
-                    // Calculate deviation from perfect scenario.
-                    deviationFromPerfectHalo = fabs( halfPeriodState( 3 ) ) + fabs( halfPeriodState( 5  ) );
-                    cout << deviationFromPerfectHalo << endl;
+                        // Propagate new state forward to half-period point.
+                        outputVector = propagateOrbit( initialStateVector, massParameter, 0.5, 1.0, orbit_type);
+                        halfPeriodState = outputVector.segment( 0, 42 );
+                        orbitalPeriod = 2.0 * outputVector( 42 );
+
+                        // Calculate deviation from periodic orbit.
+                        deviationFromPeriodicOrbit = fabs( halfPeriodState( 3 ) ) + fabs( halfPeriodState( 5  ) );
+                        cout << deviationFromPeriodicOrbit << endl;
+                    }
+                }
+
+                if(orbit_type == "near_vertical"){
+                    // Apply differential correction and propagate to half-period point until converged.
+                    while (deviationFromPeriodicOrbit > 1.0e-8 ) {
+
+                        // Apply differential correction.
+                        differentialCorrection = computeDifferentialCorrectionNearVertical( halfPeriodState );
+                        initialStateVector( 0 ) = initialStateVector( 0 ) + differentialCorrection( 0 )/1.0;
+                        initialStateVector( 4 ) = initialStateVector( 4 ) + differentialCorrection( 4 )/1.0;
+                        initialStateVector( 5 ) = initialStateVector( 5 ) + differentialCorrection( 5 )/1.0;
+
+                        // Propagate new state forward to half-period point.
+                        outputVector = propagateOrbit( initialStateVector, massParameter, 0.5, 1.0, orbit_type);
+                        halfPeriodState = outputVector.segment( 0, 42 );
+                        orbitalPeriod = 2.0 * outputVector( 42 );
+
+                        // Calculate deviation from periodic orbit.
+                        deviationFromPeriodicOrbit = fabs( halfPeriodState( 3 ) );
+                        cout << deviationFromPeriodicOrbit << endl;
+                    }
                 }
 
     // Write initial state to file
-    jacobiEnergy_0 = tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, initialStateVector.segment(0,6));
-    jsontree.put("initial_states.halo." + selected_orbit + ".C", jacobiEnergy_0);
-    jsontree.put("initial_states.halo." + selected_orbit + ".T", haloPeriod);
+    double jacobiEnergy = tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, initialStateVector.segment(0,6));
+    jsontree.put("initial_states." + orbit_type + "." + selected_orbit + ".C", jacobiEnergy);
+    jsontree.put("initial_states." + orbit_type + "." + selected_orbit + ".T", orbitalPeriod);
     write_json("config.json", jsontree);
 
-    cout << "\nFinal initial state:" << endl << initialStateVector.segment(0,6) << endl << "\nwith C: " << jacobiEnergy_0 << " and period: " << haloPeriod << endl;
+    cout << "\nFinal initial state:" << endl << initialStateVector.segment(0,6) << endl << "\nwith C: " << jacobiEnergy << " and period: " << orbitalPeriod << endl;
     remove((selected_orbit + "_final_orbit.txt").c_str());
     ofstream textFile((selected_orbit + "_final_orbit.txt").c_str());
     textFile.precision(14);
@@ -100,7 +122,7 @@ void computeManifolds( string selected_orbit )
 
 
     // Propagate the initialStateVector for a full period and write output to file.
-    outputVector = propagateHalo( initialStateVector, massParameter, 0.0, 1.0);
+    outputVector = propagateOrbit( initialStateVector, massParameter, 0.0, 1.0, orbit_type);
     Eigen::VectorXd haloState = outputVector.segment( 0, 42 );
     double currentTime = outputVector( 42 );
 //    double angle;
@@ -110,7 +132,7 @@ void computeManifolds( string selected_orbit )
 //    double scalingFactor = 1e3*1.0;
 //    double checkFlag = 0.0;
 
-    while (currentTime <= haloPeriod) {
+    while (currentTime <= orbitalPeriod) {
 
         haloState = outputVector.segment( 0, 42 );
         currentTime = outputVector( 42 );
@@ -119,7 +141,7 @@ void computeManifolds( string selected_orbit )
         textFile << left << fixed << setw(20) << currentTime << setw(20) << haloState(0) << setw(20) << haloState(1) << setw(20) << haloState(2) << setw(20) << haloState(3) << setw(20) << haloState(4) << setw(20) << haloState(5) << setw(20) << haloState(6) << setw(20) << haloState(7) << setw(20) << haloState(8) << setw(20) << haloState(9) << setw(20) << haloState(10) << setw(20) << haloState(11) << setw(20) << haloState(12) << setw(20) << haloState(13) << setw(20) << haloState(14) << setw(20) << haloState(15) << setw(20) << haloState(16) << setw(20) << haloState(17) << setw(20) <<  haloState(18) << setw(20) << haloState(19) << setw(20) << haloState(20) << setw(20) << haloState(21) << setw(20) << haloState(22) << setw(20) << haloState(23) << setw(20) << haloState(24) << setw(20) << haloState(25) << setw(20) << haloState(26) << setw(20) << haloState(27) << setw(20) << haloState(28) << setw(20) << haloState(29) << setw(20) << haloState(30) << setw(20) << haloState(31) << setw(20) << haloState(32) << setw(20) << haloState(33) << setw(20) << haloState(34) << setw(20) << haloState(35) << setw(20) << haloState(36) << setw(20) << haloState(37) << setw(20) << haloState(38) << setw(20) << haloState(39) << setw(20) << haloState(40) << setw(20) << haloState(41) << endl;
 
         // Propagate to next time step.
-        outputVector = propagateHalo( haloState, massParameter, currentTime, 1.0);
+        outputVector = propagateOrbit( haloState, massParameter, currentTime, 1.0, orbit_type);
     }
 
                 // Read in the datapoints of the target orbit.
@@ -181,7 +203,7 @@ void computeManifolds( string selected_orbit )
                 for (int ii = 0; ii <numberOfOrbits; ii++) {
                     manifoldStartingState.segment(0,6) = matrixFromFile.block(floor(ii*numberOfHaloPoints/numberOfOrbits),0,1,6).transpose() - epsilon*eigenVector;
                     textFile2 << left << fixed << setw(20) << 0.0 << setw(20) << manifoldStartingState(0) << setw(20) << manifoldStartingState(1) << setw(20) << manifoldStartingState(2) << setw(20) << manifoldStartingState(3) << setw(20) << manifoldStartingState(4) << setw(20) << manifoldStartingState(5) << endl;
-                    outputVector = propagateHalo( manifoldStartingState, massParameter, 0.0, -1.0); // LETOP!
+                    outputVector = propagateOrbit( manifoldStartingState, massParameter, 0.0, -1.0, orbit_type); // LETOP!
                     haloState = outputVector.segment( 0, 42 );
                     currentTime = outputVector(42);
                     cout << "Manifold No.: " << ii+1 << endl;
@@ -194,7 +216,7 @@ void computeManifolds( string selected_orbit )
                         textFile2 << left << fixed << setw(20) << currentTime << setw(20) << haloState(0) << setw(20) << haloState(1) << setw(20) << haloState(2) << setw(20) << haloState(3) << setw(20) << haloState(4) << setw(20) << haloState(5) << endl;
 
                         // Propagate to next time step.
-                        outputVector = propagateHalo( haloState, massParameter, currentTime, -1.0); //LETOP!
+                        outputVector = propagateOrbit( haloState, massParameter, currentTime, -1.0, orbit_type); //LETOP!
                     }
 
                 }

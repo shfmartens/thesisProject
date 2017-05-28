@@ -7,6 +7,6 @@
 
 
 #include "computeManifolds.cpp"
-void computeManifolds( string selected_orbit );
+void computeManifolds(  string orbit_type, string selected_orbit );
 
 #endif //TUDATBUNDLE_MAININITIALIZATION_H

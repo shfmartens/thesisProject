@@ -24,7 +24,7 @@
  *
  *    Changelog
  *      YYMMDD    Author            Comment
- *      140401    J. Röhner         First creation of code.
+ *      140401    J. Rï¿½hner         First creation of code.
  *
  *    References
  *    - None.
@@ -40,10 +40,11 @@
 // Include-statements.
 #include <Eigen/Core>
 
-#include "propagateHalo.cpp"
+#include "propagateOrbit.cpp"
 
 // Begin function.
-Eigen::VectorXd propagateHalo(Eigen::VectorXd inputState, double massParameter, double halfPeriodFlag, double direction);
+Eigen::VectorXd propagateOrbit(Eigen::VectorXd inputState, double massParameter, double halfPeriodFlag,
+                               double direction, std::string orbit_type);
 
 
 #endif // PROPAGATEHALO_H

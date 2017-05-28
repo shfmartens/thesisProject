@@ -42,12 +42,13 @@
 #include "Tudat/Astrodynamics/BasicAstrodynamics/celestialBodyConstants.h"
 #include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
 
-#include "propagateHalo.h"
+#include "propagateOrbit.h"
 #include "stateDerivativeModel.h"
 
 
 // Begin function.
-Eigen::VectorXd propagateHalo( Eigen::VectorXd inputState, double massParameter, double halfPeriodFlag, double direction ) {
+Eigen::VectorXd propagateOrbit(Eigen::VectorXd inputState, double massParameter, double halfPeriodFlag,
+                               double direction, std::string orbit_type) {
 
 // Declare namespaces.
 using namespace tudat;
@@ -64,9 +65,17 @@ using namespace root_finders;
     double stepSize = 1.0e-4;
     double currentTime = 0.0;
     double previousTime = currentTime;
+    double stateIdx;
+
+    if (orbit_type == "halo"){
+        stateIdx = 1;
+    }
+    if(orbit_type == "near_vertical"){
+        stateIdx = 2;
+    }
 
     // Create integrator to be used for propagating.
-    RungeKuttaVariableStepSizeIntegratorXd haloIntegrator ( RungeKuttaCoefficients::get( RungeKuttaCoefficients::rungeKuttaFehlberg78 ), &computeStateDerivative, 0.0, inputState, 1.0e-12, 1.0, 1.0e-13, 1.0e-13);
+    RungeKuttaVariableStepSizeIntegratorXd orbitIntegrator ( RungeKuttaCoefficients::get( RungeKuttaCoefficients::rungeKuttaFehlberg78 ), &computeStateDerivative, 0.0, inputState, 1.0e-12, 1.0, 1.0e-13, 1.0e-13);
 
     // Perform integration until either the half-period point is reached, or a full period has passed.
     if (halfPeriodFlag == 0.5) {
@@ -74,28 +83,34 @@ using namespace root_finders;
 
             // Perform integration step and get next stepSize.
             previousOutputState = outputState;
-            outputState = haloIntegrator.performIntegrationStep(stepSize);
-            stepSize = haloIntegrator.getNextStepSize();
+            outputState = orbitIntegrator.performIntegrationStep(stepSize);
+            stepSize = orbitIntegrator.getNextStepSize();
             previousTime = currentTime;
-            currentTime = haloIntegrator.getCurrentIndependentVariable();
+            currentTime = orbitIntegrator.getCurrentIndependentVariable();
 
             // Check if half-period is reached. This is the case when the sign of the y-location has changed.
-            if ( outputState(1) / fabs( outputState(1) ) == - inputState(4) / fabs( inputState(4) ) ) {
+            if ( outputState(stateIdx) / fabs( outputState(stateIdx) ) == - inputState(4) / fabs( inputState(4) ) ) {
 
                 // Linearly approximate all six states at the exact half period point.
-                if (outputState(1) > previousOutputState(1)) {
+                if (outputState(stateIdx) > previousOutputState(stateIdx)) {
 
                     // Linearly interpolate to y=0.
-                    outputState = previousOutputState + ( outputState - previousOutputState ) * ( -previousOutputState(1) / ( outputState(1) - previousOutputState(1) ) );
-                    currentTime = previousTime + ( currentTime - previousTime ) * ( -previousOutputState(1) / ( outputState(1) - previousOutputState(1) ) );
+                    outputState = previousOutputState +
+                            ( outputState - previousOutputState ) * ( -previousOutputState(stateIdx) /
+                                    ( outputState(stateIdx) - previousOutputState(stateIdx) ) );
+                    currentTime = previousTime +
+                            ( currentTime - previousTime ) * ( -previousOutputState(stateIdx) /
+                                    ( outputState(stateIdx) - previousOutputState(stateIdx) ) );
                     break;
                 }
 
                 else {
 
                     // Linearly interpolate to y=0.
-                    outputState = outputState + ( outputState - previousOutputState ) * ( -outputState(1) / ( outputState(1) - previousOutputState(1) ) );
-                    currentTime = previousTime + ( currentTime - previousTime ) * ( -outputState(1) / ( outputState(1) - previousOutputState(1) ) );
+                    outputState = outputState + ( outputState - previousOutputState ) * ( -outputState(stateIdx) /
+                            ( outputState(stateIdx) - previousOutputState(stateIdx) ) );
+                    currentTime = previousTime + ( currentTime - previousTime ) * ( -outputState(stateIdx) /
+                            ( outputState(stateIdx) - previousOutputState(stateIdx) ) );
                     break;
                 }
             }
@@ -104,18 +119,18 @@ using namespace root_finders;
 
     else {
         if (direction > 0.0) {
-            Eigen::VectorXd tempState = haloIntegrator.performIntegrationStep(stepSize);
-            stepSize = haloIntegrator.getNextStepSize();
-            haloIntegrator.rollbackToPreviousState();
-            outputState = haloIntegrator.performIntegrationStep(stepSize);
-            currentTime = halfPeriodFlag + haloIntegrator.getCurrentIndependentVariable();
+            Eigen::VectorXd tempState = orbitIntegrator.performIntegrationStep(stepSize);
+            stepSize = orbitIntegrator.getNextStepSize();
+            orbitIntegrator.rollbackToPreviousState();
+            outputState = orbitIntegrator.performIntegrationStep(stepSize);
+            currentTime = halfPeriodFlag + orbitIntegrator.getCurrentIndependentVariable();
         }
         else {
-            Eigen::VectorXd tempState = haloIntegrator.performIntegrationStep(-stepSize);
-            stepSize = haloIntegrator.getNextStepSize();
-            haloIntegrator.rollbackToPreviousState();
-            outputState = haloIntegrator.performIntegrationStep(stepSize);
-            currentTime = halfPeriodFlag + haloIntegrator.getCurrentIndependentVariable();
+            Eigen::VectorXd tempState = orbitIntegrator.performIntegrationStep(-stepSize);
+            stepSize = orbitIntegrator.getNextStepSize();
+            orbitIntegrator.rollbackToPreviousState();
+            outputState = orbitIntegrator.performIntegrationStep(stepSize);
+            currentTime = halfPeriodFlag + orbitIntegrator.getCurrentIndependentVariable();
         }
     }
 

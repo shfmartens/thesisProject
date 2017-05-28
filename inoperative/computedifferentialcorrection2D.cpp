@@ -2,7 +2,7 @@
 #include <Eigen/LU>
 #include <iostream>
 
-#include "thesisProject/computeDifferentialCorrection.h"
+#include "thesisProject/computeDifferentialCorrectionHalo.h"
 #include "stateDerivativeModel2D.h"
 
 using namespace std;
