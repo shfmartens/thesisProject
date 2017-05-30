@@ -22,6 +22,8 @@
 Eigen::Vector3d thrustVector;
 double massParameter;
 namespace crtbp = tudat::gravitation::circular_restricted_three_body_problem;
+//double thrustAcceleration = 0.0236087689713322;
+double thrustAcceleration = 0.0;
 
 void computeManifolds( string orbit_type, string selected_orbit )
 {
@@ -204,8 +206,6 @@ void computeManifolds( string orbit_type, string selected_orbit )
     Eigen::VectorXd eigenVector;
     double integrationDirection;
     string fileName;
-    ofstream textFile2;
-
 
     for (int manifoldNumber = 0; manifoldNumber < 4; manifoldNumber++){
 
@@ -214,6 +214,7 @@ void computeManifolds( string orbit_type, string selected_orbit )
         integrationDirection = integrationDirections.at(manifoldNumber);
         fileName = fileNames.at(manifoldNumber);
 
+        ofstream textFile2;
         remove(fileName.c_str());
         textFile2.open(fileName.c_str());
         textFile2.precision(14);
@@ -233,7 +234,7 @@ void computeManifolds( string orbit_type, string selected_orbit )
             currentTime = outputVector(42);
             cout << "Orbit No.: " << ii + 1 << endl;
 
-            while (currentTime >= integrationDirection * integrationStopTime) {
+            while ( fabs( currentTime ) <= integrationStopTime) {
 
                 haloState = outputVector.segment(0, 42);
                 currentTime = outputVector(42);
@@ -246,9 +247,10 @@ void computeManifolds( string orbit_type, string selected_orbit )
                 // Propagate to next time step.
                 outputVector = propagateOrbit(haloState, massParameter, currentTime, integrationDirection, orbit_type);
             }
-
-            textFile2.close();
         }
+
+        textFile2.close();
+        textFile2.clear();
 
     }
     cout << "Mass parameter: " << massParameter <<  " and C: " << tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, haloState.segment(0,6)) << endl;
