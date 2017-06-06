@@ -29,8 +29,8 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
                        const double primaryGravitationalParameter = tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER,
                        const double secondaryGravitationalParameter = tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER,
                        double displacementFromOrbit = 1.0e-5, double maxDeviationFromPeriodicOrbit = 1.0e-8,
-                       double integrationStopTimeManifoldOrbits = 10.0, int numberOfManifoldOrbits = 100,
-                       int saveEveryNthIntegrationStep = 100)
+                       int numberOfManifoldOrbits = 100, int saveEveryNthIntegrationStep = 100,
+                       double maximumIntegrationTimeManifoldOrbits = 50.0)
 {
     // Set output precision and clear screen.
     std::cout.precision( 14 );
@@ -49,10 +49,11 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
     Eigen::VectorXd outputVector( 43 );
     double deviationFromPeriodicOrbit = 1.0;
     double orbitalPeriod = 0.0;
-    cout << "\nInitial state vector:" << endl << initialStateVectorInclSTM.segment(0,6) << endl << "\nDifferential correction:" << endl;
+    cout << "\nInitial state vector:" << endl << initialStateVectorInclSTM.segment(0,6) << endl
+         << "\nDifferential correction:" << endl;
 
 
-    /** Differential Correction. */
+    /** Differential Correction */
 
     if (orbit_type == "halo"){
         // Apply differential correction and propagate to half-period point until converged.
@@ -96,84 +97,84 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
         }
     }
 
-    // Write initial state to file
     double jacobiEnergy = tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, initialStateVectorInclSTM.segment(0,6));
-    cout << "\nFinal initial state:" << endl << initialStateVectorInclSTM.segment(0,6) << endl << "\nwith C: " << jacobiEnergy << " and period: " << orbitalPeriod << endl;
+    cout << "\nFinal initial state:" << endl << initialStateVectorInclSTM.segment(0,6) << endl
+         << "\nwith C: " << jacobiEnergy << " and period: " << orbitalPeriod << endl;
+
+    // Write initial state to file
     remove((selected_orbit + "_final_orbit.txt").c_str());
     ofstream textFile((selected_orbit + "_final_orbit.txt").c_str());
     textFile.precision(14);
-    textFile << left << fixed << setw(20) << 0.0 << setw(20) << initialStateVectorInclSTM(0) << setw(20) << initialStateVectorInclSTM(1) << setw(20) << initialStateVectorInclSTM(2) << setw(20) << initialStateVectorInclSTM(3) << setw(20) << initialStateVectorInclSTM(4) << setw(20) << initialStateVectorInclSTM(5) << setw(20) << initialStateVectorInclSTM(6) << setw(20) << initialStateVectorInclSTM(7) << setw(20) << initialStateVectorInclSTM(8) << setw(20) << initialStateVectorInclSTM(9) << setw(20) << initialStateVectorInclSTM(10) << setw(20) << initialStateVectorInclSTM(11) << setw(20) << initialStateVectorInclSTM(12) << setw(20) << initialStateVectorInclSTM(13) << setw(20) << initialStateVectorInclSTM(14) << setw(20) << initialStateVectorInclSTM(15) << setw(20) << initialStateVectorInclSTM(16) << setw(20) << initialStateVectorInclSTM(17) << setw(20) <<  initialStateVectorInclSTM(18) << setw(20) << initialStateVectorInclSTM(19) << setw(20) << initialStateVectorInclSTM(20) << setw(20) << initialStateVectorInclSTM(21) << setw(20) << initialStateVectorInclSTM(22) << setw(20) << initialStateVectorInclSTM(23) << setw(20) << initialStateVectorInclSTM(24) << setw(20) << initialStateVectorInclSTM(25) << setw(20) << initialStateVectorInclSTM(26) << setw(20) << initialStateVectorInclSTM(27) << setw(20) << initialStateVectorInclSTM(28) << setw(20) << initialStateVectorInclSTM(29) << setw(20) << initialStateVectorInclSTM(30) << setw(20) << initialStateVectorInclSTM(31) << setw(20) << initialStateVectorInclSTM(32) << setw(20) << initialStateVectorInclSTM(33) << setw(20) << initialStateVectorInclSTM(34) << setw(20) << initialStateVectorInclSTM(35) << setw(20) << initialStateVectorInclSTM(36) << setw(20) << initialStateVectorInclSTM(37) << setw(20) << initialStateVectorInclSTM(38) << setw(20) << initialStateVectorInclSTM(39) << setw(20) << initialStateVectorInclSTM(40) << setw(20) << initialStateVectorInclSTM(41) << endl;
+    textFile << left << fixed << setw(20) << 0.0 << setw(20)
+             << initialStateVectorInclSTM(0) << setw(20) << initialStateVectorInclSTM(1) << setw(20)
+             << initialStateVectorInclSTM(2) << setw(20) << initialStateVectorInclSTM(3) << setw(20)
+             << initialStateVectorInclSTM(4) << setw(20) << initialStateVectorInclSTM(5)  << endl;
 
+    std::vector< std::vector <double> > orbitStateVectors;
+    std::vector<double> tempStateVector;
+    int numberOfPointsOnPeriodicOrbit = 1;  // Initial state
+
+    for (int i = 0; i <= 5; i++){
+        tempStateVector.push_back(initialStateVectorInclSTM(i));
+    }
+    orbitStateVectors.push_back(tempStateVector);
 
     // Propagate the initialStateVector for a full period and write output to file.
     outputVector = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.0, 1.0, orbit_type);
     Eigen::VectorXd stateVectorInclSTM = outputVector.segment( 0, 42 );
     double currentTime = outputVector( 42 );
-    Eigen::VectorXd instantV(3);
-    instantV.setZero();
 
     while (currentTime <= orbitalPeriod) {
 
         stateVectorInclSTM = outputVector.segment( 0, 42 );
         currentTime = outputVector( 42 );
+        numberOfPointsOnPeriodicOrbit += 1;
 
         // Write to file.
-        textFile << left << fixed << setw(20) << currentTime << setw(20) << stateVectorInclSTM(0) << setw(20) << stateVectorInclSTM(1) << setw(20) << stateVectorInclSTM(2) << setw(20) << stateVectorInclSTM(3) << setw(20) << stateVectorInclSTM(4) << setw(20) << stateVectorInclSTM(5) << setw(20) << stateVectorInclSTM(6) << setw(20) << stateVectorInclSTM(7) << setw(20) << stateVectorInclSTM(8) << setw(20) << stateVectorInclSTM(9) << setw(20) << stateVectorInclSTM(10) << setw(20) << stateVectorInclSTM(11) << setw(20) << stateVectorInclSTM(12) << setw(20) << stateVectorInclSTM(13) << setw(20) << stateVectorInclSTM(14) << setw(20) << stateVectorInclSTM(15) << setw(20) << stateVectorInclSTM(16) << setw(20) << stateVectorInclSTM(17) << setw(20) <<  stateVectorInclSTM(18) << setw(20) << stateVectorInclSTM(19) << setw(20) << stateVectorInclSTM(20) << setw(20) << stateVectorInclSTM(21) << setw(20) << stateVectorInclSTM(22) << setw(20) << stateVectorInclSTM(23) << setw(20) << stateVectorInclSTM(24) << setw(20) << stateVectorInclSTM(25) << setw(20) << stateVectorInclSTM(26) << setw(20) << stateVectorInclSTM(27) << setw(20) << stateVectorInclSTM(28) << setw(20) << stateVectorInclSTM(29) << setw(20) << stateVectorInclSTM(30) << setw(20) << stateVectorInclSTM(31) << setw(20) << stateVectorInclSTM(32) << setw(20) << stateVectorInclSTM(33) << setw(20) << stateVectorInclSTM(34) << setw(20) << stateVectorInclSTM(35) << setw(20) << stateVectorInclSTM(36) << setw(20) << stateVectorInclSTM(37) << setw(20) << stateVectorInclSTM(38) << setw(20) << stateVectorInclSTM(39) << setw(20) << stateVectorInclSTM(40) << setw(20) << stateVectorInclSTM(41) << endl;
+        textFile << left << fixed << setw(20) << currentTime << setw(20)
+                 << stateVectorInclSTM(0) << setw(20) << stateVectorInclSTM(1) << setw(20)
+                 << stateVectorInclSTM(2) << setw(20) << stateVectorInclSTM(3) << setw(20)
+                 << stateVectorInclSTM(4) << setw(20) << stateVectorInclSTM(5)  << endl;
+
+        tempStateVector.clear();
+        for (int i = 0; i <= 5; i++){
+            tempStateVector.push_back(stateVectorInclSTM(i));
+        }
+        orbitStateVectors.push_back(tempStateVector);
 
         // Propagate to next time step.
         outputVector = propagateOrbit( stateVectorInclSTM, massParameter, currentTime, 1.0, orbit_type);
     }
 
+    Eigen::MatrixXd orbitStateVectorsMatrix(orbitStateVectors.size(),6);
+    for (int iRow = 0; iRow < orbitStateVectors.size(); iRow++)
+    {
+        for (int iCol = 0; iCol <= 5; iCol++)
+        {
+            orbitStateVectorsMatrix(iRow,iCol) = orbitStateVectors[iRow][iCol];
+        }
+    }
+
     /** Computation of Invariant Manifolds */
-    // Read in the datapoints of the target orbit.
-    std::ifstream fin((selected_orbit + "_final_orbit.txt").c_str());
-    const int nCol = 43; // read from file
-    std::vector< std::vector <double> > dataFromFile;  // your entire data-set of values
+    // Reshape the STM for one period to matrix form.
+    Eigen::MatrixXd monodromyMatrix (6,6);
+    monodromyMatrix <<  stateVectorInclSTM(6), stateVectorInclSTM(12), stateVectorInclSTM(18), stateVectorInclSTM(24), stateVectorInclSTM(30), stateVectorInclSTM(36),
+                        stateVectorInclSTM(7), stateVectorInclSTM(13), stateVectorInclSTM(19), stateVectorInclSTM(25), stateVectorInclSTM(31), stateVectorInclSTM(37),
+                        stateVectorInclSTM(8), stateVectorInclSTM(14), stateVectorInclSTM(20), stateVectorInclSTM(26), stateVectorInclSTM(32), stateVectorInclSTM(38),
+                        stateVectorInclSTM(9), stateVectorInclSTM(15), stateVectorInclSTM(21), stateVectorInclSTM(27), stateVectorInclSTM(33), stateVectorInclSTM(39),
+                        stateVectorInclSTM(10), stateVectorInclSTM(16), stateVectorInclSTM(22), stateVectorInclSTM(28), stateVectorInclSTM(34), stateVectorInclSTM(40),
+                        stateVectorInclSTM(11), stateVectorInclSTM(17),  stateVectorInclSTM(23), stateVectorInclSTM(29), stateVectorInclSTM(35), stateVectorInclSTM(41);
+    cout << "\nMonodromy matrix:\n" << monodromyMatrix << "\n" << endl;
+    monodromyMatrix.transposeInPlace();
+    cout << monodromyMatrix << "\n" << endl;
 
-    std::vector<double> line(nCol, -1.0);  // create one line of nCol size and fill with -1
-    bool done = false;
-    while (!done)
-    {
-        for (int i = 0; !done && i < nCol; i++)
-        {
-            done = !(fin >> line[i]);
-        }
-        dataFromFile.push_back(line);
-    }
-    Eigen::MatrixXd matrixFromFile(dataFromFile.size(),42);
-    Eigen::VectorXd timeVector(dataFromFile.size());
-    for (int iRow = 0; iRow < dataFromFile.size(); iRow++)
-    {
-        timeVector(iRow) = dataFromFile[iRow][0];
-        for (int iCol = 1; iCol < 43; iCol++)
-        {
-            matrixFromFile(iRow,iCol-1) = dataFromFile[iRow][iCol];
-        }
-    }
-
-    // Select 50 points along the Halo to start the manifolds.
-    int numberOfHaloPoints = timeVector.size();
-
-    // Reshape the STM to matrix form.
-    Eigen::MatrixXd STMEndOfPeriod(6,6);
-    STMEndOfPeriod << matrixFromFile(numberOfHaloPoints-2,6), matrixFromFile(numberOfHaloPoints-2,12), matrixFromFile(numberOfHaloPoints-2,18), matrixFromFile(numberOfHaloPoints-2,24), matrixFromFile(numberOfHaloPoints-2,30), matrixFromFile(numberOfHaloPoints-2,36),
-            matrixFromFile(numberOfHaloPoints-2,7), matrixFromFile(numberOfHaloPoints-2,13), matrixFromFile(numberOfHaloPoints-2,19), matrixFromFile(numberOfHaloPoints-2,25), matrixFromFile(numberOfHaloPoints-2,31), matrixFromFile(numberOfHaloPoints-2,37),
-            matrixFromFile(numberOfHaloPoints-2,8), matrixFromFile(numberOfHaloPoints-2,14), matrixFromFile(numberOfHaloPoints-2,20), matrixFromFile(numberOfHaloPoints-2,26), matrixFromFile(numberOfHaloPoints-2,32), matrixFromFile(numberOfHaloPoints-2,38),
-            matrixFromFile(numberOfHaloPoints-2,9), matrixFromFile(numberOfHaloPoints-2,15), matrixFromFile(numberOfHaloPoints-2,21), matrixFromFile(numberOfHaloPoints-2,27), matrixFromFile(numberOfHaloPoints-2,33), matrixFromFile(numberOfHaloPoints-2,39),
-            matrixFromFile(numberOfHaloPoints-2,10), matrixFromFile(numberOfHaloPoints-2,16), matrixFromFile(numberOfHaloPoints-2,22), matrixFromFile(numberOfHaloPoints-2,28), matrixFromFile(numberOfHaloPoints-2,34), matrixFromFile(numberOfHaloPoints-2,40),
-            matrixFromFile(numberOfHaloPoints-2,11), matrixFromFile(numberOfHaloPoints-2,17),  matrixFromFile(numberOfHaloPoints-2,23), matrixFromFile(numberOfHaloPoints-2,29), matrixFromFile(numberOfHaloPoints-2,35), matrixFromFile(numberOfHaloPoints-2,41);
-    cout << "\nSTM:\n" << STMEndOfPeriod << endl << "\n" << endl;
-    STMEndOfPeriod.transposeInPlace();
-    cout << STMEndOfPeriod << endl;
-
-    //Calculate the eigen vectors.
-    Eigen::EigenSolver<Eigen::MatrixXd> eig(STMEndOfPeriod);
+    // Compute eigenvectors of the monodromy matrix
+    Eigen::EigenSolver<Eigen::MatrixXd> eig(monodromyMatrix);
     Eigen::VectorXd eigenVector1 = eig.eigenvectors().real().col(0);
     Eigen::VectorXd eigenVector2 = eig.eigenvectors().real().col(1);
-    cout << "\nEigenvector:\n" << eigenVector1 << endl << "\n" << endl;
-    cout << "\nEigenvector:\n" << eigenVector2 << endl << "\n" << endl;
+    cout << "Eigenvectors:\n" << eigenVector1 << endl << "\n" << eigenVector2 << "\n" << endl;
 
-    // Apply displacement epsilon from the halo at <numberOfOrbits> locations on the halo.
+
     Eigen::VectorXd manifoldStartingState(42);
     manifoldStartingState.setZero();
 
@@ -200,31 +201,57 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
         textFile2.open(fileName.c_str());
         textFile2.precision(14);
 
-        cout << "\n\nManifold: " << fileName << "\n" << endl;
+        bool fullManifoldComputed = false;
+        bool ySignSet = false;
+        double ySign = 0.0;
 
+        cout << "\nManifold: " << fileName << "\n" << endl;
+        // Determine the total number of points along the periodic orbit to start the manifolds.
         for (int ii = 0; ii <numberOfManifoldOrbits; ii++) {
-            manifoldStartingState.segment(0, 6) =
-                    matrixFromFile.block(floor(ii * numberOfHaloPoints / numberOfManifoldOrbits), 0, 1, 6).transpose() +
+
+            // Apply displacement epsilon from the halo at <numberOfManifoldOrbits> locations on the final orbit.
+            manifoldStartingState.segment(0, 6) = orbitStateVectorsMatrix.block(
+                    floor(ii * numberOfPointsOnPeriodicOrbit / numberOfManifoldOrbits), 0, 1, 6).transpose() +
                             offsetSign * displacementFromOrbit * eigenVector;
-            textFile2 << left << fixed << setw(20) << 0.0 << setw(20) << manifoldStartingState(0) << setw(20)
-                      << manifoldStartingState(1) << setw(20) << manifoldStartingState(2) << setw(20)
-                      << manifoldStartingState(3) << setw(20) << manifoldStartingState(4) << setw(20)
-                      << manifoldStartingState(5) << endl;
+
+            textFile2 << left << fixed << setw(20) << 0.0 << setw(20)
+                      << manifoldStartingState(0) << setw(20) << manifoldStartingState(1) << setw(20)
+                      << manifoldStartingState(2) << setw(20) << manifoldStartingState(3) << setw(20)
+                      << manifoldStartingState(4) << setw(20) << manifoldStartingState(5) << endl;
+
             outputVector = propagateOrbit(manifoldStartingState, massParameter, 0.0, integrationDirection, orbit_type);
             stateVectorInclSTM = outputVector.segment(0, 42);
             currentTime = outputVector(42);
             cout << "Orbit No.: " << ii + 1 << endl;
             int count = 1;
 
-            while ( fabs( currentTime ) <= integrationStopTimeManifoldOrbits) {
+
+            while ( (fabs( currentTime ) <= maximumIntegrationTimeManifoldOrbits) and !fullManifoldComputed ) {
+
+                // Determine sign of Y near x = 0
+                if ( (stateVectorInclSTM(0) < 0) and !ySignSet ){
+                    if ( stateVectorInclSTM(1) < 0 ){
+                        ySign = -1.0;
+                    }
+                    if ( stateVectorInclSTM(1) > 0 ){
+                        ySign = 1.0;
+                    }
+                    ySignSet = true;
+                }
+
+                // Determine when the manifold crosses the x-axis again
+                if ( (stateVectorInclSTM(1) * ySign < 0) and ySignSet ){
+                    fullManifoldComputed = true;
+                }
 
                 stateVectorInclSTM = outputVector.segment(0, 42);
                 currentTime = outputVector(42);
 
+                // Write every nth integration step to file.
                 if (count % saveEveryNthIntegrationStep == 0) {
-                    // Write to file.
-                    textFile2 << left << fixed << setw(20) << currentTime << setw(20) << stateVectorInclSTM(0) << setw(20)
-                              << stateVectorInclSTM(1) << setw(20) << stateVectorInclSTM(2) << setw(20) << stateVectorInclSTM(3) << setw(20)
+                    textFile2 << left << fixed << setw(20) << currentTime << setw(20)
+                              << stateVectorInclSTM(0) << setw(20) << stateVectorInclSTM(1) << setw(20)
+                              << stateVectorInclSTM(2) << setw(20) << stateVectorInclSTM(3) << setw(20)
                               << stateVectorInclSTM(4) << setw(20) << stateVectorInclSTM(5) << endl;
 
                 }
@@ -233,17 +260,19 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
                 outputVector = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, integrationDirection, orbit_type);
                 count += 1;
             }
-        }
 
+            ySignSet = false;
+            fullManifoldComputed = false;
+        }
         textFile2.close();
         textFile2.clear();
 
     }
 
-    cout << "Mass parameter: " << massParameter
-         << ", C_0: " << jacobiEnergy
-         << ", C_1: " << tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, stateVectorInclSTM.segment(0,6))
-         << ", and T: " << orbitalPeriod << endl;
+    cout << "\nMass parameter: " << massParameter << endl
+         << "C at initial conditions: " << jacobiEnergy << endl
+         << "C at end of manifold orbit: " << tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, stateVectorInclSTM.segment(0,6)) << endl
+         << "T: " << orbitalPeriod << endl;
     return;
 
 }
