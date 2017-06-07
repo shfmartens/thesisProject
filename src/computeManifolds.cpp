@@ -10,9 +10,9 @@
 #include <math.h>
 
 #include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
-#include "thesisProject/propagateOrbit.h"
-#include "thesisProject/computeDifferentialCorrectionHalo.h"
-#include "thesisProject/computeDifferentialCorrectionNearVertical.h"
+#include "thesisProject/src/propagateOrbit.h"
+#include "thesisProject/src/computeDifferentialCorrectionHalo.h"
+#include "thesisProject/src/computeDifferentialCorrectionNearVertical.h"
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
@@ -100,10 +100,23 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
     double jacobiEnergy = tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, initialStateVectorInclSTM.segment(0,6));
     cout << "\nFinal initial state:" << endl << initialStateVectorInclSTM.segment(0,6) << endl
          << "\nwith C: " << jacobiEnergy << " and period: " << orbitalPeriod << endl;
+//    boost::property_tree::ptree jsontree;
+//    boost::property_tree::read_json("config2.json", jsontree);
+//
+//
+//    jsontree.put( orbit_type + "." + selected_orbit + ".x", initialStateVectorInclSTM(0));
+//    jsontree.put( orbit_type + "." + selected_orbit + ".y", initialStateVectorInclSTM(1));
+//    jsontree.put( orbit_type + "." + selected_orbit + ".z", initialStateVectorInclSTM(2));
+//    jsontree.put( orbit_type + "." + selected_orbit + ".x_dot", initialStateVectorInclSTM(3));
+//    jsontree.put( orbit_type + "." + selected_orbit + ".y_dot", initialStateVectorInclSTM(4));
+//    jsontree.put( orbit_type + "." + selected_orbit + ".z_dot", initialStateVectorInclSTM(5));
+//    jsontree.put( orbit_type + "." + selected_orbit + ".C", jacobiEnergy);
+//    jsontree.put( orbit_type + "." + selected_orbit + ".T", orbitalPeriod);
+//    write_json("config2.json", jsontree);
 
     // Write initial state to file
-    remove((selected_orbit + "_final_orbit.txt").c_str());
-    ofstream textFile((selected_orbit + "_final_orbit.txt").c_str());
+    remove(("../data/" + selected_orbit + "_final_orbit.txt").c_str());
+    ofstream textFile(("../data/" + selected_orbit + "_final_orbit.txt").c_str());
     textFile.precision(14);
     textFile << left << fixed << setw(20) << 0.0 << setw(20)
              << initialStateVectorInclSTM(0) << setw(20) << initialStateVectorInclSTM(1) << setw(20)
@@ -182,7 +195,7 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
     vector<Eigen::VectorXd> eigenVectors = {eigenVector2, eigenVector2, eigenVector1, eigenVector1};
     vector<double> integrationDirections = {1.0, 1.0, -1.0, -1.0};
     vector<string> fileNames = {selected_orbit + "_W_S_plus.txt", selected_orbit + "_W_S_min.txt",
-                               selected_orbit + "_W_U_plus.txt", selected_orbit + "_W_U_min.txt"};
+                                selected_orbit + "_W_U_plus.txt", selected_orbit + "_W_U_min.txt"};
 
     double offsetSign;
     Eigen::VectorXd eigenVector;
@@ -197,8 +210,8 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
         fileName = fileNames.at(manifoldNumber);
 
         ofstream textFile2;
-        remove(fileName.c_str());
-        textFile2.open(fileName.c_str());
+        remove(("../data/" + fileName).c_str());
+        textFile2.open(("../data/" + fileName).c_str());
         textFile2.precision(14);
 
         bool fullManifoldComputed = false;

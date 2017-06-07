@@ -1,0 +1,32 @@
+Tips and tricks
+
+
+# Connect to server
+ssh -Y eudoxos.lr.tudelft.nl
+
+
+# Install python packages on server
+python3 -m pip install package --user
+
+
+# Move files from/to server using FileZilla (sftp)
+
+
+# Run on server while computer is off using terminal multiplexing, ask for .tmux.conf for shortcuts
+# Open a session:
+tmux
+# Start your program:
+./main
+# Use ctrl-t to open another window and detach from the session:
+tmux det
+# Attach the session again using:
+tmux a
+# Kill the session after completion:
+tmux kill-session
+
+# Install ffmpeg by downloading the static library, uncompress the tarbal:
+tar xJfv filename.tar.xz
+# And add the path to python
+plt.rcParams['animation.ffmpeg_path'] = 'ffmpeg-git-20170605-64bit-static/ffmpeg'
+
+

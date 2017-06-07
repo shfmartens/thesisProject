@@ -38,7 +38,7 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif()
 
 # Set module path to local CMake scripts.
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMakeModules)
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 # Set compiler based on preferences (e.g. USE_CLANG) and system.
 include(${CMAKE_MODULE_PATH}/compiler.cmake)
@@ -54,16 +54,16 @@ enable_testing()
 
 # Set lib and bin directories where static libraries and unit tests are built.
 if(NOT LIB_ROOT)
-  set(LIB_ROOT "${CODEROOT}/lib")
+  set(LIB_ROOT "${CODEROOT}/thesisProject/lib")
 endif()
 if(NOT BIN_ROOT)
-  set(BIN_ROOT "${CODEROOT}/bin")
+  set(BIN_ROOT "${CODEROOT}/thesisProject/bin")
 endif()
 
 # Set the global macros for setting up targets.
 macro(setup_executable_target target_name CUSTOM_OUTPUT_PATH)
-  set_property(TARGET ${target_name} PROPERTY RUNTIME_OUTPUT_DIRECTORY "${BIN_ROOT}/applications")
-  install(TARGETS ${target_name} RUNTIME DESTINATION "${BIN_ROOT}/applications")
+  set_property(TARGET ${target_name} PROPERTY RUNTIME_OUTPUT_DIRECTORY "${BIN_ROOT}")
+  install(TARGETS ${target_name} RUNTIME DESTINATION "${BIN_ROOT}")
 endmacro(setup_executable_target)
 
 macro(setup_library_target target_name CUSTOM_OUTPUT_PATH)
@@ -188,10 +188,12 @@ list(APPEND TUDAT_APPLICATION_PROPAGATION_LIBRARIES tudat_simulation_setup tudat
     tudat_electro_magnetism tudat_propulsion tudat_ephemerides tudat_numerical_integrators tudat_reference_frames
     tudat_basic_astrodynamics tudat_input_output tudat_basic_mathematics tudat_propagators tudat_basics ${TUDAT_APPLICATION_EXTERNAL_LIBRARIES})
 
-# Add helloWorld application.
-#add_executable(application_HelloWorld2 "${SRCROOT}/helloWorld.cpp")
-#setup_executable_target(application_HelloWorld2 "${SRCROOT}")
-#target_link_libraries(application_HelloWorld2 tudat_gravitation tudat_basic_astrodynamics ${Boost_LIBRARIES} )
-add_executable(application_main "${SRCROOT}/main.cpp")
-setup_executable_target(application_main "${SRCROOT}")
-target_link_libraries(application_main tudat_gravitation tudat_basic_astrodynamics tudat_numerical_integrators ${TUDAT_CORE_LIBRARIES} ${Eigen_LIBRARIES} ${Boost_LIBRARIES} )
+ find_package(OpenMP)
+ if (OPENMP_FOUND)
+   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+ endif()
+
+add_executable(main "${SRCROOT}/src/main.cpp")
+setup_executable_target(main "${SRCROOT}")
+target_link_libraries(main tudat_gravitation tudat_basic_astrodynamics tudat_numerical_integrators ${TUDAT_CORE_LIBRARIES} ${Eigen_LIBRARIES} ${Boost_LIBRARIES} )
