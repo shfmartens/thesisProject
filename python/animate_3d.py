@@ -1,7 +1,7 @@
 from matplotlib import pyplot as plt
 from matplotlib import animation
 import numpy as np
-from load_data import load_orbit, load_manifold, load_bodies_location
+from load_data import load_orbit, load_manifold, load_bodies_location, load_lagrange_points_location
 import matplotlib as mpl
 from mpl_toolkits.mplot3d import Axes3D
 import mpl_toolkits.mplot3d.axes3d as p3
@@ -26,7 +26,7 @@ def animate(i):
             x = manifold_S_min.xs(j - numberOfOrbitsPerManifolds + 1)['x'].tolist()
             y = manifold_S_min.xs(j - numberOfOrbitsPerManifolds + 1)['y'].tolist()
             z = manifold_S_min.xs(j - numberOfOrbitsPerManifolds + 1)['z'].tolist()
-        if numberOfOrbitsPerManifolds * 2 <= j < numberOfOrbitsPerManifolds * 2:
+        if numberOfOrbitsPerManifolds * 2 <= j < numberOfOrbitsPerManifolds * 3:
             x = manifold_U_plus.xs(j - numberOfOrbitsPerManifolds * 2 + 1)['x'].tolist()
             y = manifold_U_plus.xs(j - numberOfOrbitsPerManifolds * 2 + 1)['y'].tolist()
             z = manifold_U_plus.xs(j - numberOfOrbitsPerManifolds * 2 + 1)['z'].tolist()
@@ -38,7 +38,7 @@ def animate(i):
         line.set_3d_properties(z[:i])
     try:
         t = manifold_U_min.xs(1).index.values[i]
-        plt.title('T = {:.2f}'.format(round(t, 2)), size=22)
+        time_text.set_text('t = {:.2f}'.format(round(abs(t), 2)))
     except IndexError:
         pass
     return lines
@@ -57,13 +57,13 @@ with open("../config/config.json") as data_file:
 for orbit_type in config.keys():
     for orbit_name in config[orbit_type].keys():
         print(orbit_name)
-        
+
         numberOfOrbitsPerManifolds = 100
-        plt.rcParams['animation.ffmpeg_path'] = 'ffmpeg-git-20170605-64bit-static/ffmpeg'
+        # plt.rcParams['animation.ffmpeg_path'] = 'ffmpeg_sources/ffmpeg/ffmpeg'
 
         fig = plt.figure(figsize=(20, 20))
 
-        ax = p3.Axes3D(fig)
+        ax = fig.add_subplot(111, projection='3d')
         ax.set_xlim3d([-4.0, 2.0])
         ax.set_xlabel('x')
 
@@ -72,7 +72,7 @@ for orbit_type in config.keys():
 
         ax.set_zlim3d([-3.0, 3.0])
         ax.set_zlabel('z')
-
+        time_text = ax.text(1, 1, 1, s='', transform=ax.transAxes, size=22)
 
         numberOfOrbits = numberOfOrbitsPerManifolds * 4
         color_palette_green = sns.dark_palette('green', n_colors=numberOfOrbitsPerManifolds)
@@ -87,13 +87,21 @@ for orbit_type in config.keys():
         manifold_U_plus = load_manifold('../data/' + orbit_name + '_W_U_plus.txt')
         manifold_U_min = load_manifold('../data/' + orbit_name + '_W_U_min.txt')
 
-        massParameter = 0.0121505810173
+        EARTH_GRAVITATIONAL_PARAMETER = 3.986004418E14
+        SUN_GRAVITATIONAL_PARAMETER = 1.32712440018e20
+        MOON_GRAVITATIONAL_PARAMETER = SUN_GRAVITATIONAL_PARAMETER / (328900.56 * (1.0 + 81.30059))
+        massParameter = MOON_GRAVITATIONAL_PARAMETER / (MOON_GRAVITATIONAL_PARAMETER + EARTH_GRAVITATIONAL_PARAMETER)
+
         C = float(config[orbit_type][orbit_name]['C'])
-        # x_range = np.arange(-2.0, 2.0, 0.001)
-        # y_range = np.arange(-2.0, 2.0, 0.001)
-        # X, Y = np.meshgrid(x_range, y_range)
-        # Z = cr3bp_velocity(X, Y, C)
-        # plt.contourf(X, Y, Z, levels=[-1, 0], colors='grey')
+        x_range = np.arange(-4.0, 2.0, 0.001)
+        y_range = np.arange(-3.0, 3.0, 0.001)
+        X, Y = np.meshgrid(x_range, y_range)
+        Z = cr3bp_velocity(X, Y, C)
+        plt.contourf(X, Y, Z, 0, colors='grey', alpha=0.25)
+
+        title = 'C = ' + str(round(C, 3)) + \
+                ', T = ' + str(round(float(config[orbit_type][orbit_name]['T']), 3))
+        plt.title(title, size=30)
 
         phi = np.linspace(0, 2 * np.pi, 100)
         theta = np.linspace(0, np.pi, 100)
@@ -102,13 +110,22 @@ for orbit_type in config.keys():
             x_body = bodies[body]['r'] * np.outer(np.cos(phi), np.sin(theta)) + bodies[body]['x']
             y_body = bodies[body]['r'] * np.outer(np.sin(phi), np.sin(theta)) + bodies[body]['y']
             z_body = bodies[body]['r'] * np.cos(theta) + bodies[body]['z']
-            plt.plot(x_body, y_body, z_body, color='black')
+            ax.plot_surface(x_body, y_body, z_body, color='black')
+
+        lagrange_points = load_lagrange_points_location()
+        for lagrange_point in lagrange_points:
+            ax.scatter3D(lagrange_points[lagrange_point]['x'],
+                         lagrange_points[lagrange_point]['y'],
+                         lagrange_points[lagrange_point]['z'], color='grey', marker='d', alpha=0.75)
+            ax.text(lagrange_points[lagrange_point]['x'],
+                    lagrange_points[lagrange_point]['y'],
+                    lagrange_points[lagrange_point]['z'], lagrange_point, size=16)
 
         anim = animation.FuncAnimation(fig, animate, init_func=init,
                                        frames=int(len(manifold_U_min.xs(1)['x'])*2), interval=1, blit=True)
 
-
         Writer = animation.writers['ffmpeg']
-        writer = Writer(fps=30, metadata=dict(artist='Koen Langemeijer'))#, bitrate=5000)
+        writer = Writer(fps=30, metadata=dict(artist='Koen Langemeijer'))
         anim.save(('../data/animations/' + orbit_name + '_3d.mp4'), writer=writer)
-        # plt.show()
+
+# plt.show()

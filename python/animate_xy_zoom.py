@@ -1,7 +1,7 @@
 from matplotlib import pyplot as plt
 from matplotlib import animation
 import numpy as np
-from load_data import load_orbit, load_manifold, load_bodies_location
+from load_data import load_orbit, load_manifold, load_bodies_location, load_lagrange_points_location
 import seaborn as sns
 import json
 
@@ -20,7 +20,7 @@ def animate(i):
         if numberOfOrbitsPerManifolds <= j < numberOfOrbitsPerManifolds * 2:
             x = manifold_S_min.xs(j - numberOfOrbitsPerManifolds + 1)['x'].tolist()
             y = manifold_S_min.xs(j - numberOfOrbitsPerManifolds + 1)['y'].tolist()
-        if numberOfOrbitsPerManifolds * 2 <= j < numberOfOrbitsPerManifolds * 2:
+        if numberOfOrbitsPerManifolds * 2 <= j < numberOfOrbitsPerManifolds * 3:
             x = manifold_U_plus.xs(j - numberOfOrbitsPerManifolds * 2 + 1)['x'].tolist()
             y = manifold_U_plus.xs(j - numberOfOrbitsPerManifolds * 2 + 1)['y'].tolist()
         if numberOfOrbitsPerManifolds * 3 <= j:
@@ -29,7 +29,7 @@ def animate(i):
         line.set_data(x[:i], y[:i])
     try:
         t = manifold_U_min.xs(1).index.values[i]
-        plt.title('T = {:.2f}'.format(round(t, 2)), size=22)
+        time_text.set_text('t = {:.2f}'.format(round(abs(t), 2)))
     except IndexError:
         pass
 
@@ -55,7 +55,8 @@ for orbit_type in config.keys():
         ylim = [-0.5, 0.5]
 
         fig = plt.figure(figsize=(20, 20))
-        plt.rcParams['animation.ffmpeg_path'] = 'ffmpeg-git-20170605-64bit-static/ffmpeg'
+        # plt.rcParams['animation.ffmpeg_path'] = 'ffmpeg_sources/ffmpeg/ffmpeg'
+        # plt.rcParams['animation.codec'] = 'libx264'
         ax = plt.axes(xlim=(0, 2), ylim=(0, 100))
         numberOfOrbits = numberOfOrbitsPerManifolds * 4
         color_palette_green = sns.dark_palette('green', n_colors=numberOfOrbitsPerManifolds)
@@ -72,14 +73,23 @@ for orbit_type in config.keys():
 
         plt.xlim(xlim)
         plt.ylim(ylim)
+        time_text = ax.text(0.01, 0.01, s='', transform=ax.transAxes, size=22)
 
-        massParameter = 0.0121505810173
+        EARTH_GRAVITATIONAL_PARAMETER = 3.986004418E14
+        SUN_GRAVITATIONAL_PARAMETER = 1.32712440018e20
+        MOON_GRAVITATIONAL_PARAMETER = SUN_GRAVITATIONAL_PARAMETER / (328900.56 * (1.0 + 81.30059))
+        massParameter = MOON_GRAVITATIONAL_PARAMETER / (MOON_GRAVITATIONAL_PARAMETER + EARTH_GRAVITATIONAL_PARAMETER)
+
         C = float(config[orbit_type][orbit_name]['C'])
         x_range = np.arange(-2.0, 2.0, 0.001)
         y_range = np.arange(-2.0, 2.0, 0.001)
         X, Y = np.meshgrid(x_range, y_range)
         Z = cr3bp_velocity(X, Y, C)
-        plt.contourf(X, Y, Z, levels=[-1, 0], colors='grey')
+        plt.contourf(X, Y, Z, levels=[-1, 0], colors='grey', alpha=0.25)
+
+        title = 'C = ' + str(round(C, 3)) + \
+                ', T = ' + str(round(float(config[orbit_type][orbit_name]['T']), 3))
+        plt.title(title, size=30)
 
         phi = np.linspace(0, 2 * np.pi, 100)
         theta = np.linspace(0, np.pi, 100)
@@ -89,11 +99,18 @@ for orbit_type in config.keys():
             y_body = bodies[body]['r'] * np.outer(np.sin(phi), np.sin(theta)) + bodies[body]['y']
             plt.plot(x_body, y_body, color='black')
 
+        lagrange_points = load_lagrange_points_location()
+        for lagrange_point in ['L1', 'L2']:
+            ax.scatter(lagrange_points[lagrange_point]['x'],
+                       lagrange_points[lagrange_point]['y'], color='grey', marker='d', alpha=0.75)
+            ax.text(lagrange_points[lagrange_point]['x'],
+                    lagrange_points[lagrange_point]['y'], lagrange_point, size=16)
+
         anim = animation.FuncAnimation(fig, animate, init_func=init,
                                        frames=int(len(manifold_U_min.xs(1)['x'])*2), interval=1, blit=True)
 
-
         Writer = animation.writers['ffmpeg']
-        writer = Writer(fps=30, metadata=dict(artist='Koen Langemeijer'))#, bitrate=5000)
+        writer = Writer(fps=30, metadata=dict(artist='Koen Langemeijer'))
         anim.save(('../data/animations/' + orbit_name + '_xy_zoom.mp4'), writer=writer)
-        # plt.show()
+
+# plt.show()
