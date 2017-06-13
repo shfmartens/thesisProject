@@ -11,7 +11,7 @@ from load_data import load_orbit, load_manifold, load_bodies_location, load_lagr
 
 class ManifoldDisplay:
 
-    def __init__(self, config, orbit_type):
+    def __init__(self, config, orbit_type, folder):
         self.orbit = []
         self.manifold_S_plus, self.manifold_S_min, self.manifold_U_plus, self.manifold_U_min = [], [], [], []
         self.config = config
@@ -21,14 +21,15 @@ class ManifoldDisplay:
         self.figSize = (20, 20)
         self.titleSize = 20
         self.suptitleSize = 30
+        self.folder = folder
         orbit_names = sorted(list(self.config[self.orbitType].keys()))
 
         for orbit_name in orbit_names:
-            self.orbit.append(load_orbit('../data/' + orbit_name + '_final_orbit.txt'))
-            self.manifold_S_plus.append(load_manifold('../data/' + orbit_name + '_W_S_plus.txt'))
-            self.manifold_S_min.append(load_manifold('../data/' + orbit_name + '_W_S_min.txt'))
-            self.manifold_U_plus.append(load_manifold('../data/' + orbit_name + '_W_U_plus.txt'))
-            self.manifold_U_min.append(load_manifold('../data/' + orbit_name + '_W_U_min.txt'))
+            self.orbit.append(load_orbit('../data/' + folder + '/raw/' + orbit_name + '_final_orbit.txt'))
+            self.manifold_S_plus.append(load_manifold('../data/' + folder + '/raw/' + orbit_name + '_W_S_plus.txt'))
+            self.manifold_S_min.append(load_manifold('../data/' + folder + '/raw/' + orbit_name + '_W_S_min.txt'))
+            self.manifold_U_plus.append(load_manifold('../data/' + folder + '/raw/' + orbit_name + '_W_U_plus.txt'))
+            self.manifold_U_min.append(load_manifold('../data/' + folder + '/raw/' + orbit_name + '_W_U_min.txt'))
 
         self.lagrangePoints = load_lagrange_points_location()
         self.bodies = load_bodies_location()
@@ -102,7 +103,7 @@ class ManifoldDisplay:
         axarr[0, 0].set_aspect('equal')
         # axarr[0, 0].set_ylim(axarr[0, 0].get_zlim())
         f.suptitle(self.orbitType + ' subplots 2D', size=self.suptitleSize)
-        plt.savefig('../data/figures/' + self.orbitType + '_2d_' + axis_1 + '_' + axis_2 + '.png')
+        plt.savefig('../data/' + folder + '/figures/' + self.orbitType + '_2d_' + axis_1 + '_' + axis_2 + '.png')
         pass
 
     def show_3d_subplots(self):
@@ -165,7 +166,7 @@ class ManifoldDisplay:
         f.suptitle(self.orbitType + ' subplots 3D', size=self.suptitleSize)
         # axarr[0, 0].set_ylim(axarr[0, 0].get_xlim())
         # axarr[0, 0].set_zlim(axarr[0, 0].get_xlim())
-        plt.savefig('../data/figures/' + self.orbitType + "_3d_subplots.png")
+        plt.savefig('../data/' + folder + '/figures/' + self.orbitType + "_3d_subplots.png")
         pass
 
     def show_3d_plot(self):
@@ -196,11 +197,13 @@ class ManifoldDisplay:
         ax.set_xlabel('x')
         ax.set_ylabel('y')
         ax.set_zlabel('z')
-        ax.set_ylim(ax.get_zlim())
+        # ax.set_ylim(ax.get_zlim())
         ax.set_xlim([1, 1.2])
+        ax.set_ylim([-0.1, 0.1])
+        ax.set_zlim([-0.1, 0.1])
         ax.set_title(self.orbitType + ' plot 3D', size=self.suptitleSize)
         plt.legend()
-        plt.savefig('../data/figures/' + self.orbitType + "_3d_plot.png")
+        plt.savefig('../data/' + folder + '/figures/' + self.orbitType + "_3d_plot.png")
         pass
 
 
@@ -208,8 +211,10 @@ if __name__ == '__main__':
     with open('../config/config.json') as data_file:
         config = json.load(data_file)
 
+    folder = '1e-6'
+
     for orbit_type in config.keys():
-        manifold_display = ManifoldDisplay(config, orbit_type)
+        manifold_display = ManifoldDisplay(config, orbit_type, folder)
         manifold_display.show_2d_subplots('x', 'y')
         manifold_display.show_2d_subplots('y', 'z')
         manifold_display.show_2d_subplots('x', 'z')

@@ -51,8 +51,6 @@ with open("../config/config.json") as data_file:
 
 for orbit_type in config.keys():
     for orbit_name in config[orbit_type].keys():
-        # orbit_type = "halo"
-        # orbit_name = 'halo_4'
         print(orbit_name)
 
         numberOfOrbitsPerManifolds = 100
@@ -60,7 +58,6 @@ for orbit_type in config.keys():
         ylim = [-3, 3]
 
         fig = plt.figure(figsize=(20, 20))
-        # plt.rcParams['animation.ffmpeg_path'] = 'ffmpeg_sources/ffmpeg/ffmpeg'
         ax = plt.axes(xlim=(0, 2), ylim=(0, 100))
         numberOfOrbits = numberOfOrbitsPerManifolds * 4
         color_palette_green = sns.dark_palette('green', n_colors=numberOfOrbitsPerManifolds)

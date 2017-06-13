@@ -59,7 +59,8 @@ for orbit_type in config.keys():
         print(orbit_name)
 
         numberOfOrbitsPerManifolds = 100
-        # plt.rcParams['animation.ffmpeg_path'] = 'ffmpeg_sources/ffmpeg/ffmpeg'
+        # plt.rcParams['animation.ffmpeg_path'] = 'ffmpeg-git-20170607-64bit-static/ffmpeg'
+        # plt.rcParams['animation.codec'] = 'libx264'
 
         fig = plt.figure(figsize=(20, 20))
 
@@ -122,7 +123,7 @@ for orbit_type in config.keys():
                     lagrange_points[lagrange_point]['z'], lagrange_point, size=16)
 
         anim = animation.FuncAnimation(fig, animate, init_func=init,
-                                       frames=int(len(manifold_U_min.xs(1)['x'])*2), interval=1, blit=True)
+                                       frames=int(len(manifold_U_min.xs(1)['x'])/2), interval=1, blit=True)
 
         Writer = animation.writers['ffmpeg']
         writer = Writer(fps=30, metadata=dict(artist='Koen Langemeijer'))

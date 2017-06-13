@@ -67,9 +67,8 @@ with open("../config/config.json") as data_file:
 for orbit_type in config.keys():
     for orbit_name in config[orbit_type].keys():
         print(orbit_name)
-        
+
         numberOfOrbitsPerManifolds = 100
-        # plt.rcParams['animation.ffmpeg_path'] = 'ffmpeg_sources/ffmpeg/ffmpeg'
 
         fig = plt.figure(figsize=(20, 20))
         ax = fig.add_subplot(111, projection='3d')

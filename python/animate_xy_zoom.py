@@ -15,7 +15,7 @@ def init():
 def animate(i):
     for j, line in enumerate(lines):
         if j < numberOfOrbitsPerManifolds:
-            x = manifold_S_plus.xs(j +  1)['x'].tolist()
+            x = manifold_S_plus.xs(j + 1)['x'].tolist()
             y = manifold_S_plus.xs(j + 1)['y'].tolist()
         if numberOfOrbitsPerManifolds <= j < numberOfOrbitsPerManifolds * 2:
             x = manifold_S_min.xs(j - numberOfOrbitsPerManifolds + 1)['x'].tolist()
@@ -49,7 +49,7 @@ with open("../config/config.json") as data_file:
 for orbit_type in config.keys():
     for orbit_name in config[orbit_type].keys():
         print(orbit_name)
-        
+
         numberOfOrbitsPerManifolds = 100
         xlim = [0.5, 1.5]
         ylim = [-0.5, 0.5]
