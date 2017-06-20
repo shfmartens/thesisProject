@@ -33,7 +33,7 @@ def animate(i):
         if numberOfOrbitsPerManifolds * 3 <= j:
             x = manifold_U_min.xs(j - numberOfOrbitsPerManifolds * 3 + 1)['x'].tolist()
             y = manifold_U_min.xs(j - numberOfOrbitsPerManifolds * 3 + 1)['y'].tolist()
-            z = manifold_U_min.xs(j - numberOfOrbitsPerManifolds * 3 + 1)['y'].tolist()
+            z = manifold_U_min.xs(j - numberOfOrbitsPerManifolds * 3 + 1)['z'].tolist()
         line.set_data(x[:i], y[:i])
         line.set_3d_properties(z[:i])
     try:
@@ -50,16 +50,18 @@ def cr3bp_velocity(x_loc, y_loc, c):
     v = x_loc ** 2 + y_loc ** 2 + 2 * (1 - massParameter) / r_1 + 2 * massParameter / r_2 - c
     return v
 
+
 with open("../config/config.json") as data_file:
     config = json.load(data_file)
 
+# folder = '1e-6'
 
 for orbit_type in config.keys():
     for orbit_name in config[orbit_type].keys():
         print(orbit_name)
 
         numberOfOrbitsPerManifolds = 100
-        # plt.rcParams['animation.ffmpeg_path'] = 'ffmpeg-git-20170607-64bit-static/ffmpeg'
+        plt.rcParams['animation.ffmpeg_path'] = 'ffmpeg-git-20170607-64bit-static/ffmpeg'
         # plt.rcParams['animation.codec'] = 'libx264'
 
         fig = plt.figure(figsize=(20, 20))
@@ -83,10 +85,10 @@ for orbit_type in config.keys():
         lines.extend([ax.plot([], [], color=color_palette_red[idx])[0] for idx in range(numberOfOrbitsPerManifolds)])
         lines.extend([ax.plot([], [], color=color_palette_red[idx])[0] for idx in range(numberOfOrbitsPerManifolds)])
 
-        manifold_S_plus = load_manifold('../data/' + orbit_name + '_W_S_plus.txt')
-        manifold_S_min = load_manifold('../data/' + orbit_name + '_W_S_min.txt')
-        manifold_U_plus = load_manifold('../data/' + orbit_name + '_W_U_plus.txt')
-        manifold_U_min = load_manifold('../data/' + orbit_name + '_W_U_min.txt')
+        manifold_S_plus = load_manifold('../data/raw/' + orbit_name + '_W_S_plus.txt')
+        manifold_S_min = load_manifold('../data/raw/' + orbit_name + '_W_S_min.txt')
+        manifold_U_plus = load_manifold('../data/raw/' + orbit_name + '_W_U_plus.txt')
+        manifold_U_min = load_manifold('../data/raw/' + orbit_name + '_W_U_min.txt')
 
         EARTH_GRAVITATIONAL_PARAMETER = 3.986004418E14
         SUN_GRAVITATIONAL_PARAMETER = 1.32712440018e20
@@ -122,8 +124,15 @@ for orbit_type in config.keys():
                     lagrange_points[lagrange_point]['y'],
                     lagrange_points[lagrange_point]['z'], lagrange_point, size=16)
 
+        numberOfFrames = 0
+        for index in range(1, numberOfOrbitsPerManifolds + 1):
+            numberOfFrames = max(numberOfFrames, len(manifold_S_plus.xs(index)['x']))
+            numberOfFrames = max(numberOfFrames, len(manifold_S_min.xs(index)['x']))
+            numberOfFrames = max(numberOfFrames, len(manifold_U_plus.xs(index)['x']))
+            numberOfFrames = max(numberOfFrames, len(manifold_U_min.xs(index)['x']))
+
         anim = animation.FuncAnimation(fig, animate, init_func=init,
-                                       frames=int(len(manifold_U_min.xs(1)['x'])/2), interval=1, blit=True)
+                                       frames=int(numberOfFrames), interval=1, blit=True)
 
         Writer = animation.writers['ffmpeg']
         writer = Writer(fps=30, metadata=dict(artist='Koen Langemeijer'))

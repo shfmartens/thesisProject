@@ -11,7 +11,7 @@ from load_data import load_orbit, load_manifold, load_bodies_location, load_lagr
 
 class ManifoldDisplay:
 
-    def __init__(self, config, orbit_type, folder):
+    def __init__(self, config, orbit_type):
         self.orbit = []
         self.manifold_S_plus, self.manifold_S_min, self.manifold_U_plus, self.manifold_U_min = [], [], [], []
         self.config = config
@@ -21,15 +21,14 @@ class ManifoldDisplay:
         self.figSize = (20, 20)
         self.titleSize = 20
         self.suptitleSize = 30
-        self.folder = folder
         orbit_names = sorted(list(self.config[self.orbitType].keys()))
 
         for orbit_name in orbit_names:
-            self.orbit.append(load_orbit('../data/' + folder + '/raw/' + orbit_name + '_final_orbit.txt'))
-            self.manifold_S_plus.append(load_manifold('../data/' + folder + '/raw/' + orbit_name + '_W_S_plus.txt'))
-            self.manifold_S_min.append(load_manifold('../data/' + folder + '/raw/' + orbit_name + '_W_S_min.txt'))
-            self.manifold_U_plus.append(load_manifold('../data/' + folder + '/raw/' + orbit_name + '_W_U_plus.txt'))
-            self.manifold_U_min.append(load_manifold('../data/' + folder + '/raw/' + orbit_name + '_W_U_min.txt'))
+            self.orbit.append(load_orbit('../data/raw/' + orbit_name + '_final_orbit.txt'))
+            self.manifold_S_plus.append(load_manifold('../data/raw/' + orbit_name + '_W_S_plus.txt'))
+            self.manifold_S_min.append(load_manifold('../data/raw/' + orbit_name + '_W_S_min.txt'))
+            self.manifold_U_plus.append(load_manifold('../data/raw/' + orbit_name + '_W_U_plus.txt'))
+            self.manifold_U_min.append(load_manifold('../data/raw/' + orbit_name + '_W_U_min.txt'))
 
         self.lagrangePoints = load_lagrange_points_location()
         self.bodies = load_bodies_location()
@@ -56,18 +55,19 @@ class ManifoldDisplay:
             row = int((idx - idx % nr_columns) / nr_columns)
 
             # Manifold
+            # end_orbits = 10
             for manifold_orbit_number in range(1, self.numberOfManifolds+1):
-                axarr[row, column].plot(self.manifold_S_plus[idx].xs(manifold_orbit_number)[axis_1],
-                                        self.manifold_S_plus[idx].xs(manifold_orbit_number)[axis_2],
+                axarr[row, column].plot(self.manifold_S_plus[idx].xs(manifold_orbit_number)[axis_1],#.head(end_orbits),
+                                        self.manifold_S_plus[idx].xs(manifold_orbit_number)[axis_2],#.head(end_orbits),
                                         color=color_palette_green[manifold_orbit_number - 1])
-                axarr[row, column].plot(self.manifold_S_min[idx].xs(manifold_orbit_number)[axis_1],
-                                        self.manifold_S_min[idx].xs(manifold_orbit_number)[axis_2],
+                axarr[row, column].plot(self.manifold_S_min[idx].xs(manifold_orbit_number)[axis_1],#.head(end_orbits),
+                                        self.manifold_S_min[idx].xs(manifold_orbit_number)[axis_2],#.head(end_orbits),
                                         color=color_palette_green[manifold_orbit_number - 1])
-                axarr[row, column].plot(self.manifold_U_plus[idx].xs(manifold_orbit_number)[axis_1],
-                                        self.manifold_U_plus[idx].xs(manifold_orbit_number)[axis_2],
+                axarr[row, column].plot(self.manifold_U_plus[idx].xs(manifold_orbit_number)[axis_1],#.head(end_orbits),
+                                        self.manifold_U_plus[idx].xs(manifold_orbit_number)[axis_2],#.head(end_orbits),
                                         color=color_palette_red[manifold_orbit_number - 1])
-                axarr[row, column].plot(self.manifold_U_min[idx].xs(manifold_orbit_number)[axis_1],
-                                        self.manifold_U_min[idx].xs(manifold_orbit_number)[axis_2],
+                axarr[row, column].plot(self.manifold_U_min[idx].xs(manifold_orbit_number)[axis_1],#.head(end_orbits),
+                                        self.manifold_U_min[idx].xs(manifold_orbit_number)[axis_2],#.head(end_orbits),
                                         color=color_palette_red[manifold_orbit_number - 1])
 
             # Orbit
@@ -103,7 +103,7 @@ class ManifoldDisplay:
         axarr[0, 0].set_aspect('equal')
         # axarr[0, 0].set_ylim(axarr[0, 0].get_zlim())
         f.suptitle(self.orbitType + ' subplots 2D', size=self.suptitleSize)
-        plt.savefig('../data/' + folder + '/figures/' + self.orbitType + '_2d_' + axis_1 + '_' + axis_2 + '.png')
+        plt.savefig('../data/figures/' + self.orbitType + '_2d_' + axis_1 + '_' + axis_2 + '.png')
         pass
 
     def show_3d_subplots(self):
@@ -120,22 +120,23 @@ class ManifoldDisplay:
             row = int((idx - idx % nr_columns) / nr_columns)
 
             # Manifold
+            end_orbits = 150
             for manifold_orbit_number in range(1, self.numberOfManifolds+1):
-                axarr[row, column].plot(self.manifold_S_plus[idx].xs(manifold_orbit_number)['x'],
-                                        self.manifold_S_plus[idx].xs(manifold_orbit_number)['y'],
-                                        self.manifold_S_plus[idx].xs(manifold_orbit_number)['z'],
+                axarr[row, column].plot(self.manifold_S_plus[idx].xs(manifold_orbit_number)['x'],#.head(end_orbits),
+                                        self.manifold_S_plus[idx].xs(manifold_orbit_number)['y'],#.head(end_orbits),
+                                        self.manifold_S_plus[idx].xs(manifold_orbit_number)['z'],#.head(end_orbits),
                                         color=color_palette_green[manifold_orbit_number - 1])
-                axarr[row, column].plot(self.manifold_S_min[idx].xs(manifold_orbit_number)['x'],
-                                        self.manifold_S_min[idx].xs(manifold_orbit_number)['y'],
-                                        self.manifold_S_min[idx].xs(manifold_orbit_number)['z'],
+                axarr[row, column].plot(self.manifold_S_min[idx].xs(manifold_orbit_number)['x'],#.head(end_orbits),
+                                        self.manifold_S_min[idx].xs(manifold_orbit_number)['y'],#.head(end_orbits),
+                                        self.manifold_S_min[idx].xs(manifold_orbit_number)['z'],#.head(end_orbits),
                                         color=color_palette_green[manifold_orbit_number - 1])
-                axarr[row, column].plot(self.manifold_U_plus[idx].xs(manifold_orbit_number)['x'],
-                                        self.manifold_U_plus[idx].xs(manifold_orbit_number)['y'],
-                                        self.manifold_U_plus[idx].xs(manifold_orbit_number)['z'],
+                axarr[row, column].plot(self.manifold_U_plus[idx].xs(manifold_orbit_number)['x'],#.head(end_orbits),
+                                        self.manifold_U_plus[idx].xs(manifold_orbit_number)['y'],#.head(end_orbits),
+                                        self.manifold_U_plus[idx].xs(manifold_orbit_number)['z'],#.head(end_orbits),
                                         color=color_palette_red[manifold_orbit_number - 1])
-                axarr[row, column].plot(self.manifold_U_min[idx].xs(manifold_orbit_number)['x'],
-                                        self.manifold_U_min[idx].xs(manifold_orbit_number)['y'],
-                                        self.manifold_U_min[idx].xs(manifold_orbit_number)['z'],
+                axarr[row, column].plot(self.manifold_U_min[idx].xs(manifold_orbit_number)['x'],#.head(end_orbits),
+                                        self.manifold_U_min[idx].xs(manifold_orbit_number)['y'],#.head(end_orbits),
+                                        self.manifold_U_min[idx].xs(manifold_orbit_number)['z'],#.head(end_orbits),
                                         color=color_palette_red[manifold_orbit_number - 1])
 
             # Orbit
@@ -159,14 +160,78 @@ class ManifoldDisplay:
             title = 'C = ' + str(round(float(config[self.orbitType][self.orbitType + '_' + str(idx + 1)]['C']), 3)) + \
                     ', T = ' + str(round(float(config[self.orbitType][self.orbitType + '_' + str(idx + 1)]['T']), 3))
             axarr[row, column].set_title(title, size=self.titleSize)
-            # axarr[row, column].set_xlim([0.8, 1.2])
-            # axarr[row, column].set_ylim([-0.2, 0.2])
-            # axarr[row, column].set_zlim([-0.2, 0.2])
+            axarr[row, column].set_xlim([0.8, 1.2])
+            axarr[row, column].set_ylim([-0.2, 0.2])
+            axarr[row, column].set_zlim([-0.2, 0.2])
 
         f.suptitle(self.orbitType + ' subplots 3D', size=self.suptitleSize)
         # axarr[0, 0].set_ylim(axarr[0, 0].get_xlim())
         # axarr[0, 0].set_zlim(axarr[0, 0].get_xlim())
-        plt.savefig('../data/' + folder + '/figures/' + self.orbitType + "_3d_subplots.png")
+        plt.savefig('../data/figures/' + self.orbitType + "_3d_subplots.png")
+        pass
+
+
+    def show_3d_subplots_head(self, end_orbits):
+        color_palette_green = sns.dark_palette('green', n_colors=self.numberOfManifolds)
+        color_palette_red = sns.dark_palette('red', n_colors=self.numberOfManifolds)
+
+        nr_rows = int(np.ceil(np.sqrt(len(self.orbit))))
+        nr_columns = int(np.ceil(len(self.orbit) / nr_rows))
+
+        f, axarr = plt.subplots(nr_rows, nr_columns, figsize=self.figSize, subplot_kw={'projection': '3d'})
+
+        for idx, orbit in enumerate(self.orbit):
+            column = idx % nr_columns
+            row = int((idx - idx % nr_columns) / nr_columns)
+
+            # Manifold
+            for manifold_orbit_number in range(1, self.numberOfManifolds+1):
+                axarr[row, column].plot(self.manifold_S_plus[idx].xs(manifold_orbit_number)['x'].head(end_orbits),
+                                        self.manifold_S_plus[idx].xs(manifold_orbit_number)['y'].head(end_orbits),
+                                        self.manifold_S_plus[idx].xs(manifold_orbit_number)['z'].head(end_orbits),
+                                        color=color_palette_green[manifold_orbit_number - 1])
+                axarr[row, column].plot(self.manifold_S_min[idx].xs(manifold_orbit_number)['x'].head(end_orbits),
+                                        self.manifold_S_min[idx].xs(manifold_orbit_number)['y'].head(end_orbits),
+                                        self.manifold_S_min[idx].xs(manifold_orbit_number)['z'].head(end_orbits),
+                                        color=color_palette_green[manifold_orbit_number - 1])
+                axarr[row, column].plot(self.manifold_U_plus[idx].xs(manifold_orbit_number)['x'].head(end_orbits),
+                                        self.manifold_U_plus[idx].xs(manifold_orbit_number)['y'].head(end_orbits),
+                                        self.manifold_U_plus[idx].xs(manifold_orbit_number)['z'].head(end_orbits),
+                                        color=color_palette_red[manifold_orbit_number - 1])
+                axarr[row, column].plot(self.manifold_U_min[idx].xs(manifold_orbit_number)['x'].head(end_orbits),
+                                        self.manifold_U_min[idx].xs(manifold_orbit_number)['y'].head(end_orbits),
+                                        self.manifold_U_min[idx].xs(manifold_orbit_number)['z'].head(end_orbits),
+                                        color=color_palette_red[manifold_orbit_number - 1])
+
+            # Orbit
+            axarr[row, column].plot(orbit['x'], orbit['y'], orbit['z'], color='darkblue')
+
+            # Lagrange points and bodies
+            for lagrange_point in self.lagrangePoints:
+                axarr[row, column].scatter(self.lagrangePoints[lagrange_point]['x'],
+                                           self.lagrangePoints[lagrange_point]['y'],
+                                           self.lagrangePoints[lagrange_point]['z'],
+                                           color='grey')
+
+            phi = np.linspace(0, 2 * np.pi, 100)
+            theta = np.linspace(0, np.pi, 100)
+            for body in self.bodies:
+                x = self.bodies[body]['r'] * np.outer(np.cos(phi), np.sin(theta)) + self.bodies[body]['x']
+                y = self.bodies[body]['r'] * np.outer(np.sin(phi), np.sin(theta)) + self.bodies[body]['y']
+                z = self.bodies[body]['r'] * np.outer(np.sin(phi), np.sin(theta)) + self.bodies[body]['z']
+                axarr[row, column].plot_surface(x, y, z, color='black')
+
+            title = 'C = ' + str(round(float(config[self.orbitType][self.orbitType + '_' + str(idx + 1)]['C']), 3)) + \
+                    ', T = ' + str(round(float(config[self.orbitType][self.orbitType + '_' + str(idx + 1)]['T']), 3))
+            axarr[row, column].set_title(title, size=self.titleSize)
+            axarr[row, column].set_xlim([0.8, 1.2])
+            axarr[row, column].set_ylim([-0.2, 0.2])
+            axarr[row, column].set_zlim([-0.2, 0.2])
+
+        f.suptitle(self.orbitType + ' subplots 3D', size=self.suptitleSize)
+        # axarr[0, 0].set_ylim(axarr[0, 0].get_xlim())
+        # axarr[0, 0].set_zlim(axarr[0, 0].get_xlim())
+        plt.savefig('../data/figures/' + self.orbitType + "_3d_subplots_" + str(end_orbits) + ".png")
         pass
 
     def show_3d_plot(self):
@@ -203,7 +268,7 @@ class ManifoldDisplay:
         ax.set_zlim([-0.1, 0.1])
         ax.set_title(self.orbitType + ' plot 3D', size=self.suptitleSize)
         plt.legend()
-        plt.savefig('../data/' + folder + '/figures/' + self.orbitType + "_3d_plot.png")
+        plt.savefig('../data/figures/' + self.orbitType + "_3d_plot.png")
         pass
 
 
@@ -211,14 +276,13 @@ if __name__ == '__main__':
     with open('../config/config.json') as data_file:
         config = json.load(data_file)
 
-    folder = '1e-6'
-
     for orbit_type in config.keys():
-        manifold_display = ManifoldDisplay(config, orbit_type, folder)
+        manifold_display = ManifoldDisplay(config, orbit_type)
         manifold_display.show_2d_subplots('x', 'y')
         manifold_display.show_2d_subplots('y', 'z')
         manifold_display.show_2d_subplots('x', 'z')
         manifold_display.show_3d_subplots()
+        manifold_display.show_3d_subplots_head(100)
         manifold_display.show_3d_plot()
 
     # plt.show()

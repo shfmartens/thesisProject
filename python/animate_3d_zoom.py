@@ -18,34 +18,50 @@ def init():
 
 
 def animate(i):
-    for j, line in enumerate(lines):
-        if j < numberOfOrbitsPerManifolds:
-            x = manifold_S_plus.xs(j + 1)['x'].tolist()
-            y = manifold_S_plus.xs(j + 1)['y'].tolist()
-            z = manifold_S_plus.xs(j + 1)['z'].tolist()
-        if numberOfOrbitsPerManifolds <= j < numberOfOrbitsPerManifolds * 2:
-            x = manifold_S_min.xs(j - numberOfOrbitsPerManifolds + 1)['x'].tolist()
-            y = manifold_S_min.xs(j - numberOfOrbitsPerManifolds + 1)['y'].tolist()
-            z = manifold_S_min.xs(j - numberOfOrbitsPerManifolds + 1)['z'].tolist()
-        if numberOfOrbitsPerManifolds * 2 <= j < numberOfOrbitsPerManifolds * 3:
-            x = manifold_U_plus.xs(j - numberOfOrbitsPerManifolds * 2 + 1)['x'].tolist()
-            y = manifold_U_plus.xs(j - numberOfOrbitsPerManifolds * 2 + 1)['y'].tolist()
-            z = manifold_U_plus.xs(j - numberOfOrbitsPerManifolds * 2 + 1)['z'].tolist()
-        if numberOfOrbitsPerManifolds * 3 <= j:
-            x = manifold_U_min.xs(j - numberOfOrbitsPerManifolds * 3 + 1)['x'].tolist()
-            y = manifold_U_min.xs(j - numberOfOrbitsPerManifolds * 3 + 1)['y'].tolist()
-            z = manifold_U_min.xs(j - numberOfOrbitsPerManifolds * 3 + 1)['y'].tolist()
+    if i > 0:
+        for j, line in enumerate(lines):
+            if j < numberOfOrbitsPerManifolds:
+                x = manifold_S_plus.xs(j + 1)['x'].tolist()
+                y = manifold_S_plus.xs(j + 1)['y'].tolist()
+                z = manifold_S_plus.xs(j + 1)['z'].tolist()
 
-        for k in range(len(x)):
-            if x[k] < 0.5 or x[k] > 1.5 or (y[k] or z[k]) < -0.5 or (y[k] or z[k]) > 0.5:
-                x[k] = pylab.NaN
-                y[k] = pylab.NaN
-                z[k] = pylab.NaN
-            else:
-                pass
+                line.set_data(x[:i], y[:i])
+                line.set_3d_properties(z[:i])
 
-        line.set_data(x[:i], y[:i])
-        line.set_3d_properties(z[:i])
+            if numberOfOrbitsPerManifolds <= j < numberOfOrbitsPerManifolds * 2:
+                x = manifold_S_min.xs(j - numberOfOrbitsPerManifolds + 1)['x'].tolist()
+                y = manifold_S_min.xs(j - numberOfOrbitsPerManifolds + 1)['y'].tolist()
+                z = manifold_S_min.xs(j - numberOfOrbitsPerManifolds + 1)['z'].tolist()
+
+                line.set_data(x[:i], y[:i])
+                line.set_3d_properties(z[:i])
+
+            if numberOfOrbitsPerManifolds * 2 <= j < numberOfOrbitsPerManifolds * 3:
+                x = manifold_U_plus.xs(j - numberOfOrbitsPerManifolds * 2 + 1)['x'].tolist()
+                y = manifold_U_plus.xs(j - numberOfOrbitsPerManifolds * 2 + 1)['y'].tolist()
+                z = manifold_U_plus.xs(j - numberOfOrbitsPerManifolds * 2 + 1)['z'].tolist()
+
+                line.set_data(x[:i], y[:i])
+                line.set_3d_properties(z[:i])
+
+            if numberOfOrbitsPerManifolds * 3 <= j:
+                x = manifold_U_min.xs(j - numberOfOrbitsPerManifolds * 3 + 1)['x'].tolist()
+                y = manifold_U_min.xs(j - numberOfOrbitsPerManifolds * 3 + 1)['y'].tolist()
+                z = manifold_U_min.xs(j - numberOfOrbitsPerManifolds * 3 + 1)['z'].tolist()
+
+                line.set_data(x[:i], y[:i])
+                line.set_3d_properties(z[:i])
+
+            for k in range(len(x)):
+                if x[k] < 0.5 or x[k] > 1.5 or (y[k] or z[k]) < -0.5 or (y[k] or z[k]) > 0.5:
+                    x[k] = pylab.NaN
+                    y[k] = pylab.NaN
+                    z[k] = pylab.NaN
+                else:
+                    pass
+
+    # ax.view_init(elev=10., azim=i)
+
     try:
         t = manifold_U_min.xs(1).index.values[i]
         time_text.set_text('t = {:.2f}'.format(round(abs(t), 2)))
@@ -60,9 +76,12 @@ def cr3bp_velocity(x_loc, y_loc, c):
     v = x_loc ** 2 + y_loc ** 2 + 2 * (1 - massParameter) / r_1 + 2 * massParameter / r_2 - c
     return v
 
+
 with open("../config/config.json") as data_file:
     config = json.load(data_file)
 
+orbit_type = 'near_vertical'
+orbit_name = 'near_vertical_1'
 
 for orbit_type in config.keys():
     for orbit_name in config[orbit_type].keys():
@@ -72,6 +91,7 @@ for orbit_type in config.keys():
 
         fig = plt.figure(figsize=(20, 20))
         ax = fig.add_subplot(111, projection='3d')
+        plt.rcParams['animation.ffmpeg_path'] = 'ffmpeg-git-20170607-64bit-static/ffmpeg'
 
         ax.set_xlim3d([0.5, 1.5])
         ax.set_xlabel('x')
@@ -82,19 +102,11 @@ for orbit_type in config.keys():
 
         time_text = ax.text(1, 1, 1, s='', transform=ax.transAxes, size=22)
 
-        numberOfOrbits = numberOfOrbitsPerManifolds * 4
-        color_palette_green = sns.dark_palette('green', n_colors=numberOfOrbitsPerManifolds)
-        color_palette_red = sns.dark_palette('red', n_colors=numberOfOrbitsPerManifolds)
-        lines = [ax.plot([], [], color=color_palette_green[idx])[0] for idx in range(numberOfOrbitsPerManifolds)]
-        lines.extend([ax.plot([], [], color=color_palette_green[idx])[0] for idx in range(numberOfOrbitsPerManifolds)])
-        lines.extend([ax.plot([], [], color=color_palette_red[idx])[0] for idx in range(numberOfOrbitsPerManifolds)])
-        lines.extend([ax.plot([], [], color=color_palette_red[idx])[0] for idx in range(numberOfOrbitsPerManifolds)])
-
-        orbit = load_orbit('../data/' + orbit_name + '_final_orbit.txt')
-        manifold_S_plus = load_manifold('../data/' + orbit_name + '_W_S_plus.txt')
-        manifold_S_min = load_manifold('../data/' + orbit_name + '_W_S_min.txt')
-        manifold_U_plus = load_manifold('../data/' + orbit_name + '_W_U_plus.txt')
-        manifold_U_min = load_manifold('../data/' + orbit_name + '_W_U_min.txt')
+        orbit = load_orbit('../data/raw/' + orbit_name + '_final_orbit.txt')
+        manifold_S_plus = load_manifold('../data/raw/' + orbit_name + '_W_S_plus.txt')
+        manifold_S_min = load_manifold('../data/raw/' + orbit_name + '_W_S_min.txt')
+        manifold_U_plus = load_manifold('../data/raw/' + orbit_name + '_W_U_plus.txt')
+        manifold_U_min = load_manifold('../data/raw/' + orbit_name + '_W_U_min.txt')
 
         plt.plot(orbit['x'], orbit['y'], orbit['z'], color='blue')
 
@@ -132,8 +144,23 @@ for orbit_type in config.keys():
                     lagrange_points[lagrange_point]['y'],
                     lagrange_points[lagrange_point]['z'], lagrange_point, size=16)
 
+        numberOfOrbits = numberOfOrbitsPerManifolds * 4
+        color_palette_green = sns.dark_palette('green', n_colors=numberOfOrbitsPerManifolds)
+        color_palette_red = sns.dark_palette('red', n_colors=numberOfOrbitsPerManifolds)
+        lines = [ax.plot(manifold_S_plus.xs(idx + 1)['x'].tolist()[:1], manifold_S_plus.xs(idx + 1)['y'].tolist()[:1], manifold_S_plus.xs(idx + 1)['z'].tolist()[:1], color=color_palette_green[idx])[0] for idx in range(numberOfOrbitsPerManifolds)]
+        lines.extend([ax.plot(manifold_S_min.xs(idx + 1)['x'].tolist()[:1], manifold_S_min.xs(idx + 1)['y'].tolist()[:1], manifold_S_min.xs(idx + 1)['z'].tolist()[:1], color=color_palette_green[idx])[0] for idx in range(numberOfOrbitsPerManifolds)])
+        lines.extend([ax.plot(manifold_U_plus.xs(idx + 1)['x'].tolist()[:1], manifold_U_plus.xs(idx + 1)['y'].tolist()[:1], manifold_U_plus.xs(idx + 1)['z'].tolist()[:1], color=color_palette_red[idx])[0] for idx in range(numberOfOrbitsPerManifolds)])
+        lines.extend([ax.plot(manifold_U_min.xs(idx + 1)['x'].tolist()[:1], manifold_U_min.xs(idx + 1)['y'].tolist()[:1], manifold_U_min.xs(idx + 1)['z'].tolist()[:1], color=color_palette_red[idx])[0] for idx in range(numberOfOrbitsPerManifolds)])
+
+        numberOfFrames = 0
+        for index in range(1, numberOfOrbitsPerManifolds + 1):
+            numberOfFrames = max(numberOfFrames, len(manifold_S_plus.xs(index)['x']))
+            numberOfFrames = max(numberOfFrames, len(manifold_S_min.xs(index)['x']))
+            numberOfFrames = max(numberOfFrames, len(manifold_U_plus.xs(index)['x']))
+            numberOfFrames = max(numberOfFrames, len(manifold_U_min.xs(index)['x']))
+
         anim = animation.FuncAnimation(fig, animate, init_func=init,
-                                       frames=int(len(manifold_U_min.xs(1)['x'])*2), interval=1, blit=True)
+                                       frames=int(numberOfFrames), interval=1, blit=True)
 
         Writer = animation.writers['ffmpeg']
         writer = Writer(fps=30, metadata=dict(artist='Koen Langemeijer'))

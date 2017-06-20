@@ -45,6 +45,7 @@ def cr3bp_velocity(x_loc, y_loc, c):
     v = x_loc ** 2 + y_loc ** 2 + 2 * (1 - massParameter) / r_1 + 2 * massParameter / r_2 - c
     return v
 
+
 with open("../config/config.json") as data_file:
     config = json.load(data_file)
 
@@ -59,6 +60,8 @@ for orbit_type in config.keys():
 
         fig = plt.figure(figsize=(20, 20))
         ax = plt.axes(xlim=(0, 2), ylim=(0, 100))
+        plt.rcParams['animation.ffmpeg_path'] = 'ffmpeg-git-20170607-64bit-static/ffmpeg'
+
         numberOfOrbits = numberOfOrbitsPerManifolds * 4
         color_palette_green = sns.dark_palette('green', n_colors=numberOfOrbitsPerManifolds)
         color_palette_red = sns.dark_palette('red', n_colors=numberOfOrbitsPerManifolds)
@@ -67,10 +70,10 @@ for orbit_type in config.keys():
         lines.extend([plt.plot([], [], color=color_palette_red[idx])[0] for idx in range(numberOfOrbitsPerManifolds)])
         lines.extend([plt.plot([], [], color=color_palette_red[idx])[0] for idx in range(numberOfOrbitsPerManifolds)])
 
-        manifold_S_plus = load_manifold('../data/' + orbit_name + '_W_S_plus.txt')
-        manifold_S_min = load_manifold('../data/' + orbit_name + '_W_S_min.txt')
-        manifold_U_plus = load_manifold('../data/' + orbit_name + '_W_U_plus.txt')
-        manifold_U_min = load_manifold('../data/' + orbit_name + '_W_U_min.txt')
+        manifold_S_plus = load_manifold('../data/raw/' + orbit_name + '_W_S_plus.txt')
+        manifold_S_min = load_manifold('../data/raw/' + orbit_name + '_W_S_min.txt')
+        manifold_U_plus = load_manifold('../data/raw/' + orbit_name + '_W_U_plus.txt')
+        manifold_U_min = load_manifold('../data/raw/' + orbit_name + '_W_U_min.txt')
 
         plt.xlim(xlim)
         plt.ylim(ylim)

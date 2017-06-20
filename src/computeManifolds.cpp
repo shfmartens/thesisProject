@@ -16,7 +16,8 @@
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
-
+//#include <stdio.h>
+//#include <sqlite/sqlite3.h>
 
 // Declare mass parameter.
 Eigen::Vector3d thrustVector;
@@ -28,7 +29,7 @@ double thrustAcceleration = 0.0;
 void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd initialStateVector,
                        const double primaryGravitationalParameter = tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER,
                        const double secondaryGravitationalParameter = tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER,
-                       double displacementFromOrbit = 1.0e-5, double maxDeviationFromPeriodicOrbit = 1.0e-8,
+                       double displacementFromOrbit = 1.0e-6, double maxDeviationFromPeriodicOrbit = 1.0e-8,
                        int numberOfManifoldOrbits = 100, int saveEveryNthIntegrationStep = 100,
                        double maximumIntegrationTimeManifoldOrbits = 50.0)
 {
@@ -115,8 +116,8 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
 //    write_json("config2.json", jsontree);
 
     // Write initial state to file
-    remove(("../data/" + selected_orbit + "_final_orbit.txt").c_str());
-    ofstream textFile(("../data/" + selected_orbit + "_final_orbit.txt").c_str());
+    remove(("../data/raw/" + selected_orbit + "_final_orbit.txt").c_str());
+    ofstream textFile(("../data/raw/" + selected_orbit + "_final_orbit.txt").c_str());
     textFile.precision(14);
     textFile << left << fixed << setw(20) << 0.0 << setw(20)
              << initialStateVectorInclSTM(0) << setw(20) << initialStateVectorInclSTM(1) << setw(20)
@@ -178,11 +179,19 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
                         stateVectorInclSTM(10), stateVectorInclSTM(16), stateVectorInclSTM(22), stateVectorInclSTM(28), stateVectorInclSTM(34), stateVectorInclSTM(40),
                         stateVectorInclSTM(11), stateVectorInclSTM(17),  stateVectorInclSTM(23), stateVectorInclSTM(29), stateVectorInclSTM(35), stateVectorInclSTM(41);
     cout << "\nMonodromy matrix:\n" << monodromyMatrix << "\n" << endl;
+
+//    Eigen::EigenSolver<Eigen::MatrixXd> eig(monodromyMatrix);
+//    cout << "Eigenvectors" << endl;
+//    cout << eig.eigenvectors() << endl;
+
     monodromyMatrix.transposeInPlace();
     cout << monodromyMatrix << "\n" << endl;
 
     // Compute eigenvectors of the monodromy matrix
     Eigen::EigenSolver<Eigen::MatrixXd> eig(monodromyMatrix);
+    cout << "Transposed Eigenvectors" << endl;
+    cout << eig.eigenvectors() << endl;
+
     Eigen::VectorXd eigenVector1 = eig.eigenvectors().real().col(0);
     Eigen::VectorXd eigenVector2 = eig.eigenvectors().real().col(1);
     cout << "Eigenvectors:\n" << eigenVector1 << endl << "\n" << eigenVector2 << "\n" << endl;
@@ -193,7 +202,8 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
 
     vector<double> offsetSigns = {1.0, -1.0, 1.0, -1.0};
     vector<Eigen::VectorXd> eigenVectors = {eigenVector2, eigenVector2, eigenVector1, eigenVector1};
-    vector<double> integrationDirections = {1.0, 1.0, -1.0, -1.0};
+//    vector<double> integrationDirections = {1.0, 1.0, -1.0, -1.0}0;
+    vector<double> integrationDirections = {-1.0, -1.0, 1.0, 1.0};
     vector<string> fileNames = {selected_orbit + "_W_S_plus.txt", selected_orbit + "_W_S_min.txt",
                                 selected_orbit + "_W_U_plus.txt", selected_orbit + "_W_U_min.txt"};
 
@@ -210,8 +220,8 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
         fileName = fileNames.at(manifoldNumber);
 
         ofstream textFile2;
-        remove(("../data/" + fileName).c_str());
-        textFile2.open(("../data/" + fileName).c_str());
+        remove(("../data/raw/" + fileName).c_str());
+        textFile2.open(("../data/raw/" + fileName).c_str());
         textFile2.precision(14);
 
         bool fullManifoldComputed = false;
