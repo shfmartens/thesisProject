@@ -1,3 +1,6 @@
+import matplotlib
+matplotlib.use('Agg') # Must be before importing matplotlib.pyplot or pylab!
+import matplotlib.pyplot as plt
 from matplotlib import pyplot as plt
 from matplotlib import animation
 import numpy as np
@@ -56,8 +59,11 @@ for orbit_type in config.keys():
         ylim = [-0.5, 0.5]
 
         fig = plt.figure(figsize=(20, 20))
-        plt.rcParams['animation.ffmpeg_path'] = 'ffmpeg_sources/ffmpeg/ffmpeg'
+        # plt.rcParams['animation.ffmpeg_path'] = 'ffmpeg_sources/ffmpeg/ffmpeg'
+        # plt.rcParams['animation.ffmpeg_path'] = '/usr/bin/ffmpeg'
         # plt.rcParams['animation.codec'] = 'libx264'
+
+        # matplotlib.rcParams['animation.ffmpeg_args'] = '-report'
         ax = plt.axes(xlim=(0, 2), ylim=(0, 100))
         numberOfOrbits = numberOfOrbitsPerManifolds * 4
         color_palette_green = sns.dark_palette('green', n_colors=numberOfOrbitsPerManifolds)
@@ -82,11 +88,12 @@ for orbit_type in config.keys():
         massParameter = MOON_GRAVITATIONAL_PARAMETER / (MOON_GRAVITATIONAL_PARAMETER + EARTH_GRAVITATIONAL_PARAMETER)
 
         C = float(config[orbit_type][orbit_name]['C'])
-        x_range = np.arange(-2.0, 2.0, 0.001)
-        y_range = np.arange(-2.0, 2.0, 0.001)
+        x_range = np.arange(0.5, 1.5, 0.001)
+        y_range = np.arange(-0.5, 0.5, 0.001)
         X, Y = np.meshgrid(x_range, y_range)
         Z = cr3bp_velocity(X, Y, C)
-        plt.contourf(X, Y, Z, levels=[-1, 0], colors='grey', alpha=0.25)
+        if Z.min() < 0:
+            plt.contourf(X, Y, Z, [Z.min(), 0], colors='black', alpha=0.05)
 
         title = 'C = ' + str(round(C, 3)) + \
                 ', T = ' + str(round(float(config[orbit_type][orbit_name]['T']), 3))
@@ -107,11 +114,19 @@ for orbit_type in config.keys():
             ax.text(lagrange_points[lagrange_point]['x'],
                     lagrange_points[lagrange_point]['y'], lagrange_point, size=16)
 
+        numberOfFrames = 0
+        for index in range(1, numberOfOrbitsPerManifolds + 1):
+            numberOfFrames = max(numberOfFrames, len(manifold_S_plus.xs(index)['x']))
+            numberOfFrames = max(numberOfFrames, len(manifold_S_min.xs(index)['x']))
+            numberOfFrames = max(numberOfFrames, len(manifold_U_plus.xs(index)['x']))
+            numberOfFrames = max(numberOfFrames, len(manifold_U_min.xs(index)['x']))
+
         anim = animation.FuncAnimation(fig, animate, init_func=init,
-                                       frames=int(len(manifold_U_min.xs(1)['x'])*2), interval=1, blit=True)
+                                       frames=int(numberOfFrames), interval=1, blit=True)
 
         Writer = animation.writers['ffmpeg']
         writer = Writer(fps=30, metadata=dict(artist='Koen Langemeijer'))
+        # writer = animation.FFMpegWriter(fps=30)
         anim.save(('../data/animations/' + orbit_name + '_xy_zoom.mp4'), writer=writer)
 
 # plt.show()

@@ -54,14 +54,13 @@ def cr3bp_velocity(x_loc, y_loc, c):
 with open("../config/config.json") as data_file:
     config = json.load(data_file)
 
-# folder = '1e-6'
 
 for orbit_type in config.keys():
     for orbit_name in config[orbit_type].keys():
         print(orbit_name)
 
         numberOfOrbitsPerManifolds = 100
-        plt.rcParams['animation.ffmpeg_path'] = 'ffmpeg-git-20170607-64bit-static/ffmpeg'
+        # plt.rcParams['animation.ffmpeg_path'] = 'ffmpeg-git-20170607-64bit-static/ffmpeg'
         # plt.rcParams['animation.codec'] = 'libx264'
 
         fig = plt.figure(figsize=(20, 20))
@@ -100,7 +99,8 @@ for orbit_type in config.keys():
         y_range = np.arange(-3.0, 3.0, 0.001)
         X, Y = np.meshgrid(x_range, y_range)
         Z = cr3bp_velocity(X, Y, C)
-        plt.contourf(X, Y, Z, 0, colors='grey', alpha=0.25)
+        if Z.min() < 0:
+            plt.contourf(X, Y, Z, 0, colors='black', alpha=0.05)
 
         title = 'C = ' + str(round(C, 3)) + \
                 ', T = ' + str(round(float(config[orbit_type][orbit_name]['T']), 3))

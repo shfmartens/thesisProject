@@ -82,11 +82,11 @@ for orbit_type in config.keys():
         ax = fig.add_subplot(111, projection='3d')
         # plt.rcParams['animation.ffmpeg_path'] = 'ffmpeg-git-20170607-64bit-static/ffmpeg'
 
-        ax.set_xlim3d([0.5, 1.5])
+        ax.set_xlim3d([1.1, 1.2])
         ax.set_xlabel('x')
-        ax.set_ylim3d([-0.5, 0.5])
+        ax.set_ylim3d([-0.05, 0.05])
         ax.set_ylabel('y')
-        ax.set_zlim3d([-0.5, 0.5])
+        ax.set_zlim3d([-0.05, 0.05])
         ax.set_zlabel('z')
 
         time_text = ax.text(1, 1, 1, s='', transform=ax.transAxes, size=22)
@@ -154,6 +154,6 @@ for orbit_type in config.keys():
 
         Writer = animation.writers['ffmpeg']
         writer = Writer(fps=30, metadata=dict(artist='Koen Langemeijer'))
-        anim.save(('../data/animations/' + orbit_name + '_3d_zoom.mp4'), writer=writer)
+        anim.save(('../data/animations/' + orbit_name + '_3d_zoom_close.mp4'), writer=writer)
 
 # plt.show()
