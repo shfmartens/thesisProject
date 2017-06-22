@@ -1,7 +1,7 @@
 from matplotlib import pyplot as plt
 from matplotlib import animation
 import numpy as np
-from load_data import load_orbit, load_manifold, load_bodies_location, load_lagrange_points_location
+from load_data import load_orbit, load_manifold, load_bodies_location, load_lagrange_points_location, cr3bp_velocity
 import matplotlib as mpl
 from mpl_toolkits.mplot3d import Axes3D
 import mpl_toolkits.mplot3d.axes3d as p3
@@ -44,13 +44,6 @@ def animate(i):
     return lines
 
 
-def cr3bp_velocity(x_loc, y_loc, c):
-    r_1 = np.sqrt((x_loc + massParameter) ** 2 + y_loc ** 2)
-    r_2 = np.sqrt((x_loc - 1 + massParameter) ** 2 + y_loc ** 2)
-    v = x_loc ** 2 + y_loc ** 2 + 2 * (1 - massParameter) / r_1 + 2 * massParameter / r_2 - c
-    return v
-
-
 with open("../config/config.json") as data_file:
     config = json.load(data_file)
 
@@ -88,11 +81,6 @@ for orbit_type in config.keys():
         manifold_S_min = load_manifold('../data/raw/' + orbit_name + '_W_S_min.txt')
         manifold_U_plus = load_manifold('../data/raw/' + orbit_name + '_W_U_plus.txt')
         manifold_U_min = load_manifold('../data/raw/' + orbit_name + '_W_U_min.txt')
-
-        EARTH_GRAVITATIONAL_PARAMETER = 3.986004418E14
-        SUN_GRAVITATIONAL_PARAMETER = 1.32712440018e20
-        MOON_GRAVITATIONAL_PARAMETER = SUN_GRAVITATIONAL_PARAMETER / (328900.56 * (1.0 + 81.30059))
-        massParameter = MOON_GRAVITATIONAL_PARAMETER / (MOON_GRAVITATIONAL_PARAMETER + EARTH_GRAVITATIONAL_PARAMETER)
 
         C = float(config[orbit_type][orbit_name]['C'])
         x_range = np.arange(-4.0, 2.0, 0.001)

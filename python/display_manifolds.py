@@ -9,7 +9,7 @@ import seaborn as sns
 from load_data import load_orbit, load_manifold, load_bodies_location, load_lagrange_points_location
 
 
-class ManifoldDisplay:
+class DisplayManifold:
 
     def __init__(self, config, orbit_type):
         self.orbit = []
@@ -277,7 +277,7 @@ if __name__ == '__main__':
         config = json.load(data_file)
 
     for orbit_type in config.keys():
-        manifold_display = ManifoldDisplay(config, orbit_type)
+        manifold_display = DisplayManifold(config, orbit_type)
         manifold_display.show_2d_subplots('x', 'y')
         manifold_display.show_2d_subplots('y', 'z')
         manifold_display.show_2d_subplots('x', 'z')

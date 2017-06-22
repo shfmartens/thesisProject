@@ -1,6 +1,6 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
-//#include <omp.h>
+#include <omp.h>
 #include "thesisProject/src/computeManifolds.h"
 
 
@@ -19,9 +19,9 @@ int main (){
 
         auto tree_initial_states = jsontree.get_child( orbit_type.first);
         cout << tree_initial_states.size() << endl;
-//        #pragma omp parallel num_threads(9)
+        #pragma omp parallel num_threads(9)
         {
-//            #pragma omp for
+            #pragma omp for
 //            for (auto selected_orbit : tree_initial_states) {
             for (int i=1; i<=tree_initial_states.size(); i++) {
 

@@ -180,10 +180,6 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
                         stateVectorInclSTM(11), stateVectorInclSTM(17),  stateVectorInclSTM(23), stateVectorInclSTM(29), stateVectorInclSTM(35), stateVectorInclSTM(41);
     cout << "\nMonodromy matrix:\n" << monodromyMatrix << "\n" << endl;
 
-//    Eigen::EigenSolver<Eigen::MatrixXd> eig(monodromyMatrix);
-//    cout << "Eigenvectors" << endl;
-//    cout << eig.eigenvectors() << endl;
-
     monodromyMatrix.transposeInPlace();
     cout << monodromyMatrix << "\n" << endl;
 
@@ -202,7 +198,6 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
 
     vector<double> offsetSigns = {1.0, -1.0, 1.0, -1.0};
     vector<Eigen::VectorXd> eigenVectors = {eigenVector2, eigenVector2, eigenVector1, eigenVector1};
-//    vector<double> integrationDirections = {1.0, 1.0, -1.0, -1.0}0;
     vector<double> integrationDirections = {-1.0, -1.0, 1.0, 1.0};
     vector<string> fileNames = {selected_orbit + "_W_S_plus.txt", selected_orbit + "_W_S_min.txt",
                                 selected_orbit + "_W_U_plus.txt", selected_orbit + "_W_U_min.txt"};
@@ -271,12 +266,11 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
                 currentTime = outputVector(42);
 
                 // Write every nth integration step to file.
-                if (count % saveEveryNthIntegrationStep == 0) {
+                if (count % saveEveryNthIntegrationStep == 0 or fullManifoldComputed) {
                     textFile2 << left << fixed << setw(20) << currentTime << setw(20)
                               << stateVectorInclSTM(0) << setw(20) << stateVectorInclSTM(1) << setw(20)
                               << stateVectorInclSTM(2) << setw(20) << stateVectorInclSTM(3) << setw(20)
                               << stateVectorInclSTM(4) << setw(20) << stateVectorInclSTM(5) << endl;
-
                 }
 
                 // Propagate to next time step.

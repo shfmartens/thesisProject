@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 
 def load_manifold(file_path):
@@ -48,6 +49,18 @@ def load_bodies_location():
     location_bodies = pd.DataFrame.from_dict(location_bodies)
     location_bodies.index = ['x', 'y', 'z', 'r']
     return location_bodies
+
+
+def cr3bp_velocity(x_loc, y_loc, c):
+    EARTH_GRAVITATIONAL_PARAMETER = 3.986004418E14
+    SUN_GRAVITATIONAL_PARAMETER = 1.32712440018e20
+    MOON_GRAVITATIONAL_PARAMETER = SUN_GRAVITATIONAL_PARAMETER / (328900.56 * (1.0 + 81.30059))
+    massParameter = MOON_GRAVITATIONAL_PARAMETER / (MOON_GRAVITATIONAL_PARAMETER + EARTH_GRAVITATIONAL_PARAMETER)
+
+    r_1 = np.sqrt((x_loc + massParameter) ** 2 + y_loc ** 2)
+    r_2 = np.sqrt((x_loc - 1 + massParameter) ** 2 + y_loc ** 2)
+    v = x_loc ** 2 + y_loc ** 2 + 2 * (1 - massParameter) / r_1 + 2 * massParameter / r_2 - c
+    return v
 
 
 if __name__ == "__main__":
