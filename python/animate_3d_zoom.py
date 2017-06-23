@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
 from matplotlib import pyplot as plt
 from matplotlib import animation
 import numpy as np
@@ -73,7 +75,7 @@ for orbit_type in config.keys():
 
         fig = plt.figure(figsize=(20, 20))
         ax = fig.add_subplot(111, projection='3d')
-        # plt.rcParams['animation.ffmpeg_path'] = 'ffmpeg-git-20170607-64bit-static/ffmpeg'
+        plt.rcParams['animation.ffmpeg_path'] = 'ffmpeg-git-20170607-64bit-static/ffmpeg'
 
         ax.set_xlim3d([0.5, 1.5])
         ax.set_xlabel('x')

@@ -1,4 +1,6 @@
 import json
+import matplotlib
+matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
 import matplotlib.pyplot as plt
 import pandas as pd
 from pandas.plotting import radviz
@@ -95,5 +97,6 @@ for orbit_type in config.keys():
                 plt.suptitle(orbit_name, size=22)
                 plt.tight_layout()
                 plt.subplots_adjust(top=0.85)
-                plt.savefig('../data/figures/' + orbit_name + "_poincare.png")
+                plt.savefig('../data/figures/poincare_' + orbit_name + ".png")
+                plt.close()
                 # plt.show()

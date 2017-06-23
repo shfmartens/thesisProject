@@ -52,7 +52,7 @@ for orbit_type in config.keys():
         ylim = [-0.5, 0.5]
 
         fig = plt.figure(figsize=(20, 20))
-        # plt.rcParams['animation.ffmpeg_path'] = 'ffmpeg_sources/ffmpeg/ffmpeg'
+        plt.rcParams['animation.ffmpeg_path'] = 'ffmpeg-git-20170607-64bit-static/ffmpeg'
         # plt.rcParams['animation.ffmpeg_path'] = '/usr/bin/ffmpeg'
         # plt.rcParams['animation.codec'] = 'libx264'
 

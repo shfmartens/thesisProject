@@ -1,4 +1,6 @@
-from matplotlib import pyplot as plt
+import matplotlib
+matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
+import matplotlib.pyplot as plt
 from matplotlib import animation
 import numpy as np
 from load_data import load_orbit, load_manifold, load_bodies_location, load_lagrange_points_location, cr3bp_velocity
@@ -53,7 +55,7 @@ for orbit_type in config.keys():
 
         fig = plt.figure(figsize=(20, 20))
         ax = plt.axes(xlim=(0, 2), ylim=(0, 100))
-        # plt.rcParams['animation.ffmpeg_path'] = 'ffmpeg-git-20170607-64bit-static/ffmpeg'
+        plt.rcParams['animation.ffmpeg_path'] = 'ffmpeg-git-20170607-64bit-static/ffmpeg'
 
         numberOfOrbits = numberOfOrbitsPerManifolds * 4
         color_palette_green = sns.dark_palette('green', n_colors=numberOfOrbitsPerManifolds)
