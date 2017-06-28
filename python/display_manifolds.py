@@ -8,7 +8,7 @@ import matplotlib as mpl
 from mpl_toolkits.mplot3d import Axes3D
 import seaborn as sns
 
-from load_data import load_orbit, load_manifold, load_bodies_location, load_lagrange_points_location
+from load_data import load_orbit, load_manifold, load_bodies_location, load_lagrange_points_location, cr3bp_velocity
 
 
 class DisplayManifold:
@@ -37,12 +37,6 @@ class DisplayManifold:
 
         sns.set_style("whitegrid")
         pass
-
-    def cr3bp_velocity(self, x, y, C):
-        r_1 = np.sqrt((x + self.massParameter) ** 2 + y ** 2)
-        r_2 = np.sqrt((x - 1 + self.massParameter) ** 2 + y ** 2)
-        V = x ** 2 + y ** 2 + 2 * (1 - self.massParameter) / r_1 + 2 * self.massParameter / r_2 - C
-        return V
 
     def show_2d_subplots(self, axis_1, axis_2):
         color_palette_green = sns.dark_palette('green', n_colors=self.numberOfManifolds)
@@ -94,7 +88,7 @@ class DisplayManifold:
                 x = np.arange(-2.0, 2.0, 0.1)
                 y = np.arange(-2.0, 2.0, 0.1)
                 X, Y = np.meshgrid(x, y)
-                Z = self.cr3bp_velocity(X, Y, C)
+                Z = cr3bp_velocity(X, Y, C)
                 axarr[row, column].contourf(X, Y, Z, levels=[-1, 0], colors='grey')
 
             title = 'C = ' + str(round(C, 3)) + \

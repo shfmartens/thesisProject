@@ -2,24 +2,23 @@ import numpy as np
 import pandas as pd
 import json
 import matplotlib
-matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
+# matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from mpl_toolkits.mplot3d import Axes3D
+from mpl_toolkits.axes_grid.inset_locator import inset_axes
 import seaborn as sns
 
-from load_data import load_orbit, load_manifold, load_bodies_location, load_lagrange_points_location
+from load_data import load_orbit, load_bodies_location, load_lagrange_points_location, cr3bp_velocity
 
 
-class DisplayManifold:
+class DisplayOrbits:
 
     def __init__(self, config, orbit_type):
         self.orbit = []
-        self.manifold_S_plus, self.manifold_S_min, self.manifold_U_plus, self.manifold_U_min = [], [], [], []
         self.config = config
         self.orbitType = orbit_type
         self.massParameter = 0.0121505810173
-        self.numberOfManifolds = 100
         self.figSize = (40, 40)
         self.titleSize = 20
         self.suptitleSize = 30
@@ -33,12 +32,6 @@ class DisplayManifold:
 
         sns.set_style("whitegrid")
         pass
-
-    def cr3bp_velocity(self, x, y, C):
-        r_1 = np.sqrt((x + self.massParameter) ** 2 + y ** 2)
-        r_2 = np.sqrt((x - 1 + self.massParameter) ** 2 + y ** 2)
-        V = x ** 2 + y ** 2 + 2 * (1 - self.massParameter) / r_1 + 2 * self.massParameter / r_2 - C
-        return V
 
     def show_2d_subplots(self, axis_1, axis_2):
         nr_rows = int(np.ceil(np.sqrt(len(self.orbit))))
@@ -64,7 +57,6 @@ class DisplayManifold:
                 x = self.bodies[body]['r'] * np.outer(np.cos(phi), np.sin(theta)) + self.bodies[body][axis_1]
                 y = self.bodies[body]['r'] * np.outer(np.sin(phi), np.sin(theta)) + self.bodies[body][axis_2]
                 axarr[row, column].plot(x, y, color='black')
-            axarr[row, column].set_aspect('equal')
 
             C = float(config[self.orbitType][self.orbitType + '_' + str(idx + 1)]['C'])
 
@@ -72,17 +64,17 @@ class DisplayManifold:
                 x = np.arange(-2.0, 2.0, 0.1)
                 y = np.arange(-2.0, 2.0, 0.1)
                 X, Y = np.meshgrid(x, y)
-                Z = self.cr3bp_velocity(X, Y, C)
+                Z = cr3bp_velocity(X, Y, C)
                 axarr[row, column].contourf(X, Y, Z, levels=[-1, 0], colors='grey')
 
             title = 'C = ' + str(round(C, 3)) + \
                     ', T = ' + str(round(float(config[self.orbitType][self.orbitType + '_' + str(idx + 1)]['T']), 3))
             axarr[row, column].set_title(title, size=self.titleSize)
 
-        axarr[0, 0].set_aspect('equal')
+        # axarr[0, 0].set_aspect('equal')
         # axarr[0, 0].set_ylim(axarr[0, 0].get_zlim())
         f.suptitle(self.orbitType + ' subplots 2D', size=self.suptitleSize)
-        plt.savefig('../data/figures/orbit_' + self.orbitType + '_2d_' + axis_1 + '_' + axis_2 + '.png')
+        plt.savefig('../data/figures/orbit_' + self.orbitType + '_2d_' + axis_1 + '_' + axis_2 + '4.png')
         pass
 
     def show_3d_subplots(self):
@@ -169,12 +161,12 @@ if __name__ == '__main__':
         config = json.load(data_file)
 
     for orbit_type in config.keys():
-        manifold_display = DisplayManifold(config, orbit_type)
-        manifold_display.show_2d_subplots('x', 'y')
-        manifold_display.show_2d_subplots('y', 'z')
-        manifold_display.show_2d_subplots('x', 'z')
-        manifold_display.show_3d_subplots()
-        manifold_display.show_3d_plot()
+        orbits_display = DisplayOrbits(config, orbit_type)
+        orbits_display.show_2d_subplots('x', 'y')
+        orbits_display.show_2d_subplots('y', 'z')
+        orbits_display.show_2d_subplots('x', 'z')
+        orbits_display.show_3d_subplots()
+        orbits_display.show_3d_plot()
 
     # plt.show()
 # plt.savefig('../data/figures/' + self.orbitType + "_3d_subplots.eps", format='eps')
