@@ -23,14 +23,19 @@ class DisplayManifold:
         self.figSize = (40, 40)
         self.titleSize = 20
         self.suptitleSize = 30
-        orbit_names = sorted(list(self.config[self.orbitType].keys()))
 
-        for orbit_name in orbit_names:
-            self.orbit.append(load_orbit('../data/raw/' + orbit_name + '_final_orbit.txt'))
-            self.manifold_S_plus.append(load_manifold('../data/raw/' + orbit_name + '_W_S_plus.txt'))
-            self.manifold_S_min.append(load_manifold('../data/raw/' + orbit_name + '_W_S_min.txt'))
-            self.manifold_U_plus.append(load_manifold('../data/raw/' + orbit_name + '_W_U_plus.txt'))
-            self.manifold_U_min.append(load_manifold('../data/raw/' + orbit_name + '_W_U_min.txt'))
+        orbit_ids = []
+        for orbit_id in list(self.config[self.orbitType].keys()):
+            ls = orbit_id.split('_')
+            orbit_ids.append(int(ls[2]))
+        orbit_ids = [self.orbitType + '_' + str(idx) for idx in sorted(orbit_ids)]
+
+        for orbit_id in orbit_ids:
+            self.orbit.append(load_orbit('../data/raw/' + orbit_id + '_final_orbit.txt'))
+            self.manifold_S_plus.append(load_manifold('../data/raw/' + orbit_id + '_W_S_plus.txt'))
+            self.manifold_S_min.append(load_manifold('../data/raw/' + orbit_id + '_W_S_min.txt'))
+            self.manifold_U_plus.append(load_manifold('../data/raw/' + orbit_id + '_W_U_plus.txt'))
+            self.manifold_U_min.append(load_manifold('../data/raw/' + orbit_id + '_W_U_min.txt'))
 
         self.lagrangePoints = load_lagrange_points_location()
         self.bodies = load_bodies_location()
@@ -277,6 +282,8 @@ if __name__ == '__main__':
         manifold_display.show_2d_subplots('x', 'z')
         manifold_display.show_3d_subplots()
         manifold_display.show_3d_subplots_head(100)
+        manifold_display.show_3d_subplots_head(250)
+        manifold_display.show_3d_subplots_head(500)
         manifold_display.show_3d_plot()
 
     # plt.show()

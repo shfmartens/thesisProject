@@ -32,7 +32,7 @@ def animate(i):
     lines[0].set_data(orbit[i]['x'].values, orbit[i]['y'].values)
     lines[0].set_3d_properties(orbit[i]['z'].values)
     lines[0].set_label(label)
-    ax1.set_title('C = ' + str(np.round(df2['C'], 2)) + ', T = ' + str(np.round(df2['T'], 2)), size=30)
+    fig.suptitle('C = ' + str(np.round(df2['C'], 2)) + ', T = ' + str(np.round(df2['T'], 2)), size=30)
     ax1.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 
     x = []
@@ -81,7 +81,7 @@ for orbit_type in config.keys():
     ax1.set_xlim([0.8, 1.1])
     ax1.set_ylim([-0.15, 0.15])
     ax1.set_zlim([-0.15, 0.15])
-    ax1.set_title('C = ' + str(np.round(df2['C'], 2)) + ', T = ' + str(np.round(df2['T'], 2)), size=30)
+    fig.suptitle('C = ' + str(np.round(df2['C'], 2)) + ', T = ' + str(np.round(df2['T'], 2)), size=30)
 
     ax2 = fig.add_subplot(2, 1, 2)
     line2 = ax2.scatter(1, 1)

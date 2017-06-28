@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import json
 import matplotlib
-# matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
+matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from mpl_toolkits.mplot3d import Axes3D
@@ -22,10 +22,15 @@ class DisplayOrbitsEigenvalues:
         self.figSize = (20, 20)
         self.titleSize = 20
         self.suptitleSize = 30
-        orbit_names = sorted(list(self.config[self.orbitType].keys()))
 
-        for orbit_name in orbit_names:
-            self.orbit.append(load_orbit('../data/raw/' + orbit_name + '_final_orbit.txt'))
+        orbit_ids = []
+        for orbit_id in list(self.config[self.orbitType].keys()):
+            ls = orbit_id.split('_')
+            orbit_ids.append(int(ls[2]))
+        orbit_ids = [self.orbitType + '_' + str(idx) for idx in sorted(orbit_ids)]
+
+        for orbit_id in orbit_ids:
+            self.orbit.append(load_orbit('../data/raw/' + orbit_id + '_final_orbit.txt'))
 
         self.lagrangePoints = load_lagrange_points_location()
         self.bodies = load_bodies_location()

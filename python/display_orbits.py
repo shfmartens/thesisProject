@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import json
 import matplotlib
-# matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
+matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from mpl_toolkits.mplot3d import Axes3D
@@ -22,10 +22,15 @@ class DisplayOrbits:
         self.figSize = (40, 40)
         self.titleSize = 20
         self.suptitleSize = 30
-        orbit_names = sorted(list(self.config[self.orbitType].keys()))
 
-        for orbit_name in orbit_names:
-            self.orbit.append(load_orbit('../data/raw/' + orbit_name + '_final_orbit.txt'))
+        orbit_ids = []
+        for orbit_id in list(self.config[self.orbitType].keys()):
+            ls = orbit_id.split('_')
+            orbit_ids.append(int(ls[2]))
+        orbit_ids = [self.orbitType + '_' + str(idx) for idx in sorted(orbit_ids)]
+
+        for orbit_id in orbit_ids:
+            self.orbit.append(load_orbit('../data/raw/' + orbit_id + '_final_orbit.txt'))
 
         self.lagrangePoints = load_lagrange_points_location()
         self.bodies = load_bodies_location()
@@ -74,7 +79,7 @@ class DisplayOrbits:
         # axarr[0, 0].set_aspect('equal')
         # axarr[0, 0].set_ylim(axarr[0, 0].get_zlim())
         f.suptitle(self.orbitType + ' subplots 2D', size=self.suptitleSize)
-        plt.savefig('../data/figures/orbit_' + self.orbitType + '_2d_' + axis_1 + '_' + axis_2 + '4.png')
+        plt.savefig('../data/figures/orbit_' + self.orbitType + '_2d_' + axis_1 + '_' + axis_2 + '.png')
         pass
 
     def show_3d_subplots(self):
@@ -126,7 +131,8 @@ class DisplayOrbits:
         for idx, orbit in enumerate(self.orbit):
             label = 'C = ' + str(round(float(config[self.orbitType][self.orbitType + '_' + str(idx + 1)]['C']), 3)) + \
                     ', T = ' + str(round(float(config[self.orbitType][self.orbitType + '_' + str(idx + 1)]['T']), 3))
-            ax.plot(orbit['x'], orbit['y'], orbit['z'], color=colors[idx], label=label)
+            if idx not in range(40):
+                ax.plot(orbit['x'], orbit['y'], orbit['z'], color=colors[idx], label=label)
 
         # Lagrange points and bodies
         for lagrange_point in self.lagrangePoints:
