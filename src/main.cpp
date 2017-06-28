@@ -1,6 +1,6 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
-#include <omp.h>
+//#include <omp.h>
 #include "thesisProject/src/computeManifolds.h"
 
 
@@ -12,6 +12,7 @@ int main (){
     // Load configuration parameters
     boost::property_tree::ptree jsontree;
     boost::property_tree::read_json("../config/config.json", jsontree);
+//    boost::property_tree::read_json("../src/verification/halo_verification_l1.json", jsontree);
     Eigen::VectorXd initialStateVector = Eigen::VectorXd::Zero(6);
 
     for (auto orbit_type : jsontree) {
@@ -19,17 +20,18 @@ int main (){
 
         auto tree_initial_states = jsontree.get_child( orbit_type.first);
         cout << tree_initial_states.size() << endl;
-        #pragma omp parallel num_threads(9)
+//        #pragma omp parallel num_threads(9)
         {
-            #pragma omp for
+//            #pragma omp for
 //            for (auto selected_orbit : tree_initial_states) {
-            for (int i=1; i<=tree_initial_states.size(); i++) {
+            for (unsigned int i=1; i<=tree_initial_states.size(); i++) {
 
                 string selected_orbit = orbit_type.first + "_" + to_string(i);
                 cout << "\n" << endl << selected_orbit << endl;
 
                 initialStateVector = create_initial_state_vector(orbit_type.first, selected_orbit);
                 computeManifolds(orbit_type.first, selected_orbit, initialStateVector);
+//                computeManifolds(orbit_type.first, selected_orbit, initialStateVector, 0.96, 0.04);
             }
         }
     }
@@ -40,6 +42,7 @@ int main (){
 Eigen::VectorXd create_initial_state_vector(string orbit_type, string selected_orbit){
     boost::property_tree::ptree jsontree;
     boost::property_tree::read_json("../config/config.json", jsontree);
+//    boost::property_tree::read_json("../src/verification/halo_verification_l1.json", jsontree);
 
     Eigen::VectorXd initial_state_vector = Eigen::VectorXd::Zero(6);
     initial_state_vector(0) = jsontree.get<double>( orbit_type + "." + selected_orbit + ".x");;

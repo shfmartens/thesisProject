@@ -145,5 +145,5 @@ if __name__ == '__main__':
 
     for orbit_type in config.keys():
         orbits_eigenvalues_display = DisplayOrbitsEigenvalues(config, orbit_type)
-        # orbits_eigenvalues_display.show_2d_subplots()
+        orbits_eigenvalues_display.show_2d_subplots()
         orbits_eigenvalues_display.show_3d_subplots()

@@ -88,8 +88,10 @@ using namespace root_finders;
             previousTime = currentTime;
             currentTime = orbitIntegrator.getCurrentIndependentVariable();
 
+//            cout << outputState.segment( 0, 6 ) << "\n" << endl;
+
             // Check if half-period is reached. This is the case when the sign of the y-location has changed.
-            if ( outputState(stateIdx) / fabs( outputState(stateIdx) ) == - inputState(4) / fabs( inputState(4) ) ) {
+            if ( outputState(stateIdx) / fabs( outputState(stateIdx) ) == - inputState(stateIdx + 3) / fabs( inputState(stateIdx + 3) ) ) {
 
                 // Linearly approximate all six states at the exact half period point.
                 if (outputState(stateIdx) > previousOutputState(stateIdx)) {

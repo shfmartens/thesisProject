@@ -131,8 +131,7 @@ class DisplayOrbits:
         for idx, orbit in enumerate(self.orbit):
             label = 'C = ' + str(round(float(config[self.orbitType][self.orbitType + '_' + str(idx + 1)]['C']), 3)) + \
                     ', T = ' + str(round(float(config[self.orbitType][self.orbitType + '_' + str(idx + 1)]['T']), 3))
-            if idx not in range(40):
-                ax.plot(orbit['x'], orbit['y'], orbit['z'], color=colors[idx], label=label)
+            ax.plot(orbit['x'], orbit['y'], orbit['z'], color=colors[idx], label=label)
 
         # Lagrange points and bodies
         for lagrange_point in self.lagrangePoints:
