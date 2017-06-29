@@ -102,8 +102,6 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
     // Write initial state to file
     remove(("../data/raw/" + selected_orbit + "_final_orbit.txt").c_str());
     ofstream textFile(("../data/raw/" + selected_orbit + "_final_orbit.txt").c_str());
-//    remove(("../src/verification/" + selected_orbit + "_l1.txt").c_str());
-//    ofstream textFile(("../src/verification/" + selected_orbit + "_l1.txt").c_str());
     textFile.precision(14);
     textFile << left << fixed << setw(20) << 0.0 << setw(20)
              << initialStateVectorInclSTM(0) << setw(20) << initialStateVectorInclSTM(1) << setw(20)
@@ -114,7 +112,7 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
     std::vector<double> tempStateVector;
     int numberOfPointsOnPeriodicOrbit = 1;  // Initial state
 
-    for (int i = 0; i <= 5; i++){
+    for (int i = 0; i <= 41; i++){
         tempStateVector.push_back(initialStateVectorInclSTM(i));
     }
     orbitStateVectors.push_back(tempStateVector);
@@ -137,7 +135,7 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
                  << stateVectorInclSTM(4) << setw(20) << stateVectorInclSTM(5)  << endl;
 
         tempStateVector.clear();
-        for (int i = 0; i <= 5; i++){
+        for (int i = 0; i <= 41; i++){
             tempStateVector.push_back(stateVectorInclSTM(i));
         }
         orbitStateVectors.push_back(tempStateVector);
@@ -146,10 +144,10 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
         outputVector = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, 1.0, orbit_type);
     }
 
-    Eigen::MatrixXd orbitStateVectorsMatrix(orbitStateVectors.size(),6);
+    Eigen::MatrixXd orbitStateVectorsMatrix(orbitStateVectors.size(), 42);
     for (unsigned int iRow = 0; iRow < orbitStateVectors.size(); iRow++)
     {
-        for (int iCol = 0; iCol <= 5; iCol++)
+        for (int iCol = 0; iCol <= 41; iCol++)
         {
             orbitStateVectorsMatrix(iRow,iCol) = orbitStateVectors[iRow][iCol];
         }
@@ -157,7 +155,7 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
 
     //! Computation of Invariant Manifolds
     // Reshape the STM for one period to matrix form.
-    Eigen::MatrixXd monodromyMatrix (6,6);
+    Eigen::MatrixXd monodromyMatrix (6, 6);
     monodromyMatrix <<  stateVectorInclSTM(6), stateVectorInclSTM(12), stateVectorInclSTM(18), stateVectorInclSTM(24), stateVectorInclSTM(30), stateVectorInclSTM(36),
                         stateVectorInclSTM(7), stateVectorInclSTM(13), stateVectorInclSTM(19), stateVectorInclSTM(25), stateVectorInclSTM(31), stateVectorInclSTM(37),
                         stateVectorInclSTM(8), stateVectorInclSTM(14), stateVectorInclSTM(20), stateVectorInclSTM(26), stateVectorInclSTM(32), stateVectorInclSTM(38),
@@ -165,19 +163,48 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
                         stateVectorInclSTM(10), stateVectorInclSTM(16), stateVectorInclSTM(22), stateVectorInclSTM(28), stateVectorInclSTM(34), stateVectorInclSTM(40),
                         stateVectorInclSTM(11), stateVectorInclSTM(17),  stateVectorInclSTM(23), stateVectorInclSTM(29), stateVectorInclSTM(35), stateVectorInclSTM(41);
     cout << "\nMonodromy matrix:\n" << monodromyMatrix << "\n" << endl;
-    monodromyMatrix.transposeInPlace();
 
-    // Compute eigenvectors of the monodromy matrix
+    // Compute eigenvectors of the monodromy matrix (find minimum eigenvalue, corresponding to stable, and large for unstable)
     Eigen::EigenSolver<Eigen::MatrixXd> eig(monodromyMatrix);
-    cout << "Eigenvectors:\n" << endl;
-    cout << eig.eigenvectors() << "\n" << endl;
+    cout << "Eigenvectors:\n" << eig.eigenvectors() << "\n\n" << "Eigenvalues:\n" << eig.eigenvalues() << "\n" << endl;
 
-    cout << "Eigenvalues:\n" << endl;
-    cout << eig.eigenvalues() << "\n" << endl;
+    int indexMaximumEigenvalue;
+    double maximumEigenvalue = 0.0;
+    int indexMinimumEigenvalue;
+    double minimumEigenvalue = 1000.0;
 
-    Eigen::VectorXd eigenVector1 = eig.eigenvectors().real().col(0);
-    Eigen::VectorXd eigenVector2 = eig.eigenvectors().real().col(1);
-    cout << "Eigenvectors:\n" << eigenVector1 << endl << "\n" << eigenVector2 << "\n" << endl;
+    for (int i = 0; i <= 5; i++){
+        if (eig.eigenvalues().real()(i) > maximumEigenvalue and abs(eig.eigenvalues().imag()(i)) < 1e-8){
+            maximumEigenvalue = eig.eigenvalues().real()(i);
+            indexMaximumEigenvalue = i;
+        }
+        if (abs(eig.eigenvalues().real()(i)) < minimumEigenvalue and abs(eig.eigenvalues().imag()(i)) < 1e-8){
+            minimumEigenvalue = eig.eigenvalues().real()(i);
+            indexMinimumEigenvalue = i;
+        }
+    }
+
+    Eigen::VectorXd eigenVector1 = eig.eigenvectors().real().col(indexMaximumEigenvalue);
+    Eigen::VectorXd eigenVector2 = eig.eigenvectors().real().col(indexMinimumEigenvalue);
+    cout << "Maximum real eigenvalue of " << maximumEigenvalue << " at " << indexMaximumEigenvalue
+         << ", corresponding to eigenvector (unstable manifold): \n" << eigenVector1 << "\n\n"
+         << "Minimum absolute real eigenvalue: " << minimumEigenvalue << " at " << indexMinimumEigenvalue
+         << ", corresponding to eigenvector (stable manifold): \n" << eigenVector2 << endl;
+
+    // Check whether the two selected eigenvalues belong to the same reciprocal pair
+    if ((1.0 / minimumEigenvalue - maximumEigenvalue) > 1e-8){
+        cout << "\n\n\nERROR - EIGENVALUES MIGHT NOT BELONG TO SAME RECIPROCAL PAIR" << endl;
+        ofstream errorFile("../data/raw/error_file.txt");
+        errorFile << selected_orbit << "\n\n"
+                  << "Eigenvectors:\n" << eig.eigenvectors() << "\n"
+                  << "Eigenvalues:\n" << eig.eigenvalues() << "\n"
+                  << "Maximum real eigenvalue of " << maximumEigenvalue << " at " << indexMaximumEigenvalue
+                  << ", corresponding to eigenvector (unstable manifold): \n" << eigenVector1 << "\n\n"
+                  << "Minimum absolute real eigenvalue: " << minimumEigenvalue << " at " << indexMinimumEigenvalue
+                  << ", corresponding to eigenvector (stable manifold): \n" << eigenVector2 << "\n\n" << endl;
+        errorFile.close();
+    }
+
 
 
     Eigen::VectorXd manifoldStartingState(42);
@@ -189,95 +216,7 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
     vector<string> fileNames = {selected_orbit + "_W_S_plus.txt", selected_orbit + "_W_S_min.txt",
                                 selected_orbit + "_W_U_plus.txt", selected_orbit + "_W_U_min.txt"};
 
-
-//    // Write initial state and eigenvalues to file
-//    ofstream initialConditionsFile(("../data/raw/initial_conditions.txt").c_str());
-//    initialConditionsFile.precision(14);
-//
-//    initialConditionsFile << left << fixed << setw( 20 ) << 0.0 << setw( 20 )
-//                          << initialStateVectorInclSTM( 0 ) << setw( 20 ) << initialStateVectorInclSTM( 1 ) << setw( 20 )
-//                          << initialStateVectorInclSTM( 2 ) << setw( 20 ) << initialStateVectorInclSTM( 3 ) << setw( 20 )
-//                          << initialStateVectorInclSTM( 4 ) << setw( 20 ) << initialStateVectorInclSTM( 5 )
-//                          << eig.eigenvalues( ).row( 0 ).col( 0 ) << eig.eigenvalues( ).row( 0 ).col( 1 )
-//                          << eig.eigenvalues( ).row( 1 ).col( 0 ) << eig.eigenvalues( ).row( 1 ).col( 1 )
-//                          << eig.eigenvalues( ).row( 2 ).col( 0 ) << eig.eigenvalues( ).row( 2 ).col( 1 )
-//                          << eig.eigenvalues( ).row( 3 ).col( 0 ) << eig.eigenvalues( ).row( 3 ).col( 1 )
-//                          << eig.eigenvalues( ).row( 4 ).col( 0 ) << eig.eigenvalues( ).row( 4 ).col( 1 )
-//                          << eig.eigenvalues( ).row( 5 ).col( 0 ) << eig.eigenvalues( ).row( 5 ).col( 1 ) << endl;
-//
-//    initialConditionsFile.close();
-
-//    // Open database in read/write mode.
-//    SQLite::Database database( input.databasePath.c_str( ),
-//                               SQLITE_OPEN_READWRITE|SQLITE_OPEN_CREATE );
-//
-//    // Create table for Lambert scanner results in SQLite database.
-//    std::cout << "Creating SQLite database table if needed ... " << std::endl;
-//    createInitialConditionsTable( database );
-//    std::cout << "SQLite database set up successfully!" << std::endl;
-//
-//    // Start SQL transaction.
-//    SQLite::Transaction transaction( database );
-//
-//    // Setup insert query.
-//    std::ostringstream createInitialConditionsTableInsert;
-//    createInitialConditionsTableInsert
-//            << "INSERT INTO initial_conditions VALUES ("
-//            << ":orbit_type,"
-//            << "NULL,"
-//            << ":departure_object_id,"
-//            << ":x,"
-//            << ":y,"
-//            << ":z,"
-//            << ":x_dot,"
-//            << ":y_dot,"
-//            << ":z_dot,"
-//            << ":lambda_1_r,"
-//            << ":lambda_1_i,"
-//            << ":lambda_2_r,"
-//            << ":lambda_2_i,"
-//            << ":lambda_3_r,"
-//            << ":lambda_3_i,"
-//            << ":lambda_4_r,"
-//            << ":lambda_4_i,"
-//            << ":lambda_5_r,"
-//            << ":lambda_5_i,"
-//            << ":lambda_6_r,"
-//            << ":lambda_6_i,"
-//            << ");";
-//
-//    SQLite::Statement query( database, createInitialConditionsTableInsert.str( ) );
-//
-//    {
-//        query.bind( ":orbit_type",           orbit_type );
-//        query.bind( ":x",                    initialStateVectorInclSTM( 0 ) );
-//        query.bind( ":y",                    initialStateVectorInclSTM( 1 ) );
-//        query.bind( ":z",                    initialStateVectorInclSTM( 2 ) );
-//        query.bind( ":x_dot",                initialStateVectorInclSTM( 3 ) );
-//        query.bind( ":y_dot",                initialStateVectorInclSTM( 4 ) );
-//        query.bind( ":z_dot",                initialStateVectorInclSTM( 5 ) );
-//        query.bind( ":lambda_1_r",           eig.eigenvalues( ).row( 0 ).col( 0 ) );
-//        query.bind( ":lambda_1_i",           eig.eigenvalues( ).row( 0 ).col( 1 ) );
-//        query.bind( ":lambda_2_r",           eig.eigenvalues( ).row( 0 ).col( 0 ) );
-//        query.bind( ":lambda_2_i",           eig.eigenvalues( ).row( 0 ).col( 1 ) );
-//        query.bind( ":lambda_3_r",           eig.eigenvalues( ).row( 0 ).col( 0 ) );
-//        query.bind( ":lambda_3_i",           eig.eigenvalues( ).row( 0 ).col( 1 ) );
-//        query.bind( ":lambda_4_r",           eig.eigenvalues( ).row( 0 ).col( 0 ) );
-//        query.bind( ":lambda_4_i",           eig.eigenvalues( ).row( 0 ).col( 1 ) );
-//        query.bind( ":lambda_5_r",           eig.eigenvalues( ).row( 0 ).col( 0 ) );
-//        query.bind( ":lambda_5_i",           eig.eigenvalues( ).row( 0 ).col( 1 ) );
-//        query.bind( ":lambda_6_r",           eig.eigenvalues( ).row( 0 ).col( 0 ) );
-//        query.bind( ":lambda_6_i",           eig.eigenvalues( ).row( 0 ).col( 1 ) );
-//
-//        // Execute insert query.
-//        query.executeStep( );
-//
-//        // Reset SQL insert query.
-//        query.reset( );
-//    }
-
 //    boost::property_tree::ptree jsontree;
-////    boost::property_tree::read_json("../src/verification/halo_verification_l1.json", jsontree);
 //    boost::property_tree::read_json("../config/config.json", jsontree);
 //
 //    jsontree.put( orbit_type + "." + selected_orbit + ".x",      initialStateVectorInclSTM( 0 ) );
@@ -301,7 +240,6 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
 //    jsontree.put( orbit_type + "." + selected_orbit + ".l_6_re", eig.eigenvalues( ).row( 5 ).real( ) );
 //    jsontree.put( orbit_type + "." + selected_orbit + ".l_6_im", eig.eigenvalues( ).row( 5 ).imag( ) );
 //
-////    write_json("../src/verification/halo_verification_l1.json", jsontree);
 //    write_json("../config/config.json", jsontree);
 
     double offsetSign;
@@ -325,14 +263,32 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
         bool ySignSet = false;
         double ySign = 0.0;
 
-        cout << "\nManifold: " << fileName << "\n" << endl;
+        cout << "\n\nManifold: " << fileName << "\n" << endl;
         // Determine the total number of points along the periodic orbit to start the manifolds.
         for (int ii = 0; ii <numberOfManifoldOrbits; ii++) {
+
+            int row_index = floor(ii * numberOfPointsOnPeriodicOrbit / numberOfManifoldOrbits);
+            // Reshape the STM from vector to a matrix
+            Eigen::MatrixXd STM (6, 6);
+            STM <<  orbitStateVectorsMatrix(row_index, 6),  orbitStateVectorsMatrix(row_index, 12), orbitStateVectorsMatrix(row_index, 18), orbitStateVectorsMatrix(row_index, 24), orbitStateVectorsMatrix(row_index, 30), orbitStateVectorsMatrix(row_index, 36),
+                    orbitStateVectorsMatrix(row_index, 7),  orbitStateVectorsMatrix(row_index, 13), orbitStateVectorsMatrix(row_index, 19), orbitStateVectorsMatrix(row_index, 25), orbitStateVectorsMatrix(row_index, 31), orbitStateVectorsMatrix(row_index, 37),
+                    orbitStateVectorsMatrix(row_index, 8),  orbitStateVectorsMatrix(row_index, 14), orbitStateVectorsMatrix(row_index, 20), orbitStateVectorsMatrix(row_index, 26), orbitStateVectorsMatrix(row_index, 32), orbitStateVectorsMatrix(row_index, 38),
+                    orbitStateVectorsMatrix(row_index, 9),  orbitStateVectorsMatrix(row_index, 15), orbitStateVectorsMatrix(row_index, 21), orbitStateVectorsMatrix(row_index, 27), orbitStateVectorsMatrix(row_index, 33), orbitStateVectorsMatrix(row_index, 39),
+                    orbitStateVectorsMatrix(row_index, 10), orbitStateVectorsMatrix(row_index, 16), orbitStateVectorsMatrix(row_index, 22), orbitStateVectorsMatrix(row_index, 28), orbitStateVectorsMatrix(row_index, 34), orbitStateVectorsMatrix(row_index, 40),
+                    orbitStateVectorsMatrix(row_index, 11), orbitStateVectorsMatrix(row_index, 17), orbitStateVectorsMatrix(row_index, 23), orbitStateVectorsMatrix(row_index, 29), orbitStateVectorsMatrix(row_index, 35), orbitStateVectorsMatrix(row_index, 41);
+//            cout << "\nSTM:\n" << STM << "\n" << endl;
+//            cout << "\neigenvector:\n" << eigenVector << "\n" << endl;
+//            cout << "\nSTM*eigenvector:\n" << STM*eigenVector << "\n" << endl;
+//            cout << "\nnorm(STM*eigenvector):\n" << (STM*eigenVector).normalized() << "\n" << endl;
+//            textFile2 << left << fixed << setw(20)
+//                      << (STM*eigenVector).normalized()(0) << setw(20) << (STM*eigenVector).normalized()(1) << setw(20)
+//                      << (STM*eigenVector).normalized()(2) << setw(20) << (STM*eigenVector).normalized()(3) << setw(20)
+//                      << (STM*eigenVector).normalized()(4) << setw(20) << (STM*eigenVector).normalized()(5) << endl;
 
             // Apply displacement epsilon from the halo at <numberOfManifoldOrbits> locations on the final orbit.
             manifoldStartingState.segment(0, 6) = orbitStateVectorsMatrix.block(
                     floor(ii * numberOfPointsOnPeriodicOrbit / numberOfManifoldOrbits), 0, 1, 6).transpose() +
-                            offsetSign * displacementFromOrbit * eigenVector;
+                            offsetSign * displacementFromOrbit * (STM*eigenVector).normalized();
 
             textFile2 << left << fixed << setw(20) << 0.0 << setw(20)
                       << manifoldStartingState(0) << setw(20) << manifoldStartingState(1) << setw(20)
@@ -387,10 +343,14 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
 
     }
 
-    cout << "\nMass parameter: " << massParameter << endl
-         << "C at initial conditions: " << jacobiEnergy << endl
-         << "C at end of manifold orbit: " << tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, stateVectorInclSTM.segment(0,6)) << endl
-         << "T: " << orbitalPeriod << endl;
+    std::cout << std::endl
+              << "=================================================================="           << std::endl
+              << "                          "   << selected_orbit << "                        " << std::endl
+              << "Mass parameter: "             << massParameter                                << std::endl
+              << "C at initial conditions: "    << jacobiEnergy                                 << std::endl
+              << "C at end of manifold orbit: " << tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, stateVectorInclSTM.segment(0,6)) << std::endl
+              << "T: " << orbitalPeriod                                                         << std::endl
+              << "=================================================================="           << std::endl;
     return;
 
 }

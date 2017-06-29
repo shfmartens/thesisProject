@@ -27,7 +27,10 @@ class DisplayManifold:
         orbit_ids = []
         for orbit_id in list(self.config[self.orbitType].keys()):
             ls = orbit_id.split('_')
-            orbit_ids.append(int(ls[2]))
+            if orbit_type == 'near_vertical':
+                orbit_ids.append(int(ls[2]))
+            if orbit_type == 'halo':
+                orbit_ids.append(int(ls[1]))
         orbit_ids = [self.orbitType + '_' + str(idx) for idx in sorted(orbit_ids)]
 
         for orbit_id in orbit_ids:
