@@ -2,11 +2,12 @@ import numpy as np
 import pandas as pd
 import json
 import matplotlib
-matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
+# matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from mpl_toolkits.mplot3d import Axes3D
 import seaborn as sns
+import sys
 
 from load_data import load_orbit, load_manifold, load_bodies_location, load_lagrange_points_location, cr3bp_velocity
 
@@ -58,8 +59,16 @@ class DisplayManifold:
             column = idx % nr_columns
             row = int((idx - idx % nr_columns) / nr_columns)
 
+            print('\n=== ' + str(idx) + ' ===')
+
             # Manifold
             for manifold_orbit_number in range(1, self.numberOfManifolds+1):
+                print(manifold_orbit_number)
+                if idx == 37 and manifold_orbit_number > 48:
+                    print('chekc')
+                    continue
+
+
                 axarr[row, column].plot(self.manifold_S_plus[idx].xs(manifold_orbit_number)[axis_1],
                                         self.manifold_S_plus[idx].xs(manifold_orbit_number)[axis_2],
                                         color=color_palette_green[manifold_orbit_number - 1])

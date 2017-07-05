@@ -192,9 +192,10 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
          << ", corresponding to eigenvector (stable manifold): \n" << eigenVector2 << endl;
 
     // Check whether the two selected eigenvalues belong to the same reciprocal pair
-    if ((1.0 / minimumEigenvalue - maximumEigenvalue) > 1e-8){
+    if ((1.0 / minimumEigenvalue - maximumEigenvalue) > 1e-4){
         cout << "\n\n\nERROR - EIGENVALUES MIGHT NOT BELONG TO SAME RECIPROCAL PAIR" << endl;
-        ofstream errorFile("../data/raw/error_file.txt");
+        std::ofstream errorFile;
+        errorFile.open("../data/raw/error_file.txt", std::ios_base::app);
         errorFile << selected_orbit << "\n\n"
                   << "Eigenvectors:\n" << eig.eigenvectors() << "\n"
                   << "Eigenvalues:\n" << eig.eigenvalues() << "\n"
@@ -298,7 +299,7 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
             outputVector = propagateOrbit(manifoldStartingState, massParameter, 0.0, integrationDirection, orbit_type);
             stateVectorInclSTM = outputVector.segment(0, 42);
             currentTime = outputVector(42);
-            cout << "Orbit No.: " << ii + 1 << endl;
+//            cout << "Orbit No.: " << ii + 1 << endl;
             int count = 1;
 
             while ( (fabs( currentTime ) <= maximumIntegrationTimeManifoldOrbits) and !fullManifoldComputed ) {
