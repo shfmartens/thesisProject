@@ -27,8 +27,10 @@ double thrustAcceleration = 0.0;
 void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd initialStateVector,
                        const double primaryGravitationalParameter = tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER,
                        const double secondaryGravitationalParameter = tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER,
-                       double displacementFromOrbit = 1.0e-6, double maxDeviationFromPeriodicOrbit = 1.0e-8,
-                       int numberOfManifoldOrbits = 100, int saveEveryNthIntegrationStep = 100,
+//                       const double primaryGravitationalParameter = tudat::celestial_body_constants::SUN_GRAVITATIONAL_PARAMETER,
+//                       const double secondaryGravitationalParameter = tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER,
+                       double maxPositionDeviationFromPeriodicOrbit = 1.0e-11, double maxVelocityDeviationFromPeriodicOrbit = 1.0e-8,
+                       double displacementFromOrbit = 1.0e-6, int numberOfManifoldOrbits = 100, int saveEveryNthIntegrationStep = 100,
                        double maximumIntegrationTimeManifoldOrbits = 50.0)
 {
     // Set output precision and clear screen.
@@ -46,16 +48,20 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
     Eigen::VectorXd halfPeriodState = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.5, 1.0, orbit_type);
     Eigen::VectorXd differentialCorrection( 6 );
     Eigen::VectorXd outputVector( 43 );
-    double deviationFromPeriodicOrbit = fabs( halfPeriodState( 3 ) );
+    double positionDeviationFromPeriodicOrbit = halfPeriodState(1);
+    double velocityDeviationFromPeriodicOrbit = sqrt(pow(halfPeriodState(3),2) + pow(halfPeriodState(5),2));
     double orbitalPeriod = 2.0 * halfPeriodState( 42 );
     cout << "\nInitial state vector:" << endl << initialStateVectorInclSTM.segment(0,6) << endl
-         << "\nDeviation from periodic orbit: " << deviationFromPeriodicOrbit << endl
+         << "\nPosition deviation from periodic orbit: " << positionDeviationFromPeriodicOrbit << endl
+         << "\nVelocity deviation from periodic orbit: " << velocityDeviationFromPeriodicOrbit << endl
          << "\nDifferential correction:" << endl;
 
+//    cout << "half state: \n" << halfPeriodState.segment(0,6) << endl;
     //! Differential Correction
     if (orbit_type == "halo"){
         // Apply differential correction and propagate to half-period point until converged.
-        while (deviationFromPeriodicOrbit > maxDeviationFromPeriodicOrbit ) {
+        while (positionDeviationFromPeriodicOrbit > maxPositionDeviationFromPeriodicOrbit or
+               velocityDeviationFromPeriodicOrbit > maxVelocityDeviationFromPeriodicOrbit) {
 
             // Apply differential correction.
             differentialCorrection = computeDifferentialCorrectionHalo( halfPeriodState );
@@ -68,32 +74,40 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
             halfPeriodState = outputVector.segment( 0, 42 );
             orbitalPeriod = 2.0 * outputVector( 42 );
 
-            // Calculate deviation from periodic orbit.
-            deviationFromPeriodicOrbit = fabs( halfPeriodState( 3 ) ) + fabs( halfPeriodState( 5  ) );
-            cout << deviationFromPeriodicOrbit << endl;
-        }
-    }
-
-    if(orbit_type == "near_vertical"){
-        // Apply differential correction and propagate to half-period point until converged.
-        while (deviationFromPeriodicOrbit > maxDeviationFromPeriodicOrbit ) {
-
-            // Apply differential correction.
-            differentialCorrection = computeDifferentialCorrectionNearVertical( halfPeriodState );
-            initialStateVectorInclSTM( 0 ) = initialStateVectorInclSTM( 0 ) + differentialCorrection( 0 )/1.0;
-            initialStateVectorInclSTM( 4 ) = initialStateVectorInclSTM( 4 ) + differentialCorrection( 4 )/1.0;
-            initialStateVectorInclSTM( 5 ) = initialStateVectorInclSTM( 5 ) + differentialCorrection( 5 )/1.0;
-
-            // Propagate new state forward to half-period point.
-            outputVector = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.5, 1.0, orbit_type);
-            halfPeriodState = outputVector.segment( 0, 42 );
-            orbitalPeriod = 2.0 * outputVector( 42 );
+//            cout << "\ninitial state:\n" << initialStateVectorInclSTM.segment(0,6) << endl;
+//            cout << "diff: \n" << differentialCorrection << endl;
+//            cout << "half state: \n" << halfPeriodState.segment(0,6) << endl;
+//            cout << "\n" << endl;
 
             // Calculate deviation from periodic orbit.
-            deviationFromPeriodicOrbit = fabs( halfPeriodState( 3 ) );
-            cout << deviationFromPeriodicOrbit << endl;
+//            deviationFromPeriodicOrbit = fabs( halfPeriodState( 3 ) ) + fabs( halfPeriodState( 5  ) );
+            velocityDeviationFromPeriodicOrbit = sqrt(pow(halfPeriodState(3),2) + pow(halfPeriodState(5),2));
+            positionDeviationFromPeriodicOrbit = halfPeriodState(1);
+            cout << velocityDeviationFromPeriodicOrbit << endl;
+//            cout << positionDeviationFromPeriodicOrbit << endl;
         }
     }
+//
+//    if(orbit_type == "near_vertical"){
+//        // Apply differential correction and propagate to half-period point until converged.
+//        while (deviationFromPeriodicOrbit > maxDeviationFromPeriodicOrbit ) {
+//
+//            // Apply differential correction.
+//            differentialCorrection = computeDifferentialCorrectionNearVertical( halfPeriodState );
+//            initialStateVectorInclSTM( 0 ) = initialStateVectorInclSTM( 0 ) + differentialCorrection( 0 )/1.0;
+//            initialStateVectorInclSTM( 4 ) = initialStateVectorInclSTM( 4 ) + differentialCorrection( 4 )/1.0;
+//            initialStateVectorInclSTM( 5 ) = initialStateVectorInclSTM( 5 ) + differentialCorrection( 5 )/1.0;
+//
+//            // Propagate new state forward to half-period point.
+//            outputVector = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.5, 1.0, orbit_type);
+//            halfPeriodState = outputVector.segment( 0, 42 );
+//            orbitalPeriod = 2.0 * outputVector( 42 );
+//
+//            // Calculate deviation from periodic orbit.
+//            deviationFromPeriodicOrbit = fabs( halfPeriodState( 3 ) );
+//            cout << deviationFromPeriodicOrbit << endl;
+//        }
+//    }
 
     double jacobiEnergy = tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, initialStateVectorInclSTM.segment(0,6));
     cout << "\nFinal initial state:" << endl << initialStateVectorInclSTM.segment(0,6) << endl
@@ -143,6 +157,7 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
         // Propagate to next time step.
         outputVector = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, 1.0, orbit_type);
     }
+    cout << "number of points on orbit: " << numberOfPointsOnPeriodicOrbit << endl;
 
     Eigen::MatrixXd orbitStateVectorsMatrix(orbitStateVectors.size(), 42);
     for (unsigned int iRow = 0; iRow < orbitStateVectors.size(); iRow++)
@@ -155,13 +170,7 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
 
     //! Computation of Invariant Manifolds
     // Reshape the STM for one period to matrix form.
-    Eigen::MatrixXd monodromyMatrix (6, 6);
-    monodromyMatrix <<  stateVectorInclSTM(6), stateVectorInclSTM(12), stateVectorInclSTM(18), stateVectorInclSTM(24), stateVectorInclSTM(30), stateVectorInclSTM(36),
-                        stateVectorInclSTM(7), stateVectorInclSTM(13), stateVectorInclSTM(19), stateVectorInclSTM(25), stateVectorInclSTM(31), stateVectorInclSTM(37),
-                        stateVectorInclSTM(8), stateVectorInclSTM(14), stateVectorInclSTM(20), stateVectorInclSTM(26), stateVectorInclSTM(32), stateVectorInclSTM(38),
-                        stateVectorInclSTM(9), stateVectorInclSTM(15), stateVectorInclSTM(21), stateVectorInclSTM(27), stateVectorInclSTM(33), stateVectorInclSTM(39),
-                        stateVectorInclSTM(10), stateVectorInclSTM(16), stateVectorInclSTM(22), stateVectorInclSTM(28), stateVectorInclSTM(34), stateVectorInclSTM(40),
-                        stateVectorInclSTM(11), stateVectorInclSTM(17),  stateVectorInclSTM(23), stateVectorInclSTM(29), stateVectorInclSTM(35), stateVectorInclSTM(41);
+    Eigen::Map<Eigen::MatrixXd> monodromyMatrix = Eigen::Map<Eigen::MatrixXd>(stateVectorInclSTM.segment(6,36).data(),6,6);
     cout << "\nMonodromy matrix:\n" << monodromyMatrix << "\n" << endl;
 
     // Compute eigenvectors of the monodromy matrix (find minimum eigenvalue, corresponding to stable, and large for unstable)
@@ -179,7 +188,7 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
             indexMaximumEigenvalue = i;
         }
         if (abs(eig.eigenvalues().real()(i)) < minimumEigenvalue and abs(eig.eigenvalues().imag()(i)) < 1e-8){
-            minimumEigenvalue = eig.eigenvalues().real()(i);
+            minimumEigenvalue = abs(eig.eigenvalues().real()(i));
             indexMinimumEigenvalue = i;
         }
     }
@@ -205,8 +214,6 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
                   << ", corresponding to eigenvector (stable manifold): \n" << eigenVector2 << "\n\n" << endl;
         errorFile.close();
     }
-
-
 
     Eigen::VectorXd manifoldStartingState(42);
     manifoldStartingState.setZero();
@@ -270,13 +277,15 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
 
             int row_index = floor(ii * numberOfPointsOnPeriodicOrbit / numberOfManifoldOrbits);
             // Reshape the STM from vector to a matrix
-            Eigen::MatrixXd STM (6, 6);
-            STM <<  orbitStateVectorsMatrix(row_index, 6),  orbitStateVectorsMatrix(row_index, 12), orbitStateVectorsMatrix(row_index, 18), orbitStateVectorsMatrix(row_index, 24), orbitStateVectorsMatrix(row_index, 30), orbitStateVectorsMatrix(row_index, 36),
-                    orbitStateVectorsMatrix(row_index, 7),  orbitStateVectorsMatrix(row_index, 13), orbitStateVectorsMatrix(row_index, 19), orbitStateVectorsMatrix(row_index, 25), orbitStateVectorsMatrix(row_index, 31), orbitStateVectorsMatrix(row_index, 37),
-                    orbitStateVectorsMatrix(row_index, 8),  orbitStateVectorsMatrix(row_index, 14), orbitStateVectorsMatrix(row_index, 20), orbitStateVectorsMatrix(row_index, 26), orbitStateVectorsMatrix(row_index, 32), orbitStateVectorsMatrix(row_index, 38),
-                    orbitStateVectorsMatrix(row_index, 9),  orbitStateVectorsMatrix(row_index, 15), orbitStateVectorsMatrix(row_index, 21), orbitStateVectorsMatrix(row_index, 27), orbitStateVectorsMatrix(row_index, 33), orbitStateVectorsMatrix(row_index, 39),
-                    orbitStateVectorsMatrix(row_index, 10), orbitStateVectorsMatrix(row_index, 16), orbitStateVectorsMatrix(row_index, 22), orbitStateVectorsMatrix(row_index, 28), orbitStateVectorsMatrix(row_index, 34), orbitStateVectorsMatrix(row_index, 40),
-                    orbitStateVectorsMatrix(row_index, 11), orbitStateVectorsMatrix(row_index, 17), orbitStateVectorsMatrix(row_index, 23), orbitStateVectorsMatrix(row_index, 29), orbitStateVectorsMatrix(row_index, 35), orbitStateVectorsMatrix(row_index, 41);
+            Eigen::VectorXd STMvector = orbitStateVectorsMatrix.row(row_index).segment(6,36);
+            Eigen::Map<Eigen::MatrixXd> STM = Eigen::Map<Eigen::MatrixXd>(STMvector.data(),6,6);
+//            Eigen::MatrixXd STM (6, 6);
+//            STM <<  orbitStateVectorsMatrix(row_index, 6),  orbitStateVectorsMatrix(row_index, 12), orbitStateVectorsMatrix(row_index, 18), orbitStateVectorsMatrix(row_index, 24), orbitStateVectorsMatrix(row_index, 30), orbitStateVectorsMatrix(row_index, 36),
+//                    orbitStateVectorsMatrix(row_index, 7),  orbitStateVectorsMatrix(row_index, 13), orbitStateVectorsMatrix(row_index, 19), orbitStateVectorsMatrix(row_index, 25), orbitStateVectorsMatrix(row_index, 31), orbitStateVectorsMatrix(row_index, 37),
+//                    orbitStateVectorsMatrix(row_index, 8),  orbitStateVectorsMatrix(row_index, 14), orbitStateVectorsMatrix(row_index, 20), orbitStateVectorsMatrix(row_index, 26), orbitStateVectorsMatrix(row_index, 32), orbitStateVectorsMatrix(row_index, 38),
+//                    orbitStateVectorsMatrix(row_index, 9),  orbitStateVectorsMatrix(row_index, 15), orbitStateVectorsMatrix(row_index, 21), orbitStateVectorsMatrix(row_index, 27), orbitStateVectorsMatrix(row_index, 33), orbitStateVectorsMatrix(row_index, 39),
+//                    orbitStateVectorsMatrix(row_index, 10), orbitStateVectorsMatrix(row_index, 16), orbitStateVectorsMatrix(row_index, 22), orbitStateVectorsMatrix(row_index, 28), orbitStateVectorsMatrix(row_index, 34), orbitStateVectorsMatrix(row_index, 40),
+//                    orbitStateVectorsMatrix(row_index, 11), orbitStateVectorsMatrix(row_index, 17), orbitStateVectorsMatrix(row_index, 23), orbitStateVectorsMatrix(row_index, 29), orbitStateVectorsMatrix(row_index, 35), orbitStateVectorsMatrix(row_index, 41);
 //            cout << "\nSTM:\n" << STM << "\n" << endl;
 //            cout << "\neigenvector:\n" << eigenVector << "\n" << endl;
 //            cout << "\nSTM*eigenvector:\n" << STM*eigenVector << "\n" << endl;

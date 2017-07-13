@@ -12,7 +12,8 @@ int main (){
     // Load configuration parameters
     boost::property_tree::ptree jsontree;
 //    boost::property_tree::read_json("../config/ver_folta_eigenvectors.json", jsontree);
-    boost::property_tree::read_json("../config/config.json", jsontree);
+//    boost::property_tree::read_json("../config/config.json", jsontree);
+    boost::property_tree::read_json("../config/config_lp.json", jsontree);
 //    boost::property_tree::read_json("../src/verification/halo_verification_l1.json", jsontree);
     Eigen::VectorXd initialStateVector = Eigen::VectorXd::Zero(6);
 
@@ -44,7 +45,8 @@ int main (){
 Eigen::VectorXd create_initial_state_vector(string orbit_type, string selected_orbit){
     boost::property_tree::ptree jsontree;
 //    boost::property_tree::read_json("../config/ver_folta_eigenvectors.json", jsontree);
-    boost::property_tree::read_json("../config/config.json", jsontree);
+//    boost::property_tree::read_json("../config/config.json", jsontree);
+    boost::property_tree::read_json("../config/config_lp.json", jsontree);
 //    boost::property_tree::read_json("../src/verification/halo_verification_l1.json", jsontree);
 
     Eigen::VectorXd initial_state_vector = Eigen::VectorXd::Zero(6);

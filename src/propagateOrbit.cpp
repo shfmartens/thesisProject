@@ -66,6 +66,8 @@ using namespace root_finders;
     double currentTime = 0.0;
     double previousTime = currentTime;
     double stateIdx;
+    int yAxisCrossings = 0;
+    int yAxisCrossingsRequired = 1;
 
     if (orbit_type == "halo"){
         stateIdx = 1;
@@ -73,10 +75,10 @@ using namespace root_finders;
     if(orbit_type == "near_vertical"){
         stateIdx = 2;
     }
-
+    int count = 0;
     // Create integrator to be used for propagating.
-    RungeKuttaVariableStepSizeIntegratorXd orbitIntegrator ( RungeKuttaCoefficients::get( RungeKuttaCoefficients::rungeKuttaFehlberg78 ), &computeStateDerivative, 0.0, inputState, 1.0e-12, 1.0, 1.0e-13, 1.0e-13);
-
+//    RungeKuttaVariableStepSizeIntegratorXd orbitIntegrator ( RungeKuttaCoefficients::get( RungeKuttaCoefficients::rungeKuttaFehlberg78 ), &computeStateDerivative, 0.0, inputState, 1.0e-12, 1.0, 1.0e-13, 1.0e-13);
+    RungeKuttaVariableStepSizeIntegratorXd orbitIntegrator ( RungeKuttaCoefficients::get( RungeKuttaCoefficients::rungeKuttaFehlberg78 ), &computeStateDerivative, 0.0, inputState, 1.0e-14, 1.0e-3, 1.0e-14, 1.0e-24);
     // Perform integration until either the half-period point is reached, or a full period has passed.
     if (halfPeriodFlag == 0.5) {
         while (true) {
@@ -87,15 +89,31 @@ using namespace root_finders;
             stepSize = orbitIntegrator.getNextStepSize();
             previousTime = currentTime;
             currentTime = orbitIntegrator.getCurrentIndependentVariable();
-
 //            cout << outputState.segment( 0, 6 ) << "\n" << endl;
+            count +=1;
 
             // Check if half-period is reached. This is the case when the sign of the y-location has changed.
-            if ( outputState(stateIdx) / fabs( outputState(stateIdx) ) == - inputState(stateIdx + 3) / fabs( inputState(stateIdx + 3) ) ) {
+            if ( yAxisCrossings == 0 and outputState(stateIdx) / fabs( outputState(stateIdx) ) == - inputState(stateIdx + 3) / fabs( inputState(stateIdx + 3) ) ) {
+                // First crossing of the y-axis
+                yAxisCrossings += 1;
+//                cout << "\ninput: " << inputState.segment(0,6) << endl;
+//                cout << "\nState P/4: \n" << outputState.segment(0,6) << endl;
+//                cout << "\ncount: " << count << endl;
+            }
+            if ( yAxisCrossings == 1 and outputState(stateIdx) / fabs( outputState(stateIdx) ) == inputState(stateIdx + 3) / fabs( inputState(stateIdx + 3) ) ) {
+                // Second crossing of the y-axis
+                yAxisCrossings += 1;
+//                cout << "\nState P/2: \n" << outputState.segment(0,6) << endl;
+//                cout << "\ncount: " << count << endl;
+            }
+
+                // Check if half-period is reached. This is the case when the sign of the y-location has changed.
+//            if ( outputState(stateIdx) / fabs( outputState(stateIdx) ) == - inputState(stateIdx + 3) / fabs( inputState(stateIdx + 3) ) ) {
+            if (yAxisCrossings == yAxisCrossingsRequired){
+//                cout << "\nCurrent time: \n" << currentTime << endl;
 
                 // Linearly approximate all six states at the exact half period point.
                 if (outputState(stateIdx) > previousOutputState(stateIdx)) {
-
                     // Linearly interpolate to y=0.
                     outputState = previousOutputState +
                             ( outputState - previousOutputState ) * ( -previousOutputState(stateIdx) /
@@ -107,7 +125,6 @@ using namespace root_finders;
                 }
 
                 else {
-
                     // Linearly interpolate to y=0.
                     outputState = outputState + ( outputState - previousOutputState ) * ( -outputState(stateIdx) /
                             ( outputState(stateIdx) - previousOutputState(stateIdx) ) );

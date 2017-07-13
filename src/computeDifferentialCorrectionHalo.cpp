@@ -30,14 +30,14 @@ Eigen::VectorXd computeDifferentialCorrectionHalo(Eigen::VectorXd cartesianState
     Eigen::Map<Eigen::MatrixXd> stmPartOfStateVectorInMatrixForm = Eigen::Map<Eigen::MatrixXd>(stmPartOfStateVector.data(),6,6);
 
     // Check which deviation is larger: x-velocity or z-velocity.
-    if (fabs(cartesianState(5)) > fabs(cartesianState(3))) {
+//    if (fabs(cartesianState(5)) > fabs(cartesianState(3))) {
 
         // Set the correct multiplication matrix.
         multiplicationMatrix << stmPartOfStateVectorInMatrixForm(1,2), stmPartOfStateVectorInMatrixForm(1,4);
 
         // Compute the update matrix.
         updateMatrix << stmPartOfStateVectorInMatrixForm(3,2), stmPartOfStateVectorInMatrixForm(3,4),
-                stmPartOfStateVectorInMatrixForm(5,2), stmPartOfStateVectorInMatrixForm(5,4);
+                        stmPartOfStateVectorInMatrixForm(5,2), stmPartOfStateVectorInMatrixForm(5,4);
         updateMatrix = updateMatrix - (1.0 / cartesianState(4)) * accelerations * multiplicationMatrix;
 
         // Compute the necessary differential correction.
@@ -48,25 +48,25 @@ Eigen::VectorXd computeDifferentialCorrectionHalo(Eigen::VectorXd cartesianState
         differentialCorrection(2) = corrections(0);
         differentialCorrection(4) = corrections(1);
 
-    }
-    else {
-
-        // Set the correct multiplication matrix.
-        multiplicationMatrix << stmPartOfStateVectorInMatrixForm(1,0), stmPartOfStateVectorInMatrixForm(1,4);
-
-        // Compute the update matrix.
-        updateMatrix << stmPartOfStateVectorInMatrixForm(3,0), stmPartOfStateVectorInMatrixForm(3,4),
-                stmPartOfStateVectorInMatrixForm(5,0), stmPartOfStateVectorInMatrixForm(5,4);
-        updateMatrix = updateMatrix - (1.0 / cartesianState(4)) * accelerations * multiplicationMatrix;
-
-        // Compute the necessary differential correction.
-        corrections = updateMatrix.inverse() * velocities;
-
-        // Put corrections in correct format.
-        differentialCorrection.setZero();
-        differentialCorrection(0) = corrections(0);
-        differentialCorrection(4) = corrections(1);
-    }
+//    }
+//    else {
+//
+//        // Set the correct multiplication matrix.
+//        multiplicationMatrix << stmPartOfStateVectorInMatrixForm(1,0), stmPartOfStateVectorInMatrixForm(1,4);
+//
+//        // Compute the update matrix.
+//        updateMatrix << stmPartOfStateVectorInMatrixForm(3,0), stmPartOfStateVectorInMatrixForm(3,4),
+//                        stmPartOfStateVectorInMatrixForm(5,0), stmPartOfStateVectorInMatrixForm(5,4);
+//        updateMatrix = updateMatrix - (1.0 / cartesianState(4)) * accelerations * multiplicationMatrix;
+//
+//        // Compute the necessary differential correction.
+//        corrections = updateMatrix.inverse() * velocities;
+//
+//        // Put corrections in correct format.
+//        differentialCorrection.setZero();
+//        differentialCorrection(0) = corrections(0);
+//        differentialCorrection(4) = corrections(1);
+//    }
 
 
     // Return differential correction.
