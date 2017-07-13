@@ -69,10 +69,13 @@ using namespace root_finders;
     int yAxisCrossings = 0;
     int yAxisCrossingsRequired = 1;
 
+    if (orbit_type == "horizontal"){
+        stateIdx = 1;
+    }
     if (orbit_type == "halo"){
         stateIdx = 1;
     }
-    if(orbit_type == "near_vertical"){
+    if(orbit_type == "vertical"){
         stateIdx = 2;
     }
     int count = 0;

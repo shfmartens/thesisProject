@@ -1,6 +1,8 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 //#include <omp.h>
+
+#include "thesisProject/src/createInitialConditions.h"
 #include "thesisProject/src/computeManifolds.h"
 
 
@@ -8,6 +10,8 @@
 Eigen::VectorXd create_initial_state_vector(string orbit_type, string selected_orbit);
 
 int main (){
+
+    createInitialConditions(2, "horizontal", 1e-4, 1e-3);
 
     // Load configuration parameters
     boost::property_tree::ptree jsontree;
