@@ -31,6 +31,20 @@ def load_orbit(file_path):
     return data
 
 
+def load_initial_conditions(file_path):
+    data = pd.read_table(file_path, delim_whitespace=True, header=None)
+    data.columns = ['orbitId', 'C', 'T', 'x', 'y', 'z', 'xdot', 'ydot', 'zdot',
+                    'lambda1real', 'lambda1imag', 'lambda2real', 'lambda2imag', 'lambda3real', 'lambda3imag',
+                    'lambda4real', 'lambda4imag', 'lambda5real', 'lambda5imag', 'lambda6real', 'lambda6imag']
+    return data
+
+
+def load_initial_conditions_incl_M(file_path):
+    data = pd.read_table(file_path, delim_whitespace=True, header=None)
+    # data.columns = ['orbitId', 'C', 'T', 'x', 'y', 'z', 'xdot', 'ydot', 'zdot']
+    return data
+
+
 def load_lagrange_points_location():
     location_lagrange_points = {'L1': [0.8369151483688, 0, 0],
                                 'L2': [1.1556821477825, 0, 0],
@@ -44,8 +58,13 @@ def load_lagrange_points_location():
 
 
 def load_bodies_location():
-    location_bodies = {'Earth': [0, 0, 0, 6371 / 384400],
-                       'Moon': [1, 0, 0, 1737 / 384400]}
+    EARTH_GRAVITATIONAL_PARAMETER = 3.986004418E14
+    SUN_GRAVITATIONAL_PARAMETER = 1.32712440018e20
+    MOON_GRAVITATIONAL_PARAMETER = SUN_GRAVITATIONAL_PARAMETER / (328900.56 * (1.0 + 81.30059))
+    massParameter = MOON_GRAVITATIONAL_PARAMETER / (MOON_GRAVITATIONAL_PARAMETER + EARTH_GRAVITATIONAL_PARAMETER)
+
+    location_bodies = {'Earth': [-massParameter, 0, 0, 6371 / 384400],
+                       'Moon': [1-massParameter, 0, 0, 1737 / 384400]}
     location_bodies = pd.DataFrame.from_dict(location_bodies)
     location_bodies.index = ['x', 'y', 'z', 'r']
     return location_bodies
@@ -64,10 +83,19 @@ def cr3bp_velocity(x_loc, y_loc, c):
 
 
 if __name__ == "__main__":
-    manifold_file_path = "../data/near_vertical_1_W_S_min.txt"
-    manifold_df = load_manifold(manifold_file_path)
-    print(manifold_df)
+    # manifold_file_path = "../data/near_vertical_1_W_S_min.txt"
+    # manifold_df = load_manifold(manifold_file_path)
+    # print(manifold_df)
 
-    orbit_file_path = "../data/near_vertical_1_final_orbit.txt"
-    orbit_df = load_orbit(orbit_file_path)
-    print(orbit_df)
+    # orbit_file_path = "../data/near_vertical_1_final_orbit.txt"
+    # orbit_df = load_orbit(orbit_file_path)
+    # print(orbit_df)
+
+    # initial_conditions_file_path = "../data/raw/horizontal_L2_initial_conditions.txt"
+    # initial_conditions_df = load_initial_conditions(initial_conditions_file_path)
+    # print(initial_conditions_df)
+
+    initial_conditions_file_path = "../data/raw/horizontal_L1_initial_conditions.txt"
+    initial_conditions_incl_M_df = load_initial_conditions_incl_M(initial_conditions_file_path)
+    print(initial_conditions_incl_M_df)
+

@@ -19,9 +19,9 @@
 
 
 // Declare mass parameter.
-//Eigen::Vector3d thrustVector;
-//double thrustAcceleration = 0.0;
-//double massParameter;
+Eigen::Vector3d thrustVector;
+double thrustAcceleration = 0.0;
+double massParameter;
 
 void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd initialStateVector,
                        const double primaryGravitationalParameter = tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER,
@@ -36,7 +36,7 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
     std::cout.precision( 14 );
 
     // Define massParameter, initialStateVector and halfPeriodStateVector.
-    double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( primaryGravitationalParameter, secondaryGravitationalParameter );
+    massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( primaryGravitationalParameter, secondaryGravitationalParameter );
 
     Eigen::VectorXd initialStateVectorInclSTM = Eigen::VectorXd::Zero(42);
     initialStateVectorInclSTM.segment(0,6) = initialStateVector;

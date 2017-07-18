@@ -11,7 +11,8 @@
 
 
 Eigen::VectorXd writePeriodicOrbitToFile( Eigen::VectorXd initialStateVector, int lagrangePointNr, string orbitType,
-                                          int orbitId, double orbitalPeriod, const double massParameter);
+                                          int orbitId, double orbitalPeriod, const double massParameter,
+                                          int saveEveryNthIntegrationStep);
 
 
 

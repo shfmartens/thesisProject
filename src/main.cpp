@@ -10,38 +10,40 @@
 Eigen::VectorXd create_initial_state_vector(string orbit_type, string selected_orbit);
 
 int main (){
+    createInitialConditions(1, "horizontal");
+    createInitialConditions(2, "horizontal");
+//    createInitialConditions(1, "halo");
+//    createInitialConditions(2, "halo");
 
-    createInitialConditions(2, "horizontal", 1e-4, 1e-3);
-
-    // Load configuration parameters
-    boost::property_tree::ptree jsontree;
-//    boost::property_tree::read_json("../config/ver_folta_eigenvectors.json", jsontree);
-//    boost::property_tree::read_json("../config/config.json", jsontree);
-    boost::property_tree::read_json("../config/config_lp.json", jsontree);
-//    boost::property_tree::read_json("../src/verification/halo_verification_l1.json", jsontree);
-    Eigen::VectorXd initialStateVector = Eigen::VectorXd::Zero(6);
-
-    for (auto orbit_type : jsontree) {
-
-        auto tree_initial_states = jsontree.get_child( orbit_type.first);
-//        #pragma omp parallel num_threads(14)
-        {
-//            #pragma omp for
-            for (unsigned int i=1; i<=tree_initial_states.size(); i++) {
-
-                string selected_orbit = orbit_type.first + "_" + to_string(i);
-
-                std::cout << std::endl;
-                std::cout << "==================================================================" << std::endl;
-                std::cout << "                          " << selected_orbit << "                        " << std::endl;
-                std::cout << "==================================================================" << std::endl;
-
-                initialStateVector = create_initial_state_vector(orbit_type.first, selected_orbit);
-                computeManifolds(orbit_type.first, selected_orbit, initialStateVector);
-//                computeManifolds(orbit_type.first, selected_orbit, initialStateVector, 0.96, 0.04);
-            }
-        }
-    }
+//    // Load configuration parameters
+//    boost::property_tree::ptree jsontree;
+////    boost::property_tree::read_json("../config/ver_folta_eigenvectors.json", jsontree);
+////    boost::property_tree::read_json("../config/config.json", jsontree);
+//    boost::property_tree::read_json("../config/config_lp.json", jsontree);
+////    boost::property_tree::read_json("../src/verification/halo_verification_l1.json", jsontree);
+//    Eigen::VectorXd initialStateVector = Eigen::VectorXd::Zero(6);
+//
+//    for (auto orbit_type : jsontree) {
+//
+//        auto tree_initial_states = jsontree.get_child( orbit_type.first);
+////        #pragma omp parallel num_threads(14)
+//        {
+////            #pragma omp for
+//            for (unsigned int i=1; i<=tree_initial_states.size(); i++) {
+//
+//                string selected_orbit = orbit_type.first + "_" + to_string(i);
+//
+//                std::cout << std::endl;
+//                std::cout << "==================================================================" << std::endl;
+//                std::cout << "                          " << selected_orbit << "                        " << std::endl;
+//                std::cout << "==================================================================" << std::endl;
+//
+//                initialStateVector = create_initial_state_vector(orbit_type.first, selected_orbit);
+//                computeManifolds(orbit_type.first, selected_orbit, initialStateVector);
+////                computeManifolds(orbit_type.first, selected_orbit, initialStateVector, 0.96, 0.04);
+//            }
+//        }
+//    }
     return 0;
 }
 

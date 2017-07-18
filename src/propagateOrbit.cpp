@@ -62,7 +62,7 @@ using namespace root_finders;
     Eigen::VectorXd outputVector(43);
     Eigen::VectorXd outputState = inputState;
     Eigen::VectorXd previousOutputState = outputState;
-    double stepSize = 1.0e-4;
+    double stepSize = 1.0e-5;
     double currentTime = 0.0;
     double previousTime = currentTime;
     double stateIdx;
@@ -81,7 +81,7 @@ using namespace root_finders;
     int count = 0;
     // Create integrator to be used for propagating.
 //    RungeKuttaVariableStepSizeIntegratorXd orbitIntegrator ( RungeKuttaCoefficients::get( RungeKuttaCoefficients::rungeKuttaFehlberg78 ), &computeStateDerivative, 0.0, inputState, 1.0e-12, 1.0, 1.0e-13, 1.0e-13);
-    RungeKuttaVariableStepSizeIntegratorXd orbitIntegrator ( RungeKuttaCoefficients::get( RungeKuttaCoefficients::rungeKuttaFehlberg78 ), &computeStateDerivative, 0.0, inputState, 1.0e-14, 1.0e-3, 1.0e-14, 1.0e-24);
+    RungeKuttaVariableStepSizeIntegratorXd orbitIntegrator ( RungeKuttaCoefficients::get( RungeKuttaCoefficients::rungeKuttaFehlberg78 ), &computeStateDerivative, 0.0, inputState, 1.0e-14, 1.0e-4, 1.0e-14, 1.0e-24);
     // Perform integration until either the half-period point is reached, or a full period has passed.
     if (halfPeriodFlag == 0.5) {
         while (true) {
