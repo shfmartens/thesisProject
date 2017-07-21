@@ -2,12 +2,12 @@ import numpy as np
 import pandas as pd
 import json
 import matplotlib
-# matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
+matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
 import matplotlib.pyplot as plt
-import matplotlib as mpl
+from matplotlib.gridspec import GridSpec
 from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.axes_grid.inset_locator import inset_axes
-# import seaborn as sns
+import seaborn as sns
 
 from load_data import load_orbit, load_bodies_location, load_lagrange_points_location, cr3bp_velocity, load_initial_conditions_incl_M
 
@@ -45,7 +45,6 @@ class DisplayPeriodicityValidation:
             self.lambda5.append(eigenvalue[sorting_index[4]])
             self.lambda6.append(eigenvalue[sorting_index[5]])
 
-
             reduction = 0
             for i in range(3):
                 if (abs(eigenvalue[sorting_index[i]]) - 1.0) < 1e-2:
@@ -64,15 +63,80 @@ class DisplayPeriodicityValidation:
         pass
 
     def plot_family(self):
-        plt.figure()
+        colors = sns.color_palette("Blues", n_colors=len(range(0, len(self.C))))
+
+        # Plot 1: 3d overview
+        fig1 = plt.figure(figsize=self.figSize)
+        ax1 = fig1.gca()
+
+        # Plot 2: subplots
+        fig2 = plt.figure(figsize=self.figSize)
+        ax2 = fig2.add_subplot(2, 2, 1, projection='3d')
+        ax3 = fig2.add_subplot(2, 2, 2)
+        ax4 = fig2.add_subplot(2, 2, 3)
+        ax5 = fig2.add_subplot(2, 2, 4)
+
+        lagrange_points_df = load_lagrange_points_location()
+        lagrange_point_nrs = ['L1', 'L2']
+        # Lagrange points and bodies
+        for lagrange_point_nr in lagrange_point_nrs:
+            ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'], color='grey')
+            ax2.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'], lagrange_points_df[lagrange_point_nr]['z'], color='grey')
+            ax3.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['z'], color='grey')
+            ax4.scatter(lagrange_points_df[lagrange_point_nr]['y'], lagrange_points_df[lagrange_point_nr]['z'], color='grey')
+            ax5.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'], color='grey')
+
+        bodies_df = load_bodies_location()
+        phi = np.linspace(0, 2 * np.pi, 100)
+        theta = np.linspace(0, np.pi, 100)
+
+        x = bodies_df['Moon']['r'] * np.outer(np.cos(phi), np.sin(theta)) + bodies_df['Moon']['x']
+        y = bodies_df['Moon']['r'] * np.outer(np.sin(phi), np.sin(theta)) + bodies_df['Moon']['y']
+        z = bodies_df['Moon']['r'] * np.outer(np.sin(phi), np.sin(theta)) + bodies_df['Moon']['z']
+
+        ax1.scatter(x, y, color='black')
+        ax2.plot_surface(x, y, z, color='black')
+        ax3.scatter(x, z, color='black')
+        ax4.scatter(y, z, color='black')
+        ax5.scatter(x, y, color='black')
 
         for i in range(0, len(self.C), 50):
-            df = load_orbit('../data/raw/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_' + str(i) + '.txt')
-            plt.plot(df['x'], df['y'])
-        plt.xlabel('x [-]')
-        plt.ylabel('y [-]')
-        plt.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitType + ': family', size=self.suptitleSize)
-        plt.savefig('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_family.png')
+            df = load_orbit('../../data/raw/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_' + str(i) + '.txt')
+            ax1.plot(df['x'], df['y'], color=colors[i], alpha=0.5)
+            ax2.plot(df['x'], df['y'], df['z'], color=colors[i], alpha=0.5)
+            ax3.plot(df['x'], df['z'], color=colors[i], alpha=0.5)
+            ax4.plot(df['y'], df['z'], color=colors[i], alpha=0.5)
+            ax5.plot(df['x'], df['y'], color=colors[i], alpha=0.5)
+
+        ax1.set_xlabel('x [-]')
+        ax1.set_ylabel('y [-]')
+        ax1.grid(True, which='both', ls=':')
+
+        ax2.set_xlabel('x [-]')
+        ax2.set_ylabel('y [-]')
+        ax2.set_zlabel('z [-]')
+        ax2.set_zlim([-0.25, 0.25])
+        ax2.grid(True, which='both', ls=':')
+        ax2.view_init(30, -120)
+
+        ax3.set_xlabel('x [-]')
+        ax3.set_ylabel('z [-]')
+        ax3.set_ylim([-0.25, 0.25])
+        ax3.grid(True, which='both', ls=':')
+
+        ax4.set_xlabel('y [-]')
+        ax4.set_ylabel('z [-]')
+        ax4.set_ylim([-0.25, 0.25])
+        ax4.grid(True, which='both', ls=':')
+
+        ax5.set_xlabel('x [-]')
+        ax5.set_ylabel('y [-]')
+        ax5.grid(True, which='both', ls=':')
+
+        fig1.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitType + ': family', size=self.suptitleSize)
+        fig1.savefig('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_family.png')
+        fig2.savefig('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_family_subplots.png')
+
         # plt.show()
         pass
 
@@ -219,10 +283,12 @@ class DisplayPeriodicityValidation:
 
 if __name__ == '__main__':
     lagrange_points = [1, 2]
+    orbit_types = ['horizontal', 'vertical']
 
-    for lagrange_point in lagrange_points:
-        display_periodicity_validation = DisplayPeriodicityValidation('horizontal', lagrange_point)
-        display_periodicity_validation.plot_family()
-        display_periodicity_validation.plot_orbital_energy()
-        display_periodicity_validation.plot_monodromy_analysis()
-        display_periodicity_validation.plot_stability()
+    for orbit_type in orbit_types:
+        for lagrange_point in lagrange_points:
+            display_periodicity_validation = DisplayPeriodicityValidation(orbit_type, lagrange_point)
+            display_periodicity_validation.plot_family()
+            display_periodicity_validation.plot_orbital_energy()
+            display_periodicity_validation.plot_monodromy_analysis()
+            display_periodicity_validation.plot_stability()

@@ -24,8 +24,8 @@ class RichardsonApproximation:
         self.n = 2 * math.pi / P
         # print(self.n)
         # x, y, z = self.compute_coefficients('Horizontal', 1)
-        # x, y, z = self.compute_coefficients('Vertical', 2)
-        x, y, z = self.compute_coefficients('Halo', 2)
+        x, y, z = self.compute_coefficients('Vertical', 1)
+        # x, y, z = self.compute_coefficients('Halo', 2)
         pass
 
     def compute_coefficients(self, type, lagrange_point_nr):
@@ -48,7 +48,7 @@ class RichardsonApproximation:
             c2 = 1 / gammaL ** 3 * ((-1) ** 2 * mu + (-1) ** 2 * (1 - mu) * gammaL ** (2 + 1) / (1 + gammaL) ** (2 + 1))
             c3 = 1 / gammaL ** 3 * ((-1) ** 3 * mu + (-1) ** 3 * (1 - mu) * gammaL ** (3 + 1) / (1 + gammaL) ** (3 + 1))
             c4 = 1 / gammaL ** 3 * ((-1) ** 4 * mu + (-1) ** 4 * (1 - mu) * gammaL ** (4 + 1) / (1 + gammaL) ** (4 + 1))
-
+        print(gammaL)
         l = Symbol('l')
         l = nsolve(l ** 4 + (c2 - 2) * l ** 2 - (c2 - 1) * (1 + 2 * c2), l, 1)
 
@@ -103,6 +103,8 @@ class RichardsonApproximation:
                                  'd1', 'd2', 'a21', 'a22', 'a23', 'a24', 'a31', 'a32', 'b21', 'b22', 'b31', 'b32',
                                  'd21', 'd31', 'd32'])
 
+        # 1.15559018187587    -0.00000002201010   -0.00620776223859   -0.00000016240107   0.00007221442416    -0.00000873648192
+
         if type == 'Horizontal':
             Ax = 1e-3
             Az = 0
@@ -110,13 +112,13 @@ class RichardsonApproximation:
         if type == 'Vertical':
             Ax = 0
             # Az = 1e-3*gammaL
-            Az = 1e-4
+            Az = 1e-2
             print(Az)
             pass
         if type == 'Halo':
             # Az = 1e-3*gammaL
             # Az = 1e-5 * gammaL
-            Az = 5e-4
+            Az = 1e-3
             # Az = 20e3 / (self.d * gammaL)
             # Az = 650e3/(self.d*gammaL)
             print(Az)
@@ -125,7 +127,7 @@ class RichardsonApproximation:
             pass
 
         tau1 = 0
-        deltan = 2-3
+        deltan = 2-1
 
         x = a21 * Ax ** 2 + a22 * Az ** 2 - Ax * math.cos(tau1) + (a23 * Ax ** 2 - a24 * Az ** 2) * math.cos(
             2 * tau1) + (a31 * Ax ** 3 - a32 * Ax * Az ** 2) * math.cos(3 * tau1)
