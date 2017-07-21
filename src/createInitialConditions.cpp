@@ -38,13 +38,47 @@ void createInitialConditions( int lagrangePointNr, string orbitType,
 
     // TODO extend horizontal, compute halo and vertical
     // Define first state vector guess
-    if (orbitType == "horizontal"){
-        if (lagrangePointNr == 1){
+    if (orbitType == "horizontal") {
+        if (lagrangePointNr == 1) {
             initialStateVector(0) = 0.836764423217002;
             initialStateVector(4) = 0.00126332372252124;
-        } else if (lagrangePointNr == 2){
+        } else if (lagrangePointNr == 2) {
             initialStateVector(0) = 1.15566536294209;
             initialStateVector(4) = 9.10547315691362e-5;
+        }
+    } else if (orbitType == "vertical"){
+        if (lagrangePointNr == 1){
+//            // Az = 4e-2 refined
+//            initialStateVector(0) = 0.83694313536666;
+//            initialStateVector(1) = 0.0;
+//            initialStateVector(2) = 0.0;
+//            initialStateVector(3) = 0.0;
+//            initialStateVector(4) = 5.0843231043579e-05;
+//            initialStateVector(5) = -0.013190336393571;
+//
+//            // Az = 5e-2 refined
+//            initialStateVector(0) = 0.83695888935352;
+//            initialStateVector(1) = 0.0;
+//            initialStateVector(2) = 0.0;
+//            initialStateVector(3) = 0.0;
+//            initialStateVector(4) = 7.9479699864488e-05;
+//            initialStateVector(5) = -0.016490086143727;
+
+            // Az = 1e-2 refined
+            initialStateVector(0) = 0.83691689636866;
+            initialStateVector(1) = 0.0;
+            initialStateVector(2) = 0.0;
+            initialStateVector(3) = 0.0;
+            initialStateVector(4) = 3.1826569396683e-06;
+            initialStateVector(5) = -0.0032972814398178;
+
+        } else if (lagrangePointNr == 2){
+            initialStateVector(0) = 1.15565000000000;
+            initialStateVector(1) = 0.0;
+            initialStateVector(2) = 0.0;
+            initialStateVector(3) = 0.0;
+            initialStateVector(4) = -0.00007220724803;
+            initialStateVector(5) = -0.01108868026317;
         }
     } else if (orbitType == "halo") {
         if (lagrangePointNr == 1) {
@@ -132,16 +166,32 @@ void createInitialConditions( int lagrangePointNr, string orbitType,
 
     initialStateVectors.push_back(tempStateVector);
 
-
     // Define second state vector guess
     initialStateVector = Eigen::VectorXd::Zero(6);
-    if (orbitType == "horizontal"){
-        if (lagrangePointNr == 1){
+    if (orbitType == "horizontal") {
+        if (lagrangePointNr == 1) {
             initialStateVector(0) = 0.836900057031702;
             initialStateVector(4) = 0.000126362888667622;
-        } else if (lagrangePointNr == 2){
+        } else if (lagrangePointNr == 2) {
             initialStateVector(0) = 1.15551415840187;
             initialStateVector(4) = 0.000910813946034306;
+        }
+    } else if (orbitType == "vertical"){
+        if (lagrangePointNr == 1){
+            // Az = 5e-2 refined
+            initialStateVector(0) = 0.83695888935352;
+            initialStateVector(1) = 0.0;
+            initialStateVector(2) = 0.0;
+            initialStateVector(3) = 0.0;
+            initialStateVector(4) = 7.9479699864488e-05;
+            initialStateVector(5) = -0.016490086143727;
+        } else if (lagrangePointNr == 2){
+            initialStateVector(0) = 1.15560000000000;
+            initialStateVector(1) = 0.0;
+            initialStateVector(2) = 0.0;
+            initialStateVector(3) = 0.0;
+            initialStateVector(4) = -0.00018466181747;
+            initialStateVector(5) = -0.01772707367258;
         }
     } else if (orbitType == "halo") {
         if (lagrangePointNr == 1) {
@@ -248,8 +298,11 @@ void createInitialConditions( int lagrangePointNr, string orbitType,
         // Apply numerical continuation
         initialStateVector = Eigen::VectorXd::Zero(6);
         initialStateVector(0) = initialStateVectors[initialStateVectors.size() - 1][0+2] * 2 - initialStateVectors[initialStateVectors.size() - 2][0+2];
+        initialStateVector(1) = initialStateVectors[initialStateVectors.size() - 1][1+2] * 2 - initialStateVectors[initialStateVectors.size() - 2][1+2];
         initialStateVector(2) = initialStateVectors[initialStateVectors.size() - 1][2+2] * 2 - initialStateVectors[initialStateVectors.size() - 2][2+2];
+        initialStateVector(3) = initialStateVectors[initialStateVectors.size() - 1][3+2] * 2 - initialStateVectors[initialStateVectors.size() - 2][3+2];
         initialStateVector(4) = initialStateVectors[initialStateVectors.size() - 1][4+2] * 2 - initialStateVectors[initialStateVectors.size() - 2][4+2];
+        initialStateVector(5) = initialStateVectors[initialStateVectors.size() - 1][5+2] * 2 - initialStateVectors[initialStateVectors.size() - 2][5+2];
 
         // Correct state vector guesses
         differentialCorrectionResult = applyDifferentialCorrection( initialStateVector, orbitType, massParameter, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit);

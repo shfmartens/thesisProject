@@ -65,19 +65,20 @@ using namespace root_finders;
     double stepSize = 1.0e-5;
     double currentTime = 0.0;
     double previousTime = currentTime;
-    double stateIdx;
+    int stateIdx = 1;
     int yAxisCrossings = 0;
     int yAxisCrossingsRequired = 1;
 
-    if (orbit_type == "horizontal"){
-        stateIdx = 1;
-    }
-    if (orbit_type == "halo"){
-        stateIdx = 1;
-    }
+//    if (orbit_type == "horizontal"){
+//        stateIdx = 1;
+//    }
+//    if (orbit_type == "halo"){
+//        stateIdx = 1;
+//    }
     if(orbit_type == "vertical"){
         stateIdx = 2;
     }
+
     int count = 0;
     // Create integrator to be used for propagating.
 //    RungeKuttaVariableStepSizeIntegratorXd orbitIntegrator ( RungeKuttaCoefficients::get( RungeKuttaCoefficients::rungeKuttaFehlberg78 ), &computeStateDerivative, 0.0, inputState, 1.0e-12, 1.0, 1.0e-13, 1.0e-13);

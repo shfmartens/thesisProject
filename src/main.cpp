@@ -12,6 +12,8 @@ Eigen::VectorXd create_initial_state_vector(string orbit_type, string selected_o
 int main (){
     createInitialConditions(1, "horizontal");
     createInitialConditions(2, "horizontal");
+    createInitialConditions(1, "vertical");
+    createInitialConditions(2, "vertical");
 //    createInitialConditions(1, "halo");
 //    createInitialConditions(2, "halo");
 
