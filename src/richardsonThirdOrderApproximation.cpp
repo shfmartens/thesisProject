@@ -1,8 +1,15 @@
+#include <boost/bind.hpp>
+#include <boost/make_shared.hpp>
+#include <boost/test/floating_point_comparison.hpp>
 #include "Tudat/Mathematics/BasicMathematics/mathematicalConstants.h"
+#include "Tudat/Mathematics/RootFinders/newtonRaphson.h"
 
+#include "thesisProject/src/functions/librationPointLocationFunction.h"
+#include "thesisProject/src/functions/librationPointLocationFunction1.h"
+#include "thesisProject/src/functions/librationPointLocationFunction2.h"
 #include "thesisProject/src/propagateOrbit.h"
 
-Eigen::VectorXd richardsonThirdOrderApproximation(std::string orbitType, int lagrangePointNr, double amplitude)
+Eigen::VectorXd richardsonThirdOrderApproximation(std::string orbitType, int librationPointNr, double amplitude)
 {
     cout << "\nCreate initial conditions:\n" << endl;
 
@@ -18,26 +25,51 @@ Eigen::VectorXd richardsonThirdOrderApproximation(std::string orbitType, int lag
     double c2;
     double c3;
     double c4;
-    double lambda;
     double Ax;
     double Az;
 
-    if (lagrangePointNr == 1){
-        gammaL = 0.15093427061385;
+    if (librationPointNr == 1){
+        // Create object containing the functions.
+        boost::shared_ptr< LibrationPointLocationFunction1 > LibrationPointLocationFunction = boost::make_shared< LibrationPointLocationFunction1 >( 1 );
+
+        // The termination condition.
+        tudat::root_finders::NewtonRaphson::TerminationFunction terminationConditionFunction =
+                boost::bind( &tudat::root_finders::termination_conditions::RootAbsoluteToleranceTerminationCondition< double >::checkTerminationCondition,
+                             boost::make_shared< tudat::root_finders::termination_conditions::RootAbsoluteToleranceTerminationCondition< double > >(
+                                     LibrationPointLocationFunction->getTrueRootAccuracy( ) ), _1, _2, _3, _4, _5 );
+
+        // Test Newton-Raphson object.
+        tudat::root_finders::NewtonRaphson newtonRaphson( terminationConditionFunction );
+
+        // Let Newton-Raphson search for the root.
+        gammaL = newtonRaphson.execute( LibrationPointLocationFunction, LibrationPointLocationFunction->getInitialGuess( ) );
+
         c2 = 1.0 / pow(gammaL, 3.0) * (pow(1.0,2.0) * massParameter + pow(-1.0,2.0) * (1.0 - massParameter) * pow(gammaL, 2.0+1.0) / pow((1.0 - gammaL), (2.0+1.0)));
         c3 = 1.0 / pow(gammaL, 3.0) * (pow(1.0,3.0) * massParameter + pow(-1.0,3.0) * (1.0 - massParameter) * pow(gammaL, 3.0+1.0) / pow((1.0 - gammaL), (3.0+1.0)));
         c4 = 1.0 / pow(gammaL, 3.0) * (pow(1.0,4.0) * massParameter + pow(-1.0,4.0) * (1.0 - massParameter) * pow(gammaL, 4.0+1.0) / pow((1.0 - gammaL), (4.0+1.0)));
-        lambda = 2.3343858492553;
     } else {
-        gammaL = 0.167832728799874;
+        // Create object containing the functions.
+        boost::shared_ptr< LibrationPointLocationFunction2 > LibrationPointLocationFunction = boost::make_shared< LibrationPointLocationFunction2 >( 1 );
+
+        // The termination condition.
+        tudat::root_finders::NewtonRaphson::TerminationFunction terminationConditionFunction =
+                boost::bind( &tudat::root_finders::termination_conditions::RootAbsoluteToleranceTerminationCondition< double >::checkTerminationCondition,
+                             boost::make_shared< tudat::root_finders::termination_conditions::RootAbsoluteToleranceTerminationCondition< double > >(
+                                     LibrationPointLocationFunction->getTrueRootAccuracy( ) ), _1, _2, _3, _4, _5 );
+        // Test Newton-Raphson object.
+        tudat::root_finders::NewtonRaphson newtonRaphson( terminationConditionFunction );
+
+        // Let Newton-Raphson search for the root.
+        gammaL = newtonRaphson.execute( LibrationPointLocationFunction, LibrationPointLocationFunction->getInitialGuess( ) );
+
         c2 = 1 / pow(gammaL, 3.0) * (pow(-1.0, 2.0) * massParameter + pow(-1.0, 2.0) * (1.0 - massParameter) * pow(gammaL, 2.0+1.0) / pow((1.0 + gammaL), (2.0 + 1.0)));
         c3 = 1 / pow(gammaL, 3.0) * (pow(-1.0, 3.0) * massParameter + pow(-1.0, 3.0) * (1.0 - massParameter) * pow(gammaL, 3.0+1.0) / pow((1.0 + gammaL), (3.0 + 1.0)));
         c4 = 1 / pow(gammaL, 3.0) * (pow(-1.0, 4.0) * massParameter + pow(-1.0, 4.0) * (1.0 - massParameter) * pow(gammaL, 4.0+1.0) / pow((1.0 + gammaL), (4.0 + 1.0)));
-        lambda = 1.86264588664618;
     }
 
-    double k     = 2.0 * lambda / (pow(lambda,2.0) + 1.0 - c2);
-    double delta = pow(lambda,2.0) - c2;
+    double lambda = pow(1.0 - c2/2.0 + 1.0/2.0*pow((pow((c2-2.0), 2.0) + 4.0*(c2-1.0)*(1.0+2.0*c2)), 0.5), 0.5);
+    double k      = 2.0 * lambda / (pow(lambda,2.0) + 1.0 - c2);
+    double delta  = pow(lambda,2.0) - c2;
 
     double d1  = 3.0 * pow(lambda, 2.0) / k * (k * (6.0 * pow(lambda, 2.0) - 1.0) - 2.0 * lambda);
     double d2  = 8.0 * pow(lambda, 2.0) / k * (k * (11.0 * pow(lambda, 2.0) - 1.0) - 2.0 * lambda);
@@ -106,9 +138,9 @@ Eigen::VectorXd richardsonThirdOrderApproximation(std::string orbitType, int lag
     double zdot          = -1.0 * omega * lambda * deltan * Az * std::sin(tau1) - 2.0 * omega * lambda * deltan * d21 * Ax * Az * std::sin(2.0 * tau1) - 3.0 * omega * lambda * deltan * (d32 * Az * pow(Ax, 2.0) - d31 * pow(Az, 3.0)) * std::sin(3.0 * tau1);
     double orbitalPeriod = 2.0 * tudat::mathematical_constants::PI / (lambda * omega);
 
-    if (lagrangePointNr == 1){
+    if (librationPointNr == 1){
         initialStateVectorInclPeriod(0) = (x - 1.0) * gammaL + 1.0 - massParameter;
-    } if (lagrangePointNr == 2){
+    } if (librationPointNr == 2){
         initialStateVectorInclPeriod(0) = (x + 1.0) * gammaL + 1.0 - massParameter;
     }
 

@@ -10,7 +10,7 @@
 #include "createInitialConditions.cpp"
 
 
-void createInitialConditions( int lagrangePointNr, string orbitType,
+void createInitialConditions( int librationPointNr, string orbitType,
                               const double primaryGravitationalParameter, const double secondaryGravitationalParameter,
                               double maxPositionDeviationFromPeriodicOrbit, double maxVelocityDeviationFromPeriodicOrbit,
                               double maxDeviationEigenvalue);

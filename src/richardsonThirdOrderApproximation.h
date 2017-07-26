@@ -10,7 +10,7 @@
 #include "richardsonThirdOrderApproximation.cpp"
 
 
-Eigen::VectorXd richardsonThirdOrderApproximation(std::string orbitType, int lagrangePointNr, double amplitude);
+Eigen::VectorXd richardsonThirdOrderApproximation(std::string orbitType, int librationPointNr, double amplitude);
 
 
 

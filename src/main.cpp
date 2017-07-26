@@ -25,13 +25,13 @@ int main (){
 //                createInitialConditions(1, "vertical");
 //            }
 //            if (i ==4){
-                createInitialConditions(2, "vertical");
+//                createInitialConditions(2, "vertical");
 //            }
 //            if (i ==5){
 //                createInitialConditions(1, "halo");
 //            }
 //            if (i ==6){
-//                createInitialConditions(2, "halo");
+                createInitialConditions(2, "halo");
 //            }
 //        }
 //    }

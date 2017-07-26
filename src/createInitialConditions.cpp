@@ -11,7 +11,7 @@
 #include "thesisProject/src/writePeriodicOrbitToFile.h"
 
 
-void createInitialConditions( int lagrangePointNr, string orbitType,
+void createInitialConditions( int librationPointNr, string orbitType,
                               const double primaryGravitationalParameter = tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER,
                               const double secondaryGravitationalParameter = tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER,
                               double maxPositionDeviationFromPeriodicOrbit = 1.0e-12, double maxVelocityDeviationFromPeriodicOrbit = 1.0e-12,
@@ -41,47 +41,22 @@ void createInitialConditions( int lagrangePointNr, string orbitType,
     // Define massParameter
     massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( primaryGravitationalParameter, secondaryGravitationalParameter );
 
-    // TODO extend horizontal, compute halo and vertical
-    // Define first state vector guess (smaller in amplitude than second)
     if (orbitType == "horizontal") {
-        if (lagrangePointNr == 1) { // Ax = 1e-3
-//            initialStateVector(0) = 0.836764423217002;
-//            initialStateVector(4) = 0.00126332151282969;
-//            orbitalPeriod         = 2.69158429793537;
+        if (librationPointNr == 1) {
             richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("horizontal", 1, 1.0e-3);
-
-        } else if (lagrangePointNr == 2) { // Az = 1e-4
-//            initialStateVector(0) = 1.15566536294209;
-//            initialStateVector(4) = 9.10547312525634e-5;
-//            orbitalPeriod         = 3.37325810239639;
+        } else if (librationPointNr == 2) {
             richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("horizontal", 2, 1.0e-4);
         }
     } else if (orbitType == "vertical"){
-        if (lagrangePointNr == 1){ // Az = 1e-1
-//            initialStateVector(0) = 0.837371102093524;
-//            initialStateVector(2) = 0.0150902314188015;
-//            initialStateVector(4) = -0.000322734270054828;
-//            orbitalPeriod         = 2.68935340498007;
+        if (librationPointNr == 1){
             richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("vertical", 1, 1.0e-1);
-        } else if (lagrangePointNr == 2){ // Az = 1e-1
-//            initialStateVector(0) = 1.15502585527639;
-//            initialStateVector(2) = 0.0167803298688178;
-//            initialStateVector(4) = 0.000482238467409511;
-//            orbitalPeriod         = 3.36831131220139;
+        } else if (librationPointNr == 2){
             richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("vertical", 2, 1.0e-1);
         }
     } else if (orbitType == "halo") {
-        if (lagrangePointNr == 1) { // Az = 1.1e-1
-//            initialStateVector(0) = 0.823842368103342;
-//            initialStateVector(2) = 0.0177441810419053;
-//            initialStateVector(4) = 0.130143004917572;
-//            orbitalPeriod         = 2.74399197221861;
+        if (librationPointNr == 1) {
             richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("halo", 1, 1.1e-1);
-        } else if (lagrangePointNr == 2) { // Az = 1.5e-1
-//            initialStateVector(0) = 1.11822154781651;
-//            initialStateVector(2) = 0.0218987160505483;
-//            initialStateVector(4) = 0.183307010794364;
-//            orbitalPeriod         = 3.40300397070175;
+        } else if (librationPointNr == 2) {
             richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("halo", 2, 1.5e-1);
         }
     }
@@ -96,7 +71,7 @@ void createInitialConditions( int lagrangePointNr, string orbitType,
     orbitalPeriod                = differentialCorrectionResult(6);
 
     // Propagate the initialStateVector for a full period and write output to file.
-    stateVectorInclSTM = writePeriodicOrbitToFile( initialStateVector, lagrangePointNr, orbitType, 0, orbitalPeriod, massParameter);
+    stateVectorInclSTM = writePeriodicOrbitToFile( initialStateVector, librationPointNr, orbitType, 0, orbitalPeriod, massParameter);
 
     // Save jacobi energy, orbital period, initial condition, and eigenvalues
     tempStateVector.clear();
@@ -124,43 +99,21 @@ void createInitialConditions( int lagrangePointNr, string orbitType,
     // Define second state vector guess
     initialStateVector = Eigen::VectorXd::Zero(6);
     if (orbitType == "horizontal") {
-        if (lagrangePointNr == 1) { // Az = 1e-4
-//            initialStateVector(0) = 0.836900057031702;
-//            initialStateVector(4) = 0.000126362886457397;
-//            orbitalPeriod         = 2.69157963713831;
+        if (librationPointNr == 1) {
             richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("horizontal", 1, 1.0e-4);
-        } else if (lagrangePointNr == 2) { // Az = 1e-3
-//            initialStateVector(0) = 1.15551415840187;
-//            initialStateVector(4) = 0.000910813629368759;
-//            orbitalPeriod         = 3.37325926346013;
+        } else if (librationPointNr == 2) {
             richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("horizontal", 2, 1.0e-3);
         }
     } else if (orbitType == "vertical"){
-        if (lagrangePointNr == 1){ // Az = 2e-1
-//            initialStateVector(0) = 0.838738963267659;
-//            initialStateVector(2) = 0.0301612889821024;
-//            initialStateVector(4) = -0.00129414025304457;
-//            orbitalPeriod         = 2.68269689018263;
+        if (librationPointNr == 1){
             richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("vertical", 1, 2.0e-1);
-        } else if (lagrangePointNr == 2){ // Az = 2e-1
-//            initialStateVector(0) = 1.15305697775794;
-//            initialStateVector(2) = 0.0335430016706184;
-//            initialStateVector(4) = 0.00193744012287736;
-//            orbitalPeriod         = 3.35355764707046;
+        } else if (librationPointNr == 2){
             richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("vertical", 2, 2.0e-1);
         }
     } else if (orbitType == "halo") {
-        if (lagrangePointNr == 1) { // Az = 1.2e-1
-//            initialStateVector(0) = 0.823853706063225;
-//            initialStateVector(2) = 0.0193676274048036;
-//            initialStateVector(4) = 0.131122874393244;
-//            orbitalPeriod         = 2.74440271607439;
+        if (librationPointNr == 1) {
             richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("halo", 1, 1.2e-1);
-        } else if (lagrangePointNr == 2) { // Az = 1.6e-1
-//            initialStateVector(0) = 1.11775138258286;
-//            initialStateVector(2) = 0.0233369306514276;
-//            initialStateVector(4) = 0.184805075718017;
-//            orbitalPeriod         = 3.40197707259568;
+        } else if (librationPointNr == 2) {
             richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("halo", 2, 1.6e-1);
         }
     }
@@ -175,7 +128,7 @@ void createInitialConditions( int lagrangePointNr, string orbitType,
     orbitalPeriod                = differentialCorrectionResult(6);
 
     // Propagate the initialStateVector for a full period and write output to file.
-    stateVectorInclSTM = writePeriodicOrbitToFile( initialStateVector, lagrangePointNr, orbitType, 1, orbitalPeriod, massParameter);
+    stateVectorInclSTM = writePeriodicOrbitToFile( initialStateVector, librationPointNr, orbitType, 1, orbitalPeriod, massParameter);
 
     // Save jacobi energy, orbital period, initial condition, and eigenvalues
     tempStateVector.clear();
@@ -237,10 +190,10 @@ void createInitialConditions( int lagrangePointNr, string orbitType,
         orbitalPeriod                = differentialCorrectionResult(6);
 
         // Propagate the initialStateVector for a full period and write output to file.
-        stateVectorInclSTM = writePeriodicOrbitToFile( initialStateVector, lagrangePointNr, orbitType, numberOfInitialConditions, orbitalPeriod, massParameter);
+        stateVectorInclSTM = writePeriodicOrbitToFile( initialStateVector, librationPointNr, orbitType, numberOfInitialConditions, orbitalPeriod, massParameter);
 
         // Check whether continuation procedure has already crossed the position of the second primary
-        if (lagrangePointNr == 1){
+        if (librationPointNr == 1){
             if (initialStateVector(0) < (1.0 - massParameter)){
 
                 continueNumericalContinuation = true;
@@ -259,7 +212,7 @@ void createInitialConditions( int lagrangePointNr, string orbitType,
                     }
                 }
             }
-        } else if (lagrangePointNr == 2){
+        } else if (librationPointNr == 2){
             if (initialStateVector(0) > (1.0 - massParameter)){
                 continueNumericalContinuation = true;
 
@@ -297,8 +250,8 @@ void createInitialConditions( int lagrangePointNr, string orbitType,
     }
 
     // Prepare file for initial conditions
-    remove(("../data/raw/" + orbitType + "_L" + to_string(lagrangePointNr) + "_initial_conditions.txt").c_str());
-    ofstream textFileInitialConditions(("../data/raw/" + orbitType + "_L" + to_string(lagrangePointNr) + "_initial_conditions.txt").c_str());
+    remove(("../data/raw/" + orbitType + "_L" + to_string(librationPointNr) + "_initial_conditions.txt").c_str());
+    ofstream textFileInitialConditions(("../data/raw/" + orbitType + "_L" + to_string(librationPointNr) + "_initial_conditions.txt").c_str());
     textFileInitialConditions.precision(std::numeric_limits<double>::digits10);
 
     // Write initial conditions to file

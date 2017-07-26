@@ -33,9 +33,6 @@ Eigen::VectorXd applyDifferentialCorrection( std::string orbitType, Eigen::Vecto
         double initialStepSize = pow(10,(static_cast<float>(-i)));
         double maximumStepSize = pow(10,(static_cast<float>(-i) + 1.0));
 
-//        cout << "maximumStepSize: " << maximumStepSize << endl;
-//        cout << "initialStepSize: " << initialStepSize << endl;
-
         while (currentTime <= (orbitalPeriod / 2.0)) {
             stateVectorInclSTM      = halfPeriodState.segment(0, 42);
             currentTime             = halfPeriodState(42);
@@ -47,7 +44,6 @@ Eigen::VectorXd applyDifferentialCorrection( std::string orbitType, Eigen::Vecto
                 break;
             }
         }
-//        cout << "orbitalPeriod/2 - currentTime: " << (orbitalPeriod/2.0 - currentTime) << endl;
     }
 
     // Initialize variables
@@ -69,12 +65,7 @@ Eigen::VectorXd applyDifferentialCorrection( std::string orbitType, Eigen::Vecto
             velocityDeviationFromPeriodicOrbit > maxVelocityDeviationFromPeriodicOrbit) {
 
         // Apply differential correction
-//        differentialCorrection = computeDifferentialCorrectionHalo( halfPeriodState );
-//        cout << "\n\n\nCorrection by halo " << endl << differentialCorrection << endl;
-//        differentialCorrection = computeDifferentialCorrectionNearVertical(halfPeriodState);
-//        cout << "Correction by nearvertical " << endl << differentialCorrection << endl;
         differentialCorrection = computeDifferentialCorrection( halfPeriodState );
-//        cout << "Correction by  " << endl << differentialCorrection  << "\n\n\n" << endl;
 
         initialStateVectorInclSTM(0) = initialStateVectorInclSTM(0) + differentialCorrection(0)/1.0;
         initialStateVectorInclSTM(1) = initialStateVectorInclSTM(1) + differentialCorrection(1)/1.0;
@@ -83,18 +74,6 @@ Eigen::VectorXd applyDifferentialCorrection( std::string orbitType, Eigen::Vecto
         initialStateVectorInclSTM(4) = initialStateVectorInclSTM(4) + differentialCorrection(4)/1.0;
         initialStateVectorInclSTM(5) = initialStateVectorInclSTM(5) + differentialCorrection(5)/1.0;
         orbitalPeriod                = orbitalPeriod + 2.0 * differentialCorrection(6) / 1.0;
-
-//        // Propagate new state forward to half-period point.
-//        halfPeriodState     = propagateOrbit(initialStateVectorInclSTM, massParameter, 0.0, 1.0);
-//        stateVectorInclSTM  = halfPeriodState.segment(0,42);
-//        currentTime         = halfPeriodState(42);
-//        while (currentTime <= (orbitalPeriod / 2.0)) {
-//            stateVectorInclSTM = halfPeriodState.segment(0,42);
-//            currentTime = halfPeriodState(42);
-//            halfPeriodState = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, 1.0);
-//        }
-
-
 
         // Perform first integration step
         halfPeriodState    = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.0, 1.0);
