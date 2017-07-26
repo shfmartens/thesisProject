@@ -48,7 +48,7 @@
 
 // Begin function.
 Eigen::VectorXd propagateOrbit(Eigen::VectorXd inputState, double massParameter, double halfPeriodFlag,
-                               double direction, std::string orbit_type) {
+                               double direction, double initialStepSize = 1.0e-4, double maximumStepSize = 1.0e-3) {
 
 // Declare namespaces.
 using namespace tudat;
@@ -62,9 +62,13 @@ using namespace root_finders;
     Eigen::VectorXd outputVector(43);
     Eigen::VectorXd outputState = inputState;
     Eigen::VectorXd previousOutputState = outputState;
-    double stepSize = 1.0e-5;
+    double stepSize = initialStepSize;
     double currentTime = 0.0;
     double previousTime = currentTime;
+    double minimumStepSize = 1.0e-12;
+    const double relativeErrorTolerance = 1.0e-13;
+//    const double absoluteErrorTolerance = 1.0e-13;
+    const double absoluteErrorTolerance = 1.0e-24;
     int stateIdx = 1;
     int yAxisCrossings = 0;
     int yAxisCrossingsRequired = 1;
@@ -75,14 +79,16 @@ using namespace root_finders;
 //    if (orbit_type == "halo"){
 //        stateIdx = 1;
 //    }
-    if(orbit_type == "vertical"){
-        stateIdx = 2;
-    }
+//    if(orbit_type == "vertical"){
+//        stateIdx = 2;
+//    }
 
     int count = 0;
+
     // Create integrator to be used for propagating.
-//    RungeKuttaVariableStepSizeIntegratorXd orbitIntegrator ( RungeKuttaCoefficients::get( RungeKuttaCoefficients::rungeKuttaFehlberg78 ), &computeStateDerivative, 0.0, inputState, 1.0e-12, 1.0, 1.0e-13, 1.0e-13);
-    RungeKuttaVariableStepSizeIntegratorXd orbitIntegrator ( RungeKuttaCoefficients::get( RungeKuttaCoefficients::rungeKuttaFehlberg78 ), &computeStateDerivative, 0.0, inputState, 1.0e-14, 1.0e-4, 1.0e-14, 1.0e-24);
+    RungeKuttaVariableStepSizeIntegratorXd orbitIntegrator ( RungeKuttaCoefficients::get( RungeKuttaCoefficients::rungeKuttaFehlberg78 ), &computeStateDerivative, 0.0, inputState, minimumStepSize, maximumStepSize, relativeErrorTolerance, absoluteErrorTolerance);
+//    RungeKuttaVariableStepSizeIntegratorXd orbitIntegrator ( RungeKuttaCoefficients::get( RungeKuttaCoefficients::rungeKuttaFehlberg78 ), &computeStateDerivative, 0.0, inputState, 1.0e-14, 1.0e-2, 1.0e-14, 1.0e-24);
+//    RungeKuttaVariableStepSizeIntegratorXd orbitIntegrator ( RungeKuttaCoefficients::get( RungeKuttaCoefficients::rungeKuttaFehlberg78 ), &computeStateDerivative, 0.0, inputState, 1.0e-14, 1.0e-4, 1.0e-14, 1.0e-24);
     // Perform integration until either the half-period point is reached, or a full period has passed.
     if (halfPeriodFlag == 0.5) {
         while (true) {

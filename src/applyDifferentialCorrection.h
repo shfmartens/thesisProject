@@ -10,9 +10,10 @@
 #include "applyDifferentialCorrection.cpp"
 
 
-Eigen::VectorXd applyDifferentialCorrection( Eigen::VectorXd initialStateVector, string orbitType, const double massParameter,
-                                             double maxPositionDeviationFromPeriodicOrbit, double maxVelocityDeviationFromPeriodicOrbit);
-
+Eigen::VectorXd applyDifferentialCorrection( std::string orbitType, Eigen::VectorXd initialStateVector,
+                                             double orbitalPeriod, const double massParameter,
+                                             double maxPositionDeviationFromPeriodicOrbit,
+                                             double maxVelocityDeviationFromPeriodicOrbit);
 
 
 #endif //TUDATBUNDLE_APPLYDIFFERENTIALCORRECTION_H

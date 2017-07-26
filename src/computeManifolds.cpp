@@ -44,13 +44,13 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
     identityMatrix.resize(36, 1);
     initialStateVectorInclSTM.segment(6,36) = identityMatrix;
 
-    Eigen::VectorXd halfPeriodState = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.5, 1.0, orbit_type);
+    Eigen::VectorXd halfPeriodState = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.5, 1.0 );
 //    Eigen::VectorXd differentialCorrection( 7 );
     Eigen::VectorXd differentialCorrection( 6 );
     Eigen::VectorXd outputVector( 43 );
 
     // TODO Propagate the initialStateVector until T/2
-//    outputVector = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.0, 1.0, orbit_type);
+//    outputVector = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.0, 1.0 );
 //    Eigen::VectorXd stateVectorInclSTM = outputVector.segment( 0, 42 );
 //    double currentTime = outputVector( 42 );
 //    double orbitalPeriod = 3.41047588320389;
@@ -59,7 +59,7 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
 //        stateVectorInclSTM = outputVector.segment( 0, 42 );
 //        currentTime = outputVector( 42 );
 //        // Propagate to next time step.
-//        outputVector = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, 1.0, orbit_type);
+//        outputVector = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, 1.0 );
 //    }
 //    Eigen::VectorXd halfPeriodState = outputVector.segment( 0, 42 );
 
@@ -87,13 +87,13 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
 //            orbitalPeriod = orbitalPeriod + differentialCorrection( 6 )/1.0;
 //            cout<<differentialCorrection<<endl;
             // Propagate new state forward to half-period point.
-            outputVector = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.5, 1.0, orbit_type);
-//            outputVector = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.0, 1.0, orbit_type);
+            outputVector = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.5, 1.0 );
+//            outputVector = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.0, 1.0 );
 //            currentTime = outputVector( 42 );
 //            while (currentTime <= orbitalPeriod/2) {
 //                stateVectorInclSTM = outputVector.segment( 0, 42 );
 //                currentTime = outputVector( 42 );
-//                outputVector = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, 1.0, orbit_type);
+//                outputVector = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, 1.0 );
 //            }
 
             halfPeriodState = outputVector.segment( 0, 42 );
@@ -125,7 +125,7 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
             initialStateVectorInclSTM( 5 ) = initialStateVectorInclSTM( 5 ) + differentialCorrection( 5 )/1.0;
 
             // Propagate new state forward to half-period point.
-            outputVector = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.5, 1.0, orbit_type);
+            outputVector = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.5, 1.0 );
             halfPeriodState = outputVector.segment( 0, 42 );
             orbitalPeriod = 2.0 * outputVector( 42 );
 
@@ -158,7 +158,7 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
     orbitStateVectors.push_back(tempStateVector);
 
     // Propagate the initialStateVector for a full period and write output to file.
-    outputVector = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.0, 1.0, orbit_type);
+    outputVector = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.0, 1.0 );
     Eigen::VectorXd stateVectorInclSTM = outputVector.segment( 0, 42 );
 //    stateVectorInclSTM = outputVector.segment( 0, 42 );
     double currentTime = outputVector( 42 );
@@ -183,7 +183,7 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
         orbitStateVectors.push_back(tempStateVector);
 
         // Propagate to next time step.
-        outputVector = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, 1.0, orbit_type);
+        outputVector = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, 1.0 );
     }
     cout << "number of points on orbit: " << numberOfPointsOnPeriodicOrbit << endl;
 
@@ -333,7 +333,7 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
                       << manifoldStartingState(2) << setw(20) << manifoldStartingState(3) << setw(20)
                       << manifoldStartingState(4) << setw(20) << manifoldStartingState(5) << endl;
 
-            outputVector = propagateOrbit(manifoldStartingState, massParameter, 0.0, integrationDirection, orbit_type);
+            outputVector = propagateOrbit(manifoldStartingState, massParameter, 0.0, integrationDirection );
             stateVectorInclSTM = outputVector.segment(0, 42);
             currentTime = outputVector(42);
 //            cout << "Orbit No.: " << ii + 1 << endl;
@@ -369,7 +369,7 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
                 }
 
                 // Propagate to next time step.
-                outputVector = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, integrationDirection, orbit_type);
+                outputVector = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, integrationDirection );
                 count += 1;
             }
 

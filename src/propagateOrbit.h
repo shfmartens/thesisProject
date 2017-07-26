@@ -44,7 +44,7 @@
 
 // Begin function.
 Eigen::VectorXd propagateOrbit(Eigen::VectorXd inputState, double massParameter, double halfPeriodFlag,
-                               double direction, std::string orbit_type);
+                               double direction, double initialStepSize, double maximumStepSize);
 
 
 #endif // PROPAGATEHALO_H

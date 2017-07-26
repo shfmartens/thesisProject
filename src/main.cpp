@@ -7,13 +7,34 @@
 
 
 // Function declaration
-Eigen::VectorXd create_initial_state_vector(string orbit_type, string selected_orbit);
+//Eigen::VectorXd create_initial_state_vector(string orbit_type, string selected_orbit);
 
 int main (){
-    createInitialConditions(1, "horizontal");
-    createInitialConditions(2, "horizontal");
-    createInitialConditions(1, "vertical");
-    createInitialConditions(2, "vertical");
+//    richardsonThirdOrderApproximation("halo", 2, 1.0e-3);
+//    #pragma omp parallel num_threads(6)
+//    {
+//        #pragma omp for
+//        for (unsigned int i=1; i<=6; i++) {
+//            if (i ==1){
+//                createInitialConditions(1, "horizontal");
+//            }
+//            if (i ==2){
+//                createInitialConditions(2, "horizontal");
+//            }
+//            if (i ==3){
+//                createInitialConditions(1, "vertical");
+//            }
+//            if (i ==4){
+                createInitialConditions(2, "vertical");
+//            }
+//            if (i ==5){
+//                createInitialConditions(1, "halo");
+//            }
+//            if (i ==6){
+//                createInitialConditions(2, "halo");
+//            }
+//        }
+//    }
 //    createInitialConditions(1, "halo");
 //    createInitialConditions(2, "halo");
 
