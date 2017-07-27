@@ -5,10 +5,9 @@
 #include "computeDifferentialCorrection.h"
 #include "stateDerivativeModel.h"
 
-using namespace std;
 
-// Function to compute the differential correction
-Eigen::VectorXd computeDifferentialCorrection(Eigen::VectorXd cartesianState)
+
+Eigen::VectorXd computeDifferentialCorrection( Eigen::VectorXd cartesianState )
 {
     // Initiate vectors, matrices etc.
     Eigen::VectorXd differentialCorrection(7);
@@ -59,7 +58,6 @@ Eigen::VectorXd computeDifferentialCorrection(Eigen::VectorXd cartesianState)
         differentialCorrection(4) = -corrections(1);
         differentialCorrection(6) = -corrections(2);
     }
-
 
     // Return differential correction.
     return differentialCorrection;

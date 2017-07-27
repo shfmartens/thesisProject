@@ -16,7 +16,7 @@
 #include <stdexcept>
 #include "Tudat/Mathematics/BasicMathematics/basicFunction.h"
 
-#include "thesisProject/src/functions/librationPointLocationFunction.h"
+#include "librationPointLocationFunction.h"
 
 
 //! Test function for the root-finders.

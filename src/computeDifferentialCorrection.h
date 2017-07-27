@@ -1,10 +1,13 @@
-#ifndef COMPUTEDIFFERENTIALCORRECTION_H
-#define COMPUTEDIFFERENTIALCORRECTION_H
+#ifndef TUDATBUNDLE_COMPUTEDIFFERENTIALCORRECTION_H
+#define TUDATBUNDLE_COMPUTEDIFFERENTIALCORRECTION_H
 
-// Include-statements.
+
+
 #include "computeDifferentialCorrection.cpp"
 
-// Declare function.
-Eigen::VectorXd computeDifferentialCorrection(Eigen::VectorXd cartesianState);
 
-#endif // COMPUTEDIFFERENTIALCORRECTION_H
+Eigen::VectorXd computeDifferentialCorrection( Eigen::VectorXd cartesianState );
+
+
+
+#endif  // TUDATBUNDLE_COMPUTEDIFFERENTIALCORRECTION_H

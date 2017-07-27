@@ -14,14 +14,11 @@
 #include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
 #include "thesisProject/src/propagateOrbit.h"
 #include "thesisProject/src/computeDifferentialCorrection.h"
-#include "thesisProject/src/computeDifferentialCorrectionHalo.h"
-#include "thesisProject/src/computeDifferentialCorrectionNearVertical.h"
 
 
-// Declare mass parameter.
-Eigen::Vector3d thrustVector;
-double thrustAcceleration = 0.0;
+
 double massParameter;
+
 
 void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd initialStateVector,
                        const double primaryGravitationalParameter = tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER,
@@ -30,7 +27,7 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
 //                       const double secondaryGravitationalParameter = tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER,
                        double maxPositionDeviationFromPeriodicOrbit = 1.0e-11, double maxVelocityDeviationFromPeriodicOrbit = 1.0e-8,
                        double displacementFromOrbit = 1.0e-6, int numberOfManifoldOrbits = 100, int saveEveryNthIntegrationStep = 100,
-                       double maximumIntegrationTimeManifoldOrbits = 50.0)
+                       double maximumIntegrationTimeManifoldOrbits = 50.0 )
 {
     // Set output precision and clear screen.
     std::cout.precision( 14 );
@@ -44,10 +41,10 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
     identityMatrix.resize(36, 1);
     initialStateVectorInclSTM.segment(6,36) = identityMatrix;
 
-    Eigen::VectorXd halfPeriodState = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.5, 1.0 );
+//    Eigen::VectorXd halfPeriodState = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.5, 1.0 );
 //    Eigen::VectorXd differentialCorrection( 7 );
-    Eigen::VectorXd differentialCorrection( 6 );
-    Eigen::VectorXd outputVector( 43 );
+//    Eigen::VectorXd differentialCorrection( 6 );
+//    Eigen::VectorXd outputVector( 43 );
 
     // TODO Propagate the initialStateVector until T/2
 //    outputVector = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.0, 1.0 );
@@ -72,68 +69,68 @@ void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd
          << "\nDifferential correction:" << endl;
 
 //    cout << "half state: \n" << halfPeriodState.segment(0,6) << endl;
-    //! Differential Correction
-    if (orbit_type == "halo"){
-        // Apply differential correction and propagate to half-period point until converged.
-        while (positionDeviationFromPeriodicOrbit > maxPositionDeviationFromPeriodicOrbit or
-               velocityDeviationFromPeriodicOrbit > maxVelocityDeviationFromPeriodicOrbit) {
-
-            // Apply differential correction.
-            differentialCorrection = computeDifferentialCorrectionHalo( halfPeriodState );
-//            differentialCorrection = computeDifferentialCorrection( halfPeriodState );
-            initialStateVectorInclSTM( 0 ) = initialStateVectorInclSTM( 0 ) + differentialCorrection( 0 )/1.0;
-            initialStateVectorInclSTM( 2 ) = initialStateVectorInclSTM( 2 ) + differentialCorrection( 2 )/1.0;
-            initialStateVectorInclSTM( 4 ) = initialStateVectorInclSTM( 4 ) + differentialCorrection( 4 )/1.0;
-//            orbitalPeriod = orbitalPeriod + differentialCorrection( 6 )/1.0;
-//            cout<<differentialCorrection<<endl;
-            // Propagate new state forward to half-period point.
-            outputVector = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.5, 1.0 );
-//            outputVector = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.0, 1.0 );
-//            currentTime = outputVector( 42 );
-//            while (currentTime <= orbitalPeriod/2) {
-//                stateVectorInclSTM = outputVector.segment( 0, 42 );
-//                currentTime = outputVector( 42 );
-//                outputVector = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, 1.0 );
-//            }
-
-            halfPeriodState = outputVector.segment( 0, 42 );
-//            orbitalPeriod = 2.0 * outputVector( 42 );
-
-//            cout << "\ninitial state:\n" << initialStateVectorInclSTM.segment(0,6) << endl;
-//            cout << "diff: \n" << differentialCorrection << endl;
-//            cout << "half state: \n" << halfPeriodState.segment(0,6) << endl;
+//    //! Differential Correction
+//    if (orbit_type == "halo"){
+//        // Apply differential correction and propagate to half-period point until converged.
+//        while (positionDeviationFromPeriodicOrbit > maxPositionDeviationFromPeriodicOrbit or
+//               velocityDeviationFromPeriodicOrbit > maxVelocityDeviationFromPeriodicOrbit) {
+//
+//            // Apply differential correction.
+//            differentialCorrection = computeDifferentialCorrectionHalo( halfPeriodState );
+////            differentialCorrection = computeDifferentialCorrection( halfPeriodState );
+//            initialStateVectorInclSTM( 0 ) = initialStateVectorInclSTM( 0 ) + differentialCorrection( 0 )/1.0;
+//            initialStateVectorInclSTM( 2 ) = initialStateVectorInclSTM( 2 ) + differentialCorrection( 2 )/1.0;
+//            initialStateVectorInclSTM( 4 ) = initialStateVectorInclSTM( 4 ) + differentialCorrection( 4 )/1.0;
+////            orbitalPeriod = orbitalPeriod + differentialCorrection( 6 )/1.0;
+////            cout<<differentialCorrection<<endl;
+//            // Propagate new state forward to half-period point.
+//            outputVector = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.5, 1.0 );
+////            outputVector = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.0, 1.0 );
+////            currentTime = outputVector( 42 );
+////            while (currentTime <= orbitalPeriod/2) {
+////                stateVectorInclSTM = outputVector.segment( 0, 42 );
+////                currentTime = outputVector( 42 );
+////                outputVector = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, 1.0 );
+////            }
+//
+//            halfPeriodState = outputVector.segment( 0, 42 );
+////            orbitalPeriod = 2.0 * outputVector( 42 );
+//
+////            cout << "\ninitial state:\n" << initialStateVectorInclSTM.segment(0,6) << endl;
+////            cout << "diff: \n" << differentialCorrection << endl;
+////            cout << "half state: \n" << halfPeriodState.segment(0,6) << endl;
+////            cout << "\n" << endl;
+//
+//            // Calculate deviation from periodic orbit.
+////            deviationFromPeriodicOrbit = fabs( halfPeriodState( 3 ) ) + fabs( halfPeriodState( 5  ) );
+//            velocityDeviationFromPeriodicOrbit = sqrt(pow(halfPeriodState(3),2) + pow(halfPeriodState(5),2));
+//            positionDeviationFromPeriodicOrbit = halfPeriodState(1);
+//            cout << velocityDeviationFromPeriodicOrbit << endl;
+////            cout << positionDeviationFromPeriodicOrbit << endl;
 //            cout << "\n" << endl;
-
-            // Calculate deviation from periodic orbit.
-//            deviationFromPeriodicOrbit = fabs( halfPeriodState( 3 ) ) + fabs( halfPeriodState( 5  ) );
-            velocityDeviationFromPeriodicOrbit = sqrt(pow(halfPeriodState(3),2) + pow(halfPeriodState(5),2));
-            positionDeviationFromPeriodicOrbit = halfPeriodState(1);
-            cout << velocityDeviationFromPeriodicOrbit << endl;
-//            cout << positionDeviationFromPeriodicOrbit << endl;
-            cout << "\n" << endl;
-        }
-    }
-
-    if(orbit_type == "near_vertical"){
-        // Apply differential correction and propagate to half-period point until converged.
-        while (velocityDeviationFromPeriodicOrbit > maxVelocityDeviationFromPeriodicOrbit ) {
-
-            // Apply differential correction.
-            differentialCorrection = computeDifferentialCorrectionNearVertical( halfPeriodState );
-            initialStateVectorInclSTM( 0 ) = initialStateVectorInclSTM( 0 ) + differentialCorrection( 0 )/1.0;
-            initialStateVectorInclSTM( 4 ) = initialStateVectorInclSTM( 4 ) + differentialCorrection( 4 )/1.0;
-            initialStateVectorInclSTM( 5 ) = initialStateVectorInclSTM( 5 ) + differentialCorrection( 5 )/1.0;
-
-            // Propagate new state forward to half-period point.
-            outputVector = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.5, 1.0 );
-            halfPeriodState = outputVector.segment( 0, 42 );
-            orbitalPeriod = 2.0 * outputVector( 42 );
-
-            // Calculate deviation from periodic orbit.
-            velocityDeviationFromPeriodicOrbit = sqrt(pow(halfPeriodState(3),2) + pow(halfPeriodState(5),2));
-            cout << velocityDeviationFromPeriodicOrbit << endl;
-        }
-    }
+//        }
+//    }
+//
+//    if(orbit_type == "near_vertical"){
+//        // Apply differential correction and propagate to half-period point until converged.
+//        while (velocityDeviationFromPeriodicOrbit > maxVelocityDeviationFromPeriodicOrbit ) {
+//
+//            // Apply differential correction.
+//            differentialCorrection = computeDifferentialCorrectionNearVertical( halfPeriodState );
+//            initialStateVectorInclSTM( 0 ) = initialStateVectorInclSTM( 0 ) + differentialCorrection( 0 )/1.0;
+//            initialStateVectorInclSTM( 4 ) = initialStateVectorInclSTM( 4 ) + differentialCorrection( 4 )/1.0;
+//            initialStateVectorInclSTM( 5 ) = initialStateVectorInclSTM( 5 ) + differentialCorrection( 5 )/1.0;
+//
+//            // Propagate new state forward to half-period point.
+//            outputVector = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.5, 1.0 );
+//            halfPeriodState = outputVector.segment( 0, 42 );
+//            orbitalPeriod = 2.0 * outputVector( 42 );
+//
+//            // Calculate deviation from periodic orbit.
+//            velocityDeviationFromPeriodicOrbit = sqrt(pow(halfPeriodState(3),2) + pow(halfPeriodState(5),2));
+//            cout << velocityDeviationFromPeriodicOrbit << endl;
+//        }
+//    }
 
     double jacobiEnergy = tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, initialStateVectorInclSTM.segment(0,6));
     cout << "\nFinal initial state:" << endl << initialStateVectorInclSTM.segment(0,6) << endl

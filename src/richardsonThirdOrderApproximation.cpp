@@ -4,14 +4,14 @@
 #include "Tudat/Mathematics/BasicMathematics/mathematicalConstants.h"
 #include "Tudat/Mathematics/RootFinders/newtonRaphson.h"
 
-#include "thesisProject/src/functions/librationPointLocationFunction.h"
-#include "thesisProject/src/functions/librationPointLocationFunction1.h"
-#include "thesisProject/src/functions/librationPointLocationFunction2.h"
-#include "thesisProject/src/propagateOrbit.h"
+#include "functions/librationPointLocationFunction.h"
+#include "functions/librationPointLocationFunction1.h"
+#include "functions/librationPointLocationFunction2.h"
+#include "propagateOrbit.h"
 
 Eigen::VectorXd richardsonThirdOrderApproximation(std::string orbitType, int librationPointNr, double amplitude)
 {
-    cout << "\nCreate initial conditions:\n" << endl;
+    std::cout << "\nCreate initial conditions:\n" << std::endl;
 
     // Set output precision and clear screen.
     std::cout.precision(14);
@@ -121,7 +121,7 @@ Eigen::VectorXd richardsonThirdOrderApproximation(std::string orbitType, int lib
         Ax = pow(((-delta - l2 * pow(Az, 2.0)) / l1), 0.5);
     }
 
-    cout << "Ax = " << Ax << ", Az =  = " << Az << endl;
+    std::cout << "Ax = " << Ax << ", Az =  = " << Az << std::endl;
 
     double omega1 = 0.0;
     double omega2 = s1 * pow(Ax, 2.0) + s2 * pow(Az, 2.0);

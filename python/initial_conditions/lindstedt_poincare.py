@@ -15,17 +15,17 @@ class RichardsonApproximation:
         mu_Sun_Earth = (EARTH_GRAVITATIONAL_PARAMETER + MOON_GRAVITATIONAL_PARAMETER) / (
         EARTH_GRAVITATIONAL_PARAMETER + MOON_GRAVITATIONAL_PARAMETER + SUN_GRAVITATIONAL_PARAMETER)
 
-        print(mu_Earth_Moon)
         P = 27.321661 * 24 * 3600
         self.mu = mu_Earth_Moon
         # self.mu = mu_Sun_Earth
         self.d = 384400
         # self.d = 149.6e6
         self.n = 2 * math.pi / P
-        # print(self.n)
+
+        print('Mu: ' + str(self.mu))
         # x, y, z = self.compute_coefficients('Horizontal', 1)
-        x, y, z = self.compute_coefficients('Vertical', 1)
-        # x, y, z = self.compute_coefficients('Halo', 2)
+        # x, y, z = self.compute_coefficients('Vertical', 2)
+        x, y, z = self.compute_coefficients('Halo', 2)
         pass
 
     def compute_coefficients(self, type, lagrange_point_nr):
@@ -48,9 +48,13 @@ class RichardsonApproximation:
             c2 = 1 / gammaL ** 3 * ((-1) ** 2 * mu + (-1) ** 2 * (1 - mu) * gammaL ** (2 + 1) / (1 + gammaL) ** (2 + 1))
             c3 = 1 / gammaL ** 3 * ((-1) ** 3 * mu + (-1) ** 3 * (1 - mu) * gammaL ** (3 + 1) / (1 + gammaL) ** (3 + 1))
             c4 = 1 / gammaL ** 3 * ((-1) ** 4 * mu + (-1) ** 4 * (1 - mu) * gammaL ** (4 + 1) / (1 + gammaL) ** (4 + 1))
-        print(gammaL)
+        print('Gamma L: ' + str(gammaL))
         l = Symbol('l')
         l = nsolve(l ** 4 + (c2 - 2) * l ** 2 - (c2 - 1) * (1 + 2 * c2), l, 1)
+
+        print('l: ' + str(l))
+
+        # print(np.sqrt(1-c2/2+1/2*np.sqrt((c2-2)**2+4*(c2-1)*(1+2*c2))))
 
         k = 2 * l / (l ** 2 + 1 - c2)
         delta = l ** 2 - c2
@@ -103,52 +107,49 @@ class RichardsonApproximation:
                                  'd1', 'd2', 'a21', 'a22', 'a23', 'a24', 'a31', 'a32', 'b21', 'b22', 'b31', 'b32',
                                  'd21', 'd31', 'd32'])
 
-        # 1.15559018187587    -0.00000002201010   -0.00620776223859   -0.00000016240107   0.00007221442416    -0.00000873648192
 
         if type == 'Horizontal':
             Ax = 1e-3
+            # Ax = 1e-4
             Az = 0
             pass
         if type == 'Vertical':
             Ax = 0
-            # Az = 1e-3*gammaL
-            Az = 1e-2
-            print(Az)
+            # Az = 5e-4
+            Az = 2e-1
+            # Az = 1e-6
             pass
         if type == 'Halo':
-            # Az = 1e-3*gammaL
-            # Az = 1e-5 * gammaL
+            # Az = 1.2e-1
+            # Az = 1.6e-1
             Az = 1e-3
-            # Az = 20e3 / (self.d * gammaL)
-            # Az = 650e3/(self.d*gammaL)
-            print(Az)
             Ax = np.sqrt((-delta - l2 * Az ** 2) / l1)
-            print(Ax)
             pass
+        print('Ax: ' + str(Ax))
+        print('Az: ' + str(Az))
+        omega1 = 0
+        omega2 = s1 * Ax ** 2 + s2 * Az ** 2
+        omega = 1 + omega1 + omega2
+        print('Omega: ' + str(omega))
+        T = 2 * math.pi / (l * omega)
+        print('T: ' + str(T) + '\n')
 
         tau1 = 0
         deltan = 2-1
 
-        x = a21 * Ax ** 2 + a22 * Az ** 2 - Ax * math.cos(tau1) + (a23 * Ax ** 2 - a24 * Az ** 2) * math.cos(
-            2 * tau1) + (a31 * Ax ** 3 - a32 * Ax * Az ** 2) * math.cos(3 * tau1)
-        y = k * Ax * math.sin(tau1) + (b21 * Ax ** 2 - b22 * Az ** 2) * math.sin(2 * tau1) + (
-                                                                                             b31 * Ax ** 3 - b32 * Ax * Az ** 2) * math.sin(
-            3 * tau1)
-        z = deltan * Az * math.cos(tau1) + deltan * d21 * Ax * Az * (math.cos(2 * tau1) - 3) + deltan * (
-        d32 * Az * Ax ** 2 - d31 * Az ** 3) * math.cos(3 * tau1)
-        xdot = l * Ax * math.sin(tau1) - 2 * l * (a23 * Ax ** 2 - a24 * Az ** 2) * math.sin(2 * tau1) - 3 * l * (
-        a31 * Ax ** 3 - a32 * Ax * Az ** 2) * math.sin(3 * tau1)
-        ydot = l * (k * Ax * math.cos(tau1) + 2 * (b21 * Ax ** 2 - b22 * Az ** 2) * math.cos(2 * tau1) + 3 * (
-        b31 * Ax ** 3 - b32 * Ax * Az ** 2) * math.cos(3 * tau1))
-        zdot = -l * deltan * Az * math.sin(tau1) - 2 * l * deltan * d21 * Ax * Az * math.sin(
-            2 * tau1) - 3 * l * deltan * (d32 * Az * Ax ** 2 - d31 * Az ** 3) * math.sin(3 * tau1)
+        x = a21 * Ax ** 2 + a22 * Az ** 2 - Ax * math.cos(tau1) + (a23 * Ax ** 2 - a24 * Az ** 2) * math.cos(2 * tau1) + (a31 * Ax ** 3 - a32 * Ax * Az ** 2) * math.cos(3 * tau1)
+        y = k * Ax * math.sin(tau1) + (b21 * Ax ** 2 - b22 * Az ** 2) * math.sin(2 * tau1) + (b31 * Ax ** 3 - b32 * Ax * Az ** 2) * math.sin(3 * tau1)
+        z = deltan * Az * math.cos(tau1) + deltan * d21 * Ax * Az * (math.cos(2 * tau1) - 3) + deltan * (d32 * Az * Ax ** 2 - d31 * Az ** 3) * math.cos(3 * tau1)
+        xdot = l * Ax * math.sin(tau1) - 2 * l * (a23 * Ax ** 2 - a24 * Az ** 2) * math.sin(2 * tau1) - 3 * l * (a31 * Ax ** 3 - a32 * Ax * Az ** 2) * math.sin(3 * tau1)
+        ydot = l * (k * Ax * math.cos(tau1) + 2 * (b21 * Ax ** 2 - b22 * Az ** 2) * math.cos(2 * tau1) + 3 * (b31 * Ax ** 3 - b32 * Ax * Az ** 2) * math.cos(3 * tau1))
+        zdot = -l * deltan * Az * math.sin(tau1) - 2 * l * deltan * d21 * Ax * Az * math.sin(2 * tau1) - 3 * l * deltan * (d32 * Az * Ax ** 2 - d31 * Az ** 3) * math.sin(3 * tau1)
 
-        print('x: ' + str(x))
-        print('y: ' + str(y))
-        print('z: ' + str(z))
-        print('xdot: ' + str(xdot))
-        print('ydot: ' + str(ydot))
-        print('zdot: ' + str(zdot) + '\n')
+        # print('x: ' + str(x))
+        # print('y: ' + str(y))
+        # print('z: ' + str(z))
+        # print('xdot: ' + str(xdot))
+        # print('ydot: ' + str(ydot))
+        # print('zdot: ' + str(zdot) + '\n')
 
         if lagrange_point_nr == 1:
             print('X: ' + str((x - 1) * gammaL + 1 - mu))
@@ -160,15 +161,20 @@ class RichardsonApproximation:
         print('Y: ' + str(y * gammaL))
         print('Z: ' + str(z * gammaL))
         print('Xdot: ' + str(xdot * gammaL))
-        print('Ydot: ' + str(ydot * gammaL))
-        print('Zdot: ' + str(zdot * gammaL))
+        # print('Ydot: ' + str(ydot * gammaL))
+        print('Ydot: ' + str(ydot * gammaL * omega))
+        print('Zdot: ' + str(zdot * gammaL) + '\n')
 
-        omega1 = 0
-        omega2 = s1 * Ax ** 2 + s2 * Az ** 2
-        omega = 1 + omega1 + omega2
 
-        T = 2 * math.pi / (l * omega)
-        print('T: ' + str(T))
+        if lagrange_point_nr == 1:
+            print(str((x - 1) * gammaL + 1 - mu))
+            pass
+        if lagrange_point_nr == 2:
+            print(str((x + 1) * gammaL + 1 - mu))
+            pass
+        print(str(z * gammaL))
+        print(str(ydot * gammaL * omega))
+        print(T)
         # print('T: ' + str(T / self.n / 86400))
 
         # print(df)

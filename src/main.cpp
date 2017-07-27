@@ -1,42 +1,56 @@
+#include <Eigen/Core>
+#include <Eigen/Eigenvalues>
+#include <Eigen/QR>
+#include <Eigen/Dense>
+#include <vector>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <math.h>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
-//#include <omp.h>
 
-#include "thesisProject/src/createInitialConditions.h"
-#include "thesisProject/src/computeManifolds.h"
+#include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
+
+#include "createInitialConditions.h"
+//#include "thesisProject/src/computeManifolds.h"
+#include <omp.h>
 
 
 // Function declaration
 //Eigen::VectorXd create_initial_state_vector(string orbit_type, string selected_orbit);
 
+double massParameter;
+
 int main (){
-//    richardsonThirdOrderApproximation("halo", 2, 1.0e-3);
-//    #pragma omp parallel num_threads(6)
-//    {
-//        #pragma omp for
-//        for (unsigned int i=1; i<=6; i++) {
-//            if (i ==1){
-//                createInitialConditions(1, "horizontal");
-//            }
-//            if (i ==2){
-//                createInitialConditions(2, "horizontal");
-//            }
-//            if (i ==3){
-//                createInitialConditions(1, "vertical");
-//            }
-//            if (i ==4){
-//                createInitialConditions(2, "vertical");
-//            }
-//            if (i ==5){
-//                createInitialConditions(1, "halo");
-//            }
-//            if (i ==6){
+
+    richardsonThirdOrderApproximation("halo", 2, 1.0e-3);
+    #pragma omp parallel num_threads(6)
+    {
+        #pragma omp for
+        for (unsigned int i=1; i<=6; i++) {
+            if (i ==1){
+                createInitialConditions(1, "horizontal");
+            }
+            if (i ==2){
+                createInitialConditions(2, "horizontal");
+            }
+            if (i ==3){
+                createInitialConditions(1, "vertical");
+            }
+            if (i ==4){
+                createInitialConditions(2, "vertical");
+            }
+            if (i ==5){
+                createInitialConditions(1, "halo");
+            }
+            if (i ==6){
                 createInitialConditions(2, "halo");
-//            }
-//        }
-//    }
-//    createInitialConditions(1, "halo");
-//    createInitialConditions(2, "halo");
+            }
+        }
+    }
+
 
 //    // Load configuration parameters
 //    boost::property_tree::ptree jsontree;
@@ -71,7 +85,7 @@ int main (){
 }
 
 
-Eigen::VectorXd create_initial_state_vector(string orbit_type, string selected_orbit){
+Eigen::VectorXd create_initial_state_vector(std::string orbit_type, std::string selected_orbit){
     boost::property_tree::ptree jsontree;
 //    boost::property_tree::read_json("../config/ver_folta_eigenvectors.json", jsontree);
 //    boost::property_tree::read_json("../config/config.json", jsontree);

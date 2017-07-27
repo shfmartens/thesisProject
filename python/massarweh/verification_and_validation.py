@@ -283,7 +283,7 @@ class DisplayPeriodicityValidation:
 
 if __name__ == '__main__':
     lagrange_points = [1, 2]
-    orbit_types = ['horizontal', 'vertical']
+    orbit_types = ['horizontal', 'vertical', 'halo']
 
     for orbit_type in orbit_types:
         for lagrange_point in lagrange_points:
