@@ -10,7 +10,8 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
                                              Eigen::VectorXd initialStateVector,
                                              double orbitalPeriod, const double massParameter,
                                              double maxPositionDeviationFromPeriodicOrbit,
-                                             double maxVelocityDeviationFromPeriodicOrbit );
+                                             double maxVelocityDeviationFromPeriodicOrbit,
+                                             int maxNumberOfIterations );
 
 
 #endif  // TUDATBUNDLE_APPLYDIFFERENTIALCORRECTION_H

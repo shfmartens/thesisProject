@@ -8,8 +8,9 @@ from matplotlib.gridspec import GridSpec
 from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.axes_grid.inset_locator import inset_axes
 import seaborn as sns
+import time
 
-from load_data import load_orbit, load_bodies_location, load_lagrange_points_location, cr3bp_velocity, load_initial_conditions_incl_M
+from load_data import load_orbit, load_bodies_location, load_lagrange_points_location, load_differential_corrections, load_initial_conditions_incl_M
 
 
 class DisplayPeriodicityValidation:
@@ -21,18 +22,60 @@ class DisplayPeriodicityValidation:
         initial_conditions_file_path = '../../data/raw/' + orbit_type + '_L' + str(lagrange_point_nr) + '_initial_conditions.txt'
         initial_conditions_incl_m_df = load_initial_conditions_incl_M(initial_conditions_file_path)
 
-        self.C, self.T, self.x, self.eigenvalues, self.D, self.orderOfLinearInstability = [], [], [], [], [], []
-        self.lambda1, self.lambda2, self.lambda3, self.lambda4, self.lambda5, self.lambda6 = [], [], [], [], [], []
-        self.v1, self.v2, self.v3 = [], [], []
+        differential_correction_file_path = '../../data/raw/' + orbit_type + '_L' + str(lagrange_point_nr) + '_differential_correction.txt'
+        differential_correction_df = load_differential_corrections(differential_correction_file_path)
+
+        self.C = []
+        self.T = []
+        self.x = []
+        self.X = []
+        self.delta_r = []
+        self.delta_v = []
+
+        self.numberOfIterations = []
+        self.C_half_period = []
+        self.T_half_period = []
+        self.X_half_period = []
+
+        self.eigenvalues = []
+        self.D = []
+        self.orderOfLinearInstability = []
+        self.lambda1 = []
+        self.lambda2 = []
+        self.lambda3 = []
+        self.lambda4 = []
+        self.lambda5 = []
+        self.lambda6 = []
+        self.v1 = []
+        self.v2 = []
+        self.v3 = []
+        
+        for row in differential_correction_df.iterrows():
+            self.numberOfIterations.append(row[1][0])
+            self.C_half_period.append(row[1][1])
+            self.T_half_period.append(row[1][2])
+            self.X_half_period.append(np.array(row[1][3:9]))
 
         for row in initial_conditions_incl_m_df.iterrows():
-            self.C.append(row[1][1])
-            self.T.append(row[1][2])
-            self.x.append(np.array(row[1][3]))
+            self.C.append(row[1][0])
+            self.T.append(row[1][1])
+            self.x.append(row[1][2])
+            self.X.append(np.array(row[1][2:8]))
+
             # self.X.append(np.array(row[1][3:9]))
-            M = np.matrix([list(row[1][9:15]), list(row[1][15:21]), list(row[1][21:27]), list(row[1][27:33]), list(row[1][33:39]), list(row[1][39:45])])
+            M = np.matrix([list(row[1][8:14]), list(row[1][14:20]), list(row[1][20:26]), list(row[1][26:32]), list(row[1][32:38]), list(row[1][38:44])])
 
             eigenvalue = np.linalg.eigvals(M)
+            for l in eigenvalue:
+                if l.imag == 0.0:
+
+                    pass
+                print(l)
+            # lambda1 =
+
+            print(eigenvalue.real.max().index)
+
+            time.sleep(5)
 
             # Sorting eigenvalues from largest to smallest norm
             sorting_index = abs(eigenvalue).argsort()[::-1]
@@ -56,6 +99,16 @@ class DisplayPeriodicityValidation:
             self.v2.append(abs(eigenvalue[sorting_index[1]] + eigenvalue[sorting_index[4]]) / 2)
             self.v3.append(abs(eigenvalue[sorting_index[2]] + eigenvalue[sorting_index[3]]) / 2)
             self.D.append(np.linalg.det(M))
+
+        for i in range(0, len(self.C)):
+            df = load_orbit('../../data/raw/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_' + str(i) + '.txt')
+            self.delta_r.append(np.sqrt((df.head(1)['x'].values - df.tail(1)['x'].values) ** 2 +
+                                        (df.head(1)['y'].values - df.tail(1)['y'].values) ** 2 +
+                                        (df.head(1)['z'].values - df.tail(1)['z'].values) ** 2))
+
+            self.delta_v.append(np.sqrt((df.head(1)['xdot'].values - df.tail(1)['xdot'].values) ** 2 +
+                                        (df.head(1)['ydot'].values - df.tail(1)['ydot'].values) ** 2 +
+                                        (df.head(1)['zdot'].values - df.tail(1)['zdot'].values) ** 2))
 
         self.figSize = (20, 20)
         self.suptitleSize = 20
@@ -138,6 +191,7 @@ class DisplayPeriodicityValidation:
         fig2.savefig('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_family_subplots.png')
 
         # plt.show()
+        plt.close()
         pass
 
     def plot_orbital_energy(self):
@@ -161,6 +215,7 @@ class DisplayPeriodicityValidation:
         plt.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitType + ': orbital energy and period', size=self.suptitleSize)
         plt.savefig('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_orbital_energy.png')
         # plt.show()
+        plt.close()
         pass
 
     def plot_monodromy_analysis(self):
@@ -211,6 +266,7 @@ class DisplayPeriodicityValidation:
         plt.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitType + ': analysis Monodromy matrix', size=self.suptitleSize)
         plt.savefig('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_monodromy_analysis.png')
         # plt.show()
+        plt.close()
         pass
 
     def plot_stability(self):
@@ -278,6 +334,73 @@ class DisplayPeriodicityValidation:
         plt.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitType + ': eigenvalues $\lambda_i$ & stability index $v_i$', size=self.suptitleSize)
         plt.savefig('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_stability.png')
         # plt.show()
+        plt.close()
+        pass
+
+    def plot_periodicity_validation(self):
+        f, arr = plt.subplots(4, 2, figsize=self.figSize)
+
+        delta_y_half_period = []
+        delta_xdot_half_period = []
+        delta_zdot_half_period = []
+        for i in range(len(self.X)):
+            delta_y_half_period.append(abs(self.X[i][1] - self.X_half_period[i][1]))
+            delta_xdot_half_period.append(abs(self.X[i][3] - self.X_half_period[i][3]))
+            delta_zdot_half_period.append(abs(self.X[i][5] - self.X_half_period[i][5]))
+
+        delta_J = [abs(C0 - C1) for C0, C1 in zip(self.C, self.C_half_period)]
+        delta_T = [abs(T/2 - t) for T, t in zip(self.T, self.T_half_period)]
+
+        arr[0, 0].semilogy(self.x, self.delta_r)
+        arr[0, 0].semilogy(self.x, 1e-10 * np.ones(len(self.x)), color='red')
+        arr[0, 0].set_xlim(self.xlim)
+        arr[0, 0].set_ylim([1e-16, 1e-10])
+        arr[0, 0].set_title('$||r(0) - r(T)||$')
+
+        arr[1, 0].semilogy(self.x, self.delta_v)
+        arr[1, 0].semilogy(self.x, 1e-10 * np.ones(len(self.x)), color='red')
+        arr[1, 0].set_xlim(self.xlim)
+        arr[1, 0].set_ylim([1e-16, 1e-10])
+        arr[1, 0].set_title('$||v(0) - v(T)||$')
+
+        arr[2, 0].plot(self.x, self.numberOfIterations)
+        arr[2, 0].set_xlim(self.xlim)
+        arr[2, 0].set_ylim([0, 20])
+        arr[2, 0].set_title('Number of iterations $N^\circ$')
+
+        arr[0, 1].semilogy(self.x, delta_J)
+        arr[0, 1].semilogy(self.x, 1e-12 * np.ones(len(self.x)), color='red')
+        arr[0, 1].set_xlim(self.xlim)
+        arr[0, 1].set_ylim([1e-16, 1e-10])
+        arr[0, 1].set_title('$||J(0) - J(T/2)||}$')
+
+        arr[1, 1].semilogy(self.x, delta_xdot_half_period)
+        arr[1, 1].semilogy(self.x, delta_zdot_half_period)
+        arr[1, 1].semilogy(self.x, 1e-12 * np.ones(len(self.x)), color='red')
+        arr[1, 1].set_xlim(self.xlim)
+        arr[1, 1].set_ylim([1e-16, 1e-10])
+        arr[1, 1].set_title('$||\dot{x}(0) - \dot{x}(T/2)||, ||\dot{z}(0) - \dot{z}(T/2)||$')
+
+        arr[2, 1].semilogy(self.x, delta_y_half_period)
+        arr[2, 1].semilogy(self.x, 1e-12*np.ones(len(self.x)), color='red')
+        arr[2, 1].set_xlim(self.xlim)
+        arr[2, 1].set_ylim([1e-16, 1e-10])
+        arr[2, 1].set_title('$||y(0) - y(T/2)||$')
+
+        arr[3, 1].semilogy(self.x, delta_T)
+        # arr[3, 1].semilogy(self.x, 1e-12*np.ones(len(self.x)))
+        arr[3, 1].set_xlim(self.xlim)
+        arr[3, 1].set_ylim([1e-16, 1e-10])
+        arr[3, 1].set_title('$||T/2 - t||$')
+
+        for i in range(4):
+            for j in range(2):
+                arr[i, j].grid(True, which='both', ls=':')
+
+        plt.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitType + ': periodicity validation', size=self.suptitleSize)
+        plt.savefig('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_periodicity.png')
+        # plt.show()
+        plt.close()
         pass
 
 
@@ -287,8 +410,13 @@ if __name__ == '__main__':
 
     for orbit_type in orbit_types:
         for lagrange_point in lagrange_points:
+
+            if orbit_type == 'horizontal' and lagrange_point == 2:
+                continue
+
             display_periodicity_validation = DisplayPeriodicityValidation(orbit_type, lagrange_point)
             display_periodicity_validation.plot_family()
             display_periodicity_validation.plot_orbital_energy()
             display_periodicity_validation.plot_monodromy_analysis()
             display_periodicity_validation.plot_stability()
+            display_periodicity_validation.plot_periodicity_validation()

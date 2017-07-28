@@ -11,7 +11,8 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
                                              Eigen::VectorXd initialStateVector,
                                              double orbitalPeriod, const double massParameter,
                                              double maxPositionDeviationFromPeriodicOrbit,
-                                             double maxVelocityDeviationFromPeriodicOrbit )
+                                             double maxVelocityDeviationFromPeriodicOrbit,
+                                             int maxNumberOfIterations = 50 )
 {
     std::cout << "\nApply differential correction:" << std::endl;
 
@@ -24,10 +25,10 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
 
     // Perform first integration step
     Eigen::VectorXd previousHalfPeriodState;
-    Eigen::VectorXd halfPeriodState    = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.0, 1);
-    Eigen::VectorXd stateVectorInclSTM = halfPeriodState.segment(0,42);
-    double currentTime                 = halfPeriodState(42);
-    int numberOfIterations             = 0;
+    Eigen::VectorXd halfPeriodState     = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.0, 1);
+    Eigen::VectorXd stateVectorInclSTM  = halfPeriodState.segment(0,42);
+    double currentTime                  = halfPeriodState(42);
+    int numberOfIterations              = 0;
 
     // Perform integration steps until end of half orbital period
     for (int i = 5; i <= 12; i++) {
@@ -64,7 +65,12 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
 
     // Apply differential correction and propagate to half-period point until converged.
     while ( positionDeviationFromPeriodicOrbit > maxPositionDeviationFromPeriodicOrbit or
-            velocityDeviationFromPeriodicOrbit > maxVelocityDeviationFromPeriodicOrbit) {
+            velocityDeviationFromPeriodicOrbit > maxVelocityDeviationFromPeriodicOrbit ){
+
+        // If the maximum number of iterations has been reached, return a zero vector to stop the numerical continuation
+        if (numberOfIterations > maxNumberOfIterations){
+           return Eigen::VectorXd::Zero(15);
+        }
 
         // Apply differential correction
         differentialCorrection = computeDifferentialCorrection( halfPeriodState );

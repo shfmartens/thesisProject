@@ -9,7 +9,8 @@
 #include "functions/librationPointLocationFunction2.h"
 #include "propagateOrbit.h"
 
-Eigen::VectorXd richardsonThirdOrderApproximation(std::string orbitType, int librationPointNr, double amplitude)
+Eigen::VectorXd richardsonThirdOrderApproximation(std::string orbitType, int librationPointNr,
+                                                  double amplitude, double n = 1.0)
 {
     std::cout << "\nCreate initial conditions:\n" << std::endl;
 
@@ -125,10 +126,10 @@ Eigen::VectorXd richardsonThirdOrderApproximation(std::string orbitType, int lib
 
     double omega1 = 0.0;
     double omega2 = s1 * pow(Ax, 2.0) + s2 * pow(Az, 2.0);
-    double omega = 1.0 + omega1 + omega2;
+    double omega  = 1.0 + omega1 + omega2;
 
-    double tau1 = 0.0;
-    double deltan = 2.0-1.0;
+    double tau1   = 0.0;
+    double deltan = 2.0 - n;
 
     double x             = a21 * pow(Ax, 2.0) + a22 * pow(Az, 2.0) - Ax * std::cos(tau1) + (a23 * pow(Ax, 2.0) - a24 * pow(Az, 2.0)) * std::cos(2.0 * tau1) + (a31 * pow(Ax, 3.0) - a32 * Ax * pow(Az, 2.0)) * std::cos(3.0 * tau1);
     double y             = k * Ax * std::sin(tau1) + (b21 * pow(Ax, 2.0) - b22 * pow(Az, 2.0)) * std::sin(2 * tau1) + (b31 * pow(Ax, 3.0) - b32 * Ax * pow(Az, 2.0)) * std::sin(3.0 * tau1);

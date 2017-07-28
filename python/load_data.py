@@ -45,6 +45,12 @@ def load_initial_conditions_incl_M(file_path):
     return data
 
 
+def load_differential_corrections(file_path):
+    data = pd.read_table(file_path, delim_whitespace=True, header=None)
+    # data.columns = ['numberOfIterations', 'C', 'T', 'x', 'y', 'z', 'xdot', 'ydot', 'zdot']
+    return data
+
+
 def load_lagrange_points_location():
     location_lagrange_points = {'L1': [0.8369151483688, 0, 0],
                                 'L2': [1.1556821477825, 0, 0],
@@ -82,20 +88,29 @@ def cr3bp_velocity(x_loc, y_loc, c):
     return v
 
 
-if __name__ == "__main__":
-    # manifold_file_path = "../data/near_vertical_1_W_S_min.txt"
+if __name__ == '__main__':
+    # manifold_file_path = '../data/near_vertical_1_W_S_min.txt'
     # manifold_df = load_manifold(manifold_file_path)
     # print(manifold_df)
 
-    # orbit_file_path = "../data/near_vertical_1_final_orbit.txt"
+    # orbit_file_path = '../data/near_vertical_1_final_orbit.txt'
     # orbit_df = load_orbit(orbit_file_path)
     # print(orbit_df)
 
-    # initial_conditions_file_path = "../data/raw/horizontal_L2_initial_conditions.txt"
+    # initial_conditions_file_path = '../data/raw/horizontal_L2_initial_conditions.txt'
     # initial_conditions_df = load_initial_conditions(initial_conditions_file_path)
     # print(initial_conditions_df)
 
-    initial_conditions_file_path = "../data/raw/horizontal_L1_initial_conditions.txt"
+    # initial_conditions_file_path = '../data/raw/horizontal_L1_initial_conditions.txt'
+    # initial_conditions_incl_M_df = load_initial_conditions_incl_M(initial_conditions_file_path)
+    # print(initial_conditions_incl_M_df)
+
+    initial_conditions_file_path = '../data/raw/halo_L1_initial_conditions.txt'
     initial_conditions_incl_M_df = load_initial_conditions_incl_M(initial_conditions_file_path)
     print(initial_conditions_incl_M_df)
+
+
+    # differential_correction_file_path = '../data/raw/horizontal_L1_differential_correction.txt'
+    # differential_correction_df = load_differential_corrections(differential_correction_file_path)
+    # print(differential_correction_df)
 

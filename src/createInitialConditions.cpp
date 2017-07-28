@@ -4,6 +4,7 @@
 #include <Eigen/Dense>
 
 #include "applyDifferentialCorrection.h"
+#include "checkEigenvalues.h"
 #include "computeEigenvalues.h"
 #include "propagateOrbit.h"
 #include "richardsonThirdOrderApproximation.h"
@@ -15,7 +16,7 @@ void createInitialConditions( int librationPointNr, std::string orbitType,
                               const double primaryGravitationalParameter = tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER,
                               const double secondaryGravitationalParameter = tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER,
                               double maxPositionDeviationFromPeriodicOrbit = 1.0e-12, double maxVelocityDeviationFromPeriodicOrbit = 1.0e-12,
-                              double maxDeviationEigenvalue = 1.0e-2 )
+                              double maxEigenvalueDeviation = 1.0e-2 )
 {
     std::cout << "\nCreate initial conditions:\n" << std::endl;
 
@@ -57,7 +58,7 @@ void createInitialConditions( int librationPointNr, std::string orbitType,
         }
     } else if (orbitType == "halo") {
         if (librationPointNr == 1) {
-            richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("halo", 1, 1.1e-1);
+            richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("halo", 1, 1.1e-1, 3.0);
         } else if (librationPointNr == 2) {
             richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("halo", 2, 1.5e-1);
         }
@@ -105,9 +106,6 @@ void createInitialConditions( int librationPointNr, std::string orbitType,
         tempInitialCondition.push_back(stateVectorInclSTM(i));
     }
 
-    // Add eigenvalues
-//    eigenvalues = computeEigenvalues(stateVectorInclSTM);
-
     initialConditions.push_back(tempInitialCondition);
 
     // Define second state vector guess
@@ -126,7 +124,7 @@ void createInitialConditions( int librationPointNr, std::string orbitType,
         }
     } else if (orbitType == "halo") {
         if (librationPointNr == 1) {
-            richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("halo", 1, 1.2e-1);
+            richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("halo", 1, 1.2e-1, 3.0);
         } else if (librationPointNr == 2) {
             richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("halo", 2, 1.6e-1);
         }
@@ -174,14 +172,11 @@ void createInitialConditions( int librationPointNr, std::string orbitType,
         tempInitialCondition.push_back(stateVectorInclSTM(i));
     }
 
-    // Add eigenvalues
-//    eigenvalues = computeEigenvalues(stateVectorInclSTM);
-
     initialConditions.push_back(tempInitialCondition);
 
     // Set exit parameters of continuation procedure
     int numberOfInitialConditions = 2;
-    int maximumNumberOfInitialConditions = 3000;
+    int maximumNumberOfInitialConditions = 2000;
 
     while (numberOfInitialConditions < maximumNumberOfInitialConditions and continueNumericalContinuation){
 
@@ -212,6 +207,10 @@ void createInitialConditions( int librationPointNr, std::string orbitType,
 
         // Correct state vector guesses
         differentialCorrectionResult = applyDifferentialCorrection( librationPointNr, orbitType, initialStateVector, orbitalPeriod, massParameter, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit);
+        if (differentialCorrectionResult == Eigen::VectorXd::Zero(15)){
+            continueNumericalContinuation = false;
+            break;
+        }
         initialStateVector           = differentialCorrectionResult.segment(0,6);
         orbitalPeriod                = differentialCorrectionResult(6);
 
@@ -230,37 +229,40 @@ void createInitialConditions( int librationPointNr, std::string orbitType,
         // Propagate the initialStateVector for a full period and write output to file.
         stateVectorInclSTM = writePeriodicOrbitToFile( initialStateVector, librationPointNr, orbitType, numberOfInitialConditions, orbitalPeriod, massParameter);
 
-        // Check whether continuation procedure has already crossed the position of the second primary
-        if (librationPointNr == 1){
-            if (initialStateVector(0) < (1.0 - massParameter)){
+        // Check eigenvalue condition (at least one pair equalling a real one)
+        continueNumericalContinuation = checkEigenvalues(stateVectorInclSTM, maxEigenvalueDeviation);
 
-                continueNumericalContinuation = true;
-
-                if (orbitType == "horizontal") {
-                    if (initialStateVector(0) > 0.95 * (1.0 - massParameter)) {
-                        continueNumericalContinuation = false;
-                    }
-                }if (orbitType == "vertical") {
-                if (initialStateVector(0) > 0.94 * (1.0 - massParameter)) {
-                    continueNumericalContinuation = false;
-                    }
-                }if (orbitType == "halo") {
-                    if (initialStateVector(0) > 0.91 * (1.0 - massParameter)) {
-                        continueNumericalContinuation = false;
-                    }
-                }
-            }
-        } else if (librationPointNr == 2){
-            if (initialStateVector(0) > (1.0 - massParameter)){
-                continueNumericalContinuation = true;
-
-                if (orbitType == "horizontal"){
-                    if (initialStateVector(0) < 1.02*(1.0 - massParameter)){
-                        continueNumericalContinuation = false;
-                    }
-                }
-            }
-        }
+//        // Check whether continuation procedure has already crossed the position of the second primary
+//        if (librationPointNr == 1){
+//            if (initialStateVector(0) < (1.0 - massParameter)){
+//
+//                continueNumericalContinuation = true;
+//
+//                if (orbitType == "horizontal") {
+//                    if (initialStateVector(0) > 0.95 * (1.0 - massParameter)) {
+//                        continueNumericalContinuation = false;
+//                    }
+//                }if (orbitType == "vertical") {
+//                if (initialStateVector(0) > 0.94 * (1.0 - massParameter)) {
+//                    continueNumericalContinuation = false;
+//                    }
+//                }if (orbitType == "halo") {
+//                    if (initialStateVector(0) > 0.91 * (1.0 - massParameter)) {
+//                        continueNumericalContinuation = false;
+//                    }
+//                }
+//            }
+//        } else if (librationPointNr == 2){
+//            if (initialStateVector(0) > (1.0 - massParameter)){
+//                continueNumericalContinuation = true;
+//
+//                if (orbitType == "horizontal"){
+//                    if (initialStateVector(0) < 1.02*(1.0 - massParameter)){
+//                        continueNumericalContinuation = false;
+//                    }
+//                }
+//            }
+//        }
 
         // Save jacobi energy, orbital period, initial condition, and eigenvalues
         tempInitialCondition.clear();
@@ -279,9 +281,6 @@ void createInitialConditions( int librationPointNr, std::string orbitType,
         for (int i = 6; i <= 41; i++){
             tempInitialCondition.push_back(stateVectorInclSTM(i));
         }
-
-        // Add eigenvalues
-//        eigenvalues = computeEigenvalues(stateVectorInclSTM);
 
         initialConditions.push_back(tempInitialCondition);
         numberOfInitialConditions += 1;

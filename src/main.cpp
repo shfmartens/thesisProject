@@ -25,7 +25,6 @@ double massParameter;
 
 int main (){
 
-    richardsonThirdOrderApproximation("halo", 2, 1.0e-3);
     #pragma omp parallel num_threads(6)
     {
         #pragma omp for
@@ -50,7 +49,7 @@ int main (){
             }
         }
     }
-
+//
 
 //    // Load configuration parameters
 //    boost::property_tree::ptree jsontree;
