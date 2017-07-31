@@ -16,7 +16,7 @@ void createInitialConditions( int librationPointNr, std::string orbitType,
                               const double primaryGravitationalParameter = tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER,
                               const double secondaryGravitationalParameter = tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER,
                               double maxPositionDeviationFromPeriodicOrbit = 1.0e-12, double maxVelocityDeviationFromPeriodicOrbit = 1.0e-12,
-                              double maxEigenvalueDeviation = 1.0e-2 )
+                              double maxEigenvalueDeviation = 1.0e-3 )
 {
     std::cout << "\nCreate initial conditions:\n" << std::endl;
 
@@ -176,7 +176,7 @@ void createInitialConditions( int librationPointNr, std::string orbitType,
 
     // Set exit parameters of continuation procedure
     int numberOfInitialConditions = 2;
-    int maximumNumberOfInitialConditions = 2000;
+    int maximumNumberOfInitialConditions = 4000;
 
     while (numberOfInitialConditions < maximumNumberOfInitialConditions and continueNumericalContinuation){
 

@@ -11,7 +11,7 @@
 
 
 Eigen::VectorXd propagateOrbit( Eigen::VectorXd stateVectorInclSTM, double massParameter, double currentTime,
-                                int direction, double initialStepSize = 1.0e-4, double maximumStepSize = 1.0e-3 )
+                                int direction, double initialStepSize = 1.0e-5, double maximumStepSize = 1.0e-4 )
 {
     // Declare variables
     Eigen::VectorXd outputVector(43);
@@ -19,7 +19,8 @@ Eigen::VectorXd propagateOrbit( Eigen::VectorXd stateVectorInclSTM, double massP
     double stepSize = initialStepSize;
 
     const double minimumStepSize        = 1.0e-12;
-    const double relativeErrorTolerance = 1.0e-13;
+//    const double relativeErrorTolerance = 1.0e-13;
+    const double relativeErrorTolerance = 1.0e-14;
     const double absoluteErrorTolerance = 1.0e-24;
 
     // Create integrator to be used for propagating.
@@ -44,5 +45,6 @@ Eigen::VectorXd propagateOrbit( Eigen::VectorXd stateVectorInclSTM, double massP
     outputVector.segment(0, 42) = outputState;
     outputVector(42)            = currentTime;
 
+//    std::cout << stepSize << std::endl;
     return outputVector;
 }

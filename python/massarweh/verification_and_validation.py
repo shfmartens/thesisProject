@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.axes_grid.inset_locator import inset_axes
+from matplotlib2tikz import save as tikz_save
 import seaborn as sns
 import time
 
@@ -56,6 +57,8 @@ class DisplayPeriodicityValidation:
             self.T_half_period.append(row[1][2])
             self.X_half_period.append(np.array(row[1][3:9]))
 
+        self.maxEigenvalueDeviation = 1.0e-3
+
         for row in initial_conditions_incl_m_df.iterrows():
             self.C.append(row[1][0])
             self.T.append(row[1][1])
@@ -66,38 +69,96 @@ class DisplayPeriodicityValidation:
             M = np.matrix([list(row[1][8:14]), list(row[1][14:20]), list(row[1][20:26]), list(row[1][26:32]), list(row[1][32:38]), list(row[1][38:44])])
 
             eigenvalue = np.linalg.eigvals(M)
-            for l in eigenvalue:
-                if l.imag == 0.0:
 
-                    pass
-                print(l)
-            # lambda1 =
+            sorting_indices = [-1, -1, -1, -1, -1, -1]
+            idx_real_one = []
+            # Find indices of the first pair of real eigenvalue equal to one
+            for idx, l in enumerate(eigenvalue):
+                if abs(l.imag) < self.maxEigenvalueDeviation:
+                    if abs(l.real - 1.0) < self.maxEigenvalueDeviation:
+                        if sorting_indices[2] == -1:
+                            sorting_indices[2] = idx
+                            idx_real_one.append(idx)
+                        elif sorting_indices[3] == -1:
+                            sorting_indices[3] = idx
+                            idx_real_one.append(idx)
 
-            print(eigenvalue.real.max().index)
+            # Find indices of the pair of largest/smallest real eigenvalue (corresponding to the unstable/stable subspace)
+            for idx, l in enumerate(eigenvalue):
+                if idx == (sorting_indices[2] or sorting_indices[3]):
+                    continue
+                if abs(l.imag) < self.maxEigenvalueDeviation:
+                    if abs(l.real) == abs(eigenvalue.real.max()):
+                        sorting_indices[0] = idx
+                    elif abs(abs(l.real) - 1.0/abs(eigenvalue.real.max())) < self.maxEigenvalueDeviation:
+                        sorting_indices[5] = idx
 
-            time.sleep(5)
+            missing_indices = sorted(list(set(list(range(-1, 6))) - set(sorting_indices)))
+            if eigenvalue.imag[missing_indices[0]] > eigenvalue.imag[missing_indices[1]]:
+                sorting_indices[1] = missing_indices[0]
+                sorting_indices[4] = missing_indices[1]
+            else:
+                sorting_indices[1] = missing_indices[1]
+                sorting_indices[4] = missing_indices[0]
 
-            # Sorting eigenvalues from largest to smallest norm
-            sorting_index = abs(eigenvalue).argsort()[::-1]
+            # # TODO check that all indices are unique and no -
+            if len(sorting_indices) > len(set(sorting_indices)):
+                print('\nWARNING: SORTING INDEX IS NOT UNIQUE FOR ' + self.orbitType + ' AT L' + str(self.lagrangePointNr))
+                print(eigenvalue)
+                if len(idx_real_one) != 2:
+                    idx_real_one = []
+                    # Find indices of the first pair of real eigenvalue equal to one
+                    for idx, l in enumerate(eigenvalue):
+                        if abs(l.imag) < 2*self.maxEigenvalueDeviation:
+                            if abs(l.real - 1.0) < 2*self.maxEigenvalueDeviation:
+                                if sorting_indices[2] == -1:
+                                    sorting_indices[2] = idx
+                                    idx_real_one.append(idx)
+                                elif sorting_indices[3] == -1:
+                                    sorting_indices[3] = idx
+                                    idx_real_one.append(idx)
 
-            self.eigenvalues.append(eigenvalue[sorting_index])
-            self.lambda1.append(eigenvalue[sorting_index[0]])
-            self.lambda2.append(eigenvalue[sorting_index[1]])
-            self.lambda3.append(eigenvalue[sorting_index[2]])
-            self.lambda4.append(eigenvalue[sorting_index[3]])
-            self.lambda5.append(eigenvalue[sorting_index[4]])
-            self.lambda6.append(eigenvalue[sorting_index[5]])
+                if len(idx_real_one) == 2:
+                    sorting_indices = [-1, -1, -1, -1, -1, -1]
+                    sorting_indices[2] = idx_real_one[0]
+                    sorting_indices[3] = idx_real_one[1]
+
+                    # Assume two times real one and two conjugate pairs
+                    for idx, l in enumerate(eigenvalue):
+                        if l.real == eigenvalue[list(set(range(6)) - set(idx_real_one))].real.max():
+                            if sorting_indices[0] == -1:
+                                sorting_indices[0] = idx
+                            elif sorting_indices[5] == -1:
+                                sorting_indices[5] = idx
+                        if l.real == eigenvalue[list(set(range(6)) - set(idx_real_one))].real.min():
+                            if sorting_indices[1] == -1:
+                                sorting_indices[1] = idx
+                            elif sorting_indices[4] == -1:
+                                sorting_indices[4] = idx
+
+            if len(sorting_indices) > len(set(sorting_indices)):
+                print('\nWARNING: SORTING INDEX IS STILL NOT UNIQUE')
+                # Sorting eigenvalues from largest to smallest norm, excluding real one
+                sorting_indices = abs(eigenvalue).argsort()[::-1]
+                pass
+
+            self.eigenvalues.append(eigenvalue[sorting_indices])
+            self.lambda1.append(eigenvalue[sorting_indices[0]])
+            self.lambda2.append(eigenvalue[sorting_indices[1]])
+            self.lambda3.append(eigenvalue[sorting_indices[2]])
+            self.lambda4.append(eigenvalue[sorting_indices[3]])
+            self.lambda5.append(eigenvalue[sorting_indices[4]])
+            self.lambda6.append(eigenvalue[sorting_indices[5]])
 
             reduction = 0
-            for i in range(3):
-                if (abs(eigenvalue[sorting_index[i]]) - 1.0) < 1e-2:
+            for i in range(6):
+                if (abs(eigenvalue[i]) - 1.0) < 1e-2:
                     reduction += 1
+            self.orderOfLinearInstability.append(6-reduction)
 
-            self.orderOfLinearInstability.append(3-reduction)
-
-            self.v1.append(abs(eigenvalue[sorting_index[0]] + eigenvalue[sorting_index[5]]) / 2)
-            self.v2.append(abs(eigenvalue[sorting_index[1]] + eigenvalue[sorting_index[4]]) / 2)
-            self.v3.append(abs(eigenvalue[sorting_index[2]] + eigenvalue[sorting_index[3]]) / 2)
+            self.v1.append(abs(eigenvalue[sorting_indices[0]] + eigenvalue[sorting_indices[5]]) / 2)
+            self.v2.append(abs(eigenvalue[sorting_indices[1]] + eigenvalue[sorting_indices[4]]) / 2)
+            self.v3.append(abs(eigenvalue[sorting_indices[2]] + eigenvalue[sorting_indices[3]]) / 2)
             self.D.append(np.linalg.det(M))
 
         for i in range(0, len(self.C)):
@@ -189,7 +250,9 @@ class DisplayPeriodicityValidation:
         fig1.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitType + ': family', size=self.suptitleSize)
         fig1.savefig('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_family.png')
         fig2.savefig('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_family_subplots.png')
-
+        plt.close(fig2)
+        # tikz_save('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_family.tex',
+        #           figureheight='\\figureheight', figurewidth='\\figurewidth')
         # plt.show()
         plt.close()
         pass
@@ -214,6 +277,8 @@ class DisplayPeriodicityValidation:
                 arr[i, j].grid(True, which='both', ls=':')
         plt.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitType + ': orbital energy and period', size=self.suptitleSize)
         plt.savefig('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_orbital_energy.png')
+        # tikz_save('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_orbital_energy.tex',
+        #           figureheight='\\figureheight', figurewidth='\\figurewidth')
         # plt.show()
         plt.close()
         pass
@@ -265,11 +330,16 @@ class DisplayPeriodicityValidation:
                 arr[i, j].grid(True, which='both', ls=':')
         plt.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitType + ': analysis Monodromy matrix', size=self.suptitleSize)
         plt.savefig('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_monodromy_analysis.png')
+        # tikz_save('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_monodromy_analysis.tex',
+        #           figureheight='\\figureheight', figurewidth='\\figurewidth')
         # plt.show()
         plt.close()
         pass
 
     def plot_stability(self):
+        unit_circle_1 = plt.Circle((0, 0), 1, color='b', fill=False)
+        unit_circle_2 = plt.Circle((0, 0), 1, color='b', fill=False)
+
         f, arr = plt.subplots(3, 3, figsize=self.figSize)
 
         arr[0, 0].scatter(np.real(self.lambda1), np.imag(self.lambda1))
@@ -286,6 +356,7 @@ class DisplayPeriodicityValidation:
         arr[0, 1].set_ylim([-4, 4])
         arr[0, 1].set_title('$\lambda_2, 1/\lambda_2$')
         arr[0, 1].set_xlabel('Re')
+        arr[0, 1].add_artist(unit_circle_1)
 
         arr[0, 2].scatter(np.real(self.lambda3), np.imag(self.lambda3))
         arr[0, 2].scatter(np.real(self.lambda4), np.imag(self.lambda4))
@@ -293,6 +364,7 @@ class DisplayPeriodicityValidation:
         arr[0, 2].set_ylim([-1, 1])
         arr[0, 2].set_title('$\lambda_3, 1/\lambda_3$')
         arr[0, 2].set_xlabel('Re')
+        arr[0, 2].add_artist(unit_circle_2)
 
         arr[1, 0].scatter(self.x, np.angle(self.lambda1, deg=True))
         arr[1, 0].scatter(self.x, np.angle(self.lambda6, deg=True))
@@ -333,6 +405,8 @@ class DisplayPeriodicityValidation:
 
         plt.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitType + ': eigenvalues $\lambda_i$ & stability index $v_i$', size=self.suptitleSize)
         plt.savefig('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_stability.png')
+        # tikz_save('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_stability.tex',
+        #           figureheight='\\figureheight', figurewidth='\\figurewidth')
         # plt.show()
         plt.close()
         pass
@@ -399,6 +473,8 @@ class DisplayPeriodicityValidation:
 
         plt.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitType + ': periodicity validation', size=self.suptitleSize)
         plt.savefig('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_periodicity.png')
+        # tikz_save('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_periodicity.tex',
+        #           figureheight='\\figureheight', figurewidth='\\figurewidth')
         # plt.show()
         plt.close()
         pass
@@ -407,13 +483,11 @@ class DisplayPeriodicityValidation:
 if __name__ == '__main__':
     lagrange_points = [1, 2]
     orbit_types = ['horizontal', 'vertical', 'halo']
+    # lagrange_points = [1]
+    # orbit_types = ['halo']
 
     for orbit_type in orbit_types:
         for lagrange_point in lagrange_points:
-
-            if orbit_type == 'horizontal' and lagrange_point == 2:
-                continue
-
             display_periodicity_validation = DisplayPeriodicityValidation(orbit_type, lagrange_point)
             display_periodicity_validation.plot_family()
             display_periodicity_validation.plot_orbital_energy()

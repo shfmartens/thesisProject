@@ -17,7 +17,7 @@ bool checkEigenvalues( Eigen::VectorXd stateVectorInclSTM, double maxEigenvalueD
     // Add eigenvalues
     for (int i = 0; i <= 5; i++){
         if (std::abs(eig.eigenvalues().imag()(i)) < maxEigenvalueDeviation){
-            if (std::abs(eig.eigenvalues().real()(i) - 1.0)){
+            if (std::abs(eig.eigenvalues().real()(i) - 1.0) < maxEigenvalueDeviation){
                 eigenvalueRealOne = true;
             }
         }

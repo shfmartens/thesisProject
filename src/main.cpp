@@ -49,9 +49,9 @@ int main (){
             }
         }
     }
-//
 
-//    // Load configuration parameters
+//
+    // Load configuration parameters
 //    boost::property_tree::ptree jsontree;
 ////    boost::property_tree::read_json("../config/ver_folta_eigenvectors.json", jsontree);
 ////    boost::property_tree::read_json("../config/config.json", jsontree);

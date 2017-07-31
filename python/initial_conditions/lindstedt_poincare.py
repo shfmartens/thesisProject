@@ -23,9 +23,9 @@ class RichardsonApproximation:
         self.n = 2 * math.pi / P
 
         print('Mu: ' + str(self.mu))
-        # x, y, z = self.compute_coefficients('Horizontal', 1)
-        # x, y, z = self.compute_coefficients('Vertical', 2)
-        x, y, z = self.compute_coefficients('Halo', 2)
+        # x, y, z = self.compute_coefficients('horizontal', 1)
+        # x, y, z = self.compute_coefficients('vertical', 2)
+        x, y, z = self.compute_coefficients('halo', 1)
         pass
 
     def compute_coefficients(self, type, lagrange_point_nr):
@@ -107,23 +107,22 @@ class RichardsonApproximation:
                                  'd1', 'd2', 'a21', 'a22', 'a23', 'a24', 'a31', 'a32', 'b21', 'b22', 'b31', 'b32',
                                  'd21', 'd31', 'd32'])
 
-
-        if type == 'Horizontal':
+        if type == 'horizontal':
             Ax = 1e-3
             # Ax = 1e-4
             Az = 0
             pass
-        if type == 'Vertical':
+        if type == 'vertical':
             Ax = 0
             # Az = 5e-4
             Az = 2e-1
             # Az = 1e-6
             pass
-        if type == 'Halo':
+        if type == 'halo':
             # Az = 1.2e-1
             # Az = 1.6e-1
-            Az = 1e-3
-            Ax = np.sqrt((-delta - l2 * Az ** 2) / l1)
+            Az = 1.1e-1
+            Ax = np.sqrt(float((-delta - l2 * Az ** 2) / l1))
             pass
         print('Ax: ' + str(Ax))
         print('Az: ' + str(Az))
@@ -144,7 +143,7 @@ class RichardsonApproximation:
         ydot = l * (k * Ax * math.cos(tau1) + 2 * (b21 * Ax ** 2 - b22 * Az ** 2) * math.cos(2 * tau1) + 3 * (b31 * Ax ** 3 - b32 * Ax * Az ** 2) * math.cos(3 * tau1))
         zdot = -l * deltan * Az * math.sin(tau1) - 2 * l * deltan * d21 * Ax * Az * math.sin(2 * tau1) - 3 * l * deltan * (d32 * Az * Ax ** 2 - d31 * Az ** 3) * math.sin(3 * tau1)
 
-        # print('x: ' + str(x))
+        print('x: ' + str(x))
         # print('y: ' + str(y))
         # print('z: ' + str(z))
         # print('xdot: ' + str(xdot))

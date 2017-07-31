@@ -8,7 +8,7 @@
 
 Eigen::VectorXd writePeriodicOrbitToFile( Eigen::VectorXd initialStateVector, int librationPointNr, std::string orbitType,
                                           int orbitId, double orbitalPeriod, const double massParameter,
-                                          int saveEveryNthIntegrationStep = 100)
+                                          int saveEveryNthIntegrationStep = 1000)
 {
     // Initialize output vector and STM
     Eigen::VectorXd outputVector( 43 );

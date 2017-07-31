@@ -26,8 +26,8 @@ Eigen::VectorXd richardsonThirdOrderApproximation(std::string orbitType, int lib
     double c2;
     double c3;
     double c4;
-    double Ax;
-    double Az;
+    double Ax = 0.0;
+    double Az = 0.0;
 
     if (librationPointNr == 1){
         // Create object containing the functions.
