@@ -6,6 +6,7 @@
 #include "applyDifferentialCorrection.h"
 #include "checkEigenvalues.h"
 #include "computeEigenvalues.h"
+#include "computeManifolds.h"
 #include "propagateOrbit.h"
 #include "richardsonThirdOrderApproximation.h"
 #include "writePeriodicOrbitToFile.h"
@@ -72,6 +73,8 @@ void createInitialConditions( int librationPointNr, std::string orbitType,
     differentialCorrectionResult = applyDifferentialCorrection( librationPointNr, orbitType, initialStateVector, orbitalPeriod, massParameter, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit);
     initialStateVector           = differentialCorrectionResult.segment(0,6);
     orbitalPeriod                = differentialCorrectionResult(6);
+
+    computeManifolds( initialStateVector, orbitalPeriod, librationPointNr, orbitType, 0);
 
     // Save number of iterations, jacobi energy, time of integration and the half period state vector
     jacobiEnergyHalfPeriod       = tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, differentialCorrectionResult.segment(7,6));
@@ -231,38 +234,6 @@ void createInitialConditions( int librationPointNr, std::string orbitType,
 
         // Check eigenvalue condition (at least one pair equalling a real one)
         continueNumericalContinuation = checkEigenvalues(stateVectorInclSTM, maxEigenvalueDeviation);
-
-//        // Check whether continuation procedure has already crossed the position of the second primary
-//        if (librationPointNr == 1){
-//            if (initialStateVector(0) < (1.0 - massParameter)){
-//
-//                continueNumericalContinuation = true;
-//
-//                if (orbitType == "horizontal") {
-//                    if (initialStateVector(0) > 0.95 * (1.0 - massParameter)) {
-//                        continueNumericalContinuation = false;
-//                    }
-//                }if (orbitType == "vertical") {
-//                if (initialStateVector(0) > 0.94 * (1.0 - massParameter)) {
-//                    continueNumericalContinuation = false;
-//                    }
-//                }if (orbitType == "halo") {
-//                    if (initialStateVector(0) > 0.91 * (1.0 - massParameter)) {
-//                        continueNumericalContinuation = false;
-//                    }
-//                }
-//            }
-//        } else if (librationPointNr == 2){
-//            if (initialStateVector(0) > (1.0 - massParameter)){
-//                continueNumericalContinuation = true;
-//
-//                if (orbitType == "horizontal"){
-//                    if (initialStateVector(0) < 1.02*(1.0 - massParameter)){
-//                        continueNumericalContinuation = false;
-//                    }
-//                }
-//            }
-//        }
 
         // Save jacobi energy, orbital period, initial condition, and eigenvalues
         tempInitialCondition.clear();

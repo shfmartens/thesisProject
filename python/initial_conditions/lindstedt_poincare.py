@@ -134,7 +134,7 @@ class RichardsonApproximation:
         print('T: ' + str(T) + '\n')
 
         tau1 = 0
-        deltan = 2-1
+        deltan = 2-3
 
         x = a21 * Ax ** 2 + a22 * Az ** 2 - Ax * math.cos(tau1) + (a23 * Ax ** 2 - a24 * Az ** 2) * math.cos(2 * tau1) + (a31 * Ax ** 3 - a32 * Ax * Az ** 2) * math.cos(3 * tau1)
         y = k * Ax * math.sin(tau1) + (b21 * Ax ** 2 - b22 * Az ** 2) * math.sin(2 * tau1) + (b31 * Ax ** 3 - b32 * Ax * Az ** 2) * math.sin(3 * tau1)

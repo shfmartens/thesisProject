@@ -37,7 +37,7 @@ Eigen::VectorXd writePeriodicOrbitToFile( Eigen::VectorXd initialStateVector, in
 
     int count = 1;
 
-    // Perform integration steps until end of half orbital period
+    // Perform integration steps until end of orbital period
     for (int i = 5; i <= 12; i++) {
 
         double initialStepSize = pow(10,(static_cast<float>(-i)));

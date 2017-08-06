@@ -6,11 +6,11 @@
 #include "computeManifolds.cpp"
 
 
-void computeManifolds( string orbit_type, string selected_orbit, Eigen::VectorXd initialStateVector,
+void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod, int librationPointNr,
+                       std::string orbitType, int orbitId,
                        const double primaryGravitationalParameter, const double secondaryGravitationalParameter,
-                       double displacementFromOrbit, double maxDeviationFromPeriodicOrbit,
-                       double integrationStopTime, int numberOfOrbits, int saveEveryNthStep );
-
+                       double displacementFromOrbit, int numberOfManifoldOrbits, int saveEveryNthIntegrationStep,
+                       double maximumIntegrationTimeManifoldOrbits, double maxEigenvalueDeviation );
 
 
 #endif  // TUDATBUNDLE_COMPUTEMANIFOLDS_H

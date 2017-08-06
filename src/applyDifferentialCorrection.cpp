@@ -106,7 +106,7 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
                 }
             }
         }
-
+        
         positionDeviationFromPeriodicOrbit = std::abs(halfPeriodState(1));
         velocityDeviationFromPeriodicOrbit = sqrt(pow(halfPeriodState(3),2) + pow(halfPeriodState(5),2));
         numberOfIterations += 1;

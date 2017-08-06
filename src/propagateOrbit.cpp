@@ -18,9 +18,8 @@ Eigen::VectorXd propagateOrbit( Eigen::VectorXd stateVectorInclSTM, double massP
     Eigen::VectorXd outputState = stateVectorInclSTM;
     double stepSize = initialStepSize;
 
-    const double minimumStepSize        = 1.0e-12;
-//    const double relativeErrorTolerance = 1.0e-13;
-    const double relativeErrorTolerance = 1.0e-14;
+    double minimumStepSize   = std::numeric_limits<double>::epsilon( ); // 2.22044604925031e-16
+    const double relativeErrorTolerance = 100.0 * std::numeric_limits<double>::epsilon( ); // 2.22044604925031e-14
     const double absoluteErrorTolerance = 1.0e-24;
 
     // Create integrator to be used for propagating.

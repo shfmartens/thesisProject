@@ -12,93 +12,86 @@
 #include <boost/property_tree/json_parser.hpp>
 
 #include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
-
 #include "createInitialConditions.h"
-//#include "thesisProject/src/computeManifolds.h"
+#include "computeManifolds.h"
 #include <omp.h>
 
 
-// Function declaration
-//Eigen::VectorXd create_initial_state_vector(string orbit_type, string selected_orbit);
 
 double massParameter;
 
 int main (){
 
-    #pragma omp parallel num_threads(6)
-    {
-        #pragma omp for
-        for (unsigned int i=1; i<=6; i++) {
-            if (i ==1){
-                createInitialConditions(1, "horizontal");
-            }
-            if (i ==2){
-                createInitialConditions(2, "horizontal");
-            }
-            if (i ==3){
-                createInitialConditions(1, "vertical");
-            }
-            if (i ==4){
-                createInitialConditions(2, "vertical");
-            }
-            if (i ==5){
-                createInitialConditions(1, "halo");
-            }
-            if (i ==6){
-                createInitialConditions(2, "halo");
-            }
+    // Read initial conditions from file
+    std::ifstream textFileInitialConditions("../data/raw/horizontal_L1_initial_conditions.txt");
+    std::vector<std::vector<double>> initialConditions;
+
+    if (textFileInitialConditions) {
+        std::string line;
+
+        while (std::getline(textFileInitialConditions, line)) {
+            initialConditions.push_back(std::vector<double>());
+
+            // Break down the row into column values
+            std::stringstream split(line);
+            double value;
+
+            while (split >> value)
+                initialConditions.back().push_back(value);
         }
     }
 
-//
-    // Load configuration parameters
-//    boost::property_tree::ptree jsontree;
-////    boost::property_tree::read_json("../config/ver_folta_eigenvectors.json", jsontree);
-////    boost::property_tree::read_json("../config/config.json", jsontree);
-//    boost::property_tree::read_json("../config/config_lp.json", jsontree);
-////    boost::property_tree::read_json("../src/verification/halo_verification_l1.json", jsontree);
-//    Eigen::VectorXd initialStateVector = Eigen::VectorXd::Zero(6);
-//
-//    for (auto orbit_type : jsontree) {
-//
-//        auto tree_initial_states = jsontree.get_child( orbit_type.first);
-////        #pragma omp parallel num_threads(14)
-//        {
-////            #pragma omp for
-//            for (unsigned int i=1; i<=tree_initial_states.size(); i++) {
-//
-//                string selected_orbit = orbit_type.first + "_" + to_string(i);
-//
-//                std::cout << std::endl;
-//                std::cout << "==================================================================" << std::endl;
-//                std::cout << "                          " << selected_orbit << "                        " << std::endl;
-//                std::cout << "==================================================================" << std::endl;
-//
-//                initialStateVector = create_initial_state_vector(orbit_type.first, selected_orbit);
-//                computeManifolds(orbit_type.first, selected_orbit, initialStateVector);
-////                computeManifolds(orbit_type.first, selected_orbit, initialStateVector, 0.96, 0.04);
+    // Compute manifolds
+    #pragma omp parallel num_threads(30)
+    {
+        #pragma omp for
+//        for (unsigned int i = 0; i <= initialConditions.size(); i++) {
+        for (unsigned int i = 0; i <= 29; i++) {
+            double orbitalPeriod = initialConditions[i][1];
+
+            Eigen::VectorXd initialStateVector = Eigen::VectorXd::Zero(6);
+            initialStateVector(0) = initialConditions[i][2];
+            initialStateVector(1) = initialConditions[i][3];
+            initialStateVector(2) = initialConditions[i][4];
+            initialStateVector(3) = initialConditions[i][5];
+            initialStateVector(4) = initialConditions[i][6];
+            initialStateVector(5) = initialConditions[i][7];
+
+            std::string selected_orbit = "L1_horizontal_" + std::to_string(i);
+
+            std::cout                                                                                 << std::endl;
+            std::cout << "=================================================================="         << std::endl;
+            std::cout << "                          " << selected_orbit << "                        " << std::endl;
+            std::cout << "=================================================================="         << std::endl;
+
+            computeManifolds(initialStateVector, orbitalPeriod, 1, "horizontal", i);
+        }
+    }
+
+//    #pragma omp parallel num_threads(6)
+//    {
+//        #pragma omp for
+//        for (unsigned int i=1; i<=6; i++) {
+//            if (i ==1){
+//                createInitialConditions(1, "horizontal");
+//            }
+//            if (i ==2){
+//                createInitialConditions(2, "horizontal");
+//            }
+//            if (i ==3){
+//                createInitialConditions(1, "vertical");
+//            }
+//            if (i ==4){
+//                createInitialConditions(2, "vertical");
+//            }
+//            if (i ==5){
+//                createInitialConditions(1, "halo");
+//            }
+//            if (i ==6){
+//                createInitialConditions(2, "halo");
 //            }
 //        }
 //    }
+
     return 0;
 }
-
-
-Eigen::VectorXd create_initial_state_vector(std::string orbit_type, std::string selected_orbit){
-    boost::property_tree::ptree jsontree;
-//    boost::property_tree::read_json("../config/ver_folta_eigenvectors.json", jsontree);
-//    boost::property_tree::read_json("../config/config.json", jsontree);
-    boost::property_tree::read_json("../config/config_lp.json", jsontree);
-//    boost::property_tree::read_json("../src/verification/halo_verification_l1.json", jsontree);
-
-    Eigen::VectorXd initial_state_vector = Eigen::VectorXd::Zero(6);
-    initial_state_vector(0) = jsontree.get<double>( orbit_type + "." + selected_orbit + ".x");;
-    initial_state_vector(1) = jsontree.get<double>( orbit_type + "." + selected_orbit + ".y");;
-    initial_state_vector(2) = jsontree.get<double>( orbit_type + "." + selected_orbit + ".z");;
-    initial_state_vector(3) = jsontree.get<double>( orbit_type + "." + selected_orbit + ".x_dot");;
-    initial_state_vector(4) = jsontree.get<double>( orbit_type + "." + selected_orbit + ".y_dot");;
-    initial_state_vector(5) = jsontree.get<double>( orbit_type + "." + selected_orbit + ".z_dot");;
-
-    return initial_state_vector;
-}
-

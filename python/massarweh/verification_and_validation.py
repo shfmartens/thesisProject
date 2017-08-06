@@ -201,12 +201,11 @@ class DisplayPeriodicityValidation:
             ax5.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'], color='grey')
 
         bodies_df = load_bodies_location()
-        phi = np.linspace(0, 2 * np.pi, 100)
-        theta = np.linspace(0, np.pi, 100)
-
-        x = bodies_df['Moon']['r'] * np.outer(np.cos(phi), np.sin(theta)) + bodies_df['Moon']['x']
-        y = bodies_df['Moon']['r'] * np.outer(np.sin(phi), np.sin(theta)) + bodies_df['Moon']['y']
-        z = bodies_df['Moon']['r'] * np.outer(np.sin(phi), np.sin(theta)) + bodies_df['Moon']['z']
+        u = np.linspace(0, 2 * np.pi, 100)
+        v = np.linspace(0, np.pi, 100)
+        x = bodies_df['Moon']['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df['Moon']['x']
+        y = bodies_df['Moon']['r'] * np.outer(np.sin(u), np.sin(v))
+        z = bodies_df['Moon']['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
 
         ax1.scatter(x, y, color='black')
         ax2.plot_surface(x, y, z, color='black')
@@ -229,18 +228,18 @@ class DisplayPeriodicityValidation:
         ax2.set_xlabel('x [-]')
         ax2.set_ylabel('y [-]')
         ax2.set_zlabel('z [-]')
-        ax2.set_zlim([-0.25, 0.25])
+        ax2.set_zlim([-0.4, 0.4])
         ax2.grid(True, which='both', ls=':')
         ax2.view_init(30, -120)
 
         ax3.set_xlabel('x [-]')
         ax3.set_ylabel('z [-]')
-        ax3.set_ylim([-0.25, 0.25])
+        ax3.set_ylim([-0.4, 0.4])
         ax3.grid(True, which='both', ls=':')
 
         ax4.set_xlabel('y [-]')
         ax4.set_ylabel('z [-]')
-        ax4.set_ylim([-0.25, 0.25])
+        ax4.set_ylim([-0.4, 0.4])
         ax4.grid(True, which='both', ls=':')
 
         ax5.set_xlabel('x [-]')
@@ -439,7 +438,7 @@ class DisplayPeriodicityValidation:
 
         arr[2, 0].plot(self.x, self.numberOfIterations)
         arr[2, 0].set_xlim(self.xlim)
-        arr[2, 0].set_ylim([0, 20])
+        arr[2, 0].set_ylim([0, 50])
         arr[2, 0].set_title('Number of iterations $N^\circ$')
 
         arr[0, 1].semilogy(self.x, delta_J)
