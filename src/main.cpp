@@ -14,7 +14,7 @@
 #include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
 #include "createInitialConditions.h"
 #include "computeManifolds.h"
-#include <omp.h>
+//#include <omp.h>
 
 
 
@@ -23,7 +23,7 @@ double massParameter;
 int main (){
 
     // Read initial conditions from file
-    std::ifstream textFileInitialConditions("../data/raw/horizontal_L1_initial_conditions.txt");
+    std::ifstream textFileInitialConditions("../data/raw/horizontal_L2_initial_conditions.txt");
     std::vector<std::vector<double>> initialConditions;
 
     if (textFileInitialConditions) {
@@ -42,11 +42,11 @@ int main (){
     }
 
     // Compute manifolds
-    #pragma omp parallel num_threads(30)
+//    #pragma omp parallel num_threads(30)
     {
-        #pragma omp for
+//        #pragma omp for
 //        for (unsigned int i = 0; i <= initialConditions.size(); i++) {
-        for (unsigned int i = 0; i <= 29; i++) {
+        for (unsigned int i = 1066; i <= 1066; i++) {
             double orbitalPeriod = initialConditions[i][1];
 
             Eigen::VectorXd initialStateVector = Eigen::VectorXd::Zero(6);

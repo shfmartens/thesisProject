@@ -17,7 +17,8 @@ def load_manifold(file_path):
         else:
             data_per_orbit = input_data[start_index:]
 
-        data_per_orbit['orbitNumber'] = idx+1
+        data_per_orbit['orbitNumber'] = idx
+        # data_per_orbit['orbitNumber'] = idx + 1
         output_data.append(data_per_orbit)
         pass
 

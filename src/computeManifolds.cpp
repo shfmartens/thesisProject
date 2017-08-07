@@ -237,7 +237,7 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
                 }
 
                 // Determine when the manifold crosses the x-axis again (U1, U4)
-                if ( (outputVector(1) * ySign < 0) and ySignSet ){
+                if ( (outputVector(1) * ySign < 0) and ySignSet and !xDiffSignSet ){
 
 //                    TODO close the overshoot with integration
 
@@ -278,7 +278,7 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
 
                 // Determine when the manifold crosses the second primary (U1, U4)
                 if ( ((outputVector(0) - (1.0 - massParameter)) * xDiffSign < 0)
-                     and (std::abs(outputVector(1)) < 1.0) and xDiffSignSet ){
+                     and (std::abs(outputVector(1)) < 1.0) and xDiffSignSet and !ySignSet ){
 
                     //                    TODO close the overshoot with integration
                     outputVector = previousOutputVector;
