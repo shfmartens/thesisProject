@@ -14,6 +14,7 @@
 #include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
 #include "createInitialConditions.h"
 #include "computeManifolds.h"
+#include "completeInitialConditionsHaloFamily.h"
 //#include <omp.h>
 
 
@@ -23,7 +24,7 @@ double massParameter;
 int main (){
 
     // Read initial conditions from file
-    std::ifstream textFileInitialConditions("../data/raw/horizontal_L2_initial_conditions.txt");
+    std::ifstream textFileInitialConditions("../data/raw/L1_halo_initial_conditions.txt");
     std::vector<std::vector<double>> initialConditions;
 
     if (textFileInitialConditions) {
@@ -42,32 +43,34 @@ int main (){
     }
 
     // Compute manifolds
-//    #pragma omp parallel num_threads(30)
-    {
+//    #pragma omp parallel num_threads(14)
+//    {
 //        #pragma omp for
 //        for (unsigned int i = 0; i <= initialConditions.size(); i++) {
-        for (unsigned int i = 1066; i <= 1066; i++) {
-            double orbitalPeriod = initialConditions[i][1];
+//        for (unsigned int i = 501; i <= 501; i++) {
+//            double orbitalPeriod = initialConditions[i][1];
+//
+//            Eigen::VectorXd initialStateVector = Eigen::VectorXd::Zero(6);
+//            initialStateVector(0) = initialConditions[i][2];
+//            initialStateVector(1) = initialConditions[i][3];
+//            initialStateVector(2) = initialConditions[i][4];
+//            initialStateVector(3) = initialConditions[i][5];
+//            initialStateVector(4) = initialConditions[i][6];
+//            initialStateVector(5) = initialConditions[i][7];
+//
+//            std::string selected_orbit = "L1_horizontal_" + std::to_string(i);
+//
+//            std::cout                                                                                 << std::endl;
+//            std::cout << "=================================================================="         << std::endl;
+//            std::cout << "                          " << selected_orbit << "                        " << std::endl;
+//            std::cout << "=================================================================="         << std::endl;
+//
+//            computeManifolds(initialStateVector, orbitalPeriod, 1, "horizontal", i);
+//        }
+//    }
 
-            Eigen::VectorXd initialStateVector = Eigen::VectorXd::Zero(6);
-            initialStateVector(0) = initialConditions[i][2];
-            initialStateVector(1) = initialConditions[i][3];
-            initialStateVector(2) = initialConditions[i][4];
-            initialStateVector(3) = initialConditions[i][5];
-            initialStateVector(4) = initialConditions[i][6];
-            initialStateVector(5) = initialConditions[i][7];
 
-            std::string selected_orbit = "L1_horizontal_" + std::to_string(i);
-
-            std::cout                                                                                 << std::endl;
-            std::cout << "=================================================================="         << std::endl;
-            std::cout << "                          " << selected_orbit << "                        " << std::endl;
-            std::cout << "=================================================================="         << std::endl;
-
-            computeManifolds(initialStateVector, orbitalPeriod, 1, "horizontal", i);
-        }
-    }
-
+    // Compute initial conditions
 //    #pragma omp parallel num_threads(6)
 //    {
 //        #pragma omp for
@@ -92,6 +95,26 @@ int main (){
 //            }
 //        }
 //    }
+    // Complete initial conditions halo family
+    double orbitalPeriod1 = initialConditions[2][1];
+    Eigen::VectorXd initialStateVector1 = Eigen::VectorXd::Zero(6);
+    initialStateVector1(0) = initialConditions[2][2];
+    initialStateVector1(1) = initialConditions[2][3];
+    initialStateVector1(2) = initialConditions[2][4];
+    initialStateVector1(3) = initialConditions[2][5];
+    initialStateVector1(4) = initialConditions[2][6];
+    initialStateVector1(5) = initialConditions[2][7];
+
+    double orbitalPeriod2 = initialConditions[1][1];
+    Eigen::VectorXd initialStateVector2 = Eigen::VectorXd::Zero(6);
+    initialStateVector2(0) = initialConditions[1][2];
+    initialStateVector2(1) = initialConditions[1][3];
+    initialStateVector2(2) = initialConditions[1][4];
+    initialStateVector2(3) = initialConditions[1][5];
+    initialStateVector2(4) = initialConditions[1][6];
+    initialStateVector2(5) = initialConditions[1][7];
+
+    completeInitialConditionsHaloFamily( initialStateVector1, initialStateVector2, orbitalPeriod1, orbitalPeriod2, 1);
 
     return 0;
 }

@@ -9,32 +9,42 @@ from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.axes_grid.inset_locator import inset_axes
 import seaborn as sns
 import matplotlib.gridspec as gridspec
-#Direct input
+from itertools import product
 plt.rcParams['text.latex.preamble']=[r"\usepackage{lmodern}"]
-#Options
-params = {'text.usetex' : True,
-          'font.size' : 11,
-          'font.family' : 'lmodern',
+params = {'text.usetex': True,
+          'font.size': 11,
+          'font.family': 'lmodern',
           'text.latex.unicode': True,
           }
 plt.rcParams.update(params)
 
-from load_data import load_manifold, load_bodies_location, load_lagrange_points_location, cr3bp_velocity
+from load_data import load_manifold, load_bodies_location, load_lagrange_points_location, cr3bp_velocity, load_initial_conditions_incl_M
 
 
 class DisplayPoincarePlanar:
 
-    def __init__(self, w_s, w_u, u_section):
+    def __init__(self, w_s, w_u, u_section, round_order_connection):
+
+        # orbit_idx = []
+        # for l_point, orbit_type in [(l_point_1, orbit_type_1), (l_point_2, orbit_type_2)]
+        #     df = load_initial_conditions_incl_M('../../data/raw/' + l_point + '_' + orbit_type + '_initial_conditions.txt')
+        #     orbit_idx.append(df[abs(df[0] - C) == (abs(df[0] - C)).min()].index)
+
+        l_point, orbit_type, orbit_id, w, s, sign = w_s.split('_')
+        self.C = [load_initial_conditions_incl_M('../../data/raw/' + l_point + '_' + orbit_type + '_initial_conditions.txt').xs(int(orbit_id))[0]]
+        l_point, orbit_type, orbit_id, w, s, sign = w_u.split('_')
+        self.C.append(load_initial_conditions_incl_M('../../data/raw/' + l_point + '_' + orbit_type + '_initial_conditions.txt').xs(int(orbit_id))[0])
+
         self.WS = load_manifold('../../data/raw/' + w_s + '.txt')
         self.WU = load_manifold('../../data/raw/' + w_u + '.txt')
         self.numberOfOrbitsPerManifold = len(set(self.WS.index.get_level_values(0)))
         self.U_section = u_section
-
+        self.roundOrderConnection = round_order_connection
         # Select last entry of manifolds
         ls_s = []
         ls_u = []
 
-        for i in range(100):
+        for i in range(len(set(self.WS.index.get_level_values(0)))):
             ls_s.append(self.WS.xs(i).tail(1))
             ls_u.append(self.WU.xs(i).tail(1))
 
@@ -102,12 +112,6 @@ class DisplayPoincarePlanar:
         color_palette_green = sns.dark_palette('green', n_colors=self.numberOfOrbitsPerManifold)
         color_palette_red = sns.dark_palette('red', n_colors=self.numberOfOrbitsPerManifold)
 
-        C = 3.15
-        x_range = np.arange(0.8, 1.2, 0.001)
-        y_range = np.arange(-0.15, 0.15, 0.001)
-        X, Y = np.meshgrid(x_range, y_range)
-        Z = cr3bp_velocity(X, Y, C)
-
         plt.figure(figsize=(5*(1+np.sqrt(5))/2, 5))
         gs = gridspec.GridSpec(2, 2)
         ax1 = plt.subplot(gs[0, :])
@@ -118,10 +122,11 @@ class DisplayPoincarePlanar:
         for i in range(self.numberOfOrbitsPerManifold):
             ax1.plot(self.WS.xs(i)['x'], self.WS.xs(i)['y'], color=color_palette_green[i], alpha=0.5)
             ax1.plot(self.WU.xs(i)['x'], self.WU.xs(i)['y'], color=color_palette_red[i], alpha=0.5)
-        ax1.plot(self.WS.xs(46)['x'], self.WS.xs(46)['y'], color='black')
-        ax1.plot(self.WS.xs(37)['x'], self.WS.xs(37)['y'], color='black')
-        ax1.plot(self.WU.xs(65)['x'], self.WU.xs(65)['y'], color='black')
-        ax1.plot(self.WU.xs(77)['x'], self.WU.xs(77)['y'], color='black')
+
+        x_range = np.arange(ax1.get_xlim()[0], ax1.get_xlim()[1], 0.001)
+        y_range = np.arange(ax1.get_ylim()[0]*1.2, ax1.get_ylim()[1]*1.2, 0.001)
+        X, Y = np.meshgrid(x_range, y_range)
+        Z = cr3bp_velocity(X, Y, self.C[0])
 
         if Z.min() < 0:
             ax1.contourf(X, Y, Z, [Z.min(), 0], colors='black', alpha=0.2)
@@ -140,26 +145,50 @@ class DisplayPoincarePlanar:
         # ax1.scatter(x, y, color='black', s=1)
         ax1.contourf(x, y, z, [z.min(), 0], colors='black')
         ax1.grid(True, which='both', ls=':')
+        ax1.set_title('$C_1 = ' + str(self.C[0]) + ', C_2 = ' + str(self.C[1]) + '$')
+        ax1.set_aspect('equal', adjustable='box')
 
         # Subplot 2: poincare
         v_max = 2
-        ax2.plot(self.poincareWS[abs(self.poincareWS['ydot']) < v_max]['y'].values, self.poincareWS[abs(self.poincareWS['ydot']) < v_max]['ydot'].values, color='g')
-        ax2.plot(self.poincareWU[abs(self.poincareWU['ydot']) < v_max]['y'].values, self.poincareWU[abs(self.poincareWU['ydot']) < v_max]['ydot'].values, color='r')
-        ax2.scatter(self.poincareWS['y'][46], self.poincareWS['ydot'][46], color='black')
-        ax2.scatter(self.poincareWU['y'][65], self.poincareWU['ydot'][65], color='black')
-        ax2.scatter(self.poincareWS['y'][37], self.poincareWS['ydot'][37], color='black')
-        ax2.scatter(self.poincareWU['y'][77], self.poincareWU['ydot'][77], color='black')
-        #     y_1   y_2
-        # WS   46    41
-        # WU   65    83
-        # x_intersection = -0.0491777
-        # print(self.poincareWS[self.poincareWS['y'] == x_intersection + abs(self.poincareWS['y'] - x_intersection).min()])
-        # print(self.poincareWS[self.poincareWS['y'] == x_intersection - abs(self.poincareWS['y'] - x_intersection).min()])
-        # print(self.poincareWU[self.poincareWU['y'] == x_intersection + abs(self.poincareWU['y'] - x_intersection).min()])
-        # print(self.poincareWU[self.poincareWU['y'] == x_intersection - abs(self.poincareWU['y'] - x_intersection).min()])
+        if self.U_section in set([2, 3]):
+            variable_axis = 'y'
+        elif self.U_section in set([3, 4]):
+            variable_axis = 'x'
 
-        ax2.set_xlabel('$y$')
-        ax2.set_ylabel('$\dot{y}$')
+        ax2.plot(self.poincareWS[abs(self.poincareWS[variable_axis + 'dot']) < v_max][variable_axis].values, self.poincareWS[abs(self.poincareWS[variable_axis + 'dot']) < v_max][variable_axis + 'dot'].values, color='g')
+        ax2.plot(self.poincareWU[abs(self.poincareWU[variable_axis + 'dot']) < v_max][variable_axis].values, self.poincareWU[abs(self.poincareWU[variable_axis + 'dot']) < v_max][variable_axis + 'dot'].values, color='r')
+
+        # Find entry of lowest difference in derivative of variable_axis (which is the variable with maximum spread in phase plane)
+        s = set(np.round(self.poincareWS[variable_axis + 'dot'], self.roundOrderConnection))
+        intersections = list(s.intersection(np.round(self.poincareWU[variable_axis + 'dot'], self.roundOrderConnection)))
+        poincare_w_s_in_v = self.poincareWS[np.round(self.poincareWS[variable_axis + 'dot'], self.roundOrderConnection).isin(intersections)]
+        poincare_w_u_in_v = self.poincareWU[np.round(self.poincareWU[variable_axis + 'dot'], self.roundOrderConnection).isin(intersections)]
+
+        # Use tuples to bind pairs of position and velocity
+        subset = poincare_w_s_in_v[[variable_axis, variable_axis + 'dot']]
+        tuples_w_s_in_v = [tuple(np.round(x, self.roundOrderConnection)) for x in subset.values]
+        subset = poincare_w_u_in_v[[variable_axis, variable_axis + 'dot']]
+        tuples_w_u_in_v = [tuple(np.round(x, self.roundOrderConnection)) for x in subset.values]
+
+        s = set(tuples_w_s_in_v)
+        intersections = list(s.intersection(tuples_w_u_in_v))
+
+        for intersection in intersections:
+            poincare_temp = poincare_w_s_in_v[np.round(poincare_w_s_in_v[variable_axis], self.roundOrderConnection) == intersection[0]]
+            poincare_temp = poincare_temp[np.round(poincare_temp[variable_axis + 'dot'], self.roundOrderConnection) == intersection[1]]
+            idx_s = int(poincare_temp.index.values)
+            poincare_temp = poincare_w_u_in_v[np.round(poincare_w_u_in_v[variable_axis], self.roundOrderConnection) == intersection[0]]
+            poincare_temp = poincare_temp[np.round(poincare_temp[variable_axis + 'dot'], self.roundOrderConnection) == intersection[1]]
+            idx_u = int(poincare_temp.index.values)
+
+            ax2.scatter(self.poincareWS[variable_axis][idx_s], self.poincareWS[variable_axis + 'dot'][idx_s], color='black')
+            ax2.scatter(self.poincareWU[variable_axis][idx_u], self.poincareWU[variable_axis + 'dot'][idx_u], color='black')
+
+            ax1.plot(self.WS.xs(idx_s)['x'], self.WS.xs(idx_s)['y'], color='black')
+            ax1.plot(self.WU.xs(idx_u)['x'], self.WU.xs(idx_u)['y'], color='black')
+
+        ax2.set_xlabel('$' + variable_axis + '$')
+        ax2.set_ylabel('$\dot{' + variable_axis + '}$')
         ax2.set_ylim([-1.5, 1.5])
         ax2.grid(True, which='both', ls=':')
 
@@ -167,110 +196,34 @@ class DisplayPoincarePlanar:
         ax2.set_title(title)
 
         # Subplot 3: x error
-        ax3.axhline(abs(self.poincareWS['y'][46] - self.poincareWU['y'][65]))
-        ax3.axhline(abs(self.poincareWS['y'][37] - self.poincareWU['y'][77]))
-        ax3.axhline(abs(self.poincareWS['ydot'][46] - self.poincareWU['ydot'][65]))
-        ax3.axhline(abs(self.poincareWS['ydot'][37] - self.poincareWU['ydot'][77]))
-        ax3.semilogy((1 - self.massParameter) - self.poincareWS['x'].values)
-        ax3.set_ylabel('$\| x - (1-\mu) \|$')
+        # ax3.axhline(abs(self.poincareWS['y'][46] - self.poincareWU['y'][65]))
+        # ax3.axhline(abs(self.poincareWS['y'][37] - self.poincareWU['y'][77]))
+        # ax3.axhline(abs(self.poincareWS['ydot'][46] - self.poincareWU['ydot'][65]))
+        # ax3.axhline(abs(self.poincareWS['ydot'][37] - self.poincareWU['ydot'][77]))
+        if self.U_section == (2 or 3):
+            ax3.semilogy(abs((1 - self.massParameter) - self.poincareWS['x'].values), color='g')
+            ax3.semilogy(abs((1 - self.massParameter) - self.poincareWU['x'].values), color='r')
+            ax3.set_ylabel('$\| x - (1-\mu) \|$')
+        elif self.U_section == (1 or 4):
+            ax3.semilogy(abs(self.poincareWS['y'].values), color='g')
+            ax3.semilogy(abs(self.poincareWU['y'].values), color='r')
+            ax3.set_ylabel('$\| y \|$')
+
         ax3.set_xlabel('orbitId [-]')
         ax3.grid(True, which='both', ls=':')
         plt.tight_layout()
 
         # plt.savefig('../../data/figures/heteroclinic_connection.pdf')
+        # plt.savefig('../../data/figures/homoclinic_connection.pdf')
         pass
 
 
 if __name__ == '__main__':
-
-    display_poincare_planar = DisplayPoincarePlanar(w_s='L1_horizontal_330_W_U_plus', w_u='L2_horizontal_373_W_S_plus', u_section=2)
+    # display_poincare_planar = DisplayPoincarePlanar(w_s='L2_horizontal_373_W_S_plus', w_u='L1_horizontal_330_W_U_plus', u_section=2, round_order_connection=3)
+    # display_poincare_planar = DisplayPoincarePlanar(w_s='L1_horizontal_808_W_S_plus', w_u='L1_horizontal_808_W_U_plus', u_section=1, round_order_connection=2)
+    display_poincare_planar = DisplayPoincarePlanar(w_s='L2_horizontal_373_W_S_min', w_u='L2_horizontal_373_W_U_plus', u_section=4, round_order_connection=2)
+    # display_poincare_planar = DisplayPoincarePlanar(w_s='L2_horizontal_1066_W_S_plus', w_u='L2_horizontal_1066_W_U_min', u_section=4, round_order_connection=2)
     # display_poincare_planar.plot_manifolds()
     # display_poincare_planar.plot_poincare_sections()
     display_poincare_planar.plot_result()
     plt.show()
-
-
-# df = load_initial_conditions_incl_M('/Users/koen/tudatBundle/tudatApplications/thesisProject/data/raw/halo_L2_initial_conditions.txt')
-# df[df[0] == 3.15 + (abs(df[0]-3.15)).min()]
-#
-#
-# ls_S_plus = []
-# ls_S_min = []
-# ls_U_plus = []
-# ls_U_min = []
-#
-# for i in range(100):
-#     # ls_S_plus.append(manifold_S_plus.xs(i).tail(1))
-#     ls_S_min.append(manifold_S_min.xs(i).tail(1))
-#     ls_U_plus.append(manifold_U_plus.xs(i).tail(1))
-#     # ls_U_min.append(manifold_U_min.xs(i).tail(1))
-# # data_S_plus = pd.concat(ls_S_plus).reset_index(drop=True)
-# data_S_min = pd.concat(ls_S_min).reset_index(drop=True)
-# data_U_plus = pd.concat(ls_U_plus).reset_index(drop=True)
-# # data_U_min = pd.concat(ls_U_min).reset_index(drop=True)
-# # data_S_plus['manifold'] = 'L1_horizontal_808_W_S_p'
-# data_S_min['manifold'] = 'L1_horizontal_808_W_S_m'
-# data_U_plus['manifold'] = 'L1_horizontal_808_W_U_p'
-# # data_U_min['manifold'] = 'L1_horizontal_808_W_U_m'
-#
-# # data = pd.concat([data_S_plus, data_S_min, data_U_plus, data_U_min])
-# data = pd.concat([data_S_min, data_U_plus])
-#
-# # radviz(data, 'manifold', color=['g', 'r'], alpha=0.1)
-#
-# axes = ['x', 'y', 'z']
-# fig, axarr = plt.subplots(2, 3, figsize=(20, 10))
-#
-# C = 3.05
-# x_range = np.arange(-4.0, 2.0, 0.001)
-# y_range = np.arange(-3.0, 3.0, 0.001)
-# X, Y = np.meshgrid(x_range, y_range)
-# Z = cr3bp_velocity(X, Y, C)
-#
-# if Z.min() < 0:
-#     X_contour = X[abs(Z) < 1e-3]
-#     Y_contour = Y[abs(Z) < 1e-3]
-#
-#     if abs(Y_contour).min() < 1e-3:
-#         U_1_x_min = max(X_contour[abs(Y_contour) < 1e-3])
-#         U_4_x_max = min(X_contour[abs(Y_contour) < 1e-3])
-#
-#         # U_1_S_plus = data_S_plus[data_S_plus['x'] > U_1_x_min]
-#         U_1_S_min = data_S_min[data_S_min['x'] > U_1_x_min]
-#         U_1_U_plus = data_U_plus[data_U_plus['x'] > U_1_x_min]
-#         # U_1_U_min = data_U_min[data_U_min['x'] > U_1_x_min]
-#
-#         # U_4_S_plus = data_S_plus[data_S_plus['x'] < U_4_x_max]
-#         U_4_S_min = data_S_min[data_S_min['x'] < U_4_x_max]
-#         U_4_U_plus = data_U_plus[data_U_plus['x'] < U_4_x_max]
-#         # U_4_U_min = data_U_min[data_U_min['x'] < U_4_x_max]
-
-#         for idx, axis in enumerate(axes):
-#             # axarr[0, idx].scatter(U_1_S_plus[axis], U_1_S_plus[axis + 'dot'], color='g', alpha=0.5)
-#             axarr[0, idx].scatter(U_1_S_min[axis], U_1_S_min[axis + 'dot'], color='g', alpha=0.5)
-#             axarr[0, idx].scatter(U_1_U_plus[axis], U_1_U_plus[axis + 'dot'], color='r', alpha=0.5)
-#             # axarr[0, idx].scatter(U_1_U_min[axis], U_1_U_min[axis + 'dot'], color='r', alpha=0.5)
-#
-#             # axarr[1, idx].scatter(U_4_S_plus[axis], U_4_S_plus[axis + 'dot'], color='g', alpha=0.5)
-#             axarr[1, idx].scatter(U_4_S_min[axis], U_4_S_min[axis + 'dot'], color='g', alpha=0.5)
-#             axarr[1, idx].scatter(U_4_U_plus[axis], U_4_U_plus[axis + 'dot'], color='r', alpha=0.5)
-#             # axarr[1, idx].scatter(U_4_U_min[axis], U_4_U_min[axis + 'dot'], color='r', alpha=0.5)
-#
-#             axarr[0, idx].set_xlabel(axis)
-#             axarr[0, idx].set_ylabel('$\dot{' + axis + '}$')
-#             axarr[0, idx].grid()
-#             axarr[0, idx].set_aspect('equal', 'datalim')
-#
-#             axarr[1, idx].set_xlabel(axis)
-#             axarr[1, idx].set_ylabel('$\dot{' + axis + '}$')
-#             axarr[1, idx].grid()
-#             axarr[1, idx].set_aspect('equal', 'datalim')
-#
-#         axarr[0, 1].set_title('$U_1$', size=16)
-#         axarr[1, 1].set_title('$U_4$', size=16)
-#         # plt.suptitle(orbit_name, size=22)
-#         plt.tight_layout()
-#         plt.subplots_adjust(top=0.85)
-#         # plt.savefig('../data/figures/poincare_' + orbit_name + ".png")
-#         # plt.close()
-#         plt.show()

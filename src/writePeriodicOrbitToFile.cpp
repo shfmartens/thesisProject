@@ -1,3 +1,6 @@
+#include <iostream>
+#include <fstream>
+#include <cstdio>
 #include <Eigen/Core>
 #include <Eigen/Eigenvalues>
 #include <Eigen/QR>
@@ -8,6 +11,7 @@
 
 Eigen::VectorXd writePeriodicOrbitToFile( Eigen::VectorXd initialStateVector, int librationPointNr, std::string orbitType,
                                           int orbitId, double orbitalPeriod, const double massParameter,
+                                          bool completeInitialConditionsHaloFamily = false,
                                           int saveEveryNthIntegrationStep = 1000)
 {
     // Initialize output vector and STM
@@ -19,9 +23,19 @@ Eigen::VectorXd writePeriodicOrbitToFile( Eigen::VectorXd initialStateVector, in
     initialStateVectorInclSTM.segment(0,6)  = initialStateVector;
     initialStateVectorInclSTM.segment(6,36) = identityMatrix;
 
+//    remove(("../data/raw/L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + ".txt").c_str());
+//    std::ofstream textFileOrbit(("../data/raw/L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + ".txt").c_str());
+    const char* fileNameString;
+
     // Prepare output file
-    remove(("../data/raw/" + orbitType + "_L" + std::to_string(librationPointNr) + "_" + std::to_string(orbitId) + ".txt").c_str());
-    std::ofstream textFileOrbit(("../data/raw/" + orbitType + "_L" + std::to_string(librationPointNr) + "_" + std::to_string(orbitId) + ".txt").c_str());
+    if (completeInitialConditionsHaloFamily == false){
+        fileNameString = ("../data/raw/L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + ".txt").c_str();
+    } else {
+        fileNameString = ("../data/raw/L" + std::to_string(librationPointNr) + "_" + orbitType + "_n_" + std::to_string(orbitId) + ".txt").c_str();
+    }
+    remove(fileNameString);
+    std::ofstream textFileOrbit(fileNameString);
+
     textFileOrbit.precision(std::numeric_limits<double>::digits10);
 
     // Write initial state to file

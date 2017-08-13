@@ -148,7 +148,25 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
     Eigen::VectorXd manifoldStartingState(42);
     manifoldStartingState.setZero();
 
-    std::vector<double> offsetSigns           = {1.0, -1.0, 1.0, -1.0};
+//    TODO check sign x off-set eigenvector
+    double signEigenvector1;
+    double signEigenvector2;
+
+    if (eigenVector1(0) > 0.0){
+        signEigenvector1 = 1.0;
+    } else {
+        signEigenvector1 = -1.0;
+    }
+    if (eigenVector2(0) > 0.0){
+        signEigenvector2 = 1.0;
+    } else {
+        signEigenvector2 = -1.0;
+    }
+    std::cout << signEigenvector1 << std::endl;
+    std::cout << signEigenvector2 << std::endl;
+
+//    std::vector<double> offsetSigns           = {1.0, -1.0, 1.0, -1.0};
+    std::vector<double> offsetSigns           = {1.0*signEigenvector2, -1.0*signEigenvector2, 1.0*signEigenvector1, -1.0*signEigenvector1};
     std::vector<Eigen::VectorXd> eigenVectors = {eigenVector2, eigenVector2, eigenVector1, eigenVector1};
     std::vector<double> integrationDirections = {-1.0, -1.0, 1.0, 1.0};
     std::vector<std::string> fileNames        = {"L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + "_W_S_plus.txt",
@@ -237,9 +255,9 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
                 }
 
                 // Determine when the manifold crosses the x-axis again (U1, U4)
-                if ( (outputVector(1) * ySign < 0) and ySignSet and !xDiffSignSet ){
+                if ( (outputVector(1) * ySign < 0) and ySignSet ){
 
-//                    TODO close the overshoot with integration
+                    // TODO close the overshoot with integration
 
                     outputVector = previousOutputVector;
                     std::cout << "||y|| = " << outputVector(1) << ", at start of iterative procedure" << std::endl;
@@ -280,7 +298,7 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
                 if ( ((outputVector(0) - (1.0 - massParameter)) * xDiffSign < 0)
                      and (std::abs(outputVector(1)) < 1.0) and xDiffSignSet and !ySignSet ){
 
-                    //                    TODO close the overshoot with integration
+                    // TODO close the overshoot with integration
                     outputVector = previousOutputVector;
 
                     std::cout << "||x - (1-mu)|| = " << (outputVector(0) - (1.0 - massParameter)) << ", at start of iterative procedure" << std::endl;
@@ -325,6 +343,7 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
             }
 
             ySignSet = false;
+            xDiffSignSet = false;
             fullManifoldComputed = false;
         }
         textFile2.close();

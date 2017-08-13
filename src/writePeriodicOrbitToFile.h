@@ -8,7 +8,7 @@
 
 Eigen::VectorXd writePeriodicOrbitToFile( Eigen::VectorXd initialStateVector, int lagrangePointNr, std::string orbitType,
                                           int orbitId, double orbitalPeriod, const double massParameter,
-                                          int saveEveryNthIntegrationStep );
+                                          bool completeInitialConditionsHaloFamily, int saveEveryNthIntegrationStep );
 
 
 

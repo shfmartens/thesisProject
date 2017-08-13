@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import json
 import matplotlib
-matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
+# matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from mpl_toolkits.mplot3d import Axes3D
@@ -10,8 +10,15 @@ from mpl_toolkits.axes_grid.inset_locator import inset_axes
 from matplotlib2tikz import save as tikz_save
 import seaborn as sns
 import time
+plt.rcParams['text.latex.preamble']=[r"\usepackage{lmodern}"]
+params = {'text.usetex': True,
+          'font.size': 11,
+          'font.family': 'lmodern',
+          'text.latex.unicode': True,
+          }
+plt.rcParams.update(params)
 
-from load_data import load_orbit, load_bodies_location, load_lagrange_points_location, load_differential_corrections, load_initial_conditions_incl_M
+from load_data import load_orbit, load_bodies_location, load_lagrange_points_location, load_differential_corrections, load_initial_conditions_incl_M, load_manifold
 
 
 class DisplayPeriodicityValidation:
@@ -20,10 +27,10 @@ class DisplayPeriodicityValidation:
         self.orbitType = orbit_type
         self.lagrangePointNr = lagrange_point_nr
 
-        initial_conditions_file_path = '../../data/raw/' + orbit_type + '_L' + str(lagrange_point_nr) + '_initial_conditions.txt'
+        initial_conditions_file_path = '../../data/raw/L' + str(lagrange_point_nr) + '_' + orbit_type + '_initial_conditions.txt'
         initial_conditions_incl_m_df = load_initial_conditions_incl_M(initial_conditions_file_path)
 
-        differential_correction_file_path = '../../data/raw/' + orbit_type + '_L' + str(lagrange_point_nr) + '_differential_correction.txt'
+        differential_correction_file_path = '../../data/raw/L' + str(lagrange_point_nr) + '_' + orbit_type + '_differential_correction.txt'
         differential_correction_df = load_differential_corrections(differential_correction_file_path)
 
         self.C = []
@@ -154,24 +161,33 @@ class DisplayPeriodicityValidation:
             for i in range(6):
                 if (abs(eigenvalue[i]) - 1.0) < 1e-2:
                     reduction += 1
+
+            check=False
+            # if (6-reduction) == 2.0 and not check:
+            #     print(row)
+            #     check = True
+            if (6-reduction) == 1.0 and row[1][2]>0.9:
+                print(row)
+
             self.orderOfLinearInstability.append(6-reduction)
 
             self.v1.append(abs(eigenvalue[sorting_indices[0]] + eigenvalue[sorting_indices[5]]) / 2)
             self.v2.append(abs(eigenvalue[sorting_indices[1]] + eigenvalue[sorting_indices[4]]) / 2)
             self.v3.append(abs(eigenvalue[sorting_indices[2]] + eigenvalue[sorting_indices[3]]) / 2)
             self.D.append(np.linalg.det(M))
+        #
+        # for i in range(0, len(self.C)):
+        #     df = load_orbit('../../data/raw/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(i) + '.txt')
+        #     self.delta_r.append(np.sqrt((df.head(1)['x'].values - df.tail(1)['x'].values) ** 2 +
+        #                                 (df.head(1)['y'].values - df.tail(1)['y'].values) ** 2 +
+        #                                 (df.head(1)['z'].values - df.tail(1)['z'].values) ** 2))
+        #
+        #     self.delta_v.append(np.sqrt((df.head(1)['xdot'].values - df.tail(1)['xdot'].values) ** 2 +
+        #                                 (df.head(1)['ydot'].values - df.tail(1)['ydot'].values) ** 2 +
+        #                                 (df.head(1)['zdot'].values - df.tail(1)['zdot'].values) ** 2))
 
-        for i in range(0, len(self.C)):
-            df = load_orbit('../../data/raw/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_' + str(i) + '.txt')
-            self.delta_r.append(np.sqrt((df.head(1)['x'].values - df.tail(1)['x'].values) ** 2 +
-                                        (df.head(1)['y'].values - df.tail(1)['y'].values) ** 2 +
-                                        (df.head(1)['z'].values - df.tail(1)['z'].values) ** 2))
-
-            self.delta_v.append(np.sqrt((df.head(1)['xdot'].values - df.tail(1)['xdot'].values) ** 2 +
-                                        (df.head(1)['ydot'].values - df.tail(1)['ydot'].values) ** 2 +
-                                        (df.head(1)['zdot'].values - df.tail(1)['zdot'].values) ** 2))
-
-        self.figSize = (20, 20)
+        # self.figSize = (20, 20)
+        self.figSize = (5*(1+np.sqrt(5))/2, 5)
         self.suptitleSize = 20
         self.xlim = [min(self.x), max(self.x)]
         pass
@@ -214,7 +230,7 @@ class DisplayPeriodicityValidation:
         ax5.scatter(x, y, color='black')
 
         for i in range(0, len(self.C), 50):
-            df = load_orbit('../../data/raw/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_' + str(i) + '.txt')
+            df = load_orbit('../../data/raw/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(i) + '.txt')
             ax1.plot(df['x'], df['y'], color=colors[i], alpha=0.5)
             ax2.plot(df['x'], df['y'], df['z'], color=colors[i], alpha=0.5)
             ax3.plot(df['x'], df['z'], color=colors[i], alpha=0.5)
@@ -247,11 +263,11 @@ class DisplayPeriodicityValidation:
         ax5.grid(True, which='both', ls=':')
 
         fig1.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitType + ': family', size=self.suptitleSize)
-        fig1.savefig('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_family.png')
-        fig2.savefig('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_family_subplots.png')
+        fig1.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_family.png')
+        fig1.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_family.pdf')
+        fig2.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_family_subplots.png')
+        fig2.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_family_subplots.pdf')
         plt.close(fig2)
-        # tikz_save('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_family.tex',
-        #           figureheight='\\figureheight', figurewidth='\\figurewidth')
         # plt.show()
         plt.close()
         pass
@@ -275,9 +291,8 @@ class DisplayPeriodicityValidation:
             for j in range(2):
                 arr[i, j].grid(True, which='both', ls=':')
         plt.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitType + ': orbital energy and period', size=self.suptitleSize)
-        plt.savefig('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_orbital_energy.png')
-        # tikz_save('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_orbital_energy.tex',
-        #           figureheight='\\figureheight', figurewidth='\\figurewidth')
+        plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_orbital_energy.png')
+        plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_orbital_energy.pdf')
         # plt.show()
         plt.close()
         pass
@@ -321,18 +336,17 @@ class DisplayPeriodicityValidation:
         arr[1, 1].semilogy(self.xlim, [1e-3, 1e-3], '--')
         arr[1, 1].set_xlim(self.xlim)
         # arr[1, 1].set_ylim([0, 1.5e-3])
-        arr[1, 1].set_ylabel('ZOOM: $|||\lambda_i|-1|| \forall i=3,4$')
+        arr[1, 1].set_ylabel(' $ZOOM: |||\lambda_i|-1|| $\forall$ i=3,4$')
         arr[1, 1].set_xlabel('x-axis [-]')
 
         for i in range(2):
             for j in range(2):
                 arr[i, j].grid(True, which='both', ls=':')
         plt.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitType + ': analysis Monodromy matrix', size=self.suptitleSize)
-        plt.savefig('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_monodromy_analysis.png')
-        # tikz_save('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_monodromy_analysis.tex',
-        #           figureheight='\\figureheight', figurewidth='\\figurewidth')
-        # plt.show()
-        plt.close()
+        # plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_monodromy_analysis.png')
+        # plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_monodromy_analysis.pdf')
+        plt.show()
+        # plt.close()
         pass
 
     def plot_stability(self):
@@ -402,10 +416,9 @@ class DisplayPeriodicityValidation:
             for j in range(3):
                 arr[i, j].grid(True, which='both', ls=':')
 
-        plt.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitType + ': eigenvalues $\lambda_i$ & stability index $v_i$', size=self.suptitleSize)
-        plt.savefig('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_stability.png')
-        # tikz_save('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_stability.tex',
-        #           figureheight='\\figureheight', figurewidth='\\figurewidth')
+        plt.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitType + ': eigenvalues $\lambda_i$ \& stability index $v_i$', size=self.suptitleSize)
+        plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_stability.png')
+        plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_stability.pdf')
         # plt.show()
         plt.close()
         pass
@@ -471,9 +484,8 @@ class DisplayPeriodicityValidation:
                 arr[i, j].grid(True, which='both', ls=':')
 
         plt.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitType + ': periodicity validation', size=self.suptitleSize)
-        plt.savefig('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_periodicity.png')
-        # tikz_save('../../data/figures/' + self.orbitType + '_L' + str(self.lagrangePointNr) + '_periodicity.tex',
-        #           figureheight='\\figureheight', figurewidth='\\figurewidth')
+        plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_periodicity.png')
+        plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_periodicity.pdf')
         # plt.show()
         plt.close()
         pass
@@ -481,15 +493,14 @@ class DisplayPeriodicityValidation:
 
 if __name__ == '__main__':
     lagrange_points = [1, 2]
-    orbit_types = ['horizontal', 'vertical', 'halo']
-    # lagrange_points = [1]
-    # orbit_types = ['halo']
+    # orbit_types = ['horizontal', 'vertical', 'halo']
+    orbit_types = ['horizontal']
 
     for orbit_type in orbit_types:
         for lagrange_point in lagrange_points:
             display_periodicity_validation = DisplayPeriodicityValidation(orbit_type, lagrange_point)
-            display_periodicity_validation.plot_family()
-            display_periodicity_validation.plot_orbital_energy()
+            # display_periodicity_validation.plot_family()
+            # display_periodicity_validation.plot_orbital_energy()
             display_periodicity_validation.plot_monodromy_analysis()
-            display_periodicity_validation.plot_stability()
-            display_periodicity_validation.plot_periodicity_validation()
+            # display_periodicity_validation.plot_stability()
+            # display_periodicity_validation.plot_periodicity_validation()

@@ -106,7 +106,7 @@ if __name__ == '__main__':
     # initial_conditions_incl_M_df = load_initial_conditions_incl_M(initial_conditions_file_path)
     # print(initial_conditions_incl_M_df)
 
-    initial_conditions_file_path = '../data/raw/halo_L1_initial_conditions.txt'
+    initial_conditions_file_path = '../data/raw/L1_halo_initial_conditions.txt'
     initial_conditions_incl_M_df = load_initial_conditions_incl_M(initial_conditions_file_path)
     print(initial_conditions_incl_M_df)
 
