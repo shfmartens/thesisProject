@@ -12,7 +12,7 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
                                              double orbitalPeriod, const double massParameter,
                                              double maxPositionDeviationFromPeriodicOrbit,
                                              double maxVelocityDeviationFromPeriodicOrbit,
-                                             int maxNumberOfIterations = 50 )
+                                             int maxNumberOfIterations = 200 )
 {
     std::cout << "\nApply differential correction:" << std::endl;
 
@@ -55,8 +55,15 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
     double positionDeviationFromPeriodicOrbit;
     double velocityDeviationFromPeriodicOrbit;
 
-    positionDeviationFromPeriodicOrbit = std::abs(halfPeriodState(1));
-    velocityDeviationFromPeriodicOrbit = sqrt(pow(halfPeriodState(3),2) + pow(halfPeriodState(5),2));
+    if (orbitType == "axial"){
+        // Initial condition for axial family should be [x, 0, 0, 0, ydot, zdot]
+        positionDeviationFromPeriodicOrbit = sqrt(pow(halfPeriodState(1), 2) + pow(halfPeriodState(2), 2));
+        velocityDeviationFromPeriodicOrbit = sqrt(pow(halfPeriodState(3), 2));
+    } else {
+        // Initial condition for other families should be [x, 0, y, 0, ydot, 0]
+        positionDeviationFromPeriodicOrbit = sqrt(pow(halfPeriodState(1), 2));
+        velocityDeviationFromPeriodicOrbit = sqrt(pow(halfPeriodState(3), 2) + pow(halfPeriodState(5), 2));
+    }
 
     std::cout << "\nInitial state vector:\n"                  << initialStateVectorInclSTM.segment(0,6)
               << "\nPosition deviation from periodic orbit: " << positionDeviationFromPeriodicOrbit
@@ -73,7 +80,7 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
         }
 
         // Apply differential correction
-        differentialCorrection = computeDifferentialCorrection( halfPeriodState );
+        differentialCorrection = computeDifferentialCorrection( halfPeriodState, orbitType );
 
         initialStateVectorInclSTM(0) = initialStateVectorInclSTM(0) + differentialCorrection(0)/1.0;
         initialStateVectorInclSTM(1) = initialStateVectorInclSTM(1) + differentialCorrection(1)/1.0;
@@ -106,9 +113,16 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
                 }
             }
         }
-        
-        positionDeviationFromPeriodicOrbit = std::abs(halfPeriodState(1));
-        velocityDeviationFromPeriodicOrbit = sqrt(pow(halfPeriodState(3),2) + pow(halfPeriodState(5),2));
+
+        if (orbitType == "axial"){
+            // Initial condition for axial family should be [x, 0, 0, 0, ydot, zdot]
+            positionDeviationFromPeriodicOrbit = sqrt(pow(halfPeriodState(1), 2) + pow(halfPeriodState(2), 2));
+            velocityDeviationFromPeriodicOrbit = sqrt(pow(halfPeriodState(3), 2));
+        } else {
+            // Initial condition for other families should be [x, 0, y, 0, ydot, 0]
+            positionDeviationFromPeriodicOrbit = sqrt(pow(halfPeriodState(1), 2));
+            velocityDeviationFromPeriodicOrbit = sqrt(pow(halfPeriodState(3), 2) + pow(halfPeriodState(5), 2));
+        }
         numberOfIterations += 1;
 
         std::cout << "positionDeviationFromPeriodicOrbit: " << positionDeviationFromPeriodicOrbit << std::endl

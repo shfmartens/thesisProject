@@ -6,7 +6,7 @@
 #include "computeDifferentialCorrection.cpp"
 
 
-Eigen::VectorXd computeDifferentialCorrection( Eigen::VectorXd cartesianState );
+Eigen::VectorXd computeDifferentialCorrection( Eigen::VectorXd cartesianState, std::string orbitType );
 
 
 
