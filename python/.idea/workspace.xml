@@ -17,18 +17,30 @@
       <file leaf-file-name="load_data.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/load_data.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="72" column="68" lean-forward="false" selection-start-line="72" selection-start-column="62" selection-end-line="72" selection-end-column="68" />
+            <state relative-caret-position="511">
+              <caret line="73" column="68" lean-forward="false" selection-start-line="73" selection-start-column="55" selection-end-line="73" selection-end-column="68" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="display_poincare.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="display_poincare.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/poincare/display_poincare.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="334">
-              <caret line="223" column="0" lean-forward="true" selection-start-line="223" selection-start-column="0" selection-end-line="223" selection-end-column="0" />
+            <state relative-caret-position="135">
+              <caret line="20" column="80" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="148" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="verification_and_validation.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/massarweh/verification_and_validation.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="46">
+              <caret line="267" column="104" lean-forward="false" selection-start-line="267" selection-start-column="104" selection-end-line="267" selection-end-column="104" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -47,21 +59,7 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>ax2.set_lim</find>
-      <find>equal</find>
-      <find>deltan</find>
-      <find>1, 1</find>
-      <find>print</find>
-      <find>lines</find>
-      <find>initial</find>
-      <find>&quot;</find>
-      <find>T_initial</find>
-      <find>gridspec</find>
-      <find>delta_xdot</find>
-      <find>family</find>
-      <find>3d</find>
       <find>plot_monodromy_analysis</find>
-      <find>orderOfLinearInstability</find>
       <find>maxEigenvalueDeviation</find>
       <find>self.orderOfLinearInstability</find>
       <find>subplot</find>
@@ -77,6 +75,20 @@
       <find>log</find>
       <find>moon</find>
       <find>set</find>
+      <find>orbit_type</find>
+      <find>plot_family</find>
+      <find>ZOOM</find>
+      <find>phase</find>
+      <find>|</find>
+      <find>monodromy</find>
+      <find>orderOfLinearInstability</find>
+      <find>self.figsi</find>
+      <find>png</find>
+      <find>plot_al</find>
+      <find>self.C</find>
+      <find>numerOfPlotColorIndices</find>
+      <find>plotColorIndexBasedOnC</find>
+      <find>tight</find>
     </findStrings>
     <replaceStrings>
       <replace>1, 1</replace>
@@ -120,17 +132,19 @@
         <option value="$PROJECT_DIR$/animate_family_of_orbits.py" />
         <option value="$PROJECT_DIR$/equal_energy_plot/display_families_equal_energy.py" />
         <option value="$PROJECT_DIR$/initial_conditions/lindstedt_poincare.py" />
-        <option value="$PROJECT_DIR$/massarweh/verification_and_validation.py" />
         <option value="$PROJECT_DIR$/equal_energy_plot/display_families_of_equal_energy.py" />
-        <option value="$PROJECT_DIR$/load_data.py" />
         <option value="$PROJECT_DIR$/verification/poincare/display_poincare_howell_lyapunov.py" />
+        <option value="$PROJECT_DIR$/poincare/__init__.py" />
+        <option value="$PROJECT_DIR$/load_data.py" />
         <option value="$PROJECT_DIR$/poincare/display_poincare.py" />
+        <option value="$PROJECT_DIR$/massarweh/verification_and_validation.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" fullScreen="true">
+    <option name="y" value="22" />
     <option name="width" value="1280" />
-    <option name="height" value="800" />
+    <option name="height" value="728" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -147,7 +161,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -163,22 +177,12 @@
             <path>
               <item name="python" type="b2602c69:ProjectViewProjectNode" />
               <item name="python" type="462c0819:PsiDirectoryNode" />
-              <item name="initial_conditions" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="python" type="b2602c69:ProjectViewProjectNode" />
-              <item name="python" type="462c0819:PsiDirectoryNode" />
               <item name="massarweh" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="python" type="b2602c69:ProjectViewProjectNode" />
               <item name="python" type="462c0819:PsiDirectoryNode" />
               <item name="poincare" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="python" type="b2602c69:ProjectViewProjectNode" />
-              <item name="python" type="462c0819:PsiDirectoryNode" />
-              <item name="verification" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="python" type="b2602c69:ProjectViewProjectNode" />
@@ -206,13 +210,28 @@
               <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
               <item name="&lt; Python 3.5.2 (~/anaconda/bin/python.app) &gt;" type="70bed36:NamedLibraryElementNode" />
               <item name="site-packages" type="462c0819:PsiDirectoryNode" />
-              <item name="matplotlib" type="462c0819:PsiDirectoryNode" />
+              <item name="distributed" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="python" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="&lt; Python 3.5.2 (~/anaconda/bin/python.app) &gt;" type="70bed36:NamedLibraryElementNode" />
+              <item name="site-packages" type="462c0819:PsiDirectoryNode" />
+              <item name="mpl_toolkits" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="python" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="&lt; Python 3.5.2 (~/anaconda/bin/python.app) &gt;" type="70bed36:NamedLibraryElementNode" />
+              <item name="site-packages" type="462c0819:PsiDirectoryNode" />
+              <item name="mpl_toolkits" type="462c0819:PsiDirectoryNode" />
+              <item name="axes_grid1" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -248,7 +267,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.display_poincare">
+  <component name="RunManager" selected="Python.verification_and_validation">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -423,10 +442,10 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.display_poincare" />
-        <item index="1" class="java.lang.String" itemvalue="Python.lindstedt_poincare" />
-        <item index="2" class="java.lang.String" itemvalue="Python.display_families_of_equal_energy" />
-        <item index="3" class="java.lang.String" itemvalue="Python.verification_and_validation" />
+        <item index="0" class="java.lang.String" itemvalue="Python.verification_and_validation" />
+        <item index="1" class="java.lang.String" itemvalue="Python.display_poincare" />
+        <item index="2" class="java.lang.String" itemvalue="Python.lindstedt_poincare" />
+        <item index="3" class="java.lang.String" itemvalue="Python.display_families_of_equal_energy" />
         <item index="4" class="java.lang.String" itemvalue="Python.load_data" />
       </list>
     </recent_temporary>
@@ -460,12 +479,12 @@
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24071082" sideWeight="0.48026314" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28109854" sideWeight="0.48026314" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32876712" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35900962" sideWeight="0.5056543" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3727648" sideWeight="0.50080776" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.43878955" sideWeight="0.50080776" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.40302613" sideWeight="0.49434572" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3287483" sideWeight="0.49434572" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32876712" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32739726" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -515,6 +534,70 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/poincare/display_poincare.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="27" column="14" lean-forward="false" selection-start-line="27" selection-start-column="14" selection-end-line="30" selection-end-column="17" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/load_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/poincare/display_poincare.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3195">
+          <caret line="224" column="14" lean-forward="true" selection-start-line="224" selection-start-column="14" selection-end-line="224" selection-end-column="14" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/load_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/poincare/display_poincare.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3150">
+          <caret line="221" column="46" lean-forward="true" selection-start-line="221" selection-start-column="46" selection-end-line="221" selection-end-column="46" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/load_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1080">
+          <caret line="72" column="68" lean-forward="false" selection-start-line="72" selection-start-column="62" selection-end-line="72" selection-end-column="68" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/poincare/display_poincare.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3180">
+          <caret line="223" column="0" lean-forward="true" selection-start-line="223" selection-start-column="0" selection-end-line="223" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/load_data.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1080">
@@ -769,13 +852,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/massarweh/verification_and_validation.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3090">
-          <caret line="209" column="24" lean-forward="true" selection-start-line="209" selection-start-column="24" selection-end-line="209" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/equal_energy_plot/display_families_of_equal_energy.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="299">
@@ -783,19 +859,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/load_data.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="72" column="68" lean-forward="false" selection-start-line="72" selection-start-column="62" selection-end-line="72" selection-end-column="68" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/verification/poincare/display_poincare_howell_lyapunov.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="320">
           <caret line="190" column="0" lean-forward="false" selection-start-line="190" selection-start-column="0" selection-end-line="190" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -803,14 +870,54 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="142">
           <caret line="2038" column="0" lean-forward="false" selection-start-line="2038" selection-start-column="0" selection-end-line="2038" selection-end-column="0" />
-          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/poincare/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/poincare/display_poincare.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="334">
-          <caret line="223" column="0" lean-forward="true" selection-start-line="223" selection-start-column="0" selection-end-line="223" selection-end-column="0" />
+        <state relative-caret-position="135">
+          <caret line="20" column="80" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="148" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda/lib/python3.5/site-packages/mpl_toolkits/axes_grid1/axes_grid.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="260">
+          <caret line="86" column="30" lean-forward="false" selection-start-line="86" selection-start-column="30" selection-end-line="86" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/load_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="511">
+          <caret line="73" column="68" lean-forward="false" selection-start-line="73" selection-start-column="55" selection-end-line="73" selection-end-column="68" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda/lib/python3.5/site-packages/distributed/client.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-569">
+          <caret line="1344" column="8" lean-forward="false" selection-start-line="1344" selection-start-column="8" selection-end-line="1344" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/massarweh/verification_and_validation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="46">
+          <caret line="267" column="104" lean-forward="false" selection-start-line="267" selection-start-column="104" selection-end-line="267" selection-end-column="104" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

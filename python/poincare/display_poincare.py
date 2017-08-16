@@ -18,7 +18,7 @@ params = {'text.usetex': True,
           }
 plt.rcParams.update(params)
 
-from load_data import load_manifold, load_bodies_location, load_lagrange_points_location, cr3bp_velocity, load_initial_conditions_incl_M
+from load_data import load_manifold, load_bodies_location, load_lagrange_points_location, cr3bp_velocity, load_initial_conditions_incl_M, load_orbit
 
 
 class DisplayPoincarePlanar:

@@ -212,6 +212,7 @@ void createInitialConditions( int librationPointNr, std::string orbitType,
         differentialCorrectionResult = applyDifferentialCorrection( librationPointNr, orbitType, initialStateVector, orbitalPeriod, massParameter, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit);
         if (differentialCorrectionResult == Eigen::VectorXd::Zero(15)){
             continueNumericalContinuation = false;
+            std::cout << "\n\nNUMERICAL CONTINUATION STOPPED DUE TO EXCEEDING MAXIMUM NUMBER OF ITERATIONS\n\n" << std::endl;
             break;
         }
         initialStateVector           = differentialCorrectionResult.segment(0,6);
@@ -233,7 +234,12 @@ void createInitialConditions( int librationPointNr, std::string orbitType,
         stateVectorInclSTM = writePeriodicOrbitToFile( initialStateVector, librationPointNr, orbitType, numberOfInitialConditions, orbitalPeriod, massParameter);
 
         // Check eigenvalue condition (at least one pair equalling a real one)
-        continueNumericalContinuation = checkEigenvalues(stateVectorInclSTM, maxEigenvalueDeviation);
+        // Exception for the horizontal Lyapunov family in Earth-Moon L2: eigenvalue may be of module one instead of a real one to compute a more extensive family
+        if ( librationPointNr == 2 and orbitType == "horizontal" ){
+            continueNumericalContinuation = checkEigenvalues(stateVectorInclSTM, maxEigenvalueDeviation, true);
+        } else {
+            continueNumericalContinuation = checkEigenvalues(stateVectorInclSTM, maxEigenvalueDeviation, false);
+        }
 
         // Save jacobi energy, orbital period, initial condition, and eigenvalues
         tempInitialCondition.clear();

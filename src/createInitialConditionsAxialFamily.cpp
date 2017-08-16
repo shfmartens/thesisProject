@@ -32,6 +32,7 @@ void createInitialConditionsAxialFamily( Eigen::VectorXd initialStateVector1, Ei
     double pseudoArcLengthCorrection   = 0.0;
     bool continueNumericalContinuation = true;
     Eigen::VectorXd initialStateVector = Eigen::VectorXd::Zero(6);
+    Eigen::VectorXd halfPeriodState    = Eigen::VectorXd::Zero(6);
     Eigen::VectorXd delta              = Eigen::VectorXd::Zero(7);
     Eigen::VectorXd stateVectorInclSTM = Eigen::VectorXd::Zero(42);
     std::vector< std::vector <double> > initialConditions;
@@ -131,7 +132,6 @@ void createInitialConditionsAxialFamily( Eigen::VectorXd initialStateVector1, Ei
     // Set exit parameters of continuation procedure
     int numberOfInitialConditions = 2;
     int maximumNumberOfInitialConditions = 4000;
-    double previousZdot = initialStateVector(5);
 
     while (numberOfInitialConditions < maximumNumberOfInitialConditions and continueNumericalContinuation){
 
@@ -169,13 +169,13 @@ void createInitialConditionsAxialFamily( Eigen::VectorXd initialStateVector1, Ei
         }
         initialStateVector           = differentialCorrectionResult.segment(0,6);
         orbitalPeriod                = differentialCorrectionResult(6);
+        halfPeriodState              = differentialCorrectionResult.segment(7,6);
 
-        // TODO Check whether vertical family has already been reached, by checking whether zdot starts decreasing again
-        if (std::abs(initialStateVector(5)) < std::abs(previousZdot)){
+        if ( std::abs(initialStateVector(4) - halfPeriodState(4)) < 1e-3 and
+             std::abs(initialStateVector(5) + halfPeriodState(5)) < 1e-3 ){
             continueNumericalContinuation = false;
             break;
         }
-        previousZdot = initialStateVector(5);
 
         // Save number of iterations, jacobi energy, time of integration and the half period state vector
         jacobiEnergyHalfPeriod       = tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, differentialCorrectionResult.segment(7,6));

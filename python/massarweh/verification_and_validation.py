@@ -2,13 +2,14 @@ import numpy as np
 import pandas as pd
 import json
 import matplotlib
-# matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
+matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.axes_grid.inset_locator import inset_axes
 from matplotlib2tikz import save as tikz_save
 import seaborn as sns
+sns.set_style("whitegrid")
 import time
 plt.rcParams['text.latex.preamble']=[r"\usepackage{lmodern}"]
 params = {'text.usetex': True,
@@ -48,6 +49,7 @@ class DisplayPeriodicityValidation:
         self.eigenvalues = []
         self.D = []
         self.orderOfLinearInstability = []
+        self.orbitIdBifurcations = []
         self.lambda1 = []
         self.lambda2 = []
         self.lambda3 = []
@@ -157,43 +159,61 @@ class DisplayPeriodicityValidation:
             self.lambda5.append(eigenvalue[sorting_indices[4]])
             self.lambda6.append(eigenvalue[sorting_indices[5]])
 
+            # Determine order of linear instability
             reduction = 0
             for i in range(6):
                 if (abs(eigenvalue[i]) - 1.0) < 1e-2:
                     reduction += 1
-
-            check=False
+            # check=False
             # if (6-reduction) == 2.0 and not check:
             #     print(row)
             #     check = True
-            if (6-reduction) == 1.0 and row[1][2]>0.9:
-                print(row)
+            # if (6-reduction) == 1.0 and row[1][2]>0.9:
+            #     print(row)
+
+            if len(self.orderOfLinearInstability) > 0:
+                # Check for a bifurcation, when the order of linear instability changes
+                if (6-reduction) != self.orderOfLinearInstability[-1]:
+                    self.orbitIdBifurcations.append(row[0])
 
             self.orderOfLinearInstability.append(6-reduction)
-
             self.v1.append(abs(eigenvalue[sorting_indices[0]] + eigenvalue[sorting_indices[5]]) / 2)
             self.v2.append(abs(eigenvalue[sorting_indices[1]] + eigenvalue[sorting_indices[4]]) / 2)
             self.v3.append(abs(eigenvalue[sorting_indices[2]] + eigenvalue[sorting_indices[3]]) / 2)
             self.D.append(np.linalg.det(M))
-        #
-        # for i in range(0, len(self.C)):
-        #     df = load_orbit('../../data/raw/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(i) + '.txt')
-        #     self.delta_r.append(np.sqrt((df.head(1)['x'].values - df.tail(1)['x'].values) ** 2 +
-        #                                 (df.head(1)['y'].values - df.tail(1)['y'].values) ** 2 +
-        #                                 (df.head(1)['z'].values - df.tail(1)['z'].values) ** 2))
-        #
-        #     self.delta_v.append(np.sqrt((df.head(1)['xdot'].values - df.tail(1)['xdot'].values) ** 2 +
-        #                                 (df.head(1)['ydot'].values - df.tail(1)['ydot'].values) ** 2 +
-        #                                 (df.head(1)['zdot'].values - df.tail(1)['zdot'].values) ** 2))
+
+        # Determine heatmap for level of C
+        self.numberOfPlotColorIndices = len(self.C)
+        self.plotColorIndexBasedOnC = []
+        for jacobi_energy in self.C:
+            self.plotColorIndexBasedOnC.append(int(np.round((jacobi_energy - min(self.C)) / (max(self.C) - min(self.C)) * (self.numberOfPlotColorIndices-1))))
+
+        for i in range(0, len(self.C)):
+            df = load_orbit('../../data/raw/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(i) + '.txt')
+            self.delta_r.append(np.sqrt((df.head(1)['x'].values - df.tail(1)['x'].values) ** 2 +
+                                        (df.head(1)['y'].values - df.tail(1)['y'].values) ** 2 +
+                                        (df.head(1)['z'].values - df.tail(1)['z'].values) ** 2))
+
+            self.delta_v.append(np.sqrt((df.head(1)['xdot'].values - df.tail(1)['xdot'].values) ** 2 +
+                                        (df.head(1)['ydot'].values - df.tail(1)['ydot'].values) ** 2 +
+                                        (df.head(1)['zdot'].values - df.tail(1)['zdot'].values) ** 2))
 
         # self.figSize = (20, 20)
-        self.figSize = (5*(1+np.sqrt(5))/2, 5)
+        self.figSize = (7*(1+np.sqrt(5))/2, 7)
         self.suptitleSize = 20
         self.xlim = [min(self.x), max(self.x)]
         pass
 
     def plot_family(self):
-        colors = sns.color_palette("Blues", n_colors=len(range(0, len(self.C))))
+        c_normalized = [(value-min(self.C))/(max(self.C)-min(self.C)) for value in self.C]
+        colors = matplotlib.colors.ListedColormap(sns.color_palette("Blues"))(c_normalized)
+        # colors = matplotlib.colors.ListedColormap(sns.dark_palette("blue", reverse=True))(c_normalized)
+
+        sm = plt.cm.ScalarMappable(cmap=matplotlib.colors.ListedColormap(sns.color_palette("Blues")),
+                                   norm=plt.Normalize(vmin=min(self.C), vmax=max(self.C)))
+        # sm = plt.cm.ScalarMappable(cmap=sns.dark_palette("blue", as_cmap=True, reverse=True), norm=plt.Normalize(vmin=min(self.C), vmax=max(self.C)))
+        # fake up the array of the scalar mappable. Urgh…
+        sm._A = []
 
         # Plot 1: 3d overview
         fig1 = plt.figure(figsize=self.figSize)
@@ -210,11 +230,11 @@ class DisplayPeriodicityValidation:
         lagrange_point_nrs = ['L1', 'L2']
         # Lagrange points and bodies
         for lagrange_point_nr in lagrange_point_nrs:
-            ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'], color='grey')
-            ax2.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'], lagrange_points_df[lagrange_point_nr]['z'], color='grey')
-            ax3.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['z'], color='grey')
-            ax4.scatter(lagrange_points_df[lagrange_point_nr]['y'], lagrange_points_df[lagrange_point_nr]['z'], color='grey')
-            ax5.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'], color='grey')
+            ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'], color='black', marker='x')
+            ax2.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'], lagrange_points_df[lagrange_point_nr]['z'], color='black', marker='x')
+            ax3.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['z'], color='black', marker='x')
+            ax4.scatter(lagrange_points_df[lagrange_point_nr]['y'], lagrange_points_df[lagrange_point_nr]['z'], color='black', marker='x')
+            ax5.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'], color='black', marker='x')
 
         bodies_df = load_bodies_location()
         u = np.linspace(0, 2 * np.pi, 100)
@@ -223,19 +243,43 @@ class DisplayPeriodicityValidation:
         y = bodies_df['Moon']['r'] * np.outer(np.sin(u), np.sin(v))
         z = bodies_df['Moon']['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
 
-        ax1.scatter(x, y, color='black')
+        ax1.contourf(x, y, z, color='black')
         ax2.plot_surface(x, y, z, color='black')
-        ax3.scatter(x, z, color='black')
-        ax4.scatter(y, z, color='black')
-        ax5.scatter(x, y, color='black')
+        ax3.contourf(x, z, y, color='black')
+        ax4.contourf(y, z, x,  color='black')
+        ax5.contourf(x, y, z, color='black')
 
-        for i in range(0, len(self.C), 50):
+        # Plot every 100th member, including the ultimate member of the family
+        orbitIdsPlot = list(range(0, len(self.C)-1, 100))
+        if orbitIdsPlot[-1] != len(self.C)-1:
+            orbitIdsPlot.append(len(self.C)-1)
+
+        # Determine color for plot
+        colorOrderOfLinearInstability = ['whitesmoke', 'silver', 'dimgrey']
+        plot_alpha = 1
+        line_width = 0.5
+
+        # Plot orbits
+        for i in orbitIdsPlot:
+            # plot_color = colorOrderOfLinearInstability[self.orderOfLinearInstability[i]]
+            plot_color = colors[self.plotColorIndexBasedOnC[i]]
             df = load_orbit('../../data/raw/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(i) + '.txt')
-            ax1.plot(df['x'], df['y'], color=colors[i], alpha=0.5)
-            ax2.plot(df['x'], df['y'], df['z'], color=colors[i], alpha=0.5)
-            ax3.plot(df['x'], df['z'], color=colors[i], alpha=0.5)
-            ax4.plot(df['y'], df['z'], color=colors[i], alpha=0.5)
-            ax5.plot(df['x'], df['y'], color=colors[i], alpha=0.5)
+            ax1.plot(df['x'], df['y'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
+            ax2.plot(df['x'], df['y'], df['z'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
+            ax3.plot(df['x'], df['z'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
+            ax4.plot(df['y'], df['z'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
+            ax5.plot(df['x'], df['y'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
+
+        # Plot the bifurcations
+        for i in self.orbitIdBifurcations:
+            # plot_color = 'b'
+            plot_color = colors[self.plotColorIndexBasedOnC[i]]
+            df = load_orbit('../../data/raw/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(i) + '.txt')
+            ax1.plot(df['x'], df['y'], color=plot_color)
+            ax2.plot(df['x'], df['y'], df['z'], color=plot_color)
+            ax3.plot(df['x'], df['z'], color=plot_color)
+            ax4.plot(df['y'], df['z'], color=plot_color)
+            ax5.plot(df['x'], df['y'], color=plot_color)
 
         ax1.set_xlabel('x [-]')
         ax1.set_ylabel('y [-]')
@@ -262,10 +306,14 @@ class DisplayPeriodicityValidation:
         ax5.set_ylabel('y [-]')
         ax5.grid(True, which='both', ls=':')
 
+        fig2.tight_layout()
+        cax, kw = matplotlib.colorbar.make_axes([ax2, ax3, ax4, ax5])
+        plt.colorbar(sm, cax=cax, **kw)
+
         fig1.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitType + ': family', size=self.suptitleSize)
-        fig1.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_family.png')
+        # fig1.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_family.png')
         fig1.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_family.pdf')
-        fig2.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_family_subplots.png')
+        # fig2.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_family_subplots.png')
         fig2.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_family_subplots.pdf')
         plt.close(fig2)
         # plt.show()
@@ -291,7 +339,7 @@ class DisplayPeriodicityValidation:
             for j in range(2):
                 arr[i, j].grid(True, which='both', ls=':')
         plt.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitType + ': orbital energy and period', size=self.suptitleSize)
-        plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_orbital_energy.png')
+        # plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_orbital_energy.png')
         plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_orbital_energy.pdf')
         # plt.show()
         plt.close()
@@ -344,9 +392,9 @@ class DisplayPeriodicityValidation:
                 arr[i, j].grid(True, which='both', ls=':')
         plt.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitType + ': analysis Monodromy matrix', size=self.suptitleSize)
         # plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_monodromy_analysis.png')
-        # plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_monodromy_analysis.pdf')
-        plt.show()
-        # plt.close()
+        plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_monodromy_analysis.pdf')
+        # plt.show()
+        plt.close()
         pass
 
     def plot_stability(self):
@@ -417,7 +465,7 @@ class DisplayPeriodicityValidation:
                 arr[i, j].grid(True, which='both', ls=':')
 
         plt.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitType + ': eigenvalues $\lambda_i$ \& stability index $v_i$', size=self.suptitleSize)
-        plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_stability.png')
+        # plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_stability.png')
         plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_stability.pdf')
         # plt.show()
         plt.close()
@@ -484,7 +532,7 @@ class DisplayPeriodicityValidation:
                 arr[i, j].grid(True, which='both', ls=':')
 
         plt.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitType + ': periodicity validation', size=self.suptitleSize)
-        plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_periodicity.png')
+        # plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_periodicity.png')
         plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_periodicity.pdf')
         # plt.show()
         plt.close()
@@ -492,15 +540,17 @@ class DisplayPeriodicityValidation:
 
 
 if __name__ == '__main__':
-    lagrange_points = [1, 2]
+    # lagrange_points = [1, 2]
     # orbit_types = ['horizontal', 'vertical', 'halo']
-    orbit_types = ['horizontal']
+    lagrange_points = [1]
+    orbit_types = ['axial']
 
     for orbit_type in orbit_types:
         for lagrange_point in lagrange_points:
             display_periodicity_validation = DisplayPeriodicityValidation(orbit_type, lagrange_point)
-            # display_periodicity_validation.plot_family()
+            display_periodicity_validation.plot_family()
             # display_periodicity_validation.plot_orbital_energy()
-            display_periodicity_validation.plot_monodromy_analysis()
+            # display_periodicity_validation.plot_monodromy_analysis()
             # display_periodicity_validation.plot_stability()
             # display_periodicity_validation.plot_periodicity_validation()
+            del display_periodicity_validation

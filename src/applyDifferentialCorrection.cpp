@@ -12,7 +12,7 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
                                              double orbitalPeriod, const double massParameter,
                                              double maxPositionDeviationFromPeriodicOrbit,
                                              double maxVelocityDeviationFromPeriodicOrbit,
-                                             int maxNumberOfIterations = 200 )
+                                             int maxNumberOfIterations = 1000 )
 {
     std::cout << "\nApply differential correction:" << std::endl;
 
@@ -70,6 +70,8 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
               << "\nVelocity deviation from periodic orbit: " << velocityDeviationFromPeriodicOrbit
               << "\n\nDifferential correction:"               << std::endl;
 
+    bool deviationFromPeriodicOrbitRelaxed = false;
+
     // Apply differential correction and propagate to half-period point until converged.
     while ( positionDeviationFromPeriodicOrbit > maxPositionDeviationFromPeriodicOrbit or
             velocityDeviationFromPeriodicOrbit > maxVelocityDeviationFromPeriodicOrbit ){
@@ -77,6 +79,15 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
         // If the maximum number of iterations has been reached, return a zero vector to stop the numerical continuation
         if (numberOfIterations > maxNumberOfIterations){
            return Eigen::VectorXd::Zero(15);
+        }
+
+        // Relax the maximum deviation requirements to compute the horizontal Lyapunov family in L2
+        if (deviationFromPeriodicOrbitRelaxed == false and numberOfIterations > 10 and
+            orbitType == "horizontal" and librationPointNr == 2){
+
+            maxPositionDeviationFromPeriodicOrbit = 10.0 * maxPositionDeviationFromPeriodicOrbit;
+            maxVelocityDeviationFromPeriodicOrbit = 10.0 * maxVelocityDeviationFromPeriodicOrbit;
+            deviationFromPeriodicOrbitRelaxed = true;
         }
 
         // Apply differential correction

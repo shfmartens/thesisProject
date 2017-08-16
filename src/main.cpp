@@ -16,7 +16,7 @@
 #include "computeManifolds.h"
 #include "completeInitialConditionsHaloFamily.h"
 #include "createInitialConditionsAxialFamily.h"
-//#include <omp.h>
+#include <omp.h>
 
 
 
@@ -58,7 +58,7 @@ int main (){
     #pragma omp parallel num_threads(2)
     {
         #pragma omp for
-        for (unsigned int librationPointNr = 1; librationPointNr <= 2; librationPointNr++) {
+        for (unsigned int librationPointNr = 2; librationPointNr <= 2; librationPointNr++) {
 
             // =========================================
             // == Load precomputed initial conditions ==
@@ -111,14 +111,14 @@ int main (){
             // == Create initial conditions for the axial family, based on the bifurcation from the horizontal Lyapunov family ==
             // ==================================================================================================================
 
-//            // Create initial conditions axial family
+            // Create initial conditions axial family
 //            int orbitIdForBifurcationToAxial;
 //            double signZdot;
 //            if (librationPointNr == 1) {
 //                orbitIdForBifurcationToAxial = 938;  // For L1
 //                signZdot = -1.0;
 //            } else {
-//                orbitIdForBifurcationToAxial = 353;  // For L2
+////                orbitIdForBifurcationToAxial = 353;  // For L2
 //                signZdot = 1.0;
 //            }
 //
@@ -130,6 +130,8 @@ int main (){
 //            initialStateVector1(3) = initialConditions[orbitIdForBifurcationToAxial][5];
 //            initialStateVector1(4) = initialConditions[orbitIdForBifurcationToAxial][6];
 //            initialStateVector1(5) = initialConditions[orbitIdForBifurcationToAxial][7] + signZdot * 0.01;
+//            Eigen::VectorXd stateVectorInclSTM;
+//            stateVectorInclSTM = writePeriodicOrbitToFile( initialStateVector1, librationPointNr, "axial", 0, orbitalPeriod1, massParameter);
 //
 //            double orbitalPeriod2 = initialConditions[orbitIdForBifurcationToAxial][1];
 //            Eigen::VectorXd initialStateVector2 = Eigen::VectorXd::Zero(6);
@@ -140,8 +142,10 @@ int main (){
 //            initialStateVector2(4) = initialConditions[orbitIdForBifurcationToAxial][6];
 //            initialStateVector2(5) = initialConditions[orbitIdForBifurcationToAxial][7] + signZdot * 0.02;
 //
+//            stateVectorInclSTM = writePeriodicOrbitToFile( initialStateVector2, librationPointNr, "axial", 1, orbitalPeriod2, massParameter);
+//
 //            createInitialConditionsAxialFamily(initialStateVector1, initialStateVector2, orbitalPeriod1, orbitalPeriod2, librationPointNr);
-
+//
         }
     }
 
