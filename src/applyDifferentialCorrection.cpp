@@ -91,7 +91,7 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
         }
 
         // Apply differential correction
-        differentialCorrection = computeDifferentialCorrection( halfPeriodState, orbitType );
+        differentialCorrection = computeDifferentialCorrection( librationPointNr, orbitType, halfPeriodState );
 
         initialStateVectorInclSTM(0) = initialStateVectorInclSTM(0) + differentialCorrection(0)/1.0;
         initialStateVectorInclSTM(1) = initialStateVectorInclSTM(1) + differentialCorrection(1)/1.0;
