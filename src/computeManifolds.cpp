@@ -133,20 +133,22 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
     // Check whether the two selected eigenvalues belong to the same reciprocal pair
     if ((1.0 / minimumEigenvalue - maximumEigenvalue) > maxEigenvalueDeviation){
         std::cout << "\n\n\nERROR - EIGENVALUES MIGHT NOT BELONG TO SAME RECIPROCAL PAIR" << std::endl;
-        std::ofstream errorFile;
-        errorFile.open("../data/raw/error_file.txt", std::ios_base::app);
-        errorFile << orbitId << "\n\n"
+        std::ofstream textFileEigenvalueError;
+        textFileEigenvalueError.open("../data/raw/error_file.txt", std::ios_base::app);
+        textFileEigenvalueError << orbitId << "\n\n"
                   << "Eigenvectors:\n" << eig.eigenvectors() << "\n"
                   << "Eigenvalues:\n" << eig.eigenvalues() << "\n"
                   << "Maximum real eigenvalue of " << maximumEigenvalue << " at " << indexMaximumEigenvalue
                   << ", corresponding to eigenvector (unstable manifold): \n" << eigenVector1 << "\n\n"
                   << "Minimum absolute real eigenvalue: " << minimumEigenvalue << " at " << indexMinimumEigenvalue
                   << ", corresponding to eigenvector (stable manifold): \n" << eigenVector2 << "\n\n" << std::endl;
-        errorFile.close();
+        textFileEigenvalueError.close();
     }
 
-    Eigen::VectorXd manifoldStartingState(42);
-    manifoldStartingState.setZero();
+    Eigen::VectorXd manifoldStartingState      = Eigen::VectorXd::Zero(42);
+    Eigen::VectorXd localStateVector           = Eigen::VectorXd::Zero(6);
+    Eigen::VectorXd localNormalizedEigenvector = Eigen::VectorXd::Zero(6);
+
 
 //    TODO check sign x off-set eigenvector
     double signEigenvector1;
@@ -162,33 +164,53 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
     } else {
         signEigenvector2 = -1.0;
     }
-    std::cout << signEigenvector1 << std::endl;
-    std::cout << signEigenvector2 << std::endl;
 
 //    std::vector<double> offsetSigns           = {1.0, -1.0, 1.0, -1.0};
-    std::vector<double> offsetSigns           = {1.0*signEigenvector2, -1.0*signEigenvector2, 1.0*signEigenvector1, -1.0*signEigenvector1};
-    std::vector<Eigen::VectorXd> eigenVectors = {eigenVector2, eigenVector2, eigenVector1, eigenVector1};
-    std::vector<double> integrationDirections = {-1.0, -1.0, 1.0, 1.0};
-    std::vector<std::string> fileNames        = {"L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + "_W_S_plus.txt",
-                                                 "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + "_W_S_min.txt",
-                                                 "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + "_W_U_plus.txt",
-                                                 "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + "_W_U_min.txt"};
+    std::vector<double> offsetSigns                        = {1.0*signEigenvector2, -1.0*signEigenvector2, 1.0*signEigenvector1, -1.0*signEigenvector1};
+    std::vector<Eigen::VectorXd> eigenVectors              = {eigenVector2, eigenVector2, eigenVector1, eigenVector1};
+    std::vector<double> integrationDirections              = {-1.0, -1.0, 1.0, 1.0};
+    std::vector<std::string> fileNamesStateVectors         = {"L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + "_W_S_plus.txt",
+                                                              "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + "_W_S_min.txt",
+                                                              "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + "_W_U_plus.txt",
+                                                              "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + "_W_U_min.txt"};
+    std::vector<std::string> fileNamesEigenvectors         = {"L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + "_W_S_plus_eigenvector.txt",
+                                                              "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + "_W_S_min_eigenvector.txt",
+                                                              "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + "_W_U_plus_eigenvector.txt",
+                                                              "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + "_W_U_min_eigenvector.txt"};
+    std::vector<std::string> fileNamesEigenvectorLocations = {"L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + "_W_S_plus_eigenvector_location.txt",
+                                                              "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + "_W_S_min_eigenvector_location.txt",
+                                                              "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + "_W_U_plus_eigenvector_location.txt",
+                                                              "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + "_W_U_min_eigenvector_location.txt"};
     double offsetSign;
     Eigen::VectorXd eigenVector;
     double integrationDirection;
-    std::string fileName;
+    std::string fileNameStateVector;
+    std::string fileNameEigenvector;
+    std::string fileNameEigenvectorLocation;
 
     for (int manifoldNumber = 0; manifoldNumber < 4; manifoldNumber++){
 
-        offsetSign = offsetSigns.at(manifoldNumber);
-        eigenVector = eigenVectors.at(manifoldNumber);
-        integrationDirection = integrationDirections.at(manifoldNumber);
-        fileName = fileNames.at(manifoldNumber);
+        offsetSign                  = offsetSigns.at(manifoldNumber);
+        eigenVector                 = eigenVectors.at(manifoldNumber);
+        integrationDirection        = integrationDirections.at(manifoldNumber);
+        fileNameStateVector         = fileNamesStateVectors.at(manifoldNumber);
+        fileNameEigenvector         = fileNamesEigenvectors.at(manifoldNumber);
+        fileNameEigenvectorLocation = fileNamesEigenvectorLocations.at(manifoldNumber);
 
-        std::ofstream textFile2;
-        remove(("../data/raw/" + fileName).c_str());
-        textFile2.open(("../data/raw/" + fileName).c_str());
-        textFile2.precision(14);
+        std::ofstream textFileStateVectors;
+        remove(("../data/raw/" + fileNameStateVector).c_str());
+        textFileStateVectors.open(("../data/raw/" + fileNameStateVector).c_str());
+        textFileStateVectors.precision(14);
+
+        std::ofstream textFileEigenvectors;
+        remove(("../data/raw/" + fileNameEigenvector).c_str());
+        textFileEigenvectors.open(("../data/raw/" + fileNameEigenvector).c_str());
+        textFileEigenvectors.precision(14);
+
+        std::ofstream textFileEigenvectorLocations;
+        remove(("../data/raw/" + fileNameEigenvectorLocation).c_str());
+        textFileEigenvectorLocations.open(("../data/raw/" + fileNameEigenvectorLocation).c_str());
+        textFileEigenvectorLocations.precision(14);
 
         bool fullManifoldComputed = false;
         bool xDiffSignSet = false;
@@ -196,7 +218,7 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
         bool ySignSet = false;
         double ySign = 0.0;
 
-        std::cout << "\n\nManifold: " << fileName << "\n" << std::endl;
+        std::cout << "\n\nManifold: " << fileNameStateVector << "\n" << std::endl;
 
         // Determine the total number of points along the periodic orbit to start the manifolds.
         for (int ii = 0; ii <numberOfManifoldOrbits; ii++) {
@@ -217,22 +239,49 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
 //            std::cout << "\neigenvector:\n" << eigenVector << "\n" << std::endl;
 //            std::cout << "\nSTM*eigenvector:\n" << STM*eigenVector << "\n" << std::endl;
 //            std::cout << "\nnorm(STM*eigenvector):\n" << (STM*eigenVector).normalized() << "\n" << std::endl;
-//            textFile2 << left << fixed << setw(20)
+//            textFile1 << left << fixed << setw(20)
 //                      << (STM*eigenVector).normalized()(0) << setw(20) << (STM*eigenVector).normalized()(1) << setw(20)
 //                      << (STM*eigenVector).normalized()(2) << setw(20) << (STM*eigenVector).normalized()(3) << setw(20)
 //                      << (STM*eigenVector).normalized()(4) << setw(20) << (STM*eigenVector).normalized()(5) << endl;
 
-            // Apply displacement epsilon from the halo at <numberOfManifoldOrbits> locations on the final orbit.
-            manifoldStartingState.segment(0, 6) = orbitStateVectorsMatrix.block(
-                    floor(ii * numberOfPointsOnPeriodicOrbit / numberOfManifoldOrbits), 0, 1, 6).transpose() +
-                            offsetSign * displacementFromOrbit * (STM*eigenVector).normalized();
+            // Apply displacement epsilon from the periodic orbit at <numberOfManifoldOrbits> locations on the final orbit.
+            localStateVector                    = orbitStateVectorsMatrix.block(floor(ii * numberOfPointsOnPeriodicOrbit / numberOfManifoldOrbits), 0, 1, 6).transpose();
+            localNormalizedEigenvector          = (STM*eigenVector).normalized();
+            manifoldStartingState.segment(0, 6) = localStateVector + offsetSign * displacementFromOrbit * localNormalizedEigenvector;
+            manifoldStartingState.segment(6,36) = identityMatrix;
 
-            manifoldStartingState.segment(6,36)   = identityMatrix;
+            textFileEigenvectors << std::left << std::scientific << std::setw(25)
+                                 << localNormalizedEigenvector(0) << std::setw(25) << localNormalizedEigenvector(1) << std::setw(25)
+                                 << localNormalizedEigenvector(2) << std::setw(25) << localNormalizedEigenvector(3) << std::setw(25)
+                                 << localNormalizedEigenvector(4) << std::setw(25) << localNormalizedEigenvector(5) << std::endl;
 
-            textFile2 << std::left << std::scientific              << std::setw(25) << 0.0     << std::setw(25)
-                      << manifoldStartingState(0) << std::setw(25) << manifoldStartingState(1) << std::setw(25)
-                      << manifoldStartingState(2) << std::setw(25) << manifoldStartingState(3) << std::setw(25)
-                      << manifoldStartingState(4) << std::setw(25) << manifoldStartingState(5) << std::endl;
+            textFileEigenvectorLocations << std::left << std::scientific << std::setw(25)
+                                         << localStateVector(0) << std::setw(25) << localStateVector(1) << std::setw(25)
+                                         << localStateVector(2) << std::setw(25) << localStateVector(3) << std::setw(25)
+                                         << localStateVector(4) << std::setw(25) << localStateVector(5) << std::endl;
+
+            textFileStateVectors << std::left << std::scientific << std::setw(25) << 0.0         << std::setw(25)
+                      << manifoldStartingState(0)  << std::setw(25) << manifoldStartingState(1)  << std::setw(25)
+                      << manifoldStartingState(2)  << std::setw(25) << manifoldStartingState(3)  << std::setw(25)
+                      << manifoldStartingState(4)  << std::setw(25) << manifoldStartingState(5)  << std::setw(25)
+                      << manifoldStartingState(6)  << std::setw(25) << manifoldStartingState(7)  << std::setw(25)
+                      << manifoldStartingState(8)  << std::setw(25) << manifoldStartingState(9)  << std::setw(25)
+                      << manifoldStartingState(10) << std::setw(25) << manifoldStartingState(11) << std::setw(25)
+                      << manifoldStartingState(12) << std::setw(25) << manifoldStartingState(13) << std::setw(25)
+                      << manifoldStartingState(14) << std::setw(25) << manifoldStartingState(15) << std::setw(25)
+                      << manifoldStartingState(16) << std::setw(25) << manifoldStartingState(17) << std::setw(25)
+                      << manifoldStartingState(18) << std::setw(25) << manifoldStartingState(19) << std::setw(25)
+                      << manifoldStartingState(20) << std::setw(25) << manifoldStartingState(21) << std::setw(25)
+                      << manifoldStartingState(22) << std::setw(25) << manifoldStartingState(23) << std::setw(25)
+                      << manifoldStartingState(24) << std::setw(25) << manifoldStartingState(25) << std::setw(25)
+                      << manifoldStartingState(26) << std::setw(25) << manifoldStartingState(27) << std::setw(25)
+                      << manifoldStartingState(28) << std::setw(25) << manifoldStartingState(29) << std::setw(25)
+                      << manifoldStartingState(30) << std::setw(25) << manifoldStartingState(31) << std::setw(25)
+                      << manifoldStartingState(32) << std::setw(25) << manifoldStartingState(33) << std::setw(25)
+                      << manifoldStartingState(34) << std::setw(25) << manifoldStartingState(35) << std::setw(25)
+                      << manifoldStartingState(36) << std::setw(25) << manifoldStartingState(37) << std::setw(25)
+                      << manifoldStartingState(38) << std::setw(25) << manifoldStartingState(39) << std::setw(25)
+                      << manifoldStartingState(40) << std::setw(25) << manifoldStartingState(41) << std::endl;
 
             outputVector       = propagateOrbit(manifoldStartingState, massParameter, 0.0, integrationDirection );
             stateVectorInclSTM = outputVector.segment(0, 42);
@@ -330,26 +379,47 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
 
                 // Write every nth integration step to file.
                 if (count % saveEveryNthIntegrationStep == 0 or fullManifoldComputed) {
-                    textFile2 << std::left << std::scientific << std::setw(25) << currentTime    << std::setw(25)
-                              << stateVectorInclSTM(0) << std::setw(25) << stateVectorInclSTM(1) << std::setw(25)
-                              << stateVectorInclSTM(2) << std::setw(25) << stateVectorInclSTM(3) << std::setw(25)
-                              << stateVectorInclSTM(4) << std::setw(25) << stateVectorInclSTM(5) << std::endl;
-                }
 
+                    textFileStateVectors << std::left << std::scientific << std::setw(25) << currentTime << std::setw(25)
+                                         << stateVectorInclSTM(0)  << std::setw(25) << stateVectorInclSTM(1)  << std::setw(25)
+                                         << stateVectorInclSTM(2)  << std::setw(25) << stateVectorInclSTM(3)  << std::setw(25)
+                                         << stateVectorInclSTM(4)  << std::setw(25) << stateVectorInclSTM(5)  << std::setw(25)
+                                         << stateVectorInclSTM(6)  << std::setw(25) << stateVectorInclSTM(7)  << std::setw(25)
+                                         << stateVectorInclSTM(8)  << std::setw(25) << stateVectorInclSTM(9)  << std::setw(25)
+                                         << stateVectorInclSTM(10) << std::setw(25) << stateVectorInclSTM(11) << std::setw(25)
+                                         << stateVectorInclSTM(12) << std::setw(25) << stateVectorInclSTM(13) << std::setw(25)
+                                         << stateVectorInclSTM(14) << std::setw(25) << stateVectorInclSTM(15) << std::setw(25)
+                                         << stateVectorInclSTM(16) << std::setw(25) << stateVectorInclSTM(17) << std::setw(25)
+                                         << stateVectorInclSTM(18) << std::setw(25) << stateVectorInclSTM(19) << std::setw(25)
+                                         << stateVectorInclSTM(20) << std::setw(25) << stateVectorInclSTM(21) << std::setw(25)
+                                         << stateVectorInclSTM(22) << std::setw(25) << stateVectorInclSTM(23) << std::setw(25)
+                                         << stateVectorInclSTM(24) << std::setw(25) << stateVectorInclSTM(25) << std::setw(25)
+                                         << stateVectorInclSTM(26) << std::setw(25) << stateVectorInclSTM(27) << std::setw(25)
+                                         << stateVectorInclSTM(28) << std::setw(25) << stateVectorInclSTM(29) << std::setw(25)
+                                         << stateVectorInclSTM(30) << std::setw(25) << stateVectorInclSTM(31) << std::setw(25)
+                                         << stateVectorInclSTM(32) << std::setw(25) << stateVectorInclSTM(33) << std::setw(25)
+                                         << stateVectorInclSTM(34) << std::setw(25) << stateVectorInclSTM(35) << std::setw(25)
+                                         << stateVectorInclSTM(36) << std::setw(25) << stateVectorInclSTM(37) << std::setw(25)
+                                         << stateVectorInclSTM(38) << std::setw(25) << stateVectorInclSTM(39) << std::setw(25)
+                                         << stateVectorInclSTM(40) << std::setw(25) << stateVectorInclSTM(41) << std::endl;
+                }
                 // Propagate to next time step.
                 previousOutputVector = outputVector;
                 outputVector         = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, integrationDirection );
                 count += 1;
             }
-
             ySignSet = false;
             xDiffSignSet = false;
             fullManifoldComputed = false;
         }
-        textFile2.close();
-        textFile2.clear();
-
+        textFileStateVectors.close();
+        textFileStateVectors.clear();
+        textFileEigenvectors.close();
+        textFileEigenvectors.clear();
+        textFileEigenvectorLocations.close();
+        textFileEigenvectorLocations.clear();
     }
+
 
     std::cout << std::endl
               << "=================================================================="           << std::endl

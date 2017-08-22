@@ -353,11 +353,11 @@ class DisplayPeriodicityValidation:
         y = bodies_df['Moon']['r'] * np.outer(np.sin(u), np.sin(v))
         z = bodies_df['Moon']['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
 
-        ax1.contourf(x, y, z, color='black')
+        ax1.contourf(x, y, z, colors='black')
         ax2.plot_surface(x, y, z, color='black')
-        ax3.contourf(x, z, y, color='black')
-        ax4.contourf(y, z, x,  color='black')
-        ax5.contourf(x, y, z, color='black')
+        ax3.contourf(x, z, y, colors='black')
+        ax4.contourf(y, z, x,  colors='black')
+        ax5.contourf(x, y, z, colors='black')
 
         # Plot every 100th member, including the ultimate member of the family
         orbitIdsPlot = list(range(0, len(self.C)-1, 100))
@@ -686,7 +686,7 @@ if __name__ == '__main__':
     # orbit_types = ['horizontal', 'vertical', 'halo', 'axial]
     # lagrange_points = [1, 2]
     orbit_types = ['axial']
-    lagrange_points = [1]
+    lagrange_points = [2]
 
     for orbit_type in orbit_types:
         for lagrange_point in lagrange_points:

@@ -5,8 +5,8 @@ import numpy as np
 def load_manifold(file_path):
     pd.options.mode.chained_assignment = None  # Turn off SettingWithCopyWarning
 
-    input_data = pd.read_table(file_path, delim_whitespace=True, header=None,
-                               names=['time', 'x', 'y', 'z', 'xdot', 'ydot', 'zdot'])
+    input_data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(7)))
+    input_data.columns = ['time', 'x', 'y', 'z', 'xdot', 'ydot', 'zdot']
     split_on_index = list(input_data[input_data['time'] == 0].index)
 
     output_data = []
@@ -83,10 +83,22 @@ def cr3bp_velocity(x_loc, y_loc, c):
     MOON_GRAVITATIONAL_PARAMETER = SUN_GRAVITATIONAL_PARAMETER / (328900.56 * (1.0 + 81.30059))
     massParameter = MOON_GRAVITATIONAL_PARAMETER / (MOON_GRAVITATIONAL_PARAMETER + EARTH_GRAVITATIONAL_PARAMETER)
 
-    r_1 = np.sqrt((x_loc + massParameter) ** 2 + y_loc ** 2)
-    r_2 = np.sqrt((x_loc - 1 + massParameter) ** 2 + y_loc ** 2)
+    r_1 = np.sqrt((massParameter + x_loc) ** 2 + y_loc ** 2)
+    r_2 = np.sqrt((1 - massParameter - x_loc) ** 2 + y_loc ** 2)
     v = x_loc ** 2 + y_loc ** 2 + 2 * (1 - massParameter) / r_1 + 2 * massParameter / r_2 - c
     return v
+
+
+def computeJacobiEnergy(x, y, z, xdot, ydot, zdot):
+    EARTH_GRAVITATIONAL_PARAMETER = 3.986004418E14
+    SUN_GRAVITATIONAL_PARAMETER = 1.32712440018e20
+    MOON_GRAVITATIONAL_PARAMETER = SUN_GRAVITATIONAL_PARAMETER / (328900.56 * (1.0 + 81.30059))
+    mass_parameter = MOON_GRAVITATIONAL_PARAMETER / (MOON_GRAVITATIONAL_PARAMETER + EARTH_GRAVITATIONAL_PARAMETER)
+    r_1 = np.sqrt((mass_parameter + x) ** 2 + y ** 2 + z ** 2)
+    r_2 = np.sqrt((1 - mass_parameter - x) ** 2 + y ** 2 + z ** 2)
+    v = np.sqrt(xdot**2 + ydot**2 + zdot**2)
+    c = x**2 + y**2 + 2*(1-mass_parameter)/r_1 + 2*mass_parameter/r_2 - v**2
+    return c
 
 
 if __name__ == '__main__':

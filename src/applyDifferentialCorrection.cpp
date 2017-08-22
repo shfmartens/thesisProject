@@ -83,7 +83,7 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
 
         // Relax the maximum deviation requirements to compute the horizontal Lyapunov family in L2
         if (deviationFromPeriodicOrbitRelaxed == false and numberOfIterations > 10 and
-            orbitType == "horizontal" and librationPointNr == 2){
+                (orbitType == "horizontal" or orbitType == "axial") and librationPointNr == 2){
 
             maxPositionDeviationFromPeriodicOrbit = 10.0 * maxPositionDeviationFromPeriodicOrbit;
             maxVelocityDeviationFromPeriodicOrbit = 10.0 * maxVelocityDeviationFromPeriodicOrbit;
