@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 import json
 import matplotlib
-
 # matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
@@ -388,7 +387,7 @@ class DisplayPeriodicityValidation:
         plt.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial overview',
                      size=self.suptitleSize)
 
-        fig.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_manifold_subplots.pdf')
+        fig.savefig('../../data/figures/manifold/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_manifold_subplots.pdf')
         plt.close()
         pass
 
@@ -456,7 +455,7 @@ class DisplayPeriodicityValidation:
         plt.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitTypeForTitle + ' $\{ \mathbf{X_i} \pm \epsilon \\frac{\mathbf{v}^S_i}{|\mathbf{v}^S_i|}, \mathbf{X_i} \pm \epsilon \\frac{\mathbf{v}^U_i}{|\mathbf{v}^U_i|} \}$ - Spatial overview',
                      size=self.suptitleSize)
 
-        fig.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_eigenvector_subplots.pdf')
+        fig.savefig('../../data/figures/manifold/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_eigenvector_subplots.pdf')
         plt.close()
         pass
 
@@ -486,8 +485,8 @@ class DisplayPeriodicityValidation:
         plt.subplots_adjust(top=0.8)
         plt.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitTypeForTitle + ' - Orbital energy and period',
                      size=self.suptitleSize)
-        # plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_orbital_energy.png')
-        # plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_orbital_energy.pdf')
+        # plt.savefig('../../data/figures/manifold/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_orbital_energy.png')
+        # plt.savefig('../../data/figures/manifold/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_orbital_energy.pdf')
         # plt.close()
         pass
 
@@ -541,8 +540,8 @@ class DisplayPeriodicityValidation:
         plt.suptitle(
             'L' + str(self.lagrangePointNr) + ' ' + self.orbitTypeForTitle + ' - Eigensystem analysis monodromy matrix',
             size=self.suptitleSize)
-        # plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_monodromy_analysis.png')
-        # plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_monodromy_analysis.pdf')
+        # plt.savefig('../../data/figures/manifold/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_monodromy_analysis.png')
+        # plt.savefig('../../data/figures/manifold/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_monodromy_analysis.pdf')
         # plt.close()
         pass
 
@@ -623,8 +622,8 @@ class DisplayPeriodicityValidation:
         plt.suptitle('L' + str(
             self.lagrangePointNr) + ' ' + self.orbitTypeForTitle + ' - Eigenvalues $\lambda_i$ \& stability index $v_i$',
                      size=self.suptitleSize)
-        # plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_stability.png')
-        # plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_stability.pdf')
+        # plt.savefig('../../data/figures/manifold/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_stability.png')
+        # plt.savefig('../../data/figures/manifold/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_stability.pdf')
         # plt.close()
         pass
 
@@ -697,7 +696,7 @@ class DisplayPeriodicityValidation:
             'L' + str(self.lagrangePointNr) + ' ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Validation',
             size=self.suptitleSize)
 
-        plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_manifold_periodicity.pdf')
+        plt.savefig('../../data/figures/manifold/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_manifold_periodicity.pdf')
         plt.close()
         pass
 
@@ -713,7 +712,7 @@ if __name__ == '__main__':
 
     for lagrange_point in lagrange_points:
         for orbit_type in orbit_types:
-            if orbit_type == ('horizontal' or 'vertical') and lagrange_point == 2:
+            if orbit_type == 'horizontal' and lagrange_point == 2:
                 continue
             display_periodicity_validation = DisplayPeriodicityValidation(orbit_type, lagrange_point, orbit_id[lagrange_point][orbit_type])
             display_periodicity_validation.plot_manifolds()

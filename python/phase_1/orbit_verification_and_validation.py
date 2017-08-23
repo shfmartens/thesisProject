@@ -424,10 +424,8 @@ class DisplayPeriodicityValidation:
                      size=self.suptitleSize)
 
         fig1.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitTypeForTitle + ': family', size=self.suptitleSize)
-        # fig1.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_family.png')
         # fig1.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_family.pdf')
-        # fig2.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_family_subplots.png')
-        fig2.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_family_subplots.pdf')
+        fig2.savefig('../../data/figures/orbit/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_family_subplots.pdf')
         plt.close(fig2)
         # plt.show()
         plt.close()
@@ -458,8 +456,7 @@ class DisplayPeriodicityValidation:
         plt.tight_layout()
         plt.subplots_adjust(top=0.8)
         plt.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitTypeForTitle + ' - Orbital energy and period', size=self.suptitleSize)
-        # plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_orbital_energy.png')
-        plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_orbital_energy.pdf')
+        plt.savefig('../../data/figures/orbit/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_orbital_energy.pdf')
         # plt.show()
         plt.close()
         pass
@@ -511,8 +508,7 @@ class DisplayPeriodicityValidation:
             for j in range(2):
                 arr[i, j].grid(True, which='both', ls=':')
         plt.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitTypeForTitle + ' - Eigensystem analysis monodromy matrix', size=self.suptitleSize)
-        # plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_monodromy_analysis.png')
-        plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_monodromy_analysis.pdf')
+        plt.savefig('../../data/figures/orbit/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_monodromy_analysis.pdf')
         # plt.show()
         plt.close()
         pass
@@ -592,8 +588,7 @@ class DisplayPeriodicityValidation:
         plt.tight_layout()
         plt.subplots_adjust(top=0.9)
         plt.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitTypeForTitle + ' - Eigenvalues $\lambda_i$ \& stability index $v_i$', size=self.suptitleSize)
-        # plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_stability.png')
-        plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_stability.pdf')
+        plt.savefig('../../data/figures/orbit/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_stability.pdf')
         # plt.show()
         plt.close()
         pass
@@ -675,8 +670,7 @@ class DisplayPeriodicityValidation:
         plt.subplots_adjust(top=0.9)
 
         plt.suptitle('L' + str(self.lagrangePointNr) + ' ' + self.orbitTypeForTitle + ' - Periodicity constraints validation', size=self.suptitleSize)
-        # plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_periodicity.png')
-        plt.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_periodicity.pdf')
+        plt.savefig('../../data/figures/orbit/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_periodicity.pdf')
         # plt.show()
         plt.close()
         pass
