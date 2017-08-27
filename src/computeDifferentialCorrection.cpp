@@ -8,7 +8,7 @@
 
 
 Eigen::VectorXd computeDifferentialCorrection( int librationPointNr, std::string orbitType,
-                                               Eigen::VectorXd cartesianState)
+                                               Eigen::VectorXd cartesianState, bool xPositionFixed = false)
 {
     // Initiate vectors, matrices etc.
     Eigen::VectorXd differentialCorrection(7);
@@ -25,9 +25,10 @@ Eigen::VectorXd computeDifferentialCorrection( int librationPointNr, std::string
 
     // If type is axial, the desired state vector has the form [x, 0, 0, 0, ydot, zdot] and requires a differential correction for {x, ydot, T/2}
     if (orbitType == "axial") {
-
+        std::cout << "z-position: " << cartesianState(2) << std::endl;
+        std::cout << "x-velocity: " << cartesianState(3) << std::endl;
         // Check which deviation is larger: x-velocity or z-position.
-        if ( fabs(cartesianState(2)) < fabs(cartesianState(3)) ) {
+        if ( std::abs(cartesianState(2)) < std::abs(cartesianState(3)) and !xPositionFixed ) {
             // Correction on {x, ydot, T/2} for constant {zdot}
 
             // Set the correct multiplication matrix (state at T/2)
@@ -72,7 +73,7 @@ Eigen::VectorXd computeDifferentialCorrection( int librationPointNr, std::string
     else{
 
         // Check which deviation is larger: x-velocity or z-velocity.
-        if ( fabs(cartesianState(3)) < fabs(cartesianState(5)) or orbitType == "horizontal" or
+        if ( std::abs(cartesianState(3)) < std::abs(cartesianState(5)) or orbitType == "horizontal" or
              (orbitType == "halo" and librationPointNr == 2) ) {
             // Correction on {z, ydot, T/2} for constant {x}
 

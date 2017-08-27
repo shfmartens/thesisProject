@@ -83,7 +83,7 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
 
         // Relax the maximum deviation requirements to compute the horizontal Lyapunov family in L2
         if (deviationFromPeriodicOrbitRelaxed == false and numberOfIterations > 10 and
-                (orbitType == "horizontal" or orbitType == "axial") and librationPointNr == 2){
+            orbitType == "horizontal" and librationPointNr == 2){
 
             maxPositionDeviationFromPeriodicOrbit = 10.0 * maxPositionDeviationFromPeriodicOrbit;
             maxVelocityDeviationFromPeriodicOrbit = 10.0 * maxVelocityDeviationFromPeriodicOrbit;
@@ -91,7 +91,12 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
         }
 
         // Apply differential correction
-        differentialCorrection = computeDifferentialCorrection( librationPointNr, orbitType, halfPeriodState );
+        if (numberOfIterations > 10 and orbitType == "axial" and librationPointNr == 2){
+            // To compute the full L2 axial family, fix x position after not finding a fully periodic solution after 10 iterations
+            differentialCorrection = computeDifferentialCorrection( librationPointNr, orbitType, halfPeriodState, true );
+        } else{
+            differentialCorrection = computeDifferentialCorrection( librationPointNr, orbitType, halfPeriodState );
+        }
 
         initialStateVectorInclSTM(0) = initialStateVectorInclSTM(0) + differentialCorrection(0)/1.0;
         initialStateVectorInclSTM(1) = initialStateVectorInclSTM(1) + differentialCorrection(1)/1.0;

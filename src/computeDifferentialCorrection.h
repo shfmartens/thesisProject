@@ -7,7 +7,7 @@
 
 
 Eigen::VectorXd computeDifferentialCorrection( int librationPointNr, std::string orbitType,
-                                               Eigen::VectorXd cartesianState );
+                                               Eigen::VectorXd cartesianState, bool xPositionFixed );
 
 
 

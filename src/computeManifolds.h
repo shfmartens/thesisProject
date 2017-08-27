@@ -10,7 +10,8 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
                        std::string orbitType, int orbitId,
                        const double primaryGravitationalParameter, const double secondaryGravitationalParameter,
                        double displacementFromOrbit, int numberOfManifoldOrbits, int saveEveryNthIntegrationStep,
-                       double maximumIntegrationTimeManifoldOrbits, double maxEigenvalueDeviation );
+                       double maximumIntegrationTimeManifoldOrbits, double maxEigenvalueDeviation,
+                       double positionBoundarySurroundingPrimaries );
 
 
 #endif  // TUDATBUNDLE_COMPUTEMANIFOLDS_H

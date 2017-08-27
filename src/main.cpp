@@ -16,7 +16,7 @@
 #include "computeManifolds.h"
 #include "completeInitialConditionsHaloFamily.h"
 #include "createInitialConditionsAxialFamily.h"
-#include <omp.h>
+//#include <omp.h>
 
 
 
@@ -56,34 +56,34 @@ int main (){
 
 
 
-    #pragma omp parallel num_threads(6)
-    {
-        #pragma omp for
-        for (unsigned int i=0; i<6; i++) {
-
+//    #pragma omp parallel num_threads(6)
+//    {
+//        #pragma omp for
+//        for (unsigned int i=1; i<2; i++) {
+//
             std::string orbitType;
             int librationPointNr;
-
-            if (i == 0){
+//
+//            if (i == 0){
+//                orbitType = "horizontal";
+//                librationPointNr = 1;
+//            } if (i == 1){
                 orbitType = "horizontal";
-                librationPointNr = 1;
-            } if (i == 1){
-                orbitType = "horizontal";
-                librationPointNr = 2;
-            } if (i == 2){
-                orbitType = "halo";
-                librationPointNr = 1;
-            } if (i == 3){
-                orbitType = "halo";
-                librationPointNr = 2;
-            } if (i == 4){
-                orbitType = "vertical";
-                librationPointNr = 1;
-            } if (i == 5){
-                orbitType = "vertical";
-                librationPointNr = 2;
-            }
-            //        for (unsigned int librationPointNr = 1; librationPointNr <= 2; librationPointNr++) {
+//                librationPointNr = 2;
+//            } if (i == 2){
+//                orbitType = "halo";
+//                librationPointNr = 1;
+//            } if (i == 3){
+//                orbitType = "halo";
+//                librationPointNr = 2;
+//            } if (i == 4){
+//                orbitType = "vertical";
+//                librationPointNr = 1;
+//            } if (i == 5){
+//                orbitType = "vertical";
+//                librationPointNr = 2;
+//            }
+                    for (unsigned int librationPointNr = 2; librationPointNr <= 2; librationPointNr++) {
 
             // =========================================
             // == Load precomputed initial conditions ==
@@ -140,83 +140,86 @@ int main (){
             // ==================================================================================================================
 
             // Create initial conditions axial family
-//            int orbitIdForBifurcationToAxial;
-//            double signZdot;
-//            if (librationPointNr == 1) {
-//                orbitIdForBifurcationToAxial = 938;  // Indices for L1 bifurcations: [181, 938, 1233]
-//                signZdot = -1.0;
-//            } else {
-//                orbitIdForBifurcationToAxial = 1262;  // Indices for L2 bifurcations: [353, 1262, 1514]
-//                signZdot = 1.0;
-//            }
-//
-//            orbitalPeriod1         = initialConditions[orbitIdForBifurcationToAxial][1];
-//            initialStateVector1    = Eigen::VectorXd::Zero(6);
-//            initialStateVector1(0) = initialConditions[orbitIdForBifurcationToAxial][2];
-//            initialStateVector1(1) = initialConditions[orbitIdForBifurcationToAxial][3];
-//            initialStateVector1(2) = initialConditions[orbitIdForBifurcationToAxial][4];
-//            initialStateVector1(3) = initialConditions[orbitIdForBifurcationToAxial][5];
-//            initialStateVector1(4) = initialConditions[orbitIdForBifurcationToAxial][6];
-//            initialStateVector1(5) = initialConditions[orbitIdForBifurcationToAxial][7] + signZdot * 0.01;
-//            Eigen::VectorXd stateVectorInclSTM;
-//            stateVectorInclSTM     = writePeriodicOrbitToFile( initialStateVector1, librationPointNr, "axial", 0, orbitalPeriod1, massParameter);
-//
-//            orbitalPeriod2         = initialConditions[orbitIdForBifurcationToAxial][1];
-//            initialStateVector2    = Eigen::VectorXd::Zero(6);
-//            initialStateVector2(0) = initialConditions[orbitIdForBifurcationToAxial][2];
-//            initialStateVector2(1) = initialConditions[orbitIdForBifurcationToAxial][3];
-//            initialStateVector2(2) = initialConditions[orbitIdForBifurcationToAxial][4];
-//            initialStateVector2(3) = initialConditions[orbitIdForBifurcationToAxial][5];
-//            initialStateVector2(4) = initialConditions[orbitIdForBifurcationToAxial][6];
-//            initialStateVector2(5) = initialConditions[orbitIdForBifurcationToAxial][7] + signZdot * 0.02;
-//
-//            stateVectorInclSTM     = writePeriodicOrbitToFile( initialStateVector2, librationPointNr, "axial", 1, orbitalPeriod2, massParameter);
-//
-//            createInitialConditionsAxialFamily(initialStateVector1, initialStateVector2, orbitalPeriod1, orbitalPeriod2, librationPointNr);
+            int orbitIdForBifurcationToAxial;
+            double offsetForBifurcationToAxial1;
+            double offsetForBifurcationToAxial2;
+            if (librationPointNr == 1) {
+                orbitIdForBifurcationToAxial = 938;  // Indices for L1 bifurcations: [181, 938, 1233]
+                offsetForBifurcationToAxial1 = -0.01;
+                offsetForBifurcationToAxial2 = -0.02;
+            } else {
+                orbitIdForBifurcationToAxial = 1262;  // Indices for L2 bifurcations: [353, 1262, 1514]
+                offsetForBifurcationToAxial1 = -8.170178408168770e-04;
+                offsetForBifurcationToAxial2 = -1.817017673845933e-03;
+            }
+
+            orbitalPeriod1         = initialConditions[orbitIdForBifurcationToAxial][1];
+            initialStateVector1    = Eigen::VectorXd::Zero(6);
+            initialStateVector1(0) = initialConditions[orbitIdForBifurcationToAxial][2];
+            initialStateVector1(1) = initialConditions[orbitIdForBifurcationToAxial][3];
+            initialStateVector1(2) = initialConditions[orbitIdForBifurcationToAxial][4];
+            initialStateVector1(3) = initialConditions[orbitIdForBifurcationToAxial][5];
+            initialStateVector1(4) = initialConditions[orbitIdForBifurcationToAxial][6];
+            initialStateVector1(5) = initialConditions[orbitIdForBifurcationToAxial][7] + offsetForBifurcationToAxial1;
+            Eigen::VectorXd stateVectorInclSTM;
+            stateVectorInclSTM     = writePeriodicOrbitToFile( initialStateVector1, librationPointNr, "axial", 0, orbitalPeriod1, massParameter);
+
+            orbitalPeriod2         = initialConditions[orbitIdForBifurcationToAxial][1];
+            initialStateVector2    = Eigen::VectorXd::Zero(6);
+            initialStateVector2(0) = initialConditions[orbitIdForBifurcationToAxial][2];
+            initialStateVector2(1) = initialConditions[orbitIdForBifurcationToAxial][3];
+            initialStateVector2(2) = initialConditions[orbitIdForBifurcationToAxial][4];
+            initialStateVector2(3) = initialConditions[orbitIdForBifurcationToAxial][5];
+            initialStateVector2(4) = initialConditions[orbitIdForBifurcationToAxial][6];
+            initialStateVector2(5) = initialConditions[orbitIdForBifurcationToAxial][7] + offsetForBifurcationToAxial2;
+
+            stateVectorInclSTM     = writePeriodicOrbitToFile( initialStateVector2, librationPointNr, "axial", 1, orbitalPeriod2, massParameter);
+
+            createInitialConditionsAxialFamily(initialStateVector1, initialStateVector2, orbitalPeriod1, orbitalPeriod2, librationPointNr);
 
             // ===============================================================
             // == Compute manifolds based on precomputed initial conditions ==
             // ===============================================================
 
-            int orbitIdForManifold;
-            if (orbitType == "horizontal") {
-                if (librationPointNr == 1) {
-                    orbitIdForManifold = 577;
-                } else {
-                    orbitIdForManifold = 760;
-                }
-            } if (orbitType == "halo") {
-                if (librationPointNr == 1) {
-                    orbitIdForManifold = 836;
-                } else {
-                    orbitIdForManifold = 651;
-                }
-            } if (orbitType == "vertical") {
-                if (librationPointNr == 1) {
-                    orbitIdForManifold = 1159;
-                } else {
-                    orbitIdForManifold = 1275;
-                }
-            }
-
-            double orbitalPeriod               = initialConditions[orbitIdForManifold][1];
-            Eigen::VectorXd initialStateVector = Eigen::VectorXd::Zero(6);
-            initialStateVector(0) = initialConditions[orbitIdForManifold][2];
-            initialStateVector(1) = initialConditions[orbitIdForManifold][3];
-            initialStateVector(2) = initialConditions[orbitIdForManifold][4];
-            initialStateVector(3) = initialConditions[orbitIdForManifold][5];
-            initialStateVector(4) = initialConditions[orbitIdForManifold][6];
-            initialStateVector(5) = initialConditions[orbitIdForManifold][7];
-
-            std::string selected_orbit = "L" + std::to_string(librationPointNr) + "_" + orbitType + "_W_" + std::to_string(orbitIdForManifold);
-            std::cout                                                                                 << std::endl;
-            std::cout << "=================================================================="         << std::endl;
-            std::cout << "                          " << selected_orbit << "                        " << std::endl;
-            std::cout << "=================================================================="         << std::endl;
-
-            computeManifolds(initialStateVector, orbitalPeriod, librationPointNr, orbitType, orbitIdForManifold);
+//            int orbitIdForManifold;
+//            if (orbitType == "horizontal") {
+//                if (librationPointNr == 1) {
+//                    orbitIdForManifold = 577;
+//                } else {
+//                    orbitIdForManifold = 760;
+//                }
+//            } if (orbitType == "halo") {
+//                if (librationPointNr == 1) {
+//                    orbitIdForManifold = 836;
+//                } else {
+//                    orbitIdForManifold = 651;
+//                }
+//            } if (orbitType == "vertical") {
+//                if (librationPointNr == 1) {
+//                    orbitIdForManifold = 1159;
+//                } else {
+//                    orbitIdForManifold = 1275;
+//                }
+//            }
+//
+//            double orbitalPeriod               = initialConditions[orbitIdForManifold][1];
+//            Eigen::VectorXd initialStateVector = Eigen::VectorXd::Zero(6);
+//            initialStateVector(0) = initialConditions[orbitIdForManifold][2];
+//            initialStateVector(1) = initialConditions[orbitIdForManifold][3];
+//            initialStateVector(2) = initialConditions[orbitIdForManifold][4];
+//            initialStateVector(3) = initialConditions[orbitIdForManifold][5];
+//            initialStateVector(4) = initialConditions[orbitIdForManifold][6];
+//            initialStateVector(5) = initialConditions[orbitIdForManifold][7];
+//
+//            std::string selected_orbit = "L" + std::to_string(librationPointNr) + "_" + orbitType + "_W_" + std::to_string(orbitIdForManifold);
+//            std::cout                                                                                 << std::endl;
+//            std::cout << "=================================================================="         << std::endl;
+//            std::cout << "                          " << selected_orbit << "                        " << std::endl;
+//            std::cout << "=================================================================="         << std::endl;
+//
+//            computeManifolds(initialStateVector, orbitalPeriod, librationPointNr, orbitType, orbitIdForManifold);
         }
-    }
+//    }
 
     return 0;
 }

@@ -407,7 +407,7 @@ class DisplayPeriodicityValidation:
         ax1.plot(self.orbitDf['x'], self.orbitDf['z'], color=color, linewidth=line_width)
         ax2.plot(self.orbitDf['y'], self.orbitDf['z'], color=color, linewidth=line_width)
 
-        eigenvector_offset = 5e3*1e-6
+        eigenvector_offset = 5e4*1e-6
         line_width = 1.5
 
         for idx in range(self.numberOfOrbitsPerManifold):
@@ -426,11 +426,13 @@ class DisplayPeriodicityValidation:
             z_U = [self.eigenvectorLocationDf_U.xs(idx)[2] - eigenvector_offset * self.eigenvectorDf_U.xs(idx)[2],
                    self.eigenvectorLocationDf_U.xs(idx)[2] + eigenvector_offset * self.eigenvectorDf_U.xs(idx)[2]]
 
-            ax0.plot(x_S, y_S, color=self.colorPaletteStable[idx], linewidth=line_width)
+            # ax0.plot(x_S, y_S, color=self.plottingColors['W_S_min'], linewidth=line_width)
+            ax0.annotate("", xy=(x_S[0], y_S[0]), xytext=(x_S[1], y_S[1]), arrowprops=dict(arrowstyle='<->, head_width=1e-1, head_length=2e-1', color=self.plottingColors['W_S_min'], shrinkA=0, shrinkB=0))
             ax1.plot(x_S, z_S, color=self.colorPaletteStable[idx], linewidth=line_width)
             ax2.plot(y_S, z_S, color=self.colorPaletteStable[idx], linewidth=line_width)
 
-            ax0.plot(x_U, y_U, color=self.colorPaletteUnstable[idx], linewidth=line_width)
+            # ax0.annotate("", xy=(x_U[0], y_U[0]), xytext=(x_U[1], y_U[1]), arrowprops=dict(arrowstyle="<->", shrinkA=0, shrinkB=0))
+            # ax0.annotate("", xy=(x_U[0], y_U[0]), xytext=(x_U[1], y_U[1]), arrowprops=dict(arrowstyle='<->, head_width=1e-1, head_length=2e-1', facecolor=self.plottingColors['W_U_min'], shrinkA=0, shrinkB=0))
             ax1.plot(x_U, z_U, color=self.colorPaletteUnstable[idx], linewidth=line_width)
             ax2.plot(y_U, z_U, color=self.colorPaletteUnstable[idx], linewidth=line_width)
             pass
@@ -704,22 +706,20 @@ class DisplayPeriodicityValidation:
 if __name__ == '__main__':
     lagrange_points = [1, 2]
     orbit_types = ['horizontal', 'vertical', 'halo']
-    # lagrange_points = [1]
-    # orbit_types = ['halo']
+    lagrange_points = [1]
+    orbit_types = ['horizontal']
 
     orbit_id = {1: {'horizontal': 577, 'halo': 836, 'vertical': 1159},
                 2: {'horizontal': 760, 'halo': 651, 'vertical': 1275}}
 
     for lagrange_point in lagrange_points:
         for orbit_type in orbit_types:
-            if orbit_type == 'horizontal' and lagrange_point == 2:
-                continue
             display_periodicity_validation = DisplayPeriodicityValidation(orbit_type, lagrange_point, orbit_id[lagrange_point][orbit_type])
-            display_periodicity_validation.plot_manifolds()
+            # display_periodicity_validation.plot_manifolds()
             display_periodicity_validation.plot_eigenvectors()
             # display_periodicity_validation.plot_orbital_energy()
             # display_periodicity_validation.plot_monodromy_analysis()
             # display_periodicity_validation.plot_stability()
-            display_periodicity_validation.plot_periodicity_validation()
+            # display_periodicity_validation.plot_periodicity_validation()
             # plt.show()
             del display_periodicity_validation

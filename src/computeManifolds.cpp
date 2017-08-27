@@ -22,7 +22,8 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
                        const double primaryGravitationalParameter = tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER,
                        const double secondaryGravitationalParameter = tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER,
                        double displacementFromOrbit = 1.0e-6, int numberOfManifoldOrbits = 100, int saveEveryNthIntegrationStep = 1000,
-                       double maximumIntegrationTimeManifoldOrbits = 50.0, double maxEigenvalueDeviation = 1.0e-3)
+                       double maximumIntegrationTimeManifoldOrbits = 50.0, double maxEigenvalueDeviation = 1.0e-3,
+                       double positionBoundarySurroundingPrimaries = 1e-6)
 {
     // Set output maximum precision
     std::cout.precision(std::numeric_limits<double>::digits10);
@@ -149,8 +150,6 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
     Eigen::VectorXd localStateVector           = Eigen::VectorXd::Zero(6);
     Eigen::VectorXd localNormalizedEigenvector = Eigen::VectorXd::Zero(6);
 
-
-//    TODO check sign x off-set eigenvector
     double signEigenvector1;
     double signEigenvector2;
 
@@ -189,7 +188,6 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
     std::string fileNameEigenvectorLocation;
 
     for (int manifoldNumber = 0; manifoldNumber < 4; manifoldNumber++){
-
         offsetSign                  = offsetSigns.at(manifoldNumber);
         eigenVector                 = eigenVectors.at(manifoldNumber);
         integrationDirection        = integrationDirections.at(manifoldNumber);
@@ -222,7 +220,6 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
 
         // Determine the total number of points along the periodic orbit to start the manifolds.
         for (int ii = 0; ii <numberOfManifoldOrbits; ii++) {
-
             int row_index = floor(ii * numberOfPointsOnPeriodicOrbit / numberOfManifoldOrbits);
 
             // Reshape the STM from vector to a matrix
@@ -286,11 +283,21 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
             outputVector       = propagateOrbit(manifoldStartingState, massParameter, 0.0, integrationDirection );
             stateVectorInclSTM = outputVector.segment(0, 42);
             currentTime        = outputVector(42);
-            std::cout << "Orbit No.: " << ii + 1 << std::endl;
+            std::cout << "Orbit No.: " << ii << std::endl;
 
             int count = 1;
 
-            while ( (fabs( currentTime ) <= maximumIntegrationTimeManifoldOrbits) and !fullManifoldComputed ) {
+            while ( (std::abs( currentTime ) <= maximumIntegrationTimeManifoldOrbits) and !fullManifoldComputed ) {
+                // Check whether trajectory is not too close to either one of the primaries.
+                // This can increase velocities to unreasonably high numbers, causing the integrator to throw a MinimumStepSizeExceedsError
+                if ( (std::abs(outputVector(0) - (1.0 - massParameter)) < positionBoundarySurroundingPrimaries or
+                      std::abs(outputVector(0) - (    - massParameter)) < positionBoundarySurroundingPrimaries)
+                     and std::abs(outputVector(1)) < positionBoundarySurroundingPrimaries
+                     and std::abs(outputVector(2)) < positionBoundarySurroundingPrimaries ){
+                    std::cout << "Integration stopped as trajectory position is within the boundary surrounding the primaries" << std::endl;
+                    outputVector = previousOutputVector;
+                    fullManifoldComputed = true;
+                }
 
                 // Determine sign of Y near x = 0  (U1, U4)
                 if ( (outputVector(0) < 0) and !ySignSet ){
@@ -305,8 +312,6 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
 
                 // Determine when the manifold crosses the x-axis again (U1, U4)
                 if ( (outputVector(1) * ySign < 0) and ySignSet ){
-
-                    // TODO close the overshoot with integration
 
                     outputVector = previousOutputVector;
                     std::cout << "||y|| = " << outputVector(1) << ", at start of iterative procedure" << std::endl;
@@ -347,9 +352,7 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
                 if ( ((outputVector(0) - (1.0 - massParameter)) * xDiffSign < 0)
                      and (std::abs(outputVector(1)) < 1.0) and xDiffSignSet and !ySignSet ){
 
-                    // TODO close the overshoot with integration
                     outputVector = previousOutputVector;
-
                     std::cout << "||x - (1-mu)|| = " << (outputVector(0) - (1.0 - massParameter)) << ", at start of iterative procedure" << std::endl;
 
                     for (int i = 5; i <= 12; i++) {
@@ -379,7 +382,6 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
 
                 // Write every nth integration step to file.
                 if (count % saveEveryNthIntegrationStep == 0 or fullManifoldComputed) {
-
                     textFileStateVectors << std::left << std::scientific << std::setw(25) << currentTime << std::setw(25)
                                          << stateVectorInclSTM(0)  << std::setw(25) << stateVectorInclSTM(1)  << std::setw(25)
                                          << stateVectorInclSTM(2)  << std::setw(25) << stateVectorInclSTM(3)  << std::setw(25)
