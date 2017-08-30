@@ -26,6 +26,29 @@ def load_manifold(file_path):
     return output_data
 
 
+def load_manifold_incl_stm(file_path):
+    pd.options.mode.chained_assignment = None  # Turn off SettingWithCopyWarning
+
+    input_data = pd.read_table(file_path, delim_whitespace=True, header=None).rename(columns={0: 'time'})
+    split_on_index = list(input_data[input_data['time'] == 0].index)
+
+    output_data = []
+    for idx, start_index in enumerate(split_on_index):
+
+        if idx != len(split_on_index)-1:
+            data_per_orbit = input_data[start_index:split_on_index[idx+1]]
+        else:
+            data_per_orbit = input_data[start_index:]
+
+        data_per_orbit['orbitNumber'] = idx
+
+        output_data.append(data_per_orbit)
+        pass
+
+    output_data = pd.concat(output_data).reset_index(drop=True).set_index(['orbitNumber', 'time'])
+    return output_data
+
+
 def load_orbit(file_path):
     data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(7)))
     data.columns = ['time', 'x', 'y', 'z', 'xdot', 'ydot', 'zdot']

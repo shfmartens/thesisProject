@@ -135,7 +135,7 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
     if ((1.0 / minimumEigenvalue - maximumEigenvalue) > maxEigenvalueDeviation){
         std::cout << "\n\n\nERROR - EIGENVALUES MIGHT NOT BELONG TO SAME RECIPROCAL PAIR" << std::endl;
         std::ofstream textFileEigenvalueError;
-        textFileEigenvalueError.open("../data/raw/error_file.txt", std::ios_base::app);
+        textFileEigenvalueError.open("../data/raw/manifold/error_file.txt", std::ios_base::app);
         textFileEigenvalueError << orbitId << "\n\n"
                   << "Eigenvectors:\n" << eig.eigenvectors() << "\n"
                   << "Eigenvalues:\n" << eig.eigenvalues() << "\n"
@@ -196,18 +196,18 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
         fileNameEigenvectorLocation = fileNamesEigenvectorLocations.at(manifoldNumber);
 
         std::ofstream textFileStateVectors;
-        remove(("../data/raw/" + fileNameStateVector).c_str());
-        textFileStateVectors.open(("../data/raw/" + fileNameStateVector).c_str());
+        remove(("../data/raw/manifold/" + fileNameStateVector).c_str());
+        textFileStateVectors.open(("../data/raw/manifold/" + fileNameStateVector).c_str());
         textFileStateVectors.precision(14);
 
         std::ofstream textFileEigenvectors;
-        remove(("../data/raw/" + fileNameEigenvector).c_str());
-        textFileEigenvectors.open(("../data/raw/" + fileNameEigenvector).c_str());
+        remove(("../data/raw/manifold/" + fileNameEigenvector).c_str());
+        textFileEigenvectors.open(("../data/raw/manifold/" + fileNameEigenvector).c_str());
         textFileEigenvectors.precision(14);
 
         std::ofstream textFileEigenvectorLocations;
-        remove(("../data/raw/" + fileNameEigenvectorLocation).c_str());
-        textFileEigenvectorLocations.open(("../data/raw/" + fileNameEigenvectorLocation).c_str());
+        remove(("../data/raw/manifold/" + fileNameEigenvectorLocation).c_str());
+        textFileEigenvectorLocations.open(("../data/raw/manifold/" + fileNameEigenvectorLocation).c_str());
         textFileEigenvectorLocations.precision(14);
 
         bool fullManifoldComputed = false;
