@@ -29,9 +29,9 @@ Eigen::VectorXd writePeriodicOrbitToFile( Eigen::VectorXd initialStateVector, in
 
     // Prepare output file
     if (completeInitialConditionsHaloFamily == false){
-        fileNameString = ("../data/raw/orbit/L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + ".txt").c_str();
+        fileNameString = ("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + ".txt").c_str();
     } else {
-        fileNameString = ("../data/raw/orbit/L" + std::to_string(librationPointNr) + "_" + orbitType + "_n_" + std::to_string(orbitId) + ".txt").c_str();
+        fileNameString = ("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + orbitType + "_n_" + std::to_string(orbitId) + ".txt").c_str();
     }
     remove(fileNameString);
     std::ofstream textFileOrbit(fileNameString);

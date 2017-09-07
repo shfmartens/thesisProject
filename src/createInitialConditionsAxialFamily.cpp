@@ -218,15 +218,15 @@ void createInitialConditionsAxialFamily( Eigen::VectorXd initialStateVector1, Ei
     }
 
     // Prepare file for initial conditions
-    remove(("../data/raw/L" + std::to_string(librationPointNr) + "_axial_initial_conditions.txt").c_str());
+    remove(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_axial_initial_conditions.txt").c_str());
     std::ofstream textFileInitialConditions;
-    textFileInitialConditions.open(("../data/raw/L" + std::to_string(librationPointNr) + "_axial_initial_conditions.txt").c_str());
+    textFileInitialConditions.open(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_axial_initial_conditions.txt").c_str());
     textFileInitialConditions.precision(std::numeric_limits<double>::digits10);
 
     // Prepare file for differential correction
-    remove(("../data/raw/L" + std::to_string(librationPointNr) + "_axial_differential_correction.txt").c_str());
+    remove(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_axial_differential_correction.txt").c_str());
     std::ofstream textFileDifferentialCorrection;
-    textFileDifferentialCorrection.open(("../data/raw/L" + std::to_string(librationPointNr) + "_axial_differential_correction.txt").c_str());
+    textFileDifferentialCorrection.open(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_axial_differential_correction.txt").c_str());
     textFileDifferentialCorrection.precision(std::numeric_limits<double>::digits10);
 
     // Write initial conditions to file

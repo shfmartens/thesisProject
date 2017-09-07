@@ -89,7 +89,7 @@ int main (){
             // == Load precomputed initial conditions ==
             // =========================================
 
-            std::ifstream textFileInitialConditions("../data/raw/orbit/L" + std::to_string(librationPointNr) + "_" + orbitType + "_initial_conditions.txt");
+            std::ifstream textFileInitialConditions("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + orbitType + "_initial_conditions.txt");
             std::vector<std::vector<double>> initialConditions;
 
             if (textFileInitialConditions) {
@@ -184,33 +184,33 @@ int main (){
             int orbitIdForManifold;
             if (orbitType == "horizontal") {
                 if (librationPointNr == 1) {
-                    orbitIdForManifold = 808;  // C = 3.05
+//                    orbitIdForManifold = 808;  // C = 3.05
 //                    orbitIdForManifold = 577;  // C = 3.1
-//                    orbitIdForManifold = 330;  // C = 3.15
+                    orbitIdForManifold = 330;  // C = 3.15
                 } else {
-                    orbitIdForManifold = 1066;  // C = 3.05
+//                    orbitIdForManifold = 1066;  // C = 3.05
 //                    orbitIdForManifold = 760;  // C = 3.1
-//                    orbitIdForManifold = 373;  // C = 3.15
+                    orbitIdForManifold = 373;  // C = 3.15
                 }
             } if (orbitType == "halo") {
                 if (librationPointNr == 1) {
-                    orbitIdForManifold = 1235;  // C = 3.05
+//                    orbitIdForManifold = 1235;  // C = 3.05
 //                    orbitIdForManifold = 836;  // C = 3.1
-//                    orbitIdForManifold = 358;  // C = 3.15
+                    orbitIdForManifold = 358;  // C = 3.15
                 } else {
-                    orbitIdForManifold = 1093;  // C = 3.05
+//                    orbitIdForManifold = 1093;  // C = 3.05
 //                    orbitIdForManifold = 651;  // C = 3.1
-//                    orbitIdForManifold = 0;  // C = 3.15
+                    orbitIdForManifold = 0;  // C = 3.15
                 }
             } if (orbitType == "vertical") {
                 if (librationPointNr == 1) {
-                    orbitIdForManifold = 1664;  // C = 3.05
+//                    orbitIdForManifold = 1664;  // C = 3.05
 //                    orbitIdForManifold = 1159;  // C = 3.1
-//                    orbitIdForManifold = 600;  // C = 3.15
+                    orbitIdForManifold = 600;  // C = 3.15
                 } else {
-                    orbitIdForManifold = 1878;  // C = 3.05
+//                    orbitIdForManifold = 1878;  // C = 3.05
 //                    orbitIdForManifold = 1275;  // C = 3.1
-//                    orbitIdForManifold = 513;  // C = 3.15
+                    orbitIdForManifold = 513;  // C = 3.15
                 }
             }
 

@@ -23,7 +23,7 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
                        const double secondaryGravitationalParameter = tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER,
                        double displacementFromOrbit = 1.0e-6, int numberOfManifoldOrbits = 100, int saveEveryNthIntegrationStep = 1000,
                        double maximumIntegrationTimeManifoldOrbits = 50.0, double maxEigenvalueDeviation = 1.0e-3,
-                       double positionBoundarySurroundingPrimaries = 1e-6)
+                       double normalizedRadiusSecondPrimary = 4.5187304890738815e-3) //TODO replace hardcoded with normalized moon radius
 {
     // Set output maximum precision
     std::cout.precision(std::numeric_limits<double>::digits10);
@@ -135,7 +135,7 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
     if ((1.0 / minimumEigenvalue - maximumEigenvalue) > maxEigenvalueDeviation){
         std::cout << "\n\n\nERROR - EIGENVALUES MIGHT NOT BELONG TO SAME RECIPROCAL PAIR" << std::endl;
         std::ofstream textFileEigenvalueError;
-        textFileEigenvalueError.open("../data/raw/manifold/error_file.txt", std::ios_base::app);
+        textFileEigenvalueError.open("../data/raw/manifolds/error_file.txt", std::ios_base::app);
         textFileEigenvalueError << orbitId << "\n\n"
                   << "Eigenvectors:\n" << eig.eigenvectors() << "\n"
                   << "Eigenvalues:\n" << eig.eigenvalues() << "\n"
@@ -196,18 +196,18 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
         fileNameEigenvectorLocation = fileNamesEigenvectorLocations.at(manifoldNumber);
 
         std::ofstream textFileStateVectors;
-        remove(("../data/raw/manifold/" + fileNameStateVector).c_str());
-        textFileStateVectors.open(("../data/raw/manifold/" + fileNameStateVector).c_str());
+        remove(("../data/raw/manifolds/" + fileNameStateVector).c_str());
+        textFileStateVectors.open(("../data/raw/manifolds/" + fileNameStateVector).c_str());
         textFileStateVectors.precision(14);
 
         std::ofstream textFileEigenvectors;
-        remove(("../data/raw/manifold/" + fileNameEigenvector).c_str());
-        textFileEigenvectors.open(("../data/raw/manifold/" + fileNameEigenvector).c_str());
+        remove(("../data/raw/manifolds/" + fileNameEigenvector).c_str());
+        textFileEigenvectors.open(("../data/raw/manifolds/" + fileNameEigenvector).c_str());
         textFileEigenvectors.precision(14);
 
         std::ofstream textFileEigenvectorLocations;
-        remove(("../data/raw/manifold/" + fileNameEigenvectorLocation).c_str());
-        textFileEigenvectorLocations.open(("../data/raw/manifold/" + fileNameEigenvectorLocation).c_str());
+        remove(("../data/raw/manifolds/" + fileNameEigenvectorLocation).c_str());
+        textFileEigenvectorLocations.open(("../data/raw/manifolds/" + fileNameEigenvectorLocation).c_str());
         textFileEigenvectorLocations.precision(14);
 
         bool fullManifoldComputed = false;
@@ -288,13 +288,11 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
             int count = 1;
 
             while ( (std::abs( currentTime ) <= maximumIntegrationTimeManifoldOrbits) and !fullManifoldComputed ) {
-                // Check whether trajectory is not too close to either one of the primaries.
+                // Check whether trajectory is not intersecting with the surface of the second primary.
                 // This can increase velocities to unreasonably high numbers, causing the integrator to throw a MinimumStepSizeExceedsError
-                if ( (std::abs(outputVector(0) - (1.0 - massParameter)) < positionBoundarySurroundingPrimaries or
-                      std::abs(outputVector(0) - (    - massParameter)) < positionBoundarySurroundingPrimaries)
-                     and std::abs(outputVector(1)) < positionBoundarySurroundingPrimaries
-                     and std::abs(outputVector(2)) < positionBoundarySurroundingPrimaries ){
-                    std::cout << "Integration stopped as trajectory position is within the boundary surrounding the primaries" << std::endl;
+                if ( pow( pow(outputVector(0)-(1.0-massParameter), 2) + pow(outputVector(1), 2)
+                          + pow(outputVector(2), 2), 0.5) < normalizedRadiusSecondPrimary ){
+                    std::cout << "Integration stopped as trajectory position intersects surface of the second primary" << std::endl;
                     outputVector = previousOutputVector;
                     fullManifoldComputed = true;
                 }
