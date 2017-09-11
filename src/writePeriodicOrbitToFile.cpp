@@ -28,10 +28,18 @@ Eigen::VectorXd writePeriodicOrbitToFile( Eigen::VectorXd initialStateVector, in
     const char* fileNameString;
 
     // Prepare output file
-    if (completeInitialConditionsHaloFamily == false){
-        fileNameString = ("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + ".txt").c_str();
+    if (saveEveryNthIntegrationStep != 1000){
+        if (completeInitialConditionsHaloFamily == false){
+            fileNameString = ("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + "_" + std::to_string(saveEveryNthIntegrationStep) + ".txt").c_str();
+        } else {
+            fileNameString = ("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + orbitType + "_n_" + std::to_string(orbitId) + "_" + std::to_string(saveEveryNthIntegrationStep) + ".txt").c_str();
+        }
     } else {
-        fileNameString = ("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + orbitType + "_n_" + std::to_string(orbitId) + ".txt").c_str();
+        if (completeInitialConditionsHaloFamily == false){
+            fileNameString = ("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + ".txt").c_str();
+        } else {
+            fileNameString = ("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + orbitType + "_n_" + std::to_string(orbitId) + ".txt").c_str();
+        }
     }
     remove(fileNameString);
     std::ofstream textFileOrbit(fileNameString);

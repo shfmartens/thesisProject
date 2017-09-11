@@ -42,7 +42,7 @@ class ManifoldComparisonForVaryingC:
         MOON_GRAVITATIONAL_PARAMETER = SUN_GRAVITATIONAL_PARAMETER / (328900.56 * (1.0 + 81.30059))
         self.massParameter = MOON_GRAVITATIONAL_PARAMETER / (MOON_GRAVITATIONAL_PARAMETER + EARTH_GRAVITATIONAL_PARAMETER)
 
-        initial_conditions_file_path = '../../data/raw/orbit/L' + str(lagrange_point_nr) + '_' + orbit_type + '_initial_conditions.txt'
+        initial_conditions_file_path = '../../data/raw/orbits/L' + str(lagrange_point_nr) + '_' + orbit_type + '_initial_conditions.txt'
         initial_conditions_incl_m_df = load_initial_conditions_incl_M(initial_conditions_file_path)
 
         self.C = []
@@ -56,18 +56,18 @@ class ManifoldComparisonForVaryingC:
             orbit_id = orbit_id_per_c[c_level]
             self.C.append(initial_conditions_incl_m_df.iloc[orbit_id][0])
             self.orbitDf.append(load_orbit(
-                '../../data/raw/orbit/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '.txt'))
+                '../../data/raw/orbits/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '.txt'))
             self.W_S_plus.append(load_manifold(
-                '../../data/raw/manifold/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(
+                '../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(
                     orbit_id) + '_W_S_plus.txt'))
             self.W_S_min.append(load_manifold(
-                '../../data/raw/manifold/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(
+                '../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(
                     orbit_id) + '_W_S_min.txt'))
             self.W_U_plus.append(load_manifold(
-                '../../data/raw/manifold/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(
+                '../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(
                     orbit_id) + '_W_U_plus.txt'))
             self.W_U_min.append(load_manifold(
-                '../../data/raw/manifold/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(
+                '../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(
                     orbit_id) + '_W_U_min.txt'))
 
         self.numberOfOrbitsPerManifold = len(set(self.W_S_plus[0].index.get_level_values(0)))
@@ -415,7 +415,7 @@ class ManifoldComparisonForVaryingC:
         plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle +
                      ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial comparison', size=self.suptitleSize)
 
-        fig.savefig('../../data/figures/manifold/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_manifold_comparison.pdf')
+        fig.savefig('../../data/figures/manifolds/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_manifold_comparison.pdf')
         # fig.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots.png')
         plt.close()
         pass

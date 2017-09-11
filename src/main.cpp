@@ -20,8 +20,7 @@
 
 
 
-double massParameter;
-
+double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER, tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER );
 
 int main (){
 
@@ -161,7 +160,7 @@ int main (){
 //            initialStateVector1(3) = initialConditions[orbitIdForBifurcationToAxial][5];
 //            initialStateVector1(4) = initialConditions[orbitIdForBifurcationToAxial][6];
 //            initialStateVector1(5) = initialConditions[orbitIdForBifurcationToAxial][7] + offsetForBifurcationToAxial1;
-//            Eigen::VectorXd stateVectorInclSTM;
+            Eigen::VectorXd stateVectorInclSTM;
 //            stateVectorInclSTM     = writePeriodicOrbitToFile( initialStateVector1, librationPointNr, "axial", 0, orbitalPeriod1, massParameter);
 //
 //            orbitalPeriod2         = initialConditions[orbitIdForBifurcationToAxial][1];
@@ -223,13 +222,15 @@ int main (){
             initialStateVector(4) = initialConditions[orbitIdForManifold][6];
             initialStateVector(5) = initialConditions[orbitIdForManifold][7];
 
-            std::string selected_orbit = "L" + std::to_string(librationPointNr) + "_" + orbitType + "_W_" + std::to_string(orbitIdForManifold);
-            std::cout                                                                                 << std::endl;
-            std::cout << "=================================================================="         << std::endl;
-            std::cout << "                          " << selected_orbit << "                        " << std::endl;
-            std::cout << "=================================================================="         << std::endl;
+            stateVectorInclSTM     = writePeriodicOrbitToFile( initialStateVector, librationPointNr, orbitType, orbitIdForManifold, orbitalPeriod, massParameter, false, 100);
 
-            computeManifolds(initialStateVector, orbitalPeriod, librationPointNr, orbitType, orbitIdForManifold);
+//            std::string selected_orbit = "L" + std::to_string(librationPointNr) + "_" + orbitType + "_W_" + std::to_string(orbitIdForManifold);
+//            std::cout                                                                                 << std::endl;
+//            std::cout << "=================================================================="         << std::endl;
+//            std::cout << "                          " << selected_orbit << "                        " << std::endl;
+//            std::cout << "=================================================================="         << std::endl;
+//
+//            computeManifolds(initialStateVector, orbitalPeriod, librationPointNr, orbitType, orbitIdForManifold);
         }
     }
 
