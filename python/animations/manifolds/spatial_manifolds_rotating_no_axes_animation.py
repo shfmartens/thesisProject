@@ -179,7 +179,7 @@ class SpatialManifoldsRotatingNoAxesAnimation:
         print('Maximum value for t = ' + str(t_max) + ', animation t: = ')
 
         # Introduce a new time-vector for linearly spaced time throughout the animation
-        self.t = np.linspace(0, t_max, np.round(t_max / 0.005) + 1)
+        self.t = np.linspace(0, t_max, np.round(t_max / 0.01) + 1)
 
         animation_function = animation.FuncAnimation(fig, self.update_lines, init_func=self.initiate_lines,
                                                      frames=len(self.t), interval=1, blit=True)

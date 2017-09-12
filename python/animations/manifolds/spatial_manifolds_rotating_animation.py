@@ -169,9 +169,9 @@ class SpatialManifoldsRotatingAnimation:
         plt.suptitle(title, size=self.suptitleSize)
 
         # Fix overlap between labels and ticks
-        self.ax.xaxis._axinfo['label']['space_factor'] = 2.0
-        self.ax.yaxis._axinfo['label']['space_factor'] = 2.0
-        self.ax.zaxis._axinfo['label']['space_factor'] = 2.0
+        self.ax.xaxis._axinfo['label']['space_factor'] = 4.0
+        self.ax.yaxis._axinfo['label']['space_factor'] = 4.0
+        self.ax.zaxis._axinfo['label']['space_factor'] = 4.0
 
         self.initialElevation = self.ax.elev
         self.initialAzimuth = self.ax.azim
@@ -187,7 +187,7 @@ class SpatialManifoldsRotatingAnimation:
         print('Maximum value for t = ' + str(t_max) + ', animation t: = ')
 
         # Introduce a new time-vector for linearly spaced time throughout the animation
-        self.t = np.linspace(0, t_max, np.round(t_max / 0.005) + 1)
+        self.t = np.linspace(0, t_max, np.round(t_max / 0.01) + 1)
 
         animation_function = animation.FuncAnimation(fig, self.update_lines, init_func=self.initiate_lines,
                                                      frames=len(self.t), interval=1, blit=True)

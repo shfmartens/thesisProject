@@ -79,14 +79,14 @@ class SpatialOrbitsAnimation:
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
 
-        self.horizontalLyapunov = [load_orbit('../../../data/raw/orbits/L' + str(1) + '_horizontal_' + str(self.orbitIds['horizontal'][1][self.cLevel]) + '.txt'),
-                                   load_orbit('../../../data/raw/orbits/L' + str(2) + '_horizontal_' + str(self.orbitIds['horizontal'][2][self.cLevel]) + '.txt')]
+        self.horizontalLyapunov = [load_orbit('../../../data/raw/orbits/L' + str(1) + '_horizontal_' + str(self.orbitIds['horizontal'][1][self.cLevel]) + '_100.txt'),
+                                   load_orbit('../../../data/raw/orbits/L' + str(2) + '_horizontal_' + str(self.orbitIds['horizontal'][2][self.cLevel]) + '_100.txt')]
 
-        self.verticalLyapunov = [load_orbit('../../../data/raw/orbits/L' + str(1) + '_vertical_' + str(self.orbitIds['vertical'][1][self.cLevel]) + '.txt'),
-                                 load_orbit('../../../data/raw/orbits/L' + str(2) + '_vertical_' + str(self.orbitIds['vertical'][2][self.cLevel]) + '.txt')]
+        self.verticalLyapunov = [load_orbit('../../../data/raw/orbits/L' + str(1) + '_vertical_' + str(self.orbitIds['vertical'][1][self.cLevel]) + '_100.txt'),
+                                 load_orbit('../../../data/raw/orbits/L' + str(2) + '_vertical_' + str(self.orbitIds['vertical'][2][self.cLevel]) + '_100.txt')]
 
-        self.halo = [load_orbit('../../../data/raw/orbits/L' + str(1) + '_halo_' + str(self.orbitIds['halo'][1][self.cLevel]) + '.txt'),
-                     load_orbit('../../../data/raw/orbits/L' + str(2) + '_halo_' + str(self.orbitIds['halo'][2][self.cLevel]) + '.txt')]
+        self.halo = [load_orbit('../../../data/raw/orbits/L' + str(1) + '_halo_' + str(self.orbitIds['halo'][1][self.cLevel]) + '_100.txt'),
+                     load_orbit('../../../data/raw/orbits/L' + str(2) + '_halo_' + str(self.orbitIds['halo'][2][self.cLevel]) + '_100.txt')]
 
         self.lines = [plt.plot([], [], color=self.orbitColor, alpha=self.orbitAlpha, marker='o', markevery=[-1])[0] for idx in range(6)]
 
@@ -160,7 +160,7 @@ class SpatialOrbitsAnimation:
         animation_function = animation.FuncAnimation(fig, self.update_lines, init_func=self.initiate_lines,
                                                      frames=len(self.t), interval=1, blit=True)
         empty_writer_object = animation.writers['ffmpeg']
-        animation_writer = empty_writer_object(fps=30, metadata=dict(artist='Koen Langemeijer'))
+        animation_writer = empty_writer_object(fps=60, metadata=dict(artist='Koen Langemeijer'))
         file_name = '../../../data/animations/orbits/spatial_orbits_' + str(c_level) + '.mp4'
         animation_function.save(file_name, writer=animation_writer)
 

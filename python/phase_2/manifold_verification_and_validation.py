@@ -846,9 +846,7 @@ class DisplayPeriodicityValidation:
         # Plot W^S+
         y1 = w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3*w_s_plus_df.std(axis=1)
         y2 = w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3*w_s_plus_df.std(axis=1)
-        print(w_s_plus_df.std(axis=1))
-        print(y1)
-        print(y2)
+
         arr[1, 0].fill_between(w_s_plus_df.mean(axis=1).index,
                                y1=y1,
                                y2=y2, where=y1 >= y2,
@@ -903,7 +901,7 @@ class DisplayPeriodicityValidation:
 
         for i in range(1,3):
             for j in range(2):
-                arr[i, j].set_ylim([-6e-12, 6e-12])
+                arr[i, j].set_ylim([-6e-11, 6e-11])
         # arr[2, 1].set_yscale('symlog')
 
         for i in range(3):
@@ -919,7 +917,7 @@ class DisplayPeriodicityValidation:
 
         plt.savefig('../../data/figures/manifolds/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_jacobi_validation.pdf')
         # plt.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_periodicity.png')
-        # plt.close()
+        plt.close()
         pass
 
 
