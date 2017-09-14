@@ -64,28 +64,28 @@ class SpatialManifoldsAnimation:
         self.timeText.set_text('$\|t\| \\approx$ {:.2f}'.format(round(abs(current_time), 2)))
         for j, line in enumerate(self.lines):
             if j < self.numberOfOrbitsPerManifold:
-                temp_df = self.W_S_plus[0].xs(j)
+                temp_df = self.W_U_min[0].xs(j)
                 pass
             if self.numberOfOrbitsPerManifold <= j < self.numberOfOrbitsPerManifold * 2:
-                temp_df = self.W_S_min[0].xs(j - self.numberOfOrbitsPerManifold)
+                temp_df = self.W_S_plus[0].xs(j - self.numberOfOrbitsPerManifold)
                 pass
             if self.numberOfOrbitsPerManifold * 2 <= j < self.numberOfOrbitsPerManifold * 3:
                 temp_df = self.W_U_plus[0].xs(j - self.numberOfOrbitsPerManifold * 2)
                 pass
             if self.numberOfOrbitsPerManifold * 3 <= j < self.numberOfOrbitsPerManifold * 4:
-                temp_df = self.W_U_min[0].xs(j - self.numberOfOrbitsPerManifold * 3)
+                temp_df = self.W_S_min[0].xs(j - self.numberOfOrbitsPerManifold * 3)
                 pass
             if self.numberOfOrbitsPerManifold * 4 <= j < self.numberOfOrbitsPerManifold * 5:
-                temp_df = self.W_S_plus[1].xs(j - self.numberOfOrbitsPerManifold * 4)
+                temp_df = self.W_U_min[1].xs(j - self.numberOfOrbitsPerManifold * 4)
                 pass
             if self.numberOfOrbitsPerManifold * 5 <= j < self.numberOfOrbitsPerManifold * 6:
-                temp_df = self.W_S_min[1].xs(j - self.numberOfOrbitsPerManifold * 5)
+                temp_df = self.W_S_plus[1].xs(j - self.numberOfOrbitsPerManifold * 5)
                 pass
             if self.numberOfOrbitsPerManifold * 6 <= j < self.numberOfOrbitsPerManifold * 7:
-                temp_df = self.W_U_plus[1].xs(j - self.numberOfOrbitsPerManifold * 6)
+                temp_df = self.W_S_min[1].xs(j - self.numberOfOrbitsPerManifold * 6)
                 pass
             if self.numberOfOrbitsPerManifold * 7 <= j < self.numberOfOrbitsPerManifold * 8:
-                temp_df = self.W_U_min[1].xs(j - self.numberOfOrbitsPerManifold * 7)
+                temp_df = self.W_U_plus[1].xs(j - self.numberOfOrbitsPerManifold * 7)
                 pass
             x = temp_df[abs(temp_df.index) <= current_time]['x'].tolist()
             y = temp_df[abs(temp_df.index) <= current_time]['y'].tolist()
@@ -160,14 +160,14 @@ class SpatialManifoldsAnimation:
         color_palette_green = sns.dark_palette('green', n_colors=self.numberOfOrbitsPerManifold)
         color_palette_red = sns.dark_palette('red', n_colors=self.numberOfOrbitsPerManifold)
 
-        self.lines = [plt.plot([], [], color=color_palette_green[idx], alpha=self.orbitAlpha)[0] for idx in range(self.numberOfOrbitsPerManifold)]
+        self.lines = [plt.plot([], [], color=color_palette_red[idx], alpha=self.orbitAlpha)[0] for idx in range(self.numberOfOrbitsPerManifold)]
+        self.lines.extend([plt.plot([], [], color=color_palette_green[idx], alpha=self.orbitAlpha)[0] for idx in range(self.numberOfOrbitsPerManifold)])
         self.lines.extend([plt.plot([], [], color=color_palette_red[idx], alpha=self.orbitAlpha)[0] for idx in range(self.numberOfOrbitsPerManifold)])
+        self.lines.extend([plt.plot([], [], color=color_palette_green[idx], alpha=self.orbitAlpha)[0] for idx in range(self.numberOfOrbitsPerManifold)])
         self.lines.extend([plt.plot([], [], color=color_palette_red[idx], alpha=self.orbitAlpha)[0] for idx in range(self.numberOfOrbitsPerManifold)])
         self.lines.extend([plt.plot([], [], color=color_palette_green[idx], alpha=self.orbitAlpha)[0] for idx in range(self.numberOfOrbitsPerManifold)])
         self.lines.extend([plt.plot([], [], color=color_palette_green[idx], alpha=self.orbitAlpha)[0] for idx in range(self.numberOfOrbitsPerManifold)])
         self.lines.extend([plt.plot([], [], color=color_palette_red[idx], alpha=self.orbitAlpha)[0] for idx in range(self.numberOfOrbitsPerManifold)])
-        self.lines.extend([plt.plot([], [], color=color_palette_red[idx], alpha=self.orbitAlpha)[0] for idx in range(self.numberOfOrbitsPerManifold)])
-        self.lines.extend([plt.plot([], [], color=color_palette_green[idx], alpha=self.orbitAlpha)[0] for idx in range(self.numberOfOrbitsPerManifold)])
 
         # Text object to display absolute normalized time of trajectories within the manifolds
         self.timeText = ax.text2D(0.05, 0.05, s='$\|t\| \\approx 0$', transform=ax.transAxes, size=self.timeTextSize)

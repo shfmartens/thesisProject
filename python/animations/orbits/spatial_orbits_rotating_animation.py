@@ -57,7 +57,7 @@ class SpatialOrbitsRotatingAnimation:
         current_time = self.t[i]
         print(current_time)
         self.timeText.set_text('$\|t\| \\approx$ {:.2f}'.format(round(abs(current_time), 2)))
-        self.ax.view_init(elev=self.initialElevation, azim=self.initialAzimuth + current_time % 1 * 360)
+        self.ax.view_init(elev=self.initialElevation, azim=self.initialAzimuth - current_time % 1 * 360)
         for j, line in enumerate(self.lines):
             if j < 2:
                 x = self.horizontalLyapunov[j][self.horizontalLyapunov[j]['time'] <= current_time]['x'].tolist()
