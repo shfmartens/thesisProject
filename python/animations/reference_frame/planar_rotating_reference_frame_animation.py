@@ -41,9 +41,12 @@ class SpatialOrbitsRotatingAnimation:
         self.initialAzimuth = 0
 
         self.lines = []
+        self.horizontalLyapunov = []
+        self.verticalLyapunov = []
+        self.halo = []
         self.timeText = ''  # Will become a plt.text-object
-        self.ax = ''  # Will become an Axes3D-object
-        print('C = ' + str(self.cLevel))
+
+        print('C = ' + str(c_level))
         pass
 
     def initiate_lines(self):
@@ -56,11 +59,30 @@ class SpatialOrbitsRotatingAnimation:
         print(current_time)
         self.timeText.set_text('$\|t\| \\approx$ {:.2f}'.format(round(abs(current_time), 2)))
         self.ax.view_init(elev=self.initialElevation, azim=self.initialAzimuth - current_time % 1 * 360)
+        # for j, line in enumerate(self.lines):
+        #     if j < 2:
+        #         x = self.horizontalLyapunov[j][self.horizontalLyapunov[j]['time'] <= current_time]['x'].tolist()
+        #         y = self.horizontalLyapunov[j][self.horizontalLyapunov[j]['time'] <= current_time]['y'].tolist()
+        #         z = self.horizontalLyapunov[j][self.horizontalLyapunov[j]['time'] <= current_time]['z'].tolist()
+        #         pass
+        #     if 2 <= j < 4:
+        #         x = self.verticalLyapunov[j - 2][self.verticalLyapunov[j - 2]['time'] <= current_time]['x'].tolist()
+        #         y = self.verticalLyapunov[j - 2][self.verticalLyapunov[j - 2]['time'] <= current_time]['y'].tolist()
+        #         z = self.verticalLyapunov[j - 2][self.verticalLyapunov[j - 2]['time'] <= current_time]['z'].tolist()
+        #         pass
+        #     if 4 <= j < 6:
+        #         x = self.halo[j - 4][self.halo[j - 4]['time'] <= current_time]['x'].tolist()
+        #         y = self.halo[j - 4][self.halo[j - 4]['time'] <= current_time]['y'].tolist()
+        #         z = self.halo[j - 4][self.halo[j - 4]['time'] <= current_time]['z'].tolist()
+        #         pass
+        #     line.set_data(x, y)
+        #     line.set_3d_properties(z)
+        #     pass
         return self.lines
 
     def animate(self):
         fig = plt.figure()
-        self.ax = fig.add_subplot(111, projection='3d')
+        self.ax = fig.gca()
         self.lines = [plt.plot([], [], color=self.orbitColor, alpha=self.orbitAlpha, marker='o', markevery=[-1])[0] for idx in range(6)]
 
         # Text object to display absolute normalized time of trajectories within the manifolds
@@ -135,16 +157,13 @@ def worker(arg):
 
 
 if __name__ == '__main__':
+    maximum_number_of_processes = min(14, multiprocessing.cpu_count()-1)  # 14 processes is the maximum on the server, but perform a safety check on the available number of threads
+
     c_levels_times_100 = list(range(200, 305, 5))
     c_levels = [i / 100 for i in c_levels_times_100]
 
-    for c_level in c_levels:
-        spatial_orbits_rotating_animation = SpatialOrbitsRotatingAnimation(c_level)
-        spatial_orbits_rotating_animation.animate()
-
-    # maximum_number_of_processes = min(14, multiprocessing.cpu_count()-1)  # 14 processes is the maximum on the server, but perform a safety check on the available number of threads
-    # list_of_objects = [SpatialOrbitsRotatingAnimation(c_level) for c_level in c_levels]  # Instantiate the classes
-    # pool = multiprocessing.Pool(min(maximum_number_of_processes, len(list_of_objects)))  # Start a pool of workers
-    # pool.imap_unordered(worker, (obj for obj in list_of_objects))  # Execute the tasks in parallel, regardless of order
-    # pool.close()  # No more tasks can be submitted to the pool
-    # pool.join()  # Wait for processes in pool to exit
+    list_of_objects = [SpatialOrbitsRotatingAnimation(c_level) for c_level in c_levels]  # Instantiate the classes
+    pool = multiprocessing.Pool(min(maximum_number_of_processes, len(list_of_objects)))  # Start a pool of workers
+    pool.imap_unordered(worker, (obj for obj in list_of_objects))  # Execute the tasks in parallel, regardless of order
+    pool.close()  # No more tasks can be submitted to the pool
+    pool.join()  # Wait for processes in pool to exit

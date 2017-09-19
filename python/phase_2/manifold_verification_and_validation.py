@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import json
 import matplotlib
-matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
+# matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from mpl_toolkits.mplot3d import Axes3D
@@ -441,37 +441,6 @@ class DisplayPeriodicityValidation:
         fig.savefig('../../data/figures/manifolds/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_eigenvector_subplots.pdf')
 #        fig.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_eigenvector_subplots.png')
         plt.close()
-        pass
-
-    def plot_orbital_energy(self):
-
-        f, arr = plt.subplots(1, 2, figsize=(self.figSize[0], self.figSize[1] * 0.5))
-        for i in range(2):
-            arr[i].grid(True, which='both', ls=':')
-
-        arr[0].plot(self.x, self.C, c=self.plottingColors['doubleLine'][0])
-        arr[0].set_ylabel('C [-]')
-        arr[0].set_title('Spatial dependance')
-        arr[0].tick_params('y', colors=self.plottingColors['doubleLine'][0])
-        arr[0].set_xlabel('x [-]')
-
-        ax2 = arr[0].twinx()
-        ax2.plot(self.x, self.T, c=self.plottingColors['doubleLine'][1], linestyle=':')
-        ax2.tick_params('y', colors=self.plottingColors['doubleLine'][1])
-        ax2.set_ylabel('T [-]')
-
-        arr[1].plot(self.T, self.C, c=self.plottingColors['singleLine'])
-        arr[1].set_title('Relative dependance')
-        arr[1].set_xlabel('T [-]')
-        arr[1].set_ylabel('C [-]')
-
-        plt.tight_layout()
-        plt.subplots_adjust(top=0.8)
-        plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' - Orbital energy and period',
-                     size=self.suptitleSize)
-        # plt.savefig('../../data/figures/manifolds/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_orbital_energy.png')
-        # plt.savefig('../../data/figures/manifold/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_orbital_energy.pdf')
-        # plt.close()
         pass
 
     def plot_stm_analysis(self):
@@ -914,9 +883,108 @@ class DisplayPeriodicityValidation:
         plt.suptitle(
             '$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Validation at C = ' + str(np.round(self.C, 3)),
             size=self.suptitleSize)
-
+        plt.show()
         plt.savefig('../../data/figures/manifolds/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_jacobi_validation.pdf')
         # plt.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_periodicity.png')
+        plt.close()
+        pass
+
+    def plot_orbit_offsets(self):
+        f, arr = plt.subplots(3, 2, figsize=self.figSize)
+
+        linewidth = 1
+        scatter_size = 10
+        highlight_alpha = 0.2
+        ylim = [1e-16, 1e-9]
+        legend_loc = 'lower left'
+        for i in range(2):
+            arr[0, i].plot(self.phase, self.eigenvectorLocationDf_S[0].values, label='x', linewidth=linewidth,
+                               c=self.plottingColors['tripleLine'][0])
+            arr[0, i].plot(self.phase, self.eigenvectorLocationDf_S[1].values, label='y', linewidth=linewidth,
+                               c=self.plottingColors['tripleLine'][1])
+            arr[0, i].plot(self.phase, self.eigenvectorLocationDf_S[2].values, label='z', linewidth=linewidth,
+                               c=self.plottingColors['tripleLine'][2])
+            arr[0, i].plot(self.phase, self.eigenvectorLocationDf_S[3].values, label='$\dot{x}$', linewidth=linewidth,
+                               c=self.plottingColors['tripleLine'][0], linestyle='--')
+            arr[0, i].plot(self.phase, self.eigenvectorLocationDf_S[4].values, label='$\dot{y}$', linewidth=linewidth,
+                               c=self.plottingColors['tripleLine'][1], linestyle='--')
+            arr[0, i].plot(self.phase, self.eigenvectorLocationDf_S[5].values, label='$\dot{z}$', linewidth=linewidth,
+                               c=self.plottingColors['tripleLine'][2], linestyle='--')
+        arr[0, 0].set_title('State on orbit')
+        arr[0, 1].legend(frameon=True, loc='upper right')
+
+        arr[1, 0].plot(self.phase, abs(self.eigenvectorDf_S[0].values), label='x', linewidth=linewidth,
+                           c=self.plottingColors['tripleLine'][0])
+        arr[1, 0].plot(self.phase, abs(self.eigenvectorDf_S[1].values), label='y', linewidth=linewidth,
+                           c=self.plottingColors['tripleLine'][1])
+        arr[1, 0].plot(self.phase, abs(self.eigenvectorDf_S[2].values), label='z', linewidth=linewidth,
+                           c=self.plottingColors['tripleLine'][2])
+        arr[1, 0].plot(self.phase, abs(self.eigenvectorDf_S[3].values), label='$\dot{x}$', linewidth=linewidth,
+                           c=self.plottingColors['tripleLine'][0], linestyle='--')
+        arr[1, 0].plot(self.phase, abs(self.eigenvectorDf_S[4].values), label='$\dot{y}$', linewidth=linewidth,
+                           c=self.plottingColors['tripleLine'][1], linestyle='--')
+        arr[1, 0].plot(self.phase, abs(self.eigenvectorDf_S[5].values), label='$\dot{z}$', linewidth=linewidth,
+                           c=self.plottingColors['tripleLine'][2], linestyle='--')
+        arr[1, 0].plot(self.phase, np.sqrt(self.eigenvectorDf_S[0].values**2 + self.eigenvectorDf_S[1].values**2 +
+                                           self.eigenvectorDf_S[2].values**2), label='pos', linewidth=2, c='orange')
+        arr[1, 0].plot(self.phase, np.sqrt(self.eigenvectorDf_S[3].values ** 2 + self.eigenvectorDf_S[4].values ** 2 +
+                                           self.eigenvectorDf_S[5].values ** 2), label='vel', linewidth=2, c='r')
+
+        arr[1, 0].set_title('Absolute stable eigenvector offset from orbit')
+
+        arr[1, 1].plot(self.phase, abs(self.eigenvectorDf_U[0].values), label='x', linewidth=linewidth,
+                       c=self.plottingColors['tripleLine'][0])
+        arr[1, 1].plot(self.phase, abs(self.eigenvectorDf_U[1].values), label='y', linewidth=linewidth,
+                       c=self.plottingColors['tripleLine'][1])
+        arr[1, 1].plot(self.phase, abs(self.eigenvectorDf_U[2].values), label='z', linewidth=linewidth,
+                       c=self.plottingColors['tripleLine'][2])
+        arr[1, 1].plot(self.phase, abs(self.eigenvectorDf_U[3].values), label='$\dot{x}$', linewidth=linewidth,
+                       c=self.plottingColors['tripleLine'][0], linestyle='--')
+        arr[1, 1].plot(self.phase, abs(self.eigenvectorDf_U[4].values), label='$\dot{y}$', linewidth=linewidth,
+                       c=self.plottingColors['tripleLine'][1], linestyle='--')
+        arr[1, 1].plot(self.phase, abs(self.eigenvectorDf_U[5].values), label='$\dot{z}$', linewidth=linewidth,
+                       c=self.plottingColors['tripleLine'][2], linestyle='--')
+
+        arr[1, 1].plot(self.phase, np.sqrt(self.eigenvectorDf_U[0].values ** 2 + self.eigenvectorDf_U[1].values ** 2 +
+                                           self.eigenvectorDf_U[2].values ** 2), label='pos', linewidth=2, c='orange')
+        arr[1, 1].plot(self.phase, np.sqrt(self.eigenvectorDf_U[3].values ** 2 + self.eigenvectorDf_U[4].values ** 2 +
+                                           self.eigenvectorDf_U[5].values ** 2), label='vel', linewidth=2, c='r')
+        arr[1, 1].set_title('Absolute unstable eigenvector offset from orbit')
+        arr[1, 1].legend(frameon=True, loc='upper right')
+
+        arr[2, 0].plot(self.phase, self.C_diff_start_W_S_plus, linewidth=linewidth, c=self.plottingColors['W_S_plus'],
+                        label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{S+}$')
+        arr[2, 0].plot(self.phase, self.C_diff_start_W_S_min, linewidth=linewidth, c=self.plottingColors['W_S_min'],
+                        label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
+        arr[2, 1].plot(self.phase, self.C_diff_start_W_U_plus, linewidth=linewidth, c=self.plottingColors['W_U_plus'],
+                        label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{U+}$')
+        arr[2, 1].plot(self.phase, self.C_diff_start_W_U_min, linewidth=linewidth, c=self.plottingColors['W_U_min'],
+                        label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
+        # arr[2, 0].legend(frameon=True, loc='upper right')
+
+        # arr[0, 0].set_xlim([0, 1])
+        arr[2, 0].set_xlabel('$\\tau$ [-]')
+        # arr[0, 0].set_ylim(ylim)
+        arr[2, 0].set_ylabel('$|C(\mathbf{X^i_0}) - C(\mathbf{X^p})|$ [-]')
+        arr[2, 0].set_title('Jacobi energy deviation between orbit and manifold')
+
+        # for i in range(1,3):
+        #     for j in range(2):
+        #         arr[i, j].set_ylim([-6e-11, 6e-11])
+        # arr[2, 1].set_yscale('symlog')
+
+        for i in range(3):
+            for j in range(2):
+                arr[i, j].grid(True, which='both', ls=':')
+
+        plt.tight_layout()
+        plt.subplots_adjust(top=0.9)
+
+        plt.suptitle(
+            '$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Validation at C = ' + str(np.round(self.C, 3)),
+            size=self.suptitleSize)
+        plt.show()
+        # plt.savefig('../../data/figures/manifolds/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_orbit_offsets.pdf')
         plt.close()
         pass
 
@@ -937,10 +1005,10 @@ if __name__ == '__main__':
                 display_periodicity_validation = DisplayPeriodicityValidation(orbit_type, lagrange_point, orbit_ids[orbit_type][lagrange_point][c_level])
                 # display_periodicity_validation.plot_manifolds()
                 # display_periodicity_validation.plot_eigenvectors()
-                # display_periodicity_validation.plot_orbital_energy()
                 # display_periodicity_validation.plot_stm_analysis()
                 # display_periodicity_validation.plot_stability()
                 # display_periodicity_validation.plot_periodicity_validation()
-                display_periodicity_validation.plot_jacobi_validation()
+                # display_periodicity_validation.plot_jacobi_validation()
+                display_periodicity_validation.plot_orbit_offsets()
                 # plt.show()
                 del display_periodicity_validation

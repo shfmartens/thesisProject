@@ -14,23 +14,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="spatial_rotating_reference_frame_animation.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/animations/reference_frame/spatial_rotating_reference_frame_animation.py">
+      <file leaf-file-name="manifold_verification_and_validation.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/phase_2/manifold_verification_and_validation.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="383">
-              <caret line="171" column="89" lean-forward="false" selection-start-line="171" selection-start-column="89" selection-end-line="171" selection-end-column="89" />
+            <state relative-caret-position="299">
+              <caret line="953" column="0" lean-forward="true" selection-start-line="953" selection-start-column="0" selection-end-line="953" selection-end-column="0" />
               <folding>
-                <element signature="e#0#10#0" expanded="true" />
+                <element signature="e#0#18#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="planar_reference_frame_animation.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/animations/reference_frame/planar_reference_frame_animation.py">
+      <file leaf-file-name="load_data.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/util/load_data.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="438">
-              <caret line="86" column="0" lean-forward="false" selection-start-line="86" selection-start-column="0" selection-end-line="90" selection-end-column="43" />
+            <state relative-caret-position="1815">
+              <caret line="122" column="31" lean-forward="false" selection-start-line="122" selection-start-column="31" selection-end-line="122" selection-end-column="31" />
               <folding />
             </state>
           </provider>
@@ -47,19 +47,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>c_levels</find>
-      <find>self.delta_r</find>
-      <find>self.delta_x_dot</find>
-      <find>self.C</find>
-      <find>self.D</find>
-      <find>self.roundOrderConnection</find>
-      <find>round_order_connection</find>
-      <find>roundOrderConnection</find>
-      <find>todo</find>
-      <find>deviation</find>
-      <find>numberOfOrbitsPerManifolds</find>
-      <find>orbit_id</find>
-      <find>spatial over</find>
       <find>tight_</find>
       <find>tight</find>
       <find>numberOfOrbits</find>
@@ -77,6 +64,19 @@
       <find>for body</find>
       <find>print</find>
       <find>cr3b</find>
+      <find>self.orbitid</find>
+      <find>c_lev</find>
+      <find>c_leve</find>
+      <find>orbit_ty</find>
+      <find>orbit_ids</find>
+      <find>c_level</find>
+      <find>_</find>
+      <find>tau</find>
+      <find>self.phase</find>
+      <find>orbital_energy</find>
+      <find>eigenvalue</find>
+      <find>location</find>
+      <find>eigenvectorLocationDf_S</find>
     </findStrings>
     <replaceStrings>
       <replace>1, 1</replace>
@@ -103,8 +103,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/richardson/richardson.py" />
-        <option value="$PROJECT_DIR$/richardson/richardson2.py" />
         <option value="$PROJECT_DIR$/verification/lindstedt_poincare/lp_koon_richardson_old.py" />
         <option value="$PROJECT_DIR$/verification/lindstedt_poincare/lp_koon_richardson.py" />
         <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch.txt" />
@@ -142,18 +140,20 @@
         <option value="$PROJECT_DIR$/animations/manifolds/animate_3d.py" />
         <option value="$PROJECT_DIR$/animations/manifolds/animate_xy.py" />
         <option value="$PROJECT_DIR$/animations/reference_frame/planar_manifolds_animation.py" />
-        <option value="$PROJECT_DIR$/animations/reference_frame/planar_reference_frame_animation.py" />
-        <option value="$PROJECT_DIR$/animations/orbits/spatial_orbits_zoom_animation.py" />
         <option value="$PROJECT_DIR$/animations/orbits/spatial_orbits_animation.py" />
         <option value="$PROJECT_DIR$/animations/manifolds/planar_manifolds_animation.py" />
-        <option value="$PROJECT_DIR$/phase_2/manifold_verification_and_validation.py" />
         <option value="$PROJECT_DIR$/animations/manifolds/spatial_manifolds_animation.py" />
         <option value="$PROJECT_DIR$/animations/reference_frame/spatial_rotating_reference_frame.py" />
         <option value="$PROJECT_DIR$/animations/manifolds/spatial_manifolds_rotating_animation.py" />
         <option value="$PROJECT_DIR$/animations/manifolds/spatial_manifolds_rotating_no_axes_animation.py" />
         <option value="$PROJECT_DIR$/animations/orbits/spatial_orbits_rotating_animation.py" />
         <option value="$PROJECT_DIR$/animations/orbits/spatial_orbits_rotating_no_axes_animation.py" />
+        <option value="$PROJECT_DIR$/animations/reference_frame/planar_reference_frame_animation.py" />
+        <option value="$PROJECT_DIR$/animations/reference_frame/planar_rotating_reference_frame_animation.py" />
+        <option value="$PROJECT_DIR$/animations/orbits/spatial_orbits_zoom_animation.py" />
         <option value="$PROJECT_DIR$/animations/reference_frame/spatial_rotating_reference_frame_animation.py" />
+        <option value="$PROJECT_DIR$/animations/manifolds/spatial_manifolds_zoom_animation.py" />
+        <option value="$PROJECT_DIR$/phase_2/manifold_verification_and_validation.py" />
       </list>
     </option>
   </component>
@@ -176,7 +176,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -187,74 +187,17 @@
             <path>
               <item name="python" type="b2602c69:ProjectViewProjectNode" />
               <item name="python" type="462c0819:PsiDirectoryNode" />
-              <item name="animations" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="python" type="b2602c69:ProjectViewProjectNode" />
-              <item name="python" type="462c0819:PsiDirectoryNode" />
-              <item name="animations" type="462c0819:PsiDirectoryNode" />
-              <item name="manifolds" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="python" type="b2602c69:ProjectViewProjectNode" />
-              <item name="python" type="462c0819:PsiDirectoryNode" />
-              <item name="animations" type="462c0819:PsiDirectoryNode" />
-              <item name="orbits" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="python" type="b2602c69:ProjectViewProjectNode" />
-              <item name="python" type="462c0819:PsiDirectoryNode" />
-              <item name="animations" type="462c0819:PsiDirectoryNode" />
-              <item name="reference_frame" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="python" type="b2602c69:ProjectViewProjectNode" />
-              <item name="python" type="462c0819:PsiDirectoryNode" />
-              <item name="phase_1" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="python" type="b2602c69:ProjectViewProjectNode" />
-              <item name="python" type="462c0819:PsiDirectoryNode" />
               <item name="phase_2" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="python" type="b2602c69:ProjectViewProjectNode" />
-              <item name="python" type="462c0819:PsiDirectoryNode" />
-              <item name="util" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="python" type="b2602c69:ProjectViewProjectNode" />
               <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-            </path>
-            <path>
-              <item name="python" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="&lt; Python 3.5.2 (~/anaconda/bin/python.app) &gt;" type="70bed36:NamedLibraryElementNode" />
-            </path>
-            <path>
-              <item name="python" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="&lt; Python 3.5.2 (~/anaconda/bin/python.app) &gt;" type="70bed36:NamedLibraryElementNode" />
-              <item name="python3.5" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="python" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="&lt; Python 3.5.2 (~/anaconda/bin/python.app) &gt;" type="70bed36:NamedLibraryElementNode" />
-              <item name="site-packages" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="python" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="&lt; Python 3.5.2 (~/anaconda/bin/python.app) &gt;" type="70bed36:NamedLibraryElementNode" />
-              <item name="site-packages" type="462c0819:PsiDirectoryNode" />
-              <item name="matplotlib" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -265,19 +208,19 @@
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$2/Languages" value="TEXT" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/scratch" />
-      <recent name="$PROJECT_DIR$/util" />
-      <recent name="$PROJECT_DIR$/animation/manifold" />
-      <recent name="$PROJECT_DIR$/poincare" />
-      <recent name="$PROJECT_DIR$" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/animations/manifolds" />
       <recent name="$PROJECT_DIR$/animations/orbits" />
       <recent name="$PROJECT_DIR$/animations/reference_frame" />
       <recent name="$PROJECT_DIR$/util" />
       <recent name="$PROJECT_DIR$/animation/manifold" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/scratch" />
+      <recent name="$PROJECT_DIR$/util" />
+      <recent name="$PROJECT_DIR$/animation/manifold" />
+      <recent name="$PROJECT_DIR$/poincare" />
+      <recent name="$PROJECT_DIR$" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -292,7 +235,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.spatial_rotating_reference_frame_animation">
+  <component name="RunManager" selected="Python.manifold_verification_and_validation">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -467,8 +410,8 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.spatial_rotating_reference_frame_animation" />
-        <item index="1" class="java.lang.String" itemvalue="Python.manifold_verification_and_validation" />
+        <item index="0" class="java.lang.String" itemvalue="Python.manifold_verification_and_validation" />
+        <item index="1" class="java.lang.String" itemvalue="Python.spatial_rotating_reference_frame_animation" />
         <item index="2" class="java.lang.String" itemvalue="Python.spatial_orbits_rotating_no_axes_animation" />
         <item index="3" class="java.lang.String" itemvalue="Python.spatial_manifolds_rotating_animation" />
         <item index="4" class="java.lang.String" itemvalue="Python.spatial_manifolds_animation" />
@@ -504,12 +447,12 @@
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24151857" sideWeight="0.464" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25767368" sideWeight="0.464" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32876712" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35900962" sideWeight="0.5056543" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30536452" sideWeight="0.50080776" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.09628611" sideWeight="0.5121163" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3397524" sideWeight="0.50080776" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3287483" sideWeight="0.49434572" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3287483" sideWeight="0.4878837" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32876712" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32737276" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -534,18 +477,11 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="10" />
+      <option name="time" value="11" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/anaconda/lib/python3.5/site-packages/mpl_toolkits/axes_grid1/axes_grid.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="260">
-          <caret line="86" column="30" lean-forward="false" selection-start-line="86" selection-start-column="30" selection-end-line="86" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/anaconda/lib/python3.5/site-packages/distributed/client.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-569">
@@ -644,13 +580,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scratch/animate_3d_zoom_close.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="690">
-          <caret line="46" column="32" lean-forward="false" selection-start-line="46" selection-start-column="27" selection-end-line="46" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/animations/manifolds/planar_manifolds_animation.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="174">
@@ -673,13 +602,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/animations/manifolds/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -764,27 +686,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/phase_2/manifold_verification_and_validation.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1813">
-          <caret line="5" column="31" lean-forward="true" selection-start-line="5" selection-start-column="31" selection-end-line="5" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/animations/orbits/spatial_orbits_zoom_animation.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="433">
-          <caret line="138" column="8" lean-forward="false" selection-start-line="138" selection-start-column="8" selection-end-line="138" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/animations/orbits/execute_all_orbit_animations.sh" />
     <entry file="file://$PROJECT_DIR$/animations/orbits/spatial_orbits_animation.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -794,34 +695,10 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/animations/manifolds/execute_all_manifold_animations.sh" />
-    <entry file="file://$PROJECT_DIR$/animations/manifolds/planar_manifolds_animation.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2453">
-          <caret line="213" column="30" lean-forward="false" selection-start-line="213" selection-start-column="30" selection-end-line="213" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/animations/manifolds/spatial_manifolds_animation.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1961">
-          <caret line="6" column="16" lean-forward="true" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="39" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/anaconda/lib/python3.5/site-packages/matplotlib/colors.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="159">
           <caret line="495" column="0" lean-forward="false" selection-start-line="495" selection-start-column="0" selection-end-line="495" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util/load_data.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="215">
-          <caret line="105" column="15" lean-forward="false" selection-start-line="102" selection-start-column="0" selection-end-line="111" selection-end-column="12" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -829,7 +706,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="202">
           <caret line="526" column="91" lean-forward="true" selection-start-line="525" selection-start-column="8" selection-end-line="526" selection-end-column="91" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -837,7 +713,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="282">
           <caret line="48" column="0" lean-forward="true" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -845,23 +720,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="355">
           <caret line="64" column="80" lean-forward="false" selection-start-line="64" selection-start-column="80" selection-end-line="64" selection-end-column="80" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/animations/manifolds/spatial_manifolds_rotating_no_axes_animation.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="322">
-          <caret line="64" column="80" lean-forward="false" selection-start-line="64" selection-start-column="80" selection-end-line="64" selection-end-column="80" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/animations/orbits/spatial_orbits_rotating_animation.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="337">
-          <caret line="59" column="80" lean-forward="false" selection-start-line="59" selection-start-column="80" selection-end-line="59" selection-end-column="80" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -869,24 +727,100 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="208">
           <caret line="59" column="80" lean-forward="false" selection-start-line="59" selection-start-column="80" selection-end-line="59" selection-end-column="80" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/animations/reference_frame/planar_reference_frame_animation.py">
+    <entry file="file://$PROJECT_DIR$/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="438">
-          <caret line="86" column="0" lean-forward="false" selection-start-line="86" selection-start-column="0" selection-end-line="90" selection-end-column="43" />
-          <folding />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/animations/reference_frame/planar_rotating_reference_frame_animation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="98" column="16" lean-forward="true" selection-start-line="98" selection-start-column="16" selection-end-line="98" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/animations/manifolds/planar_manifolds_animation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1286">
+          <caret line="213" column="30" lean-forward="false" selection-start-line="213" selection-start-column="30" selection-end-line="213" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/animations/manifolds/spatial_manifolds_animation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="6" column="16" lean-forward="true" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scratch/animate_3d_zoom_close.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="9" lean-forward="true" selection-start-line="0" selection-start-column="9" selection-end-line="0" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/animations/manifolds/spatial_manifolds_rotating_no_axes_animation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="322">
+          <caret line="64" column="80" lean-forward="false" selection-start-line="64" selection-start-column="80" selection-end-line="64" selection-end-column="80" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/animations/orbits/spatial_orbits_rotating_animation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="519">
+          <caret line="105" column="93" lean-forward="true" selection-start-line="105" selection-start-column="12" selection-end-line="105" selection-end-column="93" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/animations/orbits/spatial_orbits_zoom_animation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-956">
+          <caret line="82" column="10" lean-forward="false" selection-start-line="82" selection-start-column="8" selection-end-line="82" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/animations/manifolds/spatial_manifolds_zoom_animation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="157">
+          <caret line="219" column="0" lean-forward="false" selection-start-line="219" selection-start-column="0" selection-end-line="219" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/animations/reference_frame/spatial_rotating_reference_frame_animation.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="383">
-          <caret line="171" column="89" lean-forward="false" selection-start-line="171" selection-start-column="89" selection-end-line="171" selection-end-column="89" />
+        <state relative-caret-position="90">
+          <caret line="6" column="11" lean-forward="true" selection-start-line="4" selection-start-column="0" selection-end-line="20" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/util/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/util/load_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1815">
+          <caret line="122" column="31" lean-forward="false" selection-start-line="122" selection-start-column="31" selection-end-line="122" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/phase_2/manifold_verification_and_validation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="299">
+          <caret line="953" column="0" lean-forward="true" selection-start-line="953" selection-start-column="0" selection-end-line="953" selection-end-column="0" />
           <folding>
-            <element signature="e#0#10#0" expanded="true" />
+            <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
