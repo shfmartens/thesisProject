@@ -25,24 +25,33 @@ Eigen::VectorXd writePeriodicOrbitToFile( Eigen::VectorXd initialStateVector, in
 
 //    remove(("../data/raw/L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + ".txt").c_str());
 //    std::ofstream textFileOrbit(("../data/raw/L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + ".txt").c_str());
-    const char* fileNameString;
+    std::string fileNameString;
+
+
+    std::ofstream textFileOrbit_test( "testFile.dat" );
+    std::cout<<"TEST STREAM IS OPEN "<<textFileOrbit_test.is_open( )<<std::endl;
+
+    std::ofstream textFileOrbit_test2( "../data/raw/orbits/testFile.dat" );
+    std::cout<<"TEST STREAM 2 IS OPEN "<<textFileOrbit_test2.is_open( )<<std::endl;
 
     // Prepare output file
     if (saveEveryNthIntegrationStep != 1000){
         if (completeInitialConditionsHaloFamily == false){
-            fileNameString = ("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + "_" + std::to_string(saveEveryNthIntegrationStep) + ".txt").c_str();
+            fileNameString = ("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + "_" + std::to_string(saveEveryNthIntegrationStep) + ".txt");
         } else {
-            fileNameString = ("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + orbitType + "_n_" + std::to_string(orbitId) + "_" + std::to_string(saveEveryNthIntegrationStep) + ".txt").c_str();
+            fileNameString = ("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + orbitType + "_n_" + std::to_string(orbitId) + "_" + std::to_string(saveEveryNthIntegrationStep) + ".txt");
         }
     } else {
         if (completeInitialConditionsHaloFamily == false){
-            fileNameString = ("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + ".txt").c_str();
+            fileNameString = ("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + ".txt");
         } else {
-            fileNameString = ("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + orbitType + "_n_" + std::to_string(orbitId) + ".txt").c_str();
+            fileNameString = ("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + orbitType + "_n_" + std::to_string(orbitId) + ".txt");
         }
     }
-    remove(fileNameString);
+    //remove(fileNameString);
     std::ofstream textFileOrbit(fileNameString);
+
+    std::cout<<"REAL STREAM IS OPEN "<<textFileOrbit.is_open( )<<std::endl;
 
     textFileOrbit.precision(std::numeric_limits<double>::digits10);
 

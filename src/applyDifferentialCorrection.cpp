@@ -145,8 +145,8 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
                   << "velocityDeviationFromPeriodicOrbit: " << velocityDeviationFromPeriodicOrbit << "\n" << std::endl;
     }
 
-    double jacobiEnergyHalfPeriod       = tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, halfPeriodState.segment(0,6));
-    double jacobiEnergyInitialCondition = tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, initialStateVectorInclSTM.segment(0,6));
+    double jacobiEnergyHalfPeriod       = tudat::gravitation::computeJacobiEnergy(massParameter, halfPeriodState.segment(0,6));
+    double jacobiEnergyInitialCondition = tudat::gravitation::computeJacobiEnergy(massParameter, initialStateVectorInclSTM.segment(0,6));
 
     std::cout << "\nCorrected initial state vector:" << std::endl << initialStateVectorInclSTM.segment(0,6)        << std::endl
               << "\nwith orbital period: "           << orbitalPeriod                                              << std::endl

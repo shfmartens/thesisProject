@@ -77,7 +77,7 @@ void createInitialConditions( int librationPointNr, std::string orbitType,
 //    computeManifolds( initialStateVector, orbitalPeriod, librationPointNr, orbitType, 0);
 
     // Save number of iterations, jacobi energy, time of integration and the half period state vector
-    jacobiEnergyHalfPeriod       = tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, differentialCorrectionResult.segment(7,6));
+    jacobiEnergyHalfPeriod       = tudat::gravitation::computeJacobiEnergy(massParameter, differentialCorrectionResult.segment(7,6));
 
     tempDifferentialCorrection.clear();
     tempDifferentialCorrection.push_back( differentialCorrectionResult(14) );  // numberOfIterations
@@ -95,7 +95,7 @@ void createInitialConditions( int librationPointNr, std::string orbitType,
     tempInitialCondition.clear();
 
     // Add Jacobi energy and orbital period
-    jacobiEnergy = tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, stateVectorInclSTM.segment(0,6));
+    jacobiEnergy = tudat::gravitation::computeJacobiEnergy(massParameter, stateVectorInclSTM.segment(0,6));
     tempInitialCondition.push_back(jacobiEnergy);
     tempInitialCondition.push_back(orbitalPeriod);
 
@@ -143,7 +143,7 @@ void createInitialConditions( int librationPointNr, std::string orbitType,
     orbitalPeriod                = differentialCorrectionResult(6);
 
     // Save number of iterations, jacobi energy, time of integration and the half period state vector
-    jacobiEnergyHalfPeriod       = tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, differentialCorrectionResult.segment(7,6));
+    jacobiEnergyHalfPeriod       = tudat::gravitation::computeJacobiEnergy(massParameter, differentialCorrectionResult.segment(7,6));
 
     tempDifferentialCorrection.clear();
     tempDifferentialCorrection.push_back( differentialCorrectionResult(14) );  // numberOfIterations
@@ -161,7 +161,7 @@ void createInitialConditions( int librationPointNr, std::string orbitType,
     tempInitialCondition.clear();
 
     // Add Jacobi energy and orbital period
-    jacobiEnergy = tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, stateVectorInclSTM.segment(0,6));
+    jacobiEnergy = tudat::gravitation::computeJacobiEnergy(massParameter, stateVectorInclSTM.segment(0,6));
     tempInitialCondition.push_back(jacobiEnergy);
     tempInitialCondition.push_back(orbitalPeriod);
 
@@ -219,7 +219,7 @@ void createInitialConditions( int librationPointNr, std::string orbitType,
         orbitalPeriod                = differentialCorrectionResult(6);
 
         // Save number of iterations, jacobi energy, time of integration and the half period state vector
-        jacobiEnergyHalfPeriod       = tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, differentialCorrectionResult.segment(7,6));
+        jacobiEnergyHalfPeriod       = tudat::gravitation::computeJacobiEnergy(massParameter, differentialCorrectionResult.segment(7,6));
 
         tempDifferentialCorrection.clear();
         tempDifferentialCorrection.push_back( differentialCorrectionResult(14) );  // numberOfIterations
@@ -245,7 +245,7 @@ void createInitialConditions( int librationPointNr, std::string orbitType,
         tempInitialCondition.clear();
 
         // Add Jacobi energy and orbital period
-        jacobiEnergy = tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, initialStateVector);
+        jacobiEnergy = tudat::gravitation::computeJacobiEnergy(massParameter, initialStateVector);
         tempInitialCondition.push_back(jacobiEnergy);
         tempInitialCondition.push_back(orbitalPeriod);
 
@@ -266,13 +266,13 @@ void createInitialConditions( int librationPointNr, std::string orbitType,
     // Prepare file for initial conditions
     remove(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + orbitType + "_initial_conditions.txt").c_str());
     std::ofstream textFileInitialConditions;
-    textFileInitialConditions.open(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + orbitType + "_initial_conditions.txt").c_str());
+    textFileInitialConditions.open(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + orbitType + "_initial_conditions.txt"));
     textFileInitialConditions.precision(std::numeric_limits<double>::digits10);
 
     // Prepare file for differential correction
     remove(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + orbitType + "_differential_correction.txt").c_str());
     std::ofstream textFileDifferentialCorrection;
-    textFileDifferentialCorrection.open(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + orbitType + "_differential_correction.txt").c_str());
+    textFileDifferentialCorrection.open(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + orbitType + "_differential_correction.txt"));
     textFileDifferentialCorrection.precision(std::numeric_limits<double>::digits10);
 
     // Write initial conditions to file

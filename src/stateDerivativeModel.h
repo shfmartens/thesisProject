@@ -4,7 +4,7 @@
 
 
 
-#include "Tudat/Astrodynamics/Gravitation/stateDerivativeCircularRestrictedThreeBodyProblem.h"
+#include "Tudat/Astrodynamics/Propagators/stateDerivativeCircularRestrictedThreeBodyProblem.h"
 
 #include "stateDerivativeModel.cpp"
 

@@ -46,7 +46,7 @@ void completeInitialConditionsHaloFamily( Eigen::VectorXd initialStateVector1, E
 
     // Define massParameter
     massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( primaryGravitationalParameter, secondaryGravitationalParameter );
-    jacobiEnergy  = tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, initialStateVector1);
+    jacobiEnergy  = tudat::gravitation::computeJacobiEnergy(massParameter, initialStateVector1);
 
     // Correct state vector
     differentialCorrectionResult = applyDifferentialCorrection( librationPointNr, "halo", initialStateVector1, orbitalPeriod1, massParameter, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit);
@@ -54,7 +54,7 @@ void completeInitialConditionsHaloFamily( Eigen::VectorXd initialStateVector1, E
     orbitalPeriod                = differentialCorrectionResult(6);
 
     // Save number of iterations, jacobi energy, time of integration and the half period state vector
-    jacobiEnergyHalfPeriod       = tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, differentialCorrectionResult.segment(7,6));
+    jacobiEnergyHalfPeriod       = tudat::gravitation::computeJacobiEnergy(massParameter, differentialCorrectionResult.segment(7,6));
 
     tempDifferentialCorrection.clear();
     tempDifferentialCorrection.push_back( differentialCorrectionResult(14) );  // numberOfIterations
@@ -88,7 +88,7 @@ void completeInitialConditionsHaloFamily( Eigen::VectorXd initialStateVector1, E
     initialConditions.push_back(tempInitialCondition);
 
     // Define second state vector
-    jacobiEnergy  = tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, initialStateVector2);
+    jacobiEnergy  = tudat::gravitation::computeJacobiEnergy(massParameter, initialStateVector2);
 
     // Correct state vector
     differentialCorrectionResult = applyDifferentialCorrection( librationPointNr, "halo", initialStateVector2, orbitalPeriod2, massParameter, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit);
@@ -96,7 +96,7 @@ void completeInitialConditionsHaloFamily( Eigen::VectorXd initialStateVector1, E
     orbitalPeriod                = differentialCorrectionResult(6);
 
     // Save number of iterations, jacobi energy, time of integration and the half period state vector
-    jacobiEnergyHalfPeriod       = tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, differentialCorrectionResult.segment(7,6));
+    jacobiEnergyHalfPeriod       = tudat::gravitation::computeJacobiEnergy(massParameter, differentialCorrectionResult.segment(7,6));
 
     tempDifferentialCorrection.clear();
     tempDifferentialCorrection.push_back( differentialCorrectionResult(14) );  // numberOfIterations
@@ -176,7 +176,7 @@ void completeInitialConditionsHaloFamily( Eigen::VectorXd initialStateVector1, E
         }
 
         // Save number of iterations, jacobi energy, time of integration and the half period state vector
-        jacobiEnergyHalfPeriod       = tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, differentialCorrectionResult.segment(7,6));
+        jacobiEnergyHalfPeriod       = tudat::gravitation::computeJacobiEnergy(massParameter, differentialCorrectionResult.segment(7,6));
 
         tempDifferentialCorrection.clear();
         tempDifferentialCorrection.push_back( differentialCorrectionResult(14) );  // numberOfIterations
@@ -197,7 +197,7 @@ void completeInitialConditionsHaloFamily( Eigen::VectorXd initialStateVector1, E
         tempInitialCondition.clear();
 
         // Add Jacobi energy and orbital period
-        jacobiEnergy = tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, initialStateVector);
+        jacobiEnergy = tudat::gravitation::computeJacobiEnergy(massParameter, initialStateVector);
         tempInitialCondition.push_back(jacobiEnergy);
         tempInitialCondition.push_back(orbitalPeriod);
 
@@ -218,13 +218,13 @@ void completeInitialConditionsHaloFamily( Eigen::VectorXd initialStateVector1, E
     // Prepare file for initial conditions
     remove(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_halo_n_initial_conditions.txt").c_str());
     std::ofstream textFileInitialConditions;
-    textFileInitialConditions.open(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_halo_n_initial_conditions.txt").c_str());
+    textFileInitialConditions.open(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_halo_n_initial_conditions.txt"));
     textFileInitialConditions.precision(std::numeric_limits<double>::digits10);
 
     // Prepare file for differential correction
-    remove(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_halo_n_differential_correction.txt").c_str());
+    remove(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_halo_n_differential_correction.txt").c_str( ));
     std::ofstream textFileDifferentialCorrection;
-    textFileDifferentialCorrection.open(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_halo_n_differential_correction.txt").c_str());
+    textFileDifferentialCorrection.open(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_halo_n_differential_correction.txt"));
     textFileDifferentialCorrection.precision(std::numeric_limits<double>::digits10);
 
     // Write initial conditions to file

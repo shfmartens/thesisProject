@@ -12,8 +12,8 @@
 #include <boost/property_tree/json_parser.hpp>
 
 #include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
-#include "thesisProject/src/propagateOrbit.h"
-#include "thesisProject/src/computeDifferentialCorrection.h"
+#include "propagateOrbit.h"
+#include "computeDifferentialCorrection.h"
 
 
 
@@ -30,7 +30,7 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
 
     // Define massParameter, initialStateVector and halfPeriodStateVector.
     massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( primaryGravitationalParameter, secondaryGravitationalParameter );
-    double jacobiEnergy = tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, initialStateVector);
+    double jacobiEnergy = tudat::gravitation::computeJacobiEnergy(massParameter, initialStateVector);
 
     Eigen::VectorXd initialStateVectorInclSTM = Eigen::VectorXd::Zero(42);
     initialStateVectorInclSTM.segment(0,6) = initialStateVector;
@@ -197,17 +197,17 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
 
         std::ofstream textFileStateVectors;
         remove(("../data/raw/manifolds/" + fileNameStateVector).c_str());
-        textFileStateVectors.open(("../data/raw/manifolds/" + fileNameStateVector).c_str());
+        textFileStateVectors.open(("../data/raw/manifolds/" + fileNameStateVector));
         textFileStateVectors.precision(14);
 
         std::ofstream textFileEigenvectors;
         remove(("../data/raw/manifolds/" + fileNameEigenvector).c_str());
-        textFileEigenvectors.open(("../data/raw/manifolds/" + fileNameEigenvector).c_str());
+        textFileEigenvectors.open(("../data/raw/manifolds/" + fileNameEigenvector));
         textFileEigenvectors.precision(14);
 
         std::ofstream textFileEigenvectorLocations;
         remove(("../data/raw/manifolds/" + fileNameEigenvectorLocation).c_str());
-        textFileEigenvectorLocations.open(("../data/raw/manifolds/" + fileNameEigenvectorLocation).c_str());
+        textFileEigenvectorLocations.open(("../data/raw/manifolds/" + fileNameEigenvectorLocation));
         textFileEigenvectorLocations.precision(14);
 
         bool fullManifoldComputed = false;
@@ -426,7 +426,7 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
               << "                          "   << orbitId        << "                        " << std::endl
               << "Mass parameter: "             << massParameter                                << std::endl
               << "C at initial conditions: "    << jacobiEnergy                                 << std::endl
-              << "C at end of manifold orbit: " << tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, stateVectorInclSTM.segment(0,6)) << std::endl
+              << "C at end of manifold orbit: " << tudat::gravitation::computeJacobiEnergy(massParameter, stateVectorInclSTM.segment(0,6)) << std::endl
               << "T: " << orbitalPeriod                                                         << std::endl
               << "=================================================================="           << std::endl;
     return;

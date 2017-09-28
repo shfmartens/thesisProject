@@ -21,27 +21,38 @@ Eigen::VectorXd computeStateDerivative( const double time, const Eigen::VectorXd
     stateDerivative(1) = cartesianState(4);
     stateDerivative(2) = cartesianState(5);
 
+    double xPositionScaledSquared = (cartesianState(0)+massParameter) * (cartesianState(0)+massParameter);
+    double xPositionScaledSquared2 = (1.0-massParameter-cartesianState(0)) * (1.0-massParameter-cartesianState(0));
+    double yPositionScaledSquared = (cartesianState(1) * cartesianState(1) );
+    double zPositionScaledSquared = (cartesianState(2) * cartesianState(2) );
+
     // Compute distances to primaries.
-    double distanceToPrimaryBody   = sqrt(pow((cartesianState(0)+massParameter),2.0)     + pow(cartesianState(1),2.0) + pow(cartesianState(2),2.0));
-    double distanceToSecondaryBody = sqrt(pow((1.0-massParameter-cartesianState(0)),2.0) + pow(cartesianState(1),2.0) + pow(cartesianState(2),2.0));
+    double distanceToPrimaryBody   = sqrt(xPositionScaledSquared     + yPositionScaledSquared + zPositionScaledSquared);
+    double distanceToSecondaryBody = sqrt(xPositionScaledSquared2 + yPositionScaledSquared + zPositionScaledSquared);
+
+    double distanceToPrimaryCubed = distanceToPrimaryBody * distanceToPrimaryBody * distanceToPrimaryBody;
+    double distanceToSecondaryCubed = distanceToSecondaryBody * distanceToSecondaryBody * distanceToSecondaryBody;
+
+    double distanceToPrimaryToFifthPower = distanceToPrimaryCubed * distanceToPrimaryBody * distanceToPrimaryBody;
+    double distanceToSecondaryToFifthPower = distanceToSecondaryCubed * distanceToSecondaryBody * distanceToSecondaryBody;
 
     // Set the derivative of the velocities to the accelerations.
-    double termRelatedToPrimaryBody   = (1.0-massParameter)/pow(distanceToPrimaryBody,3.0);
-    double termRelatedToSecondaryBody = massParameter      /pow(distanceToSecondaryBody,3.0);
+    double termRelatedToPrimaryBody   = (1.0-massParameter)/distanceToPrimaryCubed;
+    double termRelatedToSecondaryBody = massParameter      /distanceToSecondaryCubed;
     stateDerivative(3) = -termRelatedToPrimaryBody*(massParameter+cartesianState(0)) + termRelatedToSecondaryBody*(1.0-massParameter-cartesianState(0)) + cartesianState(0) + 2.0*cartesianState(4);
     stateDerivative(4) = -termRelatedToPrimaryBody*cartesianState(1)                 - termRelatedToSecondaryBody*cartesianState(1)                     + cartesianState(1) - 2.0*cartesianState(3);
     stateDerivative(5) = -termRelatedToPrimaryBody*cartesianState(2)                 - termRelatedToSecondaryBody*cartesianState(2);
 
     // Compute partial derivatives of the potential.
-    double Uxx = (3.0*(1.0-massParameter)*pow(cartesianState(0)+massParameter, 2.0)          )/pow(distanceToPrimaryBody,5.0) + (3.0*massParameter*pow(1.0-massParameter-cartesianState(0),2.0)           )/pow(distanceToSecondaryBody,5.0) - (1.0-massParameter)/pow(distanceToPrimaryBody,3.0) - massParameter/pow(distanceToSecondaryBody,3.0) + 1.0;
-    double Uxy = (3.0*(1.0-massParameter)*(cartesianState(0)+massParameter)*cartesianState(1))/pow(distanceToPrimaryBody,5.0) - (3.0*massParameter*(1.0-massParameter-cartesianState(0))*cartesianState(1))/pow(distanceToSecondaryBody,5.0);
-    double Uxz = (3.0*(1.0-massParameter)*(cartesianState(0)+massParameter)*cartesianState(2))/pow(distanceToPrimaryBody,5.0) - (3.0*massParameter*(1.0-massParameter-cartesianState(0))*cartesianState(2))/pow(distanceToSecondaryBody,5.0);
+    double Uxx = (3.0*(1.0-massParameter)*xPositionScaledSquared          )/distanceToPrimaryToFifthPower+ (3.0*massParameter*xPositionScaledSquared2           )/distanceToSecondaryToFifthPower - (1.0-massParameter)/distanceToPrimaryCubed - massParameter/distanceToSecondaryCubed + 1.0;
+    double Uxy = (3.0*(1.0-massParameter)*(cartesianState(0)+massParameter)*cartesianState(1))/distanceToPrimaryToFifthPower- (3.0*massParameter*(1.0-massParameter-cartesianState(0))*cartesianState(1))/distanceToSecondaryToFifthPower;
+    double Uxz = (3.0*(1.0-massParameter)*(cartesianState(0)+massParameter)*cartesianState(2))/distanceToPrimaryToFifthPower- (3.0*massParameter*(1.0-massParameter-cartesianState(0))*cartesianState(2))/distanceToSecondaryToFifthPower;
     double Uyx = Uxy;
-    double Uyy = (3.0*(1.0-massParameter)*pow(cartesianState(1),2.0)                         )/pow(distanceToPrimaryBody,5.0) + (3.0*massParameter*pow(cartesianState(1),2.0)                             )/pow(distanceToSecondaryBody,5.0) - (1.0-massParameter)/pow(distanceToPrimaryBody,3.0) - massParameter/pow(distanceToSecondaryBody,3.0) + 1.0 ;
-    double Uyz = (3.0*(1.0-massParameter)*cartesianState(1)*cartesianState(2)                )/pow(distanceToPrimaryBody,5.0) + (3.0*massParameter*cartesianState(1)*cartesianState(2)                    )/pow(distanceToSecondaryBody,5.0);
+    double Uyy = (3.0*(1.0-massParameter)*yPositionScaledSquared                         )/distanceToPrimaryToFifthPower+ (3.0*massParameter*yPositionScaledSquared                             )/distanceToSecondaryToFifthPower - (1.0-massParameter)/distanceToPrimaryCubed - massParameter/distanceToSecondaryCubed + 1.0 ;
+    double Uyz = (3.0*(1.0-massParameter)*cartesianState(1)*cartesianState(2)                )/distanceToPrimaryToFifthPower+ (3.0*massParameter*cartesianState(1)*cartesianState(2)                    )/distanceToSecondaryToFifthPower;
     double Uzx = Uxz;
     double Uzy = Uyz;
-    double Uzz = (3.0*(1.0-massParameter)*pow(cartesianState(2),2.0)                         )/pow(distanceToPrimaryBody,5.0) + (3.0*massParameter*pow(cartesianState(2),2.0)                             )/pow(distanceToSecondaryBody,5.0) - (1.0-massParameter)/pow(distanceToPrimaryBody,3.0) - massParameter/pow(distanceToSecondaryBody,3.0) ;
+    double Uzz = (3.0*(1.0-massParameter)*zPositionScaledSquared                         )/distanceToPrimaryToFifthPower+ (3.0*massParameter*zPositionScaledSquared                             )/distanceToSecondaryToFifthPower - (1.0-massParameter)/distanceToPrimaryCubed - massParameter/distanceToSecondaryCubed ;
 
 
     // Create the STM-derivative matrix
