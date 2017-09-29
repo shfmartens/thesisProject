@@ -23,34 +23,34 @@ double massParameter = tudat::gravitation::circular_restricted_three_body_proble
 
 int main (){
 
-    // ================================
+    // ================================0
     // == Compute initial conditions ==
     // ================================
 
-//    #pragma omp parallel num_threads(6)
-//    {
-//        #pragma omp for
-//        for (unsigned int i=1; i<=6; i++) {
-//            if (i ==1){
-//                createInitialConditions(1, "horizontal");
-//            }
-//            if (i ==2){
-//                createInitialConditions(2, "horizontal");
-//            }
-//            if (i ==3){
-//                createInitialConditions(1, "halo");
-//            }
-//            if (i ==4){
-//                createInitialConditions(2, "halo");
-//            }
-//            if (i ==5){
-//                createInitialConditions(1, "vertical");
-//            }
-//            if (i ==6){
-//                createInitialConditions(2, "vertical");
-//            }
-//        }
-//    }
+    #pragma omp parallel num_threads(6)
+    {
+        #pragma omp for
+        for (unsigned int i=1; i<=6; i++) {
+            if (i ==1){
+                createInitialConditions(1, "horizontal");
+            }
+            if (i ==2){
+                createInitialConditions(2, "horizontal");
+            }
+            if (i ==3){
+                createInitialConditions(1, "halo");
+            }
+            if (i ==4){
+                createInitialConditions(2, "halo");
+            }
+            if (i ==5){
+                createInitialConditions(1, "vertical");
+            }
+            if (i ==6){
+                createInitialConditions(2, "vertical");
+            }
+        }
+    }
 
 //    sleep( 10000.0 );
 

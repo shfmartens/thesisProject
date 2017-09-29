@@ -28,12 +28,6 @@ Eigen::VectorXd writePeriodicOrbitToFile( Eigen::VectorXd initialStateVector, in
     std::string fileNameString;
 
 
-    std::ofstream textFileOrbit_test( "testFile.dat" );
-    std::cout<<"TEST STREAM IS OPEN "<<textFileOrbit_test.is_open( )<<std::endl;
-
-    std::ofstream textFileOrbit_test2( "../data/raw/orbits/testFile.dat" );
-    std::cout<<"TEST STREAM 2 IS OPEN "<<textFileOrbit_test2.is_open( )<<std::endl;
-
     // Prepare output file
     if (saveEveryNthIntegrationStep != 1000){
         if (completeInitialConditionsHaloFamily == false){
