@@ -23,7 +23,9 @@ Eigen::VectorXd propagateOrbit( Eigen::VectorXd stateVectorInclSTM, double massP
     const double absoluteErrorTolerance = 1.0e-24;
 
     // Create integrator to be used for propagating.
-    tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd orbitIntegrator ( tudat::numerical_integrators::RungeKuttaCoefficients::get( tudat::numerical_integrators::RungeKuttaCoefficients::rungeKuttaFehlberg78 ), &computeStateDerivative, 0.0, stateVectorInclSTM, minimumStepSize, maximumStepSize, relativeErrorTolerance, absoluteErrorTolerance);
+    tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd orbitIntegrator (
+                tudat::numerical_integrators::RungeKuttaCoefficients::get( tudat::numerical_integrators::RungeKuttaCoefficients::rungeKuttaFehlberg78 ),
+                &computeStateDerivative, 0.0, stateVectorInclSTM, minimumStepSize, maximumStepSize, relativeErrorTolerance, absoluteErrorTolerance);
 
     if (direction > 0) {
         Eigen::VectorXd tempState = orbitIntegrator.performIntegrationStep(stepSize);
