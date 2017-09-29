@@ -43,8 +43,9 @@ void appendDifferentialCorrectionResultsVector(
     tempDifferentialCorrection( 1 ) = jacobiEnergyHalfPeriod;  // jacobiEnergyHalfPeriod
     tempDifferentialCorrection( 2 ) = differentialCorrectionResult(13);  // currentTime
     for (int i = 7; i <= 12; i++){
-        tempDifferentialCorrection( i + 6 ) = differentialCorrectionResult( i );  // halfPeriodStateVector
+        tempDifferentialCorrection( i - 4 ) = differentialCorrectionResult( i );  // halfPeriodStateVector
     }
+
     differentialCorrections.push_back(tempDifferentialCorrection);
 
 }
