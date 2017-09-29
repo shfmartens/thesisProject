@@ -8,20 +8,19 @@
 
 
 Eigen::VectorXd computeDifferentialCorrection( int librationPointNr, std::string orbitType,
-                                               Eigen::VectorXd cartesianState, bool xPositionFixed = false)
+                                               Eigen::MatrixXd cartesianStateWithStm, bool xPositionFixed = false)
 {
     // Initiate vectors, matrices etc.
+    Eigen::VectorXd cartesianState = cartesianStateWithStm.block( 0, 0, 6, 1 );
+    Eigen::MatrixXd stmPartOfStateVectorInMatrixForm = cartesianStateWithStm.block( 0, 1, 6, 6 );
+
     Eigen::VectorXd differentialCorrection(7);
     Eigen::VectorXd corrections(3);
     Eigen::MatrixXd updateMatrix(3,3);
     Eigen::MatrixXd multiplicationMatrix(3,1);
 
     // Compute the accelerations and velocities (in X- and Z-direction) on the spacecraft and put them in a 2x1 vector.
-    Eigen::VectorXd cartesianAccelerations = computeStateDerivative(0.0, cartesianState);
-
-    // Reshape the state vector to matrix form.
-    Eigen::VectorXd stmPartOfStateVector                         = cartesianState.segment(6,36);
-    Eigen::Map<Eigen::MatrixXd> stmPartOfStateVectorInMatrixForm = Eigen::Map<Eigen::MatrixXd>(stmPartOfStateVector.data(),6,6);
+    Eigen::VectorXd cartesianAccelerations = computeStateDerivative(0.0, cartesianStateWithStm);
 
     // If type is axial, the desired state vector has the form [x, 0, 0, 0, ydot, zdot] and requires a differential correction for {x, ydot, T/2}
     if (orbitType == "axial") {

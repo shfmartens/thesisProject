@@ -13,7 +13,7 @@
 
 #include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
 #include "createInitialConditions.h"
-#include "computeManifolds.h"
+//#include "computeManifolds.h"
 #include "completeInitialConditionsHaloFamily.h"
 #include "createInitialConditionsAxialFamily.h"
 

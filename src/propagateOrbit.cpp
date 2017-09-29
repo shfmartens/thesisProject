@@ -10,12 +10,11 @@
 
 
 
-Eigen::VectorXd propagateOrbit( Eigen::VectorXd stateVectorInclSTM, double massParameter, double currentTime,
+std::pair< Eigen::MatrixXd, double > propagateOrbit( Eigen::MatrixXd stateVectorInclSTM, double massParameter, double currentTime,
                                 int direction, double initialStepSize = 1.0e-5, double maximumStepSize = 1.0e-4 )
 {
     // Declare variables
-    Eigen::VectorXd outputVector(43);
-    Eigen::VectorXd outputState = stateVectorInclSTM;
+    Eigen::MatrixXd outputState = stateVectorInclSTM;
     double stepSize = initialStepSize;
 
     double minimumStepSize   = std::numeric_limits<double>::epsilon( ); // 2.22044604925031e-16
@@ -23,19 +22,21 @@ Eigen::VectorXd propagateOrbit( Eigen::VectorXd stateVectorInclSTM, double massP
     const double absoluteErrorTolerance = 1.0e-24;
 
     // Create integrator to be used for propagating.
-    tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegratorXd orbitIntegrator (
+    tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegrator< double, Eigen::MatrixXd > orbitIntegrator (
                 tudat::numerical_integrators::RungeKuttaCoefficients::get( tudat::numerical_integrators::RungeKuttaCoefficients::rungeKuttaFehlberg78 ),
                 &computeStateDerivative, 0.0, stateVectorInclSTM, minimumStepSize, maximumStepSize, relativeErrorTolerance, absoluteErrorTolerance);
 
-    if (direction > 0) {
-        Eigen::VectorXd tempState = orbitIntegrator.performIntegrationStep(stepSize);
+    if (direction > 0)
+    {
+        Eigen::MatrixXd tempState = orbitIntegrator.performIntegrationStep(stepSize);
         stepSize                  = orbitIntegrator.getNextStepSize();
         orbitIntegrator.rollbackToPreviousState();
         outputState               = orbitIntegrator.performIntegrationStep(stepSize);
         currentTime              += orbitIntegrator.getCurrentIndependentVariable();
     }
-    else {
-        Eigen::VectorXd tempState = orbitIntegrator.performIntegrationStep(-stepSize);
+    else
+    {
+        Eigen::MatrixXd tempState = orbitIntegrator.performIntegrationStep(-stepSize);
         stepSize                  = orbitIntegrator.getNextStepSize();
         orbitIntegrator.rollbackToPreviousState();
         outputState               = orbitIntegrator.performIntegrationStep(stepSize);
@@ -43,9 +44,5 @@ Eigen::VectorXd propagateOrbit( Eigen::VectorXd stateVectorInclSTM, double massP
     }
 
     // Return the value of the state and the halfPeriod time.
-    outputVector.segment(0, 42) = outputState;
-    outputVector(42)            = currentTime;
-
-//    std::cout << stepSize << std::endl;
-    return outputVector;
+    return std::make_pair( outputState, currentTime );
 }

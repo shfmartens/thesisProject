@@ -11,7 +11,7 @@
 
 extern double massParameter;
 
-Eigen::VectorXd computeStateDerivative( const double time, const Eigen::VectorXd cartesianState );
+Eigen::MatrixXd computeStateDerivative( const double time, const Eigen::MatrixXd& cartesianState );
 
 
 

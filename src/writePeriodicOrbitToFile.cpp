@@ -15,13 +15,12 @@ Eigen::VectorXd writePeriodicOrbitToFile( Eigen::VectorXd initialStateVector, in
                                           int saveEveryNthIntegrationStep = 1000)
 {
     // Initialize output vector and STM
-    Eigen::VectorXd outputVector( 43 );
-    Eigen::VectorXd previousOutputVector( 43 );
-    Eigen::VectorXd initialStateVectorInclSTM = Eigen::VectorXd::Zero(42);
+    std::pair< Eigen::MatrixXd, double > outputVector;
+    std::pair< Eigen::MatrixXd, double > previousOutputVector;
+    Eigen::MatrixXd initialStateVectorInclSTM = Eigen::MatrixXd::Zero( 6, 7 );
     Eigen::MatrixXd identityMatrix            = Eigen::MatrixXd::Identity(6, 6);
-    identityMatrix.resize(36, 1);
-    initialStateVectorInclSTM.segment(0,6)  = initialStateVector;
-    initialStateVectorInclSTM.segment(6,36) = identityMatrix;
+    initialStateVectorInclSTM.block( 0, 0, 6, 1 )  = initialStateVector;
+    initialStateVectorInclSTM.block( 0, 1, 6, 6 ) = identityMatrix;
 
 //    remove(("../data/raw/L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + ".txt").c_str());
 //    std::ofstream textFileOrbit(("../data/raw/L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + ".txt").c_str());
@@ -57,8 +56,8 @@ Eigen::VectorXd writePeriodicOrbitToFile( Eigen::VectorXd initialStateVector, in
 
     // Perform first integration step
     outputVector                       = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.0, 1.0 );
-    Eigen::VectorXd stateVectorInclSTM = outputVector.segment(0,42);
-    double currentTime                 = outputVector(42);
+    Eigen::MatrixXd stateVectorInclSTM = outputVector.first;
+    double currentTime                 = outputVector.second;
 
     int count = 1;
 
@@ -68,23 +67,24 @@ Eigen::VectorXd writePeriodicOrbitToFile( Eigen::VectorXd initialStateVector, in
         double initialStepSize = pow(10,(static_cast<float>(-i)));
         double maximumStepSize = pow(10,(static_cast<float>(-i) + 1.0));
 
-        while (currentTime <= orbitalPeriod) {
-            stateVectorInclSTM      = outputVector.segment(0, 42);
-            currentTime             = outputVector(42);
+        while (currentTime <= orbitalPeriod)
+        {
+            stateVectorInclSTM      = outputVector.first;
+            currentTime             = outputVector.second;
             previousOutputVector    = outputVector;
 
             // Write every nth integration step to file.
             if (count % saveEveryNthIntegrationStep == 0) {
                 textFileOrbit << std::left << std::scientific << std::setw(25) << currentTime           << std::setw(25)
-                              << stateVectorInclSTM(0)        << std::setw(25) << stateVectorInclSTM(1) << std::setw(25)
-                              << stateVectorInclSTM(2)        << std::setw(25) << stateVectorInclSTM(3) << std::setw(25)
-                              << stateVectorInclSTM(4)        << std::setw(25) << stateVectorInclSTM(5) << std::endl;
+                              << stateVectorInclSTM(0, 0 )        << std::setw(25) << stateVectorInclSTM(1, 0 ) << std::setw(25)
+                              << stateVectorInclSTM(2, 0 )        << std::setw(25) << stateVectorInclSTM(3, 0 ) << std::setw(25)
+                              << stateVectorInclSTM(4, 0 )        << std::setw(25) << stateVectorInclSTM(5, 0 ) << std::endl;
             }
 
             // Propagate to next time step
             outputVector         = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, 1.0, initialStepSize, maximumStepSize);
 
-            if (outputVector(42) > orbitalPeriod) {
+            if (outputVector.second > orbitalPeriod) {
                 outputVector = previousOutputVector;
                 break;
             }
@@ -94,9 +94,9 @@ Eigen::VectorXd writePeriodicOrbitToFile( Eigen::VectorXd initialStateVector, in
 
     // Save last integration step
     textFileOrbit << std::left << std::scientific << std::setw(25) << currentTime           << std::setw(25)
-                  << stateVectorInclSTM(0)        << std::setw(25) << stateVectorInclSTM(1) << std::setw(25)
-                  << stateVectorInclSTM(2)        << std::setw(25) << stateVectorInclSTM(3) << std::setw(25)
-                  << stateVectorInclSTM(4)        << std::setw(25) << stateVectorInclSTM(5) << std::endl;
+                  << stateVectorInclSTM(0, 0 )        << std::setw(25) << stateVectorInclSTM(1, 0 ) << std::setw(25)
+                  << stateVectorInclSTM(2, 0 )        << std::setw(25) << stateVectorInclSTM(3, 0 ) << std::setw(25)
+                  << stateVectorInclSTM(4, 0 )        << std::setw(25) << stateVectorInclSTM(5, 0 ) << std::endl;
 
     // Close orbit file and clear the variable for the next orbit
     textFileOrbit.close();
