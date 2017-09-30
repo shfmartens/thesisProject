@@ -212,6 +212,35 @@ void writeFinalResultsToFiles( int librationPointNr, std::string orbitType,
                                        << differentialCorrections[i][8]  << std::setw(25) << std::endl;
     }
 }
+
+bool checkTermination( const std::vector< Eigen::VectorXd >& differentialCorrections,
+                       const Eigen::MatrixXd& stateVectorInclSTM,
+                       const double maxEigenvalueDeviation = 1.0e-3 )
+{
+    // Check termination condtions
+
+    bool continueNumericalContinuation = true;
+    if ( differentialCorrections.at( differentialCorrections.size( ) - 1 ) == Eigen::VectorXd::Zero( 15 ) )
+    {
+        continueNumericalContinuation = false;
+        std::cout << "\n\nNUMERICAL CONTINUATION STOPPED DUE TO EXCEEDING MAXIMUM NUMBER OF ITERATIONS\n\n" << std::endl;
+        break;
+    }
+
+    // Check eigenvalue condition (at least one pair equalling a real one)
+    // Exception for the horizontal Lyapunov family in Earth-Moon L2: eigenvalue may be of module one instead of a real one to compute a more extensive family
+    continueNumericalContinuation = false;
+    if ( ( librationPointNr == 2 ) && ( orbitType == "horizontal" ) )
+    {
+        continueNumericalContinuation = checkEigenvalues( stateVectorInclSTM, maxEigenvalueDeviation, true );
+    }
+    else
+    {
+        continueNumericalContinuation = checkEigenvalues( stateVectorInclSTM, maxEigenvalueDeviation, false );
+    }
+    return continueNumericalContinuation;
+}
+
 void createInitialConditions( int librationPointNr, std::string orbitType,
                               const double primaryGravitationalParameter = tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER,
                               const double secondaryGravitationalParameter = tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER,
@@ -274,27 +303,8 @@ void createInitialConditions( int librationPointNr, std::string orbitType,
                     librationPointNr, orbitType, massParameter, initialConditions, differentialCorrections,
                     maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
 
-        // Check termination condtions
-        {
-            if ( differentialCorrections.at( differentialCorrections.size( ) - 1 ) == Eigen::VectorXd::Zero( 15 ) )
-            {
-                continueNumericalContinuation = false;
-                std::cout << "\n\nNUMERICAL CONTINUATION STOPPED DUE TO EXCEEDING MAXIMUM NUMBER OF ITERATIONS\n\n" << std::endl;
-                break;
-            }
+        continueNumericalContinuation = checkTermination(differentialCorrections, stateVectorInclSTM, maxEigenvalueDeviation );
 
-            // Check eigenvalue condition (at least one pair equalling a real one)
-            // Exception for the horizontal Lyapunov family in Earth-Moon L2: eigenvalue may be of module one instead of a real one to compute a more extensive family
-            continueNumericalContinuation = false;
-            if ( ( librationPointNr == 2 ) && ( orbitType == "horizontal" ) )
-            {
-                continueNumericalContinuation = checkEigenvalues( stateVectorInclSTM, maxEigenvalueDeviation, true );
-            }
-            else
-            {
-                continueNumericalContinuation = checkEigenvalues( stateVectorInclSTM, maxEigenvalueDeviation, false );
-            }
-        }
         numberOfInitialConditions += 1;
     }
 
