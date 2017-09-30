@@ -1,7 +1,12 @@
 #include <boost/bind.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/test/floating_point_comparison.hpp>
+
 #include "Tudat/Mathematics/BasicMathematics/mathematicalConstants.h"
+#include "Tudat/Astrodynamics/BasicAstrodynamics/celestialBodyConstants.h"
+#include "Tudat/Astrodynamics/Gravitation/jacobiEnergy.h"
+#include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
+
 #include "Tudat/Mathematics/RootFinders/newtonRaphson.h"
 
 #include "functions/librationPointLocationFunction.h"
@@ -10,7 +15,7 @@
 #include "propagateOrbit.h"
 
 Eigen::VectorXd richardsonThirdOrderApproximation(std::string orbitType, int librationPointNr,
-                                                  double amplitude, double n = 1.0)
+                                                  double amplitude, double n )
 {
     std::cout << "\nCreate initial conditions:\n" << std::endl;
 
@@ -29,9 +34,10 @@ Eigen::VectorXd richardsonThirdOrderApproximation(std::string orbitType, int lib
     double Ax = 0.0;
     double Az = 0.0;
 
-    if (librationPointNr == 1){
+    if (librationPointNr == 1)
+    {
         // Create object containing the functions.
-        boost::shared_ptr< LibrationPointLocationFunction1 > LibrationPointLocationFunction = boost::make_shared< LibrationPointLocationFunction1 >( 1 );
+        boost::shared_ptr< LibrationPointLocationFunction1 > LibrationPointLocationFunction = boost::make_shared< LibrationPointLocationFunction1 >( 1, massParameter );
 
         // The termination condition.
         tudat::root_finders::NewtonRaphson::TerminationFunction terminationConditionFunction =
@@ -50,7 +56,7 @@ Eigen::VectorXd richardsonThirdOrderApproximation(std::string orbitType, int lib
         c4 = 1.0 / pow(gammaL, 3.0) * (pow(1.0,4.0) * massParameter + pow(-1.0,4.0) * (1.0 - massParameter) * pow(gammaL, 4.0+1.0) / pow((1.0 - gammaL), (4.0+1.0)));
     } else {
         // Create object containing the functions.
-        boost::shared_ptr< LibrationPointLocationFunction2 > LibrationPointLocationFunction = boost::make_shared< LibrationPointLocationFunction2 >( 1 );
+        boost::shared_ptr< LibrationPointLocationFunction2 > LibrationPointLocationFunction = boost::make_shared< LibrationPointLocationFunction2 >( 1, massParameter );
 
         // The termination condition.
         tudat::root_finders::NewtonRaphson::TerminationFunction terminationConditionFunction =

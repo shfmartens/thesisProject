@@ -12,6 +12,8 @@
 #include <boost/property_tree/json_parser.hpp>
 
 #include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
+#include "Tudat/Astrodynamics/BasicAstrodynamics/celestialBodyConstants.h"
+
 #include "createInitialConditions.h"
 //#include "computeManifolds.h"
 #include "completeInitialConditionsHaloFamily.h"
@@ -29,22 +31,28 @@ int main (){
     {
         #pragma omp for
         for (unsigned int i=6; i<=6; i++) {
-            if (i ==1){
+            if (i ==1)
+            {
                 createInitialConditions(1, "horizontal");
             }
-            if (i ==2){
+            if (i ==2)
+            {
                 createInitialConditions(2, "horizontal");
             }
-            if (i ==3){
+            if (i ==3)
+            {
                 createInitialConditions(1, "halo");
             }
-            if (i ==4){
+            if (i ==4)
+            {
                 createInitialConditions(2, "halo");
             }
-            if (i ==5){
+            if (i ==5)
+            {
                 createInitialConditions(1, "vertical");
             }
-            if (i ==6){
+            if (i ==6)
+            {
                 createInitialConditions(2, "vertical");
             }
         }
@@ -130,7 +138,7 @@ int main (){
             initialStateVector2(4) = initialConditions[1][6];
             initialStateVector2(5) = initialConditions[1][7];
 
-            completeInitialConditionsHaloFamily( initialStateVector1, initialStateVector2, orbitalPeriod1, orbitalPeriod2, librationPointNr);
+            completeInitialConditionsHaloFamily( initialStateVector1, initialStateVector2, orbitalPeriod1, orbitalPeriod2, librationPointNr );
 
             // ==================================================================================================================
             // == Create initial conditions for the axial family, based on the bifurcation from the horizontal Lyapunov family ==
@@ -220,7 +228,7 @@ int main (){
             initialStateVector(4) = initialConditions[orbitIdForManifold][6];
             initialStateVector(5) = initialConditions[orbitIdForManifold][7];
 
-            stateVectorInclSTM     = writePeriodicOrbitToFile( initialStateVector, librationPointNr, orbitType, orbitIdForManifold, orbitalPeriod, massParameter, false, 100);
+            //stateVectorInclSTM     = writePeriodicOrbitToFile( initialStateVector, librationPointNr, orbitType, orbitIdForManifold, orbitalPeriod, massParameter, false, 100);
 
 //            std::string selected_orbit = "L" + std::to_string(librationPointNr) + "_" + orbitType + "_W_" + std::to_string(orbitIdForManifold);
 //            std::cout                                                                                 << std::endl;

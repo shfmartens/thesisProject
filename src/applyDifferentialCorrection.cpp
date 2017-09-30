@@ -1,5 +1,8 @@
 #include <cmath>
+
+#include "Tudat/Astrodynamics/BasicAstrodynamics/celestialBodyConstants.h"
 #include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
+#include "Tudat/Astrodynamics/Gravitation/jacobiEnergy.h"
 
 #include "applyDifferentialCorrection.h"
 #include "computeDifferentialCorrection.h"
@@ -12,7 +15,7 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
                                              double orbitalPeriod, const double massParameter,
                                              double maxPositionDeviationFromPeriodicOrbit,
                                              double maxVelocityDeviationFromPeriodicOrbit,
-                                             int maxNumberOfIterations = 1000 )
+                                             int maxNumberOfIterations )
 {
     std::cout << "\nApply differential correction:" << std::endl;
 
@@ -21,8 +24,10 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
     initialStateVectorInclSTM.block( 0, 0, 6, 1 ) = initialStateVector;
     initialStateVectorInclSTM.block( 0, 1, 6, 6 ).setIdentity( );
 
+    std::map< double, Eigen::Vector6d > stateHistory;
+
     std::pair< Eigen::MatrixXd, double > halfPeriodState = propagateOrbitToFinalCondition(
-            initialStateVectorInclSTM, massParameter, orbitalPeriod / 2.0, 1.0 , 0.0 );
+            initialStateVectorInclSTM, massParameter, orbitalPeriod / 2.0, 1.0, stateHistory, -1, 0.0 );
     Eigen::MatrixXd stateVectorInclSTM      = halfPeriodState.first;
     double currentTime             = halfPeriodState.second;
     Eigen::VectorXd stateVectorOnly = stateVectorInclSTM.block( 0, 0, 6, 1 );
@@ -83,7 +88,7 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
         }
         else
         {
-            differentialCorrection = computeDifferentialCorrection( librationPointNr, orbitType, stateVectorInclSTM );
+            differentialCorrection = computeDifferentialCorrection( librationPointNr, orbitType, stateVectorInclSTM, false );
         }
 
         std::cout<<"APPLYING DIFF. CORR: "<<differentialCorrection<<std::endl;
@@ -92,7 +97,7 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
         orbitalPeriod  = orbitalPeriod + 2.0 * differentialCorrection( 6 ) / 1.0;
 
         std::pair< Eigen::MatrixXd, double > halfPeriodState = propagateOrbitToFinalCondition(
-                initialStateVectorInclSTM, massParameter, orbitalPeriod / 2.0, 1.0 , 0.0 );
+                initialStateVectorInclSTM, massParameter, orbitalPeriod / 2.0, 1.0, stateHistory, -1, 0.0 );
         stateVectorInclSTM      = halfPeriodState.first;
         currentTime             = halfPeriodState.second;
         stateVectorOnly = stateVectorInclSTM.block( 0, 0, 6, 1 );

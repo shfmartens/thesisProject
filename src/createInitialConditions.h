@@ -3,14 +3,14 @@
 
 
 
-#include "createInitialConditions.cpp"
-
+#include <string>
 
 void createInitialConditions( int librationPointNr, std::string orbitType,
-                              const double primaryGravitationalParameter, const double secondaryGravitationalParameter,
-                              double maxPositionDeviationFromPeriodicOrbit, double maxVelocityDeviationFromPeriodicOrbit,
-                              double maxDeviationEigenvalue );
-
+                              const double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter(
+            tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER,
+            tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER ),
+                              double maxPositionDeviationFromPeriodicOrbit = 1.0e-12, double maxVelocityDeviationFromPeriodicOrbit = 1.0e-12,
+                              double maxEigenvalueDeviation = 1.0e-3 );
 
 
 #endif  // TUDATBUNDLE_CREATEINITIALCONDITIONS_H

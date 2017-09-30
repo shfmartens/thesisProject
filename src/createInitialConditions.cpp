@@ -1,14 +1,20 @@
+#include <fstream>
+#include <iomanip>
+
 #include <Eigen/Core>
 #include <Eigen/Eigenvalues>
 #include <Eigen/QR>
 #include <Eigen/Dense>
+
+#include "Tudat/Astrodynamics/BasicAstrodynamics/celestialBodyConstants.h"
+#include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
+#include "Tudat/Astrodynamics/Gravitation/jacobiEnergy.h"
 
 #include "applyDifferentialCorrection.h"
 #include "checkEigenvalues.h"
 #include "computeEigenvalues.h"
 #include "propagateOrbit.h"
 #include "richardsonThirdOrderApproximation.h"
-#include "writePeriodicOrbitToFile.h"
 
 void appendResultsVector(
         const double jacobiEnergy, const double orbitalPeriod, const Eigen::VectorXd initialStateVector,
@@ -147,8 +153,10 @@ Eigen::MatrixXd getCorrectedInitialState( const Eigen::Vector6d& initialStateGue
     orbitalPeriod = differentialCorrectionResult( 6 );
 
     // Propagate the initialStateVector for a full period and write output to file.
-    Eigen::MatrixXd stateVectorInclSTM = writePeriodicOrbitToFile(
-                initialStateVector, librationPointNr, orbitType, orbitNumber, orbitalPeriod, massParameter);
+    std::map< double, Eigen::Vector6d > stateHistory;
+    Eigen::MatrixXd stateVectorInclSTM = propagateOrbitToFinalCondition(
+                getFullInitialState( initialStateVector ), massParameter, orbitalPeriod, 1, stateHistory, 1000, 0.0 ).first;
+    writeStateHistoryToFile( stateHistory, orbitNumber, orbitType, librationPointNr, 1000, false );
 
     // Save results
     double jacobiEnergyHalfPeriod = tudat::gravitation::computeJacobiEnergy( massParameter, differentialCorrectionResult.segment( 7, 6 ) );
@@ -214,7 +222,7 @@ void writeFinalResultsToFiles( int librationPointNr, std::string orbitType,
 }
 
 bool checkTermination( const std::vector< Eigen::VectorXd >& differentialCorrections,
-                       const Eigen::MatrixXd& stateVectorInclSTM,
+                       const Eigen::MatrixXd& stateVectorInclSTM, const std::string orbitType, const int librationPointNr,
                        const double maxEigenvalueDeviation = 1.0e-3 )
 {
     // Check termination condtions
@@ -224,28 +232,30 @@ bool checkTermination( const std::vector< Eigen::VectorXd >& differentialCorrect
     {
         continueNumericalContinuation = false;
         std::cout << "\n\nNUMERICAL CONTINUATION STOPPED DUE TO EXCEEDING MAXIMUM NUMBER OF ITERATIONS\n\n" << std::endl;
-        break;
-    }
-
-    // Check eigenvalue condition (at least one pair equalling a real one)
-    // Exception for the horizontal Lyapunov family in Earth-Moon L2: eigenvalue may be of module one instead of a real one to compute a more extensive family
-    continueNumericalContinuation = false;
-    if ( ( librationPointNr == 2 ) && ( orbitType == "horizontal" ) )
-    {
-        continueNumericalContinuation = checkEigenvalues( stateVectorInclSTM, maxEigenvalueDeviation, true );
     }
     else
     {
-        continueNumericalContinuation = checkEigenvalues( stateVectorInclSTM, maxEigenvalueDeviation, false );
+
+        // Check eigenvalue condition (at least one pair equalling a real one)
+        // Exception for the horizontal Lyapunov family in Earth-Moon L2: eigenvalue may be of module one instead of a real one to compute a more extensive family
+        continueNumericalContinuation = false;
+        if ( ( librationPointNr == 2 ) && ( orbitType == "horizontal" ) )
+        {
+            continueNumericalContinuation = checkEigenvalues( stateVectorInclSTM, maxEigenvalueDeviation, true );
+        }
+        else
+        {
+            continueNumericalContinuation = checkEigenvalues( stateVectorInclSTM, maxEigenvalueDeviation, false );
+        }
     }
     return continueNumericalContinuation;
 }
 
 void createInitialConditions( int librationPointNr, std::string orbitType,
-                              const double primaryGravitationalParameter = tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER,
-                              const double secondaryGravitationalParameter = tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER,
-                              double maxPositionDeviationFromPeriodicOrbit = 1.0e-12, double maxVelocityDeviationFromPeriodicOrbit = 1.0e-12,
-                              double maxEigenvalueDeviation = 1.0e-3 )
+                              const double massParameter,
+                              double maxPositionDeviationFromPeriodicOrbit, double maxVelocityDeviationFromPeriodicOrbit,
+                              double maxEigenvalueDeviation )
+
 {
     std::cout << "\nCreate initial conditions:\n" << std::endl;
 
@@ -254,13 +264,10 @@ void createInitialConditions( int librationPointNr, std::string orbitType,
 
     // Initialize state vectors and orbital periods
     Eigen::Vector6d initialStateVector = Eigen::Vector6d::Zero( );
-    Eigen::MatrixXd stateVectorInclSTM = Eigen::VectorXd::Zero( 6, 7 );
+    Eigen::MatrixXd stateVectorInclSTM = Eigen::MatrixXd::Zero( 6, 7 );
+
     std::vector< Eigen::VectorXd > initialConditions;
     std::vector< Eigen::VectorXd > differentialCorrections;
-
-    // Define massParameter
-    massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter(
-                primaryGravitationalParameter, secondaryGravitationalParameter );
 
     // Perform first two iteration
     Eigen::Vector7d richardsonThirdOrderApproximationResultIteration1 =
@@ -303,7 +310,7 @@ void createInitialConditions( int librationPointNr, std::string orbitType,
                     librationPointNr, orbitType, massParameter, initialConditions, differentialCorrections,
                     maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
 
-        continueNumericalContinuation = checkTermination(differentialCorrections, stateVectorInclSTM, maxEigenvalueDeviation );
+        continueNumericalContinuation = checkTermination(differentialCorrections, stateVectorInclSTM, orbitType, librationPointNr, maxEigenvalueDeviation );
 
         numberOfInitialConditions += 1;
     }

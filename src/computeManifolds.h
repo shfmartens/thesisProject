@@ -2,8 +2,9 @@
 #define TUDATBUNDLE_COMPUTEMANIFOLDS_H
 
 
+#include <string>
 
-#include "computeManifolds.cpp"
+#include <Eigen/Core>
 
 
 void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod, int librationPointNr,

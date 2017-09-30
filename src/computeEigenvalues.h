@@ -3,7 +3,7 @@
 
 
 
-#include "computeEigenvalues.cpp"
+#include <Eigen/Core>
 
 
 std::vector<double> computeEigenvalues( Eigen::VectorXd stateVectorInclSTM );

@@ -3,6 +3,10 @@
 #include <Eigen/QR>
 #include <Eigen/Dense>
 
+#include "Tudat/Astrodynamics/BasicAstrodynamics/celestialBodyConstants.h"
+#include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
+#include "Tudat/Astrodynamics/Gravitation/jacobiEnergy.h"
+
 #include "applyDifferentialCorrection.h"
 #include "checkEigenvalues.h"
 #include "computeEigenvalues.h"
@@ -44,7 +48,7 @@ void createInitialConditionsAxialFamily( Eigen::VectorXd initialStateVector1, Ei
     Eigen::VectorXd                     richardsonThirdOrderApproximationResult;
 
     // Define massParameter
-    massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( primaryGravitationalParameter, secondaryGravitationalParameter );
+    double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( primaryGravitationalParameter, secondaryGravitationalParameter );
     jacobiEnergy  = tudat::gravitation::computeJacobiEnergy(massParameter, initialStateVector1);
 
     // Correct state vector

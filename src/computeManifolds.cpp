@@ -11,7 +11,10 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
+#include "Tudat/Astrodynamics/Gravitation/jacobiEnergy.h"
 #include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
+#include "Tudat/Astrodynamics/BasicAstrodynamics/celestialBodyConstants.h"
+
 #include "propagateOrbit.h"
 #include "computeDifferentialCorrection.h"
 
@@ -29,7 +32,7 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
     std::cout.precision(std::numeric_limits<double>::digits10);
 
     // Define massParameter, initialStateVector and halfPeriodStateVector.
-    massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( primaryGravitationalParameter, secondaryGravitationalParameter );
+    double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( primaryGravitationalParameter, secondaryGravitationalParameter );
     double jacobiEnergy = tudat::gravitation::computeJacobiEnergy(massParameter, initialStateVector);
 
     Eigen::VectorXd initialStateVectorInclSTM = Eigen::VectorXd::Zero(42);
@@ -51,7 +54,7 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
     orbitStateVectors.push_back(tempStateVector);
 
     // Perform first integration step
-    Eigen::VectorXd outputVector               = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.0, 1.0 );
+    Eigen::VectorXd outputVector = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.0, 1.0 ).first;
     Eigen::VectorXd stateVectorInclSTM         = outputVector.segment(0,42);
     Eigen::VectorXd previousOutputVector       = outputVector;
     double currentTime                         = outputVector(42);
@@ -79,7 +82,7 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
             }
 
             // Propagate to next time step
-            outputVector         = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, 1.0, initialStepSize, maximumStepSize);
+            outputVector = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, 1.0, initialStepSize, maximumStepSize).first;
 
             if (outputVector(42) > orbitalPeriod) {
                 outputVector = previousOutputVector;
@@ -280,7 +283,7 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
                       << manifoldStartingState(38) << std::setw(25) << manifoldStartingState(39) << std::setw(25)
                       << manifoldStartingState(40) << std::setw(25) << manifoldStartingState(41) << std::endl;
 
-            outputVector       = propagateOrbit(manifoldStartingState, massParameter, 0.0, integrationDirection );
+            outputVector       = propagateOrbit(manifoldStartingState, massParameter, 0.0, integrationDirection ).first;
             stateVectorInclSTM = outputVector.segment(0, 42);
             currentTime        = outputVector(42);
             std::cout << "Orbit No.: " << ii << std::endl;
@@ -323,7 +326,8 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
                             stateVectorInclSTM      = outputVector.segment(0, 42);
                             currentTime             = outputVector(42);
                             previousOutputVector    = outputVector;
-                            outputVector            = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, integrationDirection, initialStepSize, maximumStepSize);
+                            outputVector            = propagateOrbit(
+                                        stateVectorInclSTM, massParameter, currentTime, integrationDirection, initialStepSize, maximumStepSize).first;
 
                             if (outputVector(1) * ySign < 0) {
                                 outputVector = previousOutputVector;
@@ -362,7 +366,7 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
                             stateVectorInclSTM      = outputVector.segment(0, 42);
                             currentTime             = outputVector(42);
                             previousOutputVector    = outputVector;
-                            outputVector            = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, integrationDirection, initialStepSize, maximumStepSize);
+                            outputVector            = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, integrationDirection, initialStepSize, maximumStepSize).first;
 
                             if ((outputVector(0) - 1.0 + massParameter) * xDiffSign < 0) {
                                 outputVector = previousOutputVector;
@@ -405,7 +409,7 @@ void computeManifolds( Eigen::VectorXd initialStateVector, double orbitalPeriod,
                 }
                 // Propagate to next time step.
                 previousOutputVector = outputVector;
-                outputVector         = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, integrationDirection );
+                outputVector         = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, integrationDirection ).first;
                 count += 1;
             }
             ySignSet = false;

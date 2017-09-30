@@ -3,9 +3,12 @@
 #include <Eigen/QR>
 #include <Eigen/Dense>
 
+#include "Tudat/Astrodynamics/BasicAstrodynamics/celestialBodyConstants.h"
+#include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
+#include "Tudat/Astrodynamics/Gravitation/jacobiEnergy.h"
+
 #include "applyDifferentialCorrection.h"
 #include "checkEigenvalues.h"
-#include "computeEigenvalues.h"
 #include "propagateOrbit.h"
 #include "richardsonThirdOrderApproximation.h"
 #include "writePeriodicOrbitToFile.h"
@@ -14,10 +17,10 @@
 
 void completeInitialConditionsHaloFamily( Eigen::VectorXd initialStateVector1, Eigen::VectorXd initialStateVector2,
                                           double orbitalPeriod1, double orbitalPeriod2, int librationPointNr,
-                                          const double primaryGravitationalParameter = tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER,
-                                          const double secondaryGravitationalParameter = tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER,
-                                          double maxPositionDeviationFromPeriodicOrbit = 1.0e-12, double maxVelocityDeviationFromPeriodicOrbit = 1.0e-12,
-                                          double maxEigenvalueDeviation = 1.0e-3 )
+                                          const double primaryGravitationalParameter, const double secondaryGravitationalParameter,
+                                          double maxPositionDeviationFromPeriodicOrbit, double maxVelocityDeviationFromPeriodicOrbit,
+                                          double maxEigenvalueDeviation )
+
 {
     std::cout << "\nComplete initial conditions halo family:\n" << std::endl;
 
@@ -44,7 +47,7 @@ void completeInitialConditionsHaloFamily( Eigen::VectorXd initialStateVector1, E
     Eigen::VectorXd                     richardsonThirdOrderApproximationResult;
 
     // Define massParameter
-    massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( primaryGravitationalParameter, secondaryGravitationalParameter );
+    double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( primaryGravitationalParameter, secondaryGravitationalParameter );
     jacobiEnergy  = tudat::gravitation::computeJacobiEnergy(massParameter, initialStateVector1);
 
     // Correct state vector
@@ -65,7 +68,12 @@ void completeInitialConditionsHaloFamily( Eigen::VectorXd initialStateVector1, E
     differentialCorrections.push_back(tempDifferentialCorrection);
 
     // Propagate the initialStateVector for a full period and write output to file.
-    stateVectorInclSTM = writePeriodicOrbitToFile( initialStateVector1, librationPointNr, "halo", 0, orbitalPeriod1, massParameter, true);
+
+
+    //FIXME
+    {
+    //stateVectorInclSTM = writePeriodicOrbitToFile( initialStateVector1, librationPointNr, "halo", 0, orbitalPeriod1, massParameter, true );
+    }
 
     // Save jacobi energy, orbital period, initial condition, and eigenvalues
     tempInitialCondition.clear();
