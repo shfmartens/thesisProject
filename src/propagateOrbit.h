@@ -15,7 +15,7 @@ void writeStateHistoryToFile(
         const int saveEveryNthIntegrationStep, const bool completeInitialConditionsHaloFamily );
 
 std::pair< Eigen::MatrixXd, double > propagateOrbit(
-        Eigen::MatrixXd& stateVectorInclSTM, double massParameter, double currentTime,
+        const Eigen::MatrixXd& stateVectorInclSTM, double massParameter, double currentTime,
         int direction, double initialStepSize = 1.0E-5, double maximumStepSize = 1.0E-4 );
 
 

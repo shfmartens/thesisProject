@@ -52,7 +52,7 @@ void writeStateHistoryToFile(
 }
 
 std::pair< Eigen::MatrixXd, double > propagateOrbit(
-        Eigen::MatrixXd& stateVectorInclSTM, double massParameter, double currentTime,
+        const Eigen::MatrixXd& stateVectorInclSTM, double massParameter, double currentTime,
         int direction, double initialStepSize, double maximumStepSize )
 {
     // Declare variables

@@ -10,12 +10,12 @@
 
 
 
-Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string orbitType,
-                                             Eigen::VectorXd initialStateVector,
-                                             double orbitalPeriod, const double massParameter,
-                                             double maxPositionDeviationFromPeriodicOrbit,
-                                             double maxVelocityDeviationFromPeriodicOrbit,
-                                             int maxNumberOfIterations )
+Eigen::VectorXd applyDifferentialCorrection(const int librationPointNr, const std::string& orbitType,
+                                            const Eigen::VectorXd& initialStateVector,
+                                            double orbitalPeriod, const double massParameter,
+                                            double maxPositionDeviationFromPeriodicOrbit,
+                                            double maxVelocityDeviationFromPeriodicOrbit,
+                                            const int maxNumberOfIterations )
 {
     std::cout << "\nApply differential correction:" << std::endl;
 
@@ -27,7 +27,7 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
     std::map< double, Eigen::Vector6d > stateHistory;
 
     std::pair< Eigen::MatrixXd, double > halfPeriodState = propagateOrbitToFinalCondition(
-            initialStateVectorInclSTM, massParameter, orbitalPeriod / 2.0, 1.0, stateHistory, -1, 0.0 );
+                initialStateVectorInclSTM, massParameter, orbitalPeriod / 2.0, 1.0, stateHistory, -1, 0.0 );
     Eigen::MatrixXd stateVectorInclSTM      = halfPeriodState.first;
     double currentTime             = halfPeriodState.second;
     Eigen::VectorXd stateVectorOnly = stateVectorInclSTM.block( 0, 0, 6, 1 );
@@ -97,7 +97,7 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
         orbitalPeriod  = orbitalPeriod + 2.0 * differentialCorrection( 6 ) / 1.0;
 
         std::pair< Eigen::MatrixXd, double > halfPeriodState = propagateOrbitToFinalCondition(
-                initialStateVectorInclSTM, massParameter, orbitalPeriod / 2.0, 1.0, stateHistory, -1, 0.0 );
+                    initialStateVectorInclSTM, massParameter, orbitalPeriod / 2.0, 1.0, stateHistory, -1, 0.0 );
         stateVectorInclSTM      = halfPeriodState.first;
         currentTime             = halfPeriodState.second;
         stateVectorOnly = stateVectorInclSTM.block( 0, 0, 6, 1 );

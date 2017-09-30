@@ -5,7 +5,7 @@
 
 
 
-std::vector<double> computeEigenvalues( Eigen::VectorXd stateVectorInclSTM )
+std::vector<double> computeEigenvalues( const Eigen::VectorXd& stateVectorInclSTM )
 {
     // Initialize variables
     std::vector<double> eigenvalues;

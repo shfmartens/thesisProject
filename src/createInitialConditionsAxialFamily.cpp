@@ -9,7 +9,6 @@
 
 #include "applyDifferentialCorrection.h"
 #include "checkEigenvalues.h"
-#include "computeEigenvalues.h"
 #include "propagateOrbit.h"
 #include "richardsonThirdOrderApproximation.h"
 #include "writePeriodicOrbitToFile.h"

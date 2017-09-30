@@ -6,8 +6,8 @@
 #include "Eigen/Core"
 
 
-bool checkEigenvalues( Eigen::MatrixXd stateVectorInclSTM, double maxEigenvalueDeviation = 1.0E-3,
-                       bool moduleOneInsteadOfRealOne = false );
+bool checkEigenvalues( const Eigen::MatrixXd& stateVectorInclSTM, const double maxEigenvalueDeviation = 1.0E-3,
+                      const bool moduleOneInsteadOfRealOne = false );
 
 
 

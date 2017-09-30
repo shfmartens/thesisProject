@@ -5,8 +5,8 @@
 
 
 
-bool checkEigenvalues( Eigen::MatrixXd stateVectorInclSTM, double maxEigenvalueDeviation,
-                       bool moduleOneInsteadOfRealOne)
+bool checkEigenvalues( const Eigen::MatrixXd &stateVectorInclSTM, const double maxEigenvalueDeviation,
+                       const bool moduleOneInsteadOfRealOne)
 {
     // Initialize variables
     bool eigenvalueRealOne = false;

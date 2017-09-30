@@ -12,13 +12,11 @@
 
 #include "applyDifferentialCorrection.h"
 #include "checkEigenvalues.h"
-#include "computeEigenvalues.h"
 #include "propagateOrbit.h"
 #include "richardsonThirdOrderApproximation.h"
 
-void appendResultsVector(
-        const double jacobiEnergy, const double orbitalPeriod, const Eigen::VectorXd initialStateVector,
-        const Eigen::VectorXd stateVectorInclSTM, std::vector< Eigen::VectorXd >& initialConditions )
+void appendResultsVector(const double jacobiEnergy, const double orbitalPeriod, const Eigen::VectorXd& initialStateVector,
+        const Eigen::VectorXd& stateVectorInclSTM, std::vector< Eigen::VectorXd >& initialConditions )
 {
     Eigen::VectorXd tempInitialCondition = Eigen::VectorXd( 44 );
 
@@ -40,7 +38,7 @@ void appendResultsVector(
 }
 
 void appendDifferentialCorrectionResultsVector(
-        const double jacobiEnergyHalfPeriod,  const Eigen::VectorXd differentialCorrectionResult,
+        const double jacobiEnergyHalfPeriod,  const Eigen::VectorXd& differentialCorrectionResult,
         std::vector< Eigen::VectorXd >& differentialCorrections )
 {
 
@@ -57,7 +55,7 @@ void appendDifferentialCorrectionResultsVector(
 
 }
 
-Eigen::Vector7d getInitialStateVectorGuess( int librationPointNr, std::string orbitType, const int guessIteration )
+Eigen::Vector7d getInitialStateVectorGuess( const int librationPointNr, const std::string& orbitType, const int guessIteration )
 {
     Eigen::Vector7d richardsonThirdOrderApproximationResult;
     if( guessIteration == 0 )
@@ -138,10 +136,10 @@ Eigen::Vector7d getInitialStateVectorGuess( int librationPointNr, std::string or
 }
 
 Eigen::MatrixXd getCorrectedInitialState( const Eigen::Vector6d& initialStateGuess, double orbitalPeriod, const int orbitNumber,
-                                          int librationPointNr, std::string orbitType, const double massParameter,
+                                          const int librationPointNr, std::string orbitType, const double massParameter,
                                           std::vector< Eigen::VectorXd >& initialConditions,
                                           std::vector< Eigen::VectorXd >& differentialCorrections,
-                                          double maxPositionDeviationFromPeriodicOrbit = 1.0e-12, double maxVelocityDeviationFromPeriodicOrbit = 1.0e-12 )
+                                          const double maxPositionDeviationFromPeriodicOrbit, double maxVelocityDeviationFromPeriodicOrbit )
 {
     Eigen::Vector6d initialStateVector = initialStateGuess;
 
@@ -169,7 +167,7 @@ Eigen::MatrixXd getCorrectedInitialState( const Eigen::Vector6d& initialStateGue
 
 }
 
-void writeFinalResultsToFiles( int librationPointNr, std::string orbitType,
+void writeFinalResultsToFiles( const int librationPointNr, const std::string orbitType,
                                std::vector< Eigen::VectorXd > initialConditions,
                                std::vector< Eigen::VectorXd > differentialCorrections )
 {
@@ -223,7 +221,7 @@ void writeFinalResultsToFiles( int librationPointNr, std::string orbitType,
 
 bool checkTermination( const std::vector< Eigen::VectorXd >& differentialCorrections,
                        const Eigen::MatrixXd& stateVectorInclSTM, const std::string orbitType, const int librationPointNr,
-                       const double maxEigenvalueDeviation = 1.0e-3 )
+                       const double maxEigenvalueDeviation )
 {
     // Check termination condtions
 
@@ -251,10 +249,10 @@ bool checkTermination( const std::vector< Eigen::VectorXd >& differentialCorrect
     return continueNumericalContinuation;
 }
 
-void createInitialConditions( int librationPointNr, std::string orbitType,
+void createInitialConditions( const int librationPointNr, const std::string& orbitType,
                               const double massParameter,
-                              double maxPositionDeviationFromPeriodicOrbit, double maxVelocityDeviationFromPeriodicOrbit,
-                              double maxEigenvalueDeviation )
+                              const double maxPositionDeviationFromPeriodicOrbit, const double maxVelocityDeviationFromPeriodicOrbit,
+                              const double maxEigenvalueDeviation )
 
 {
     std::cout << "\nCreate initial conditions:\n" << std::endl;
