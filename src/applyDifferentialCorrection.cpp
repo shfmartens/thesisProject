@@ -21,38 +21,11 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
     initialStateVectorInclSTM.block( 0, 0, 6, 1 ) = initialStateVector;
     initialStateVectorInclSTM.block( 0, 1, 6, 6 ).setIdentity( );
 
-    // Perform first integration step
-    std::pair< Eigen::MatrixXd, double > previousHalfPeriodState;
-    std::pair< Eigen::MatrixXd, double > halfPeriodState     = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.0, 1);
-    Eigen::MatrixXd stateVectorInclSTM  = halfPeriodState.first;
-    Eigen::VectorXd stateVectorOnly  = stateVectorInclSTM.block( 0, 0, 6, 1 );
-
-    double currentTime                  = halfPeriodState.second;
-    int numberOfIterations              = 0;
-
-    // Perform integration steps until end of half orbital period
-    for (int i = 5; i <= 12; i++) {
-
-        double initialStepSize = pow(10,(static_cast<float>(-i)));
-        double maximumStepSize = pow(10,(static_cast<float>(-i) + 1.0));
-
-        while (currentTime <= (orbitalPeriod / 2.0)) {
-            stateVectorInclSTM      = halfPeriodState.first;
-            currentTime             = halfPeriodState.second;
-            previousHalfPeriodState = halfPeriodState;
-            halfPeriodState         = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, 1, initialStepSize, maximumStepSize);
-
-            if (halfPeriodState.second > (orbitalPeriod / 2.0))
-            {
-                halfPeriodState = previousHalfPeriodState;
-                stateVectorInclSTM      = halfPeriodState.first;
-                currentTime             = halfPeriodState.second;
-                break;
-            }
-        }
-    }
-
-    stateVectorOnly = stateVectorInclSTM.block( 0, 0, 6, 1 );
+    std::pair< Eigen::MatrixXd, double > halfPeriodState = propagateOrbitToFinalCondition(
+            initialStateVectorInclSTM, massParameter, orbitalPeriod / 2.0, 1.0 , 0.0 );
+    Eigen::MatrixXd stateVectorInclSTM      = halfPeriodState.first;
+    double currentTime             = halfPeriodState.second;
+    Eigen::VectorXd stateVectorOnly = stateVectorInclSTM.block( 0, 0, 6, 1 );
 
     // Initialize variables
     Eigen::VectorXd differentialCorrection(7);
@@ -80,6 +53,7 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
 
     bool deviationFromPeriodicOrbitRelaxed = false;
 
+    int numberOfIterations = 0;
     // Apply differential correction and propagate to half-period point until converged.
     while ( positionDeviationFromPeriodicOrbit > maxPositionDeviationFromPeriodicOrbit or
             velocityDeviationFromPeriodicOrbit > maxVelocityDeviationFromPeriodicOrbit )
@@ -117,37 +91,10 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
         initialStateVectorInclSTM.block( 0, 0, 6, 1 ) += differentialCorrection.segment( 0, 6 ) / 1.0;
         orbitalPeriod  = orbitalPeriod + 2.0 * differentialCorrection( 6 ) / 1.0;
 
-        // Perform first integration step
-        halfPeriodState    = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.0, 1);
+        std::pair< Eigen::MatrixXd, double > halfPeriodState = propagateOrbitToFinalCondition(
+                initialStateVectorInclSTM, massParameter, orbitalPeriod / 2.0, 1.0 , 0.0 );
         stateVectorInclSTM      = halfPeriodState.first;
         currentTime             = halfPeriodState.second;
-
-        // Perform integration steps until end of half orbital period
-        for (int i = 5; i <= 12; i++) {
-
-            double initialStepSize = pow(10,(static_cast<float>(-i)));
-            double maximumStepSize = pow(10,(static_cast<float>(-i) + 1.0));
-
-            while (currentTime <= (orbitalPeriod / 2.0))
-            {
-
-                stateVectorInclSTM      = halfPeriodState.first;
-                currentTime             = halfPeriodState.second;
-
-                previousHalfPeriodState = halfPeriodState;
-                halfPeriodState         = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, 1, initialStepSize, maximumStepSize);
-
-                if (halfPeriodState.second > (orbitalPeriod / 2.0))
-                {
-                    halfPeriodState = previousHalfPeriodState;
-                    stateVectorInclSTM      = halfPeriodState.first;
-                    currentTime             = halfPeriodState.second;
-
-                    break;
-                }
-            }
-        }
-
         stateVectorOnly = stateVectorInclSTM.block( 0, 0, 6, 1 );
 
         if (orbitType == "axial")

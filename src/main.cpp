@@ -28,7 +28,7 @@ int main (){
     #pragma omp parallel num_threads(6)
     {
         #pragma omp for
-        for (unsigned int i=1; i<=6; i++) {
+        for (unsigned int i=6; i<=6; i++) {
             if (i ==1){
                 createInitialConditions(1, "horizontal");
             }
@@ -50,7 +50,7 @@ int main (){
         }
     }
 
-//    sleep( 10000.0 );
+    sleep( 1000000.0 );
 
 
     //#pragma omp parallel num_threads(6)

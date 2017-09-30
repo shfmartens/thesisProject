@@ -9,7 +9,7 @@
 #include "propagateOrbit.h"
 
 
-Eigen::VectorXd writePeriodicOrbitToFile( Eigen::VectorXd initialStateVector, int librationPointNr, std::string orbitType,
+Eigen::MatrixXd writePeriodicOrbitToFile( Eigen::VectorXd initialStateVector, int librationPointNr, std::string orbitType,
                                           int orbitId, double orbitalPeriod, const double massParameter,
                                           bool completeInitialConditionsHaloFamily = false,
                                           int saveEveryNthIntegrationStep = 1000)
@@ -30,15 +30,15 @@ Eigen::VectorXd writePeriodicOrbitToFile( Eigen::VectorXd initialStateVector, in
     // Prepare output file
     if (saveEveryNthIntegrationStep != 1000){
         if (completeInitialConditionsHaloFamily == false){
-            fileNameString = ("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + "_" + std::to_string(saveEveryNthIntegrationStep) + ".txt");
+            fileNameString = ("../data/raw/orbits3/L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + "_" + std::to_string(saveEveryNthIntegrationStep) + ".txt");
         } else {
-            fileNameString = ("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + orbitType + "_n_" + std::to_string(orbitId) + "_" + std::to_string(saveEveryNthIntegrationStep) + ".txt");
+            fileNameString = ("../data/raw/orbits3/L" + std::to_string(librationPointNr) + "_" + orbitType + "_n_" + std::to_string(orbitId) + "_" + std::to_string(saveEveryNthIntegrationStep) + ".txt");
         }
     } else {
         if (completeInitialConditionsHaloFamily == false){
-            fileNameString = ("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + ".txt");
+            fileNameString = ("../data/raw/orbits3/L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitId) + ".txt");
         } else {
-            fileNameString = ("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + orbitType + "_n_" + std::to_string(orbitId) + ".txt");
+            fileNameString = ("../data/raw/orbits3/L" + std::to_string(librationPointNr) + "_" + orbitType + "_n_" + std::to_string(orbitId) + ".txt");
         }
     }
     //remove(fileNameString);

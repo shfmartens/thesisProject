@@ -46,3 +46,39 @@ std::pair< Eigen::MatrixXd, double > propagateOrbit( Eigen::MatrixXd stateVector
     // Return the value of the state and the halfPeriod time.
     return std::make_pair( outputState, currentTime );
 }
+
+std::pair< Eigen::MatrixXd, double >  propagateOrbitToFinalCondition(
+        const Eigen::MatrixXd fullInitialState, const double massParameter, const double finalTime, int direction, const double initialTime )
+{
+    // Perform first integration step
+    std::pair< Eigen::MatrixXd, double > previousHalfPeriodState;
+    std::pair< Eigen::MatrixXd, double > halfPeriodState;
+    halfPeriodState = propagateOrbit( fullInitialState, massParameter, initialTime, direction );
+    Eigen::MatrixXd stateVectorInclSTM  = halfPeriodState.first;
+
+    double currentTime                  = halfPeriodState.second;
+
+    // Perform integration steps until end of half orbital period
+    for (int i = 5; i <= 12; i++) {
+
+        double initialStepSize = pow(10,(static_cast<float>(-i)));
+        double maximumStepSize = pow(10,(static_cast<float>(-i) + 1.0));
+
+        while (currentTime <= finalTime ) {
+            stateVectorInclSTM      = halfPeriodState.first;
+            currentTime             = halfPeriodState.second;
+            previousHalfPeriodState = halfPeriodState;
+            halfPeriodState         = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, 1, initialStepSize, maximumStepSize);
+
+            if (halfPeriodState.second > finalTime )
+            {
+                halfPeriodState = previousHalfPeriodState;
+                stateVectorInclSTM      = halfPeriodState.first;
+                currentTime             = halfPeriodState.second;
+                break;
+            }
+        }
+    }
+
+    return halfPeriodState;
+}

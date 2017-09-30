@@ -5,15 +5,14 @@
 
 
 
-bool checkEigenvalues( Eigen::VectorXd stateVectorInclSTM, double maxEigenvalueDeviation = 1.0e-3,
+bool checkEigenvalues( Eigen::MatrixXd stateVectorInclSTM, double maxEigenvalueDeviation = 1.0e-3,
                        bool moduleOneInsteadOfRealOne = false )
 {
     // Initialize variables
     bool eigenvalueRealOne = false;
 
     // Reshape the STM for one period to matrix form and compute the eigenvalues
-    Eigen::Map<Eigen::MatrixXd> monodromyMatrix = Eigen::Map<Eigen::MatrixXd>(stateVectorInclSTM.segment(6,36).data(),6,6);
-    Eigen::EigenSolver<Eigen::MatrixXd> eig(monodromyMatrix);
+    Eigen::EigenSolver<Eigen::MatrixXd> eig(stateVectorInclSTM.block( 0, 1, 6, 6 ) );
 
     // Determine whether the monodromy matrix contains at least one eigenvalue of real one within the maxEigenvalueDeviation
     for (int i = 0; i <= 5; i++){

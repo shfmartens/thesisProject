@@ -6,7 +6,7 @@
 #include "checkEigenvalues.cpp"
 
 
-bool checkEigenvalues( Eigen::VectorXd stateVectorInclSTM, double maxEigenvalueDeviation,
+bool checkEigenvalues( Eigen::MatrixXd stateVectorInclSTM, double maxEigenvalueDeviation,
                        bool moduleOneInsteadOfRealOne );
 
 
