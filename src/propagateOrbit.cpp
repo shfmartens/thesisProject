@@ -137,3 +137,52 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitToFinalCondition(
 
     return currentState;
 }
+
+std::pair< Eigen::MatrixXd, double >  propagateOrbitWithStateTransitionMatrixToFinalCondition(
+        const Eigen::MatrixXd fullInitialState, const double massParameter, const double finalTime, int direction,
+        std::map< double, Eigen::MatrixXd >& stateTransitionMatrixHistory, const int saveFrequency, const double initialTime )
+{
+    if( saveFrequency >= 0 )
+    {
+        stateTransitionMatrixHistory[ initialTime ] = fullInitialState;
+    }
+
+    // Perform first integration step
+    std::pair< Eigen::MatrixXd, double > previousState;
+    std::pair< Eigen::MatrixXd, double > currentState;
+    currentState = propagateOrbit( fullInitialState, massParameter, initialTime, direction );
+    double currentTime = currentState.second;
+
+    int stepCounter = 1;
+    // Perform integration steps until end of half orbital period
+    for (int i = 5; i <= 12; i++)
+    {
+
+        double initialStepSize = pow(10,(static_cast<float>(-i)));
+        double maximumStepSize = pow(10,(static_cast<float>(-i) + 1.0));
+
+        while (currentTime <= finalTime )
+        {
+            // Write every nth integration step to file.
+            if ( saveFrequency > 0 && ( stepCounter % saveFrequency == 0 ) )
+            {
+                stateTransitionMatrixHistory[ currentTime ] = currentState.first;
+            }
+
+            currentTime = currentState.second;
+            previousState = currentState;
+            currentState = propagateOrbit(currentState.first, massParameter, currentTime, 1, initialStepSize, maximumStepSize);
+
+            stepCounter++;
+
+            if (currentState.second > finalTime )
+            {
+                currentState = previousState;
+                currentTime = currentState.second;
+                break;
+            }
+        }
+    }
+
+    return currentState;
+}

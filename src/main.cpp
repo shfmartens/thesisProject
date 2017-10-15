@@ -15,7 +15,7 @@
 #include "Tudat/Astrodynamics/BasicAstrodynamics/celestialBodyConstants.h"
 
 #include "createInitialConditions.h"
-//#include "computeManifolds.h"
+#include "computeManifolds.h"
 #include "completeInitialConditionsHaloFamily.h"
 #include "createInitialConditionsAxialFamily.h"
 
@@ -27,38 +27,38 @@ int main (){
     // == Compute initial conditions ==
     // ================================
 
-    #pragma omp parallel num_threads(6)
-    {
-        #pragma omp for
-        for (unsigned int i=6; i<=6; i++) {
-            if (i ==1)
-            {
-                createInitialConditions(1, "horizontal");
-            }
-            if (i ==2)
-            {
-                createInitialConditions(2, "horizontal");
-            }
-            if (i ==3)
-            {
-                createInitialConditions(1, "halo");
-            }
-            if (i ==4)
-            {
-                createInitialConditions(2, "halo");
-            }
-            if (i ==5)
-            {
-                createInitialConditions(1, "vertical");
-            }
-            if (i ==6)
-            {
-                createInitialConditions(2, "vertical");
-            }
-        }
-    }
-
-    sleep( 1000000.0 );
+//    #pragma omp parallel num_threads(6)
+//    {
+//        #pragma omp for
+//        for (unsigned int i=6; i<=6; i++) {
+//            if (i ==1)
+//            {
+//                createInitialConditions(1, "horizontal");
+//            }
+//            if (i ==2)
+//            {
+//                createInitialConditions(2, "horizontal");
+//            }
+//            if (i ==3)
+//            {
+//                createInitialConditions(1, "halo");
+//            }
+//            if (i ==4)
+//            {
+//                createInitialConditions(2, "halo");
+//            }
+//            if (i ==5)
+//            {
+//                createInitialConditions(1, "vertical");
+//            }
+//            if (i ==6)
+//            {
+//                createInitialConditions(2, "vertical");
+//            }
+//        }
+//    }
+//
+//    sleep( 1000000.0 );
 
 
     //#pragma omp parallel num_threads(6)
@@ -111,34 +111,34 @@ int main (){
                         initialConditions.back().push_back(value);
                 }
             }
-            double orbitalPeriod1;
-            double orbitalPeriod2;
-            Eigen::VectorXd initialStateVector1;
-            Eigen::VectorXd initialStateVector2;
+//            double orbitalPeriod1;
+//            double orbitalPeriod2;
+//            Eigen::VectorXd initialStateVector1;
+//            Eigen::VectorXd initialStateVector2;
 
             // ==============================================================================================
             // == Complete initial conditions for the halo family, until connection to horizontal Lyapunov ==
             // ==============================================================================================
 
-            orbitalPeriod1         = initialConditions[2][1];
-            initialStateVector1    = Eigen::VectorXd::Zero(6);
-            initialStateVector1(0) = initialConditions[2][2];
-            initialStateVector1(1) = initialConditions[2][3];
-            initialStateVector1(2) = initialConditions[2][4];
-            initialStateVector1(3) = initialConditions[2][5];
-            initialStateVector1(4) = initialConditions[2][6];
-            initialStateVector1(5) = initialConditions[2][7];
-
-            orbitalPeriod2         = initialConditions[1][1];
-            initialStateVector2    = Eigen::VectorXd::Zero(6);
-            initialStateVector2(0) = initialConditions[1][2];
-            initialStateVector2(1) = initialConditions[1][3];
-            initialStateVector2(2) = initialConditions[1][4];
-            initialStateVector2(3) = initialConditions[1][5];
-            initialStateVector2(4) = initialConditions[1][6];
-            initialStateVector2(5) = initialConditions[1][7];
-
-            completeInitialConditionsHaloFamily( initialStateVector1, initialStateVector2, orbitalPeriod1, orbitalPeriod2, librationPointNr );
+//            orbitalPeriod1         = initialConditions[2][1];
+//            initialStateVector1    = Eigen::VectorXd::Zero(6);
+//            initialStateVector1(0) = initialConditions[2][2];
+//            initialStateVector1(1) = initialConditions[2][3];
+//            initialStateVector1(2) = initialConditions[2][4];
+//            initialStateVector1(3) = initialConditions[2][5];
+//            initialStateVector1(4) = initialConditions[2][6];
+//            initialStateVector1(5) = initialConditions[2][7];
+//
+//            orbitalPeriod2         = initialConditions[1][1];
+//            initialStateVector2    = Eigen::VectorXd::Zero(6);
+//            initialStateVector2(0) = initialConditions[1][2];
+//            initialStateVector2(1) = initialConditions[1][3];
+//            initialStateVector2(2) = initialConditions[1][4];
+//            initialStateVector2(3) = initialConditions[1][5];
+//            initialStateVector2(4) = initialConditions[1][6];
+//            initialStateVector2(5) = initialConditions[1][7];
+//
+//            completeInitialConditionsHaloFamily( initialStateVector1, initialStateVector2, orbitalPeriod1, orbitalPeriod2, librationPointNr );
 
             // ==================================================================================================================
             // == Create initial conditions for the axial family, based on the bifurcation from the horizontal Lyapunov family ==
@@ -166,7 +166,7 @@ int main (){
 //            initialStateVector1(3) = initialConditions[orbitIdForBifurcationToAxial][5];
 //            initialStateVector1(4) = initialConditions[orbitIdForBifurcationToAxial][6];
 //            initialStateVector1(5) = initialConditions[orbitIdForBifurcationToAxial][7] + offsetForBifurcationToAxial1;
-            Eigen::VectorXd stateVectorInclSTM;
+//            Eigen::VectorXd stateVectorInclSTM;
 //            stateVectorInclSTM     = writePeriodicOrbitToFile( initialStateVector1, librationPointNr, "axial", 0, orbitalPeriod1, massParameter);
 //
 //            orbitalPeriod2         = initialConditions[orbitIdForBifurcationToAxial][1];
@@ -220,7 +220,7 @@ int main (){
             }
 
             double orbitalPeriod               = initialConditions[orbitIdForManifold][1];
-            Eigen::VectorXd initialStateVector = Eigen::VectorXd::Zero(6);
+            Eigen::Vector6d initialStateVector = Eigen::VectorXd::Zero(6);
             initialStateVector(0) = initialConditions[orbitIdForManifold][2];
             initialStateVector(1) = initialConditions[orbitIdForManifold][3];
             initialStateVector(2) = initialConditions[orbitIdForManifold][4];
@@ -237,6 +237,8 @@ int main (){
 //            std::cout << "=================================================================="         << std::endl;
 //
 //            computeManifolds(initialStateVector, orbitalPeriod, librationPointNr, orbitType, orbitIdForManifold);
+            computeManifolds(initialStateVector, orbitalPeriod, orbitIdForManifold, librationPointNr, orbitType);
+
         }
     }
 

@@ -18,7 +18,10 @@ void appendDifferentialCorrectionResultsVector(
         const double jacobiEnergyHalfPeriod,  const Eigen::VectorXd& differentialCorrectionResult,
         std::vector< Eigen::VectorXd >& differentialCorrections );
 
-Eigen::Vector7d getInitialStateVectorGuess( const int librationPointNr, const std::string& orbitType, const int guessIteration );
+double getEarthMoonAmplitude( const int librationPointNr, const std::string& orbitType, const int guessIteration );
+
+Eigen::Vector7d getInitialStateVectorGuess( const int librationPointNr, const std::string& orbitType, const int guessIteration,
+                                            const boost::function< double( const int librationPointNr, const std::string& orbitType, const int guessIteration ) > getAmplitude = getEarthMoonAmplitude );
 
 Eigen::MatrixXd getCorrectedInitialState( const Eigen::Vector6d& initialStateGuess, const double orbitalPeriod, const int orbitNumber,
                                           const int librationPointNr, std::string orbitType, const double massParameter,

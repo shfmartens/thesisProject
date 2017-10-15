@@ -55,42 +55,42 @@ void appendDifferentialCorrectionResultsVector(
 
 }
 
-Eigen::Vector7d getInitialStateVectorGuess( const int librationPointNr, const std::string& orbitType, const int guessIteration )
+double getEarthMoonAmplitude( const int librationPointNr, const std::string& orbitType, const int guessIteration )
 {
-    Eigen::Vector7d richardsonThirdOrderApproximationResult;
+    double amplitude;
     if( guessIteration == 0 )
     {
         if (orbitType == "horizontal")
         {
             if (librationPointNr == 1)
             {
-                richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("horizontal", 1, 1.0e-3);
+                amplitude = 1.0e-3;
             }
             else if (librationPointNr == 2)
             {
-                richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("horizontal", 2, 1.0e-4);
+                amplitude = 1.0e-4;
             }
         }
         else if (orbitType == "vertical")
         {
             if (librationPointNr == 1)
             {
-                richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("vertical", 1, 1.0e-1);
+                amplitude = 1.0e-1;
             }
             else if (librationPointNr == 2)
             {
-                richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("vertical", 2, 1.0e-1);
+                amplitude = 1.0e-1;
             }
         }
         else if (orbitType == "halo")
         {
             if (librationPointNr == 1)
             {
-                richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("halo", 1, 1.1e-1, 3.0);
+                amplitude = -1.1e-1;
             }
             else if (librationPointNr == 2)
             {
-                richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("halo", 2, 1.5e-1);
+                amplitude = 1.5e-1;
             }
         }
     }
@@ -101,36 +101,45 @@ Eigen::Vector7d getInitialStateVectorGuess( const int librationPointNr, const st
         {
             if (librationPointNr == 1)
             {
-                richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("horizontal", 1, 1.0e-4);
+                amplitude = 1.0e-4;
             }
             else if (librationPointNr == 2)
             {
-                richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("horizontal", 2, 1.0e-3);
+                amplitude = 1.0e-3;
             }
         }
         else if (orbitType == "vertical")
         {
             if (librationPointNr == 1)
             {
-                richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("vertical", 1, 2.0e-1);
+                amplitude = 2.0e-1;
             }
             else if (librationPointNr == 2)
             {
-                richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("vertical", 2, 2.0e-1);
+                amplitude = 2.0e-1;
             }
         }
         else if (orbitType == "halo")
         {
             if (librationPointNr == 1)
             {
-                richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("halo", 1, 1.2e-1, 3.0);
+                amplitude = -1.2e-1;
             }
             else if (librationPointNr == 2)
             {
-                richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation("halo", 2, 1.6e-1);
+                amplitude = 1.6e-1;
             }
         }
     }
+
+    return amplitude;
+}
+
+Eigen::Vector7d getInitialStateVectorGuess( const int librationPointNr, const std::string& orbitType, const int guessIteration,
+                                            const boost::function< double( const int librationPointNr, const std::string& orbitType, const int guessIteration ) > getAmplitude = getEarthMoonAmplitude )
+{
+    double amplitude = getAmplitude( librationPointNr, orbitType, guessIteration );
+    Eigen::Vector7d richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation(orbitType, librationPointNr, amplitude);
 
     return richardsonThirdOrderApproximationResult;
 }

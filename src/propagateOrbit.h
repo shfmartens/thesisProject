@@ -18,11 +18,12 @@ std::pair< Eigen::MatrixXd, double > propagateOrbit(
         const Eigen::MatrixXd& stateVectorInclSTM, double massParameter, double currentTime,
         int direction, double initialStepSize = 1.0E-5, double maximumStepSize = 1.0E-4 );
 
-
 std::pair< Eigen::MatrixXd, double >  propagateOrbitToFinalCondition(
         const Eigen::MatrixXd fullInitialState, const double massParameter, const double finalTime, int direction,
-        std::map< double, Eigen::Vector6d >& stateHistory,
-        const int saveFrequency = -1,
-        const double initialTime = 0.0 );
+        std::map< double, Eigen::Vector6d >& stateHistory, const int saveFrequency = -1, const double initialTime = 0.0 );
+
+std::pair< Eigen::MatrixXd, double >  propagateOrbitWithStateTransitionMatrixToFinalCondition(
+        const Eigen::MatrixXd fullInitialState, const double massParameter, const double finalTime, int direction,
+        std::map< double, Eigen::MatrixXd >& stateTransitionMatrixHistory, const int saveFrequency = -1, const double initialTime = 0.0);
 
 #endif  // TUDATBUNDLE_PROPAGATEORBIT_H
