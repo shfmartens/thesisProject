@@ -157,14 +157,15 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitWithStateTransitionMatrixToF
     // Perform integration steps until end of half orbital period
     for (int i = 5; i <= 12; i++)
     {
-
         double initialStepSize = pow(10,(static_cast<float>(-i)));
-        double maximumStepSize = pow(10,(static_cast<float>(-i) + 1.0));
+        // TODO make fixed step size an option
+//        double maximumStepSize = pow(10,(static_cast<float>(-i) + 1.0));
+        double maximumStepSize = initialStepSize;
 
         while (currentTime <= finalTime )
         {
-            // Write every nth integration step to file.
-            if ( saveFrequency > 0 && ( stepCounter % saveFrequency == 0 ) )
+            // Write every nth integration step to file. TODO but only for the same step-size (as you want equally spaced orbits along the manifold)
+            if ( saveFrequency > 0 && ( stepCounter % saveFrequency == 0 ) && i == 5 )
             {
                 stateTransitionMatrixHistory[ currentTime ] = currentState.first;
             }
@@ -172,7 +173,6 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitWithStateTransitionMatrixToF
             currentTime = currentState.second;
             previousState = currentState;
             currentState = propagateOrbit(currentState.first, massParameter, currentTime, 1, initialStepSize, maximumStepSize);
-
             stepCounter++;
 
             if (currentState.second > finalTime )

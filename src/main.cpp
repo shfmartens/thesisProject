@@ -18,11 +18,14 @@
 #include "computeManifolds.h"
 #include "completeInitialConditionsHaloFamily.h"
 #include "createInitialConditionsAxialFamily.h"
+#include "connectManifoldsAtTheta.h"
 
 double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER, tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER );
 
 int main (){
 
+//    connectManifoldsAtTheta( "vertical",  -158.0 );
+//    sleep(1E10);
     // ================================0
     // == Compute initial conditions ==
     // ================================
@@ -61,10 +64,10 @@ int main (){
 //    sleep( 1000000.0 );
 
 
-    //#pragma omp parallel num_threads(6)
+//    #pragma omp parallel num_threads(2)
     {
-        //#pragma omp for
-        for (unsigned int i=0; i<6; i++) {
+//        #pragma omp for
+        for (unsigned int i=0; i<2; i++) {
 
             std::string orbitType;
             int librationPointNr;
@@ -191,11 +194,13 @@ int main (){
                 if (librationPointNr == 1) {
 //                    orbitIdForManifold = 808;  // C = 3.05
 //                    orbitIdForManifold = 577;  // C = 3.1
-                    orbitIdForManifold = 330;  // C = 3.15
+//                    orbitIdForManifold = 330;  // C = 3.15
+                    orbitIdForManifold = 0;  // C = 3.15
                 } else {
 //                    orbitIdForManifold = 1066;  // C = 3.05
 //                    orbitIdForManifold = 760;  // C = 3.1
-                    orbitIdForManifold = 373;  // C = 3.15
+//                    orbitIdForManifold = 373;  // C = 3.15
+                    orbitIdForManifold = 0;  // C = 3.15
                 }
             } if (orbitType == "halo") {
                 if (librationPointNr == 1) {

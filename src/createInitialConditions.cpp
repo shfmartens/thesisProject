@@ -10,6 +10,7 @@
 #include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
 #include "Tudat/Astrodynamics/Gravitation/jacobiEnergy.h"
 
+#include "createInitialConditions.h"
 #include "applyDifferentialCorrection.h"
 #include "checkEigenvalues.h"
 #include "propagateOrbit.h"
@@ -136,7 +137,7 @@ double getEarthMoonAmplitude( const int librationPointNr, const std::string& orb
 }
 
 Eigen::Vector7d getInitialStateVectorGuess( const int librationPointNr, const std::string& orbitType, const int guessIteration,
-                                            const boost::function< double( const int librationPointNr, const std::string& orbitType, const int guessIteration ) > getAmplitude = getEarthMoonAmplitude )
+                                            const boost::function< double( const int librationPointNr, const std::string& orbitType, const int guessIteration ) > getAmplitude )
 {
     double amplitude = getAmplitude( librationPointNr, orbitType, guessIteration );
     Eigen::Vector7d richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation(orbitType, librationPointNr, amplitude);

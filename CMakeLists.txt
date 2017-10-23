@@ -12,7 +12,7 @@
 cmake_minimum_required(VERSION 2.6)
 
 # Specify project name.
-project(thesisProject)
+project(privateTudatApplications)
 
 # Load UserSettings.txt
 if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
@@ -54,10 +54,10 @@ enable_testing()
 
 # Set lib and bin directories where static libraries and unit tests are built.
 if(NOT LIB_ROOT)
-  set(LIB_ROOT "${CODEROOT}/thesisProject/lib")
+  set(LIB_ROOT "${CODEROOT}/PrivateTudatApplications/lib")
 endif()
 if(NOT BIN_ROOT)
-  set(BIN_ROOT "${CODEROOT}/thesisProject/bin")
+  set(BIN_ROOT "${CODEROOT}/PrivateTudatApplications/bin")
 endif()
 
 # Set the global macros for setting up targets.
@@ -229,6 +229,6 @@ list(APPEND TUDAT_APPLICATION_PROPAGATION_LIBRARIES tudat_simulation_setup tudat
 add_library(tudat_cr3bp STATIC ${CR3BP_SOURCES} ${CR3BP_HEADERS})
 setup_library_target(tudat_cr3bp "${SRCROOT}/src/")
 
-add_executable(main "${SRCROOT}/src/main.cpp")
-setup_executable_target(main "${SRCROOT}")
-target_link_libraries(main tudat_cr3bp tudat_gravitation tudat_basic_astrodynamics tudat_numerical_integrators ${TUDAT_CORE_LIBRARIES} ${Eigen_LIBRARIES} ${Boost_LIBRARIES})
+add_executable(mainP "${SRCROOT}/src/main.cpp")
+setup_executable_target(mainP "${SRCROOT}")
+target_link_libraries(mainP tudat_cr3bp tudat_gravitation tudat_basic_astrodynamics tudat_numerical_integrators ${TUDAT_CORE_LIBRARIES} ${Eigen_LIBRARIES} ${Boost_LIBRARIES})

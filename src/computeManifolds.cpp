@@ -246,6 +246,7 @@ void computeManifolds( const Eigen::Vector6d initialStateVector, const double or
     Eigen::MatrixXd stateVectorInclSTM = propagateOrbitWithStateTransitionMatrixToFinalCondition(getFullInitialState( initialStateVector ), massParameter, orbitalPeriod, 1, stateTransitionMatrixHistory, 1, 0.0 ).first;
 
     const unsigned int numberOfPointsOnPeriodicOrbit = stateTransitionMatrixHistory.size();
+    std::cout << "numberOfPointsOnPeriodicOrbit: " << numberOfPointsOnPeriodicOrbit << std::endl;
 
     // Determine the eigenvector directions of the (un)stable subspace of the monodromy matrix
     Eigen::MatrixXd monodromyMatrix = stateVectorInclSTM.block(0,1,6,6);
@@ -343,17 +344,8 @@ void computeManifolds( const Eigen::Vector6d initialStateVector, const double or
                     ySignSet = true;
                 }
 
-                // Determine when the manifold crosses the x-axis again (U1, U4)
-                if ( (stateVectorInclSTM(1, 0) * ySign < 0) and ySignSet ) {
-                    reduceOvershootAtPoincareSectionU1U4(stateVectorInclSTMAndTime, previousStateVectorInclSTMAndTime,
-                                                         stateVectorInclSTM, currentTime, ySign, integrationDirection,
-                                                         massParameter);
-                    fullManifoldComputed = true;
-                }
-
-                // Determine sign of x within 5% of second primary, 1-mu  (U2, U3)
-                // TODO think of different criteria for definition of xDiffSign (maybe with a location check on the zero-velocity surface)
-                if ( std::abs((stateVectorInclSTM(0, 0) - (1.0 - massParameter)) / (1.0 - massParameter)) < 0.05 and !xDiffSignSet ) {
+                // Determine whether the trajectory approaches U2, U3 from the right or left (U2, U3)
+                if ( !xDiffSignSet ) {
                     if ( (stateVectorInclSTM(0, 0) - (1.0 - massParameter)) < 0 ) {
                         xDiffSign = -1.0;
                     }
@@ -363,11 +355,20 @@ void computeManifolds( const Eigen::Vector6d initialStateVector, const double or
                     xDiffSignSet = true;
                 }
 
+                // Determine when the manifold crosses the x-axis again (U1, U4)
+                if ( (stateVectorInclSTM(1, 0) * ySign < 0) and ySignSet ) {
+                    reduceOvershootAtPoincareSectionU1U4(stateVectorInclSTMAndTime, previousStateVectorInclSTMAndTime,
+                                                         stateVectorInclSTM, currentTime, ySign, integrationDirection,
+                                                         massParameter);
+                    fullManifoldComputed = true;
+                }
+
                 // Determine when the manifold crosses the Poincare section near the second primary (U2, U3)
-                // TODO think of different criteria for y < 1
-                if ( ((stateVectorInclSTM(0, 0) - (1.0 - massParameter)) * xDiffSign < 0)
-                     and (std::abs(stateVectorInclSTM(1, 0)) < 1.0) and xDiffSignSet and !ySignSet ) {
-                    reduceOvershootAtPoincareSectionU2U3(stateVectorInclSTMAndTime, previousStateVectorInclSTMAndTime,
+                if ( ((stateVectorInclSTM(0, 0) - (1.0 - massParameter)) * xDiffSign < 0) and
+                        ((librationPointNr == 1 and ( manifoldNumber == 0 or manifoldNumber == 2)) or
+                         (librationPointNr == 2 and ( manifoldNumber == 1 or manifoldNumber == 3))) ) {
+                    reduceOvershootAtPoincareSectionU2U3(stateVectorInclSTMAndTime,
+                                                         previousStateVectorInclSTMAndTime,
                                                          stateVectorInclSTM, currentTime, xDiffSign,
                                                          integrationDirection, massParameter);
                     fullManifoldComputed = true;
@@ -378,12 +379,14 @@ void computeManifolds( const Eigen::Vector6d initialStateVector, const double or
                     manifoldStateHistory[ manifoldNumber ][ trajectoryOnManifoldNumber ][ currentTime ] = stateVectorInclSTM.block( 0, 0, 6, 1 );
                 }
 
-                // Propagate to next time step.
-                previousStateVectorInclSTMAndTime = stateVectorInclSTMAndTime;
-                stateVectorInclSTMAndTime         = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, integrationDirection);
-                stateVectorInclSTM                = stateVectorInclSTMAndTime.first;
-                currentTime                       = stateVectorInclSTMAndTime.second;
-                stepCounter++;
+                if ( !fullManifoldComputed ){
+                    // Propagate to next time step.
+                    previousStateVectorInclSTMAndTime = stateVectorInclSTMAndTime;
+                    stateVectorInclSTMAndTime         = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, integrationDirection);
+                    stateVectorInclSTM                = stateVectorInclSTMAndTime.first;
+                    currentTime                       = stateVectorInclSTMAndTime.second;
+                    stepCounter++;
+                }
             }
             ySignSet             = false;
             xDiffSignSet         = false;
