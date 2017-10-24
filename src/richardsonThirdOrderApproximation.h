@@ -3,11 +3,11 @@
 
 
 
-#include "richardsonThirdOrderApproximation.cpp"
+#include <string>
 
 
 Eigen::VectorXd richardsonThirdOrderApproximation( std::string orbitType, int librationPointNr,
-                                                   double amplitude, double n );
+                                                   double amplitude, double n= 1.0 );
 
 
 

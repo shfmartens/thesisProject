@@ -4,14 +4,9 @@
 
 
 
-#include "Tudat/Astrodynamics/Gravitation/stateDerivativeCircularRestrictedThreeBodyProblem.h"
+#include "Tudat/Astrodynamics/Propagators/stateDerivativeCircularRestrictedThreeBodyProblem.h"
 
-#include "stateDerivativeModel.cpp"
-
-
-extern double massParameter;
-
-Eigen::VectorXd computeStateDerivative( const double time, const Eigen::VectorXd cartesianState );
+Eigen::MatrixXd computeStateDerivative( const double time, const Eigen::MatrixXd& cartesianState );
 
 
 

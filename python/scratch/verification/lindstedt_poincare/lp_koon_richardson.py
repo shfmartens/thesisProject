@@ -21,10 +21,10 @@ class RichardsonApproximation:
         # self.n = 2 * math.pi / P
 
 
-        self.mu = 3.041036e-6
-        self.d = 1.49598e8
-        self.n = 1.99099e-7
-
+        # self.mu = 3.041036e-6
+        # self.d = 1.49598e8
+        # self.n = 1.99099e-7
+        self.mu = mu_Sun_Earth
 
         # x, y, z = self.compute_coefficients('Horizontal', 1)
         x, y, z = self.compute_coefficients('Halo', 1)
@@ -111,13 +111,17 @@ class RichardsonApproximation:
             # Az = 57000 / (self.d*gammaL)
             pass
         if type == 'Halo':
-            Az = 10e-3 #*gammaL
-            Az = 125000/self.d #*gammaL
-            Ax = np.sqrt((-delta - l2*Az**2) / l1)
+            # Az = 10e-3 #*gammaL
+            # Az = 125000/self.d #*gammaL
+
+            Az = 110000/(149.6e6*gammaL)
+            Ax = np.sqrt(float((-delta - l2*Az**2) / l1))
+            print(Ax)
+            print(Az)
             pass
 
         tau1 = 0
-        deltan = 1
+        deltan = 2-3
 
         x = a21 * Ax**2 + a22 * Az**2 - Ax * math.cos(tau1) + (a23 * Ax**2 - a24 * Az**2) * math.cos(2 * tau1) + (a31 * Ax**3 - a32 * Ax * Az**2) * math.cos(3 * tau1)
         y = k * Ax * math.sin(tau1) + (b21 * Ax**2 - b22 * Az**2) * math.sin(2 * tau1) + (b31 * Ax**3 - b32 * Ax * Az**2) * math.sin(3 * tau1)
@@ -151,7 +155,7 @@ class RichardsonApproximation:
         omega = 1 + omega1 + omega2
 
         T = 2 * math.pi / (l * omega)
-        print('T: ' + str(T/self.n/86400))
+        # print('T: ' + str(T/self.n/86400))
         # print(df)
         return x, y, z
 

@@ -105,7 +105,7 @@ class SpatialOrbitsZoomAnimation:
             plt.plot(self.halo[k]['x'], self.halo[k]['y'], self.halo[k]['z'],
                      color=self.orbitColor, alpha=self.orbitAlpha, linewidth=self.orbitLinewidth, linestyle=':')
 
-        # Plot both primaries
+        # Plot the Moon
         u = np.linspace(0, 2 * np.pi, 100)
         v = np.linspace(0, np.pi, 100)
         bodies_df = load_bodies_location()

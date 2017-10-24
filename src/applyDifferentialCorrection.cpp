@@ -1,5 +1,8 @@
 #include <cmath>
+
+#include "Tudat/Astrodynamics/BasicAstrodynamics/celestialBodyConstants.h"
 #include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
+#include "Tudat/Astrodynamics/Gravitation/jacobiEnergy.h"
 
 #include "applyDifferentialCorrection.h"
 #include "computeDifferentialCorrection.h"
@@ -7,47 +10,27 @@
 
 
 
-Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string orbitType,
-                                             Eigen::VectorXd initialStateVector,
-                                             double orbitalPeriod, const double massParameter,
-                                             double maxPositionDeviationFromPeriodicOrbit,
-                                             double maxVelocityDeviationFromPeriodicOrbit,
-                                             int maxNumberOfIterations = 1000 )
+Eigen::VectorXd applyDifferentialCorrection(const int librationPointNr, const std::string& orbitType,
+                                            const Eigen::VectorXd& initialStateVector,
+                                            double orbitalPeriod, const double massParameter,
+                                            double maxPositionDeviationFromPeriodicOrbit,
+                                            double maxVelocityDeviationFromPeriodicOrbit,
+                                            const int maxNumberOfIterations )
 {
     std::cout << "\nApply differential correction:" << std::endl;
 
-    Eigen::VectorXd initialStateVectorInclSTM = Eigen::VectorXd::Zero(42);
-    Eigen::MatrixXd identityMatrix            = Eigen::MatrixXd::Identity(6,6);
-    identityMatrix.resize(36,1);
+    Eigen::MatrixXd initialStateVectorInclSTM = Eigen::MatrixXd::Zero( 6, 7 );
 
-    initialStateVectorInclSTM.segment(0,6)    = initialStateVector;
-    initialStateVectorInclSTM.segment(6,36)   = identityMatrix;
+    initialStateVectorInclSTM.block( 0, 0, 6, 1 ) = initialStateVector;
+    initialStateVectorInclSTM.block( 0, 1, 6, 6 ).setIdentity( );
 
-    // Perform first integration step
-    Eigen::VectorXd previousHalfPeriodState;
-    Eigen::VectorXd halfPeriodState     = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.0, 1);
-    Eigen::VectorXd stateVectorInclSTM  = halfPeriodState.segment(0,42);
-    double currentTime                  = halfPeriodState(42);
-    int numberOfIterations              = 0;
+    std::map< double, Eigen::Vector6d > stateHistory;
 
-    // Perform integration steps until end of half orbital period
-    for (int i = 5; i <= 12; i++) {
-
-        double initialStepSize = pow(10,(static_cast<float>(-i)));
-        double maximumStepSize = pow(10,(static_cast<float>(-i) + 1.0));
-
-        while (currentTime <= (orbitalPeriod / 2.0)) {
-            stateVectorInclSTM      = halfPeriodState.segment(0, 42);
-            currentTime             = halfPeriodState(42);
-            previousHalfPeriodState = halfPeriodState;
-            halfPeriodState         = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, 1, initialStepSize, maximumStepSize);
-
-            if (halfPeriodState(42) > (orbitalPeriod / 2.0)) {
-                halfPeriodState = previousHalfPeriodState;
-                break;
-            }
-        }
-    }
+    std::pair< Eigen::MatrixXd, double > halfPeriodState = propagateOrbitToFinalCondition(
+                initialStateVectorInclSTM, massParameter, orbitalPeriod / 2.0, 1.0, stateHistory, -1, 0.0 );
+    Eigen::MatrixXd stateVectorInclSTM      = halfPeriodState.first;
+    double currentTime             = halfPeriodState.second;
+    Eigen::VectorXd stateVectorOnly = stateVectorInclSTM.block( 0, 0, 6, 1 );
 
     // Initialize variables
     Eigen::VectorXd differentialCorrection(7);
@@ -55,35 +38,42 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
     double positionDeviationFromPeriodicOrbit;
     double velocityDeviationFromPeriodicOrbit;
 
-    if (orbitType == "axial"){
+    if (orbitType == "axial")
+    {
         // Initial condition for axial family should be [x, 0, 0, 0, ydot, zdot]
-        positionDeviationFromPeriodicOrbit = sqrt(pow(halfPeriodState(1), 2) + pow(halfPeriodState(2), 2));
-        velocityDeviationFromPeriodicOrbit = sqrt(pow(halfPeriodState(3), 2));
-    } else {
+        positionDeviationFromPeriodicOrbit = sqrt(pow(stateVectorOnly(1), 2) + pow(stateVectorOnly(2), 2));
+        velocityDeviationFromPeriodicOrbit = sqrt(pow(stateVectorOnly(3), 2));
+    }
+    else
+    {
         // Initial condition for other families should be [x, 0, y, 0, ydot, 0]
-        positionDeviationFromPeriodicOrbit = sqrt(pow(halfPeriodState(1), 2));
-        velocityDeviationFromPeriodicOrbit = sqrt(pow(halfPeriodState(3), 2) + pow(halfPeriodState(5), 2));
+        positionDeviationFromPeriodicOrbit = sqrt(pow(stateVectorOnly(1), 2));
+        velocityDeviationFromPeriodicOrbit = sqrt(pow(stateVectorOnly(3), 2) + pow(stateVectorOnly(5), 2));
     }
 
-    std::cout << "\nInitial state vector:\n"                  << initialStateVectorInclSTM.segment(0,6)
+    std::cout << "\nInitial state vector:\n"                  << initialStateVectorInclSTM.block( 0, 0, 6, 1 )
               << "\nPosition deviation from periodic orbit: " << positionDeviationFromPeriodicOrbit
               << "\nVelocity deviation from periodic orbit: " << velocityDeviationFromPeriodicOrbit
               << "\n\nDifferential correction:"               << std::endl;
 
     bool deviationFromPeriodicOrbitRelaxed = false;
 
+    int numberOfIterations = 0;
     // Apply differential correction and propagate to half-period point until converged.
     while ( positionDeviationFromPeriodicOrbit > maxPositionDeviationFromPeriodicOrbit or
-            velocityDeviationFromPeriodicOrbit > maxVelocityDeviationFromPeriodicOrbit ){
+            velocityDeviationFromPeriodicOrbit > maxVelocityDeviationFromPeriodicOrbit )
+    {
 
         // If the maximum number of iterations has been reached, return a zero vector to stop the numerical continuation
-        if (numberOfIterations > maxNumberOfIterations){
-           return Eigen::VectorXd::Zero(15);
+        if (numberOfIterations > maxNumberOfIterations)
+        {
+            return Eigen::VectorXd::Zero(15);
         }
 
         // Relax the maximum deviation requirements to compute the horizontal Lyapunov family in L2
         if (deviationFromPeriodicOrbitRelaxed == false and numberOfIterations > 10 and
-            orbitType == "horizontal" and librationPointNr == 2){
+                orbitType == "horizontal" and librationPointNr == 2)
+        {
 
             maxPositionDeviationFromPeriodicOrbit = 10.0 * maxPositionDeviationFromPeriodicOrbit;
             maxVelocityDeviationFromPeriodicOrbit = 10.0 * maxVelocityDeviationFromPeriodicOrbit;
@@ -91,53 +81,38 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
         }
 
         // Apply differential correction
-        if (numberOfIterations > 10 and orbitType == "axial" and librationPointNr == 2){
+        if (numberOfIterations > 10 and orbitType == "axial" and librationPointNr == 2)
+        {
             // To compute the full L2 axial family, fix x position after not finding a fully periodic solution after 10 iterations
-            differentialCorrection = computeDifferentialCorrection( librationPointNr, orbitType, halfPeriodState, true );
-        } else{
-            differentialCorrection = computeDifferentialCorrection( librationPointNr, orbitType, halfPeriodState );
+            differentialCorrection = computeDifferentialCorrection( librationPointNr, orbitType, stateVectorInclSTM, true );
+        }
+        else
+        {
+            differentialCorrection = computeDifferentialCorrection( librationPointNr, orbitType, stateVectorInclSTM, false );
         }
 
-        initialStateVectorInclSTM(0) = initialStateVectorInclSTM(0) + differentialCorrection(0)/1.0;
-        initialStateVectorInclSTM(1) = initialStateVectorInclSTM(1) + differentialCorrection(1)/1.0;
-        initialStateVectorInclSTM(2) = initialStateVectorInclSTM(2) + differentialCorrection(2)/1.0;
-        initialStateVectorInclSTM(3) = initialStateVectorInclSTM(3) + differentialCorrection(3)/1.0;
-        initialStateVectorInclSTM(4) = initialStateVectorInclSTM(4) + differentialCorrection(4)/1.0;
-        initialStateVectorInclSTM(5) = initialStateVectorInclSTM(5) + differentialCorrection(5)/1.0;
-        orbitalPeriod                = orbitalPeriod + 2.0 * differentialCorrection(6) / 1.0;
+        std::cout<<"APPLYING DIFF. CORR: "<<differentialCorrection<<std::endl;
 
-        // Perform first integration step
-        halfPeriodState    = propagateOrbit( initialStateVectorInclSTM, massParameter, 0.0, 1);
-        stateVectorInclSTM = halfPeriodState.segment(0,42);
-        currentTime        = halfPeriodState(42);
+        initialStateVectorInclSTM.block( 0, 0, 6, 1 ) += differentialCorrection.segment( 0, 6 ) / 1.0;
+        orbitalPeriod  = orbitalPeriod + 2.0 * differentialCorrection( 6 ) / 1.0;
 
-        // Perform integration steps until end of half orbital period
-        for (int i = 5; i <= 12; i++) {
+        std::pair< Eigen::MatrixXd, double > halfPeriodState = propagateOrbitToFinalCondition(
+                    initialStateVectorInclSTM, massParameter, orbitalPeriod / 2.0, 1.0, stateHistory, -1, 0.0 );
+        stateVectorInclSTM      = halfPeriodState.first;
+        currentTime             = halfPeriodState.second;
+        stateVectorOnly = stateVectorInclSTM.block( 0, 0, 6, 1 );
 
-            double initialStepSize = pow(10,(static_cast<float>(-i)));
-            double maximumStepSize = pow(10,(static_cast<float>(-i) + 1.0));
-
-            while (currentTime <= (orbitalPeriod / 2.0)) {
-                stateVectorInclSTM      = halfPeriodState.segment(0, 42);
-                currentTime             = halfPeriodState(42);
-                previousHalfPeriodState = halfPeriodState;
-                halfPeriodState         = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, 1, initialStepSize, maximumStepSize);
-
-                if (halfPeriodState(42) > (orbitalPeriod / 2.0)) {
-                    halfPeriodState = previousHalfPeriodState;
-                    break;
-                }
-            }
-        }
-
-        if (orbitType == "axial"){
+        if (orbitType == "axial")
+        {
             // Initial condition for axial family should be [x, 0, 0, 0, ydot, zdot]
-            positionDeviationFromPeriodicOrbit = sqrt(pow(halfPeriodState(1), 2) + pow(halfPeriodState(2), 2));
-            velocityDeviationFromPeriodicOrbit = sqrt(pow(halfPeriodState(3), 2));
-        } else {
+            positionDeviationFromPeriodicOrbit = sqrt(pow(stateVectorOnly(1), 2) + pow(stateVectorOnly(2), 2));
+            velocityDeviationFromPeriodicOrbit = sqrt(pow(stateVectorOnly(3), 2));
+        }
+        else
+        {
             // Initial condition for other families should be [x, 0, y, 0, ydot, 0]
-            positionDeviationFromPeriodicOrbit = sqrt(pow(halfPeriodState(1), 2));
-            velocityDeviationFromPeriodicOrbit = sqrt(pow(halfPeriodState(3), 2) + pow(halfPeriodState(5), 2));
+            positionDeviationFromPeriodicOrbit = sqrt(pow(stateVectorOnly(1), 2));
+            velocityDeviationFromPeriodicOrbit = sqrt(pow(stateVectorOnly(3), 2) + pow(stateVectorOnly(5), 2));
         }
         numberOfIterations += 1;
 
@@ -145,10 +120,10 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
                   << "velocityDeviationFromPeriodicOrbit: " << velocityDeviationFromPeriodicOrbit << "\n" << std::endl;
     }
 
-    double jacobiEnergyHalfPeriod       = tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, halfPeriodState.segment(0,6));
-    double jacobiEnergyInitialCondition = tudat::gravitation::circular_restricted_three_body_problem::computeJacobiEnergy(massParameter, initialStateVectorInclSTM.segment(0,6));
+    double jacobiEnergyHalfPeriod       = tudat::gravitation::computeJacobiEnergy(massParameter, stateVectorOnly);
+    double jacobiEnergyInitialCondition = tudat::gravitation::computeJacobiEnergy(massParameter, initialStateVectorInclSTM.block( 0, 0, 6, 1 ));
 
-    std::cout << "\nCorrected initial state vector:" << std::endl << initialStateVectorInclSTM.segment(0,6)        << std::endl
+    std::cout << "\nCorrected initial state vector:" << std::endl << initialStateVectorInclSTM.block( 0, 0, 6, 1 )        << std::endl
               << "\nwith orbital period: "           << orbitalPeriod                                              << std::endl
               << "||J(0) - J(T/2|| = "               << std::abs(jacobiEnergyInitialCondition - jacobiEnergyHalfPeriod) << std::endl
               << "||T/2 - t|| = "                    << std::abs(orbitalPeriod/2.0 - currentTime) << "\n"               << std::endl;
@@ -157,9 +132,9 @@ Eigen::VectorXd applyDifferentialCorrection( int librationPointNr, std::string o
     // 1. Corrected initial state vector, including orbital period
     // 2. Half period state vector, including currentTime of integration
     // 3. numberOfIterations
-    outputVector.segment(0,6)    = initialStateVectorInclSTM.segment(0,6);
+    outputVector.segment(0,6)    = initialStateVectorInclSTM.block( 0, 0, 6, 1 );
     outputVector(6)              = orbitalPeriod;
-    outputVector.segment(7,6)    = halfPeriodState.segment(0,6);
+    outputVector.segment(7,6)    = stateVectorOnly;
     outputVector(13)             = currentTime;
     outputVector(14)             = numberOfIterations;
 

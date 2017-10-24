@@ -3,11 +3,11 @@
 
 
 
-#include "checkEigenvalues.cpp"
+#include "Eigen/Core"
 
 
-bool checkEigenvalues( Eigen::VectorXd stateVectorInclSTM, double maxEigenvalueDeviation,
-                       bool moduleOneInsteadOfRealOne );
+bool checkEigenvalues( const Eigen::MatrixXd& stateVectorInclSTM, const double maxEigenvalueDeviation = 1.0E-3,
+                      const bool moduleOneInsteadOfRealOne = false );
 
 
 

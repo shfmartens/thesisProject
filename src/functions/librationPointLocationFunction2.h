@@ -34,17 +34,17 @@ struct LibrationPointLocationFunction2 : public LibrationPointLocationFunction,
     unsigned int maximumDerivativeOrder;
 
     //! Create a function, where aMaximumDerivativeOrder is the maximum order of the derivative.
-    LibrationPointLocationFunction2( unsigned int aMaximumDerivativeOrder )
-        : maximumDerivativeOrder( aMaximumDerivativeOrder )
+    LibrationPointLocationFunction2( unsigned int aMaximumDerivativeOrder, const double massParameter )
+        : maximumDerivativeOrder( aMaximumDerivativeOrder ), massParameter_( massParameter )
     { }
 
     //! Mathematical test function.
     double evaluate( const double inputValue )
     {
         // Define Mathematical function: f(x) =
-        return pow(inputValue, 5.0) + (3.0 - massParameter) * pow(inputValue, 4.0)
-               + (3.0 - 2.0 * massParameter) * pow(inputValue, 3.0) - massParameter * pow(inputValue, 2.0)
-               - 2.0 * massParameter * inputValue - massParameter;
+        return pow(inputValue, 5.0) + (3.0 - massParameter_) * pow(inputValue, 4.0)
+               + (3.0 - 2.0 * massParameter_) * pow(inputValue, 3.0) - massParameter_ * pow(inputValue, 2.0)
+               - 2.0 * massParameter_ * inputValue - massParameter_;
     }
 
     //! Derivatives of mathematical test function.
@@ -66,16 +66,16 @@ struct LibrationPointLocationFunction2 : public LibrationPointLocationFunction,
         else if ( order == 1 )
         {
             // Return the first derivative function value: y =
-            return 5.0*pow(inputValue, 4.0) + 4.0*(3.0 - massParameter)*pow(inputValue, 3.0)
-                   + 3.0*(3.0 - 2.0 * massParameter) * pow(inputValue, 2.0) - 2.0*massParameter * inputValue
-                   - 2.0 * massParameter;
+            return 5.0*pow(inputValue, 4.0) + 4.0*(3.0 - massParameter_)*pow(inputValue, 3.0)
+                   + 3.0*(3.0 - 2.0 * massParameter_) * pow(inputValue, 2.0) - 2.0*massParameter_ * inputValue
+                   - 2.0 * massParameter_;
         }
 
         else if ( order == 2 )
         {
             // Return the second derivative function value: y = .
-            return 20.0*pow(inputValue, 3.0) + 12.0*(3.0 - massParameter)*pow(inputValue, 2.0)
-                   + 6.0*(3.0 - 2.0 * massParameter) * inputValue - 2.0*massParameter;
+            return 20.0*pow(inputValue, 3.0) + 12.0*(3.0 - massParameter_)*pow(inputValue, 2.0)
+                   + 6.0*(3.0 - 2.0 * massParameter_) * inputValue - 2.0*massParameter_;
         }
 
         else
@@ -136,6 +136,8 @@ struct LibrationPointLocationFunction2 : public LibrationPointLocationFunction,
     double getUpperBound( ) { return 1.0; }
 
 protected:
+
+    double massParameter_;
 
 private:
 };

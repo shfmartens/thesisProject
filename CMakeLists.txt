@@ -194,7 +194,44 @@ list(APPEND TUDAT_APPLICATION_PROPAGATION_LIBRARIES tudat_simulation_setup tudat
    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
  endif()
 
+ set(CR3BP_SOURCES
+         "${SRCROOT}/src/applyDifferentialCorrection.cpp"
+         "${SRCROOT}/src/checkEigenvalues.cpp"
+         "${SRCROOT}/src/completeInitialConditionsHaloFamily.cpp"
+         "${SRCROOT}/src/computeDifferentialCorrection.cpp"
+         "${SRCROOT}/src/computeManifolds.cpp"
+         "${SRCROOT}/src/createInitialConditions.cpp"
+         "${SRCROOT}/src/createInitialConditionsAxialFamily.cpp"
+         "${SRCROOT}/src/propagateOrbit.cpp"
+         "${SRCROOT}/src/richardsonThirdOrderApproximation.cpp"
+         "${SRCROOT}/src/stateDerivativeModel.cpp"
+         "${SRCROOT}/src/writePeriodicOrbitToFile.cpp"
+         )
 
-add_executable(main "${SRCROOT}/src/main.cpp")
-setup_executable_target(main "${SRCROOT}")
-target_link_libraries(main tudat_gravitation tudat_basic_astrodynamics tudat_numerical_integrators ${TUDAT_CORE_LIBRARIES} ${Eigen_LIBRARIES} ${Boost_LIBRARIES})
+ # Set the header files.
+ set(CR3BP_HEADERS
+         "${SRCROOT}/src/applyDifferentialCorrection.h"
+         "${SRCROOT}/src/checkEigenvalues.h"
+         "${SRCROOT}/src/completeInitialConditionsHaloFamily.h"
+         "${SRCROOT}/src/computeDifferentialCorrection.h"
+         "${SRCROOT}/src/computeManifolds.h"
+         "${SRCROOT}/src/createInitialConditions.h"
+         "${SRCROOT}/src/createInitialConditionsAxialFamily.h"
+         "${SRCROOT}/src/propagateOrbit.h"
+         "${SRCROOT}/src/richardsonThirdOrderApproximation.h"
+         "${SRCROOT}/src/stateDerivativeModel.h"
+         "${SRCROOT}/src/writePeriodicOrbitToFile.h"
+         )
+
+ # Add static libraries.
+ add_library(tudat_cr3bp_new STATIC ${CR3BP_SOURCES} ${CR3BP_HEADERS})
+ setup_library_target(tudat_cr3bp_new "${SRCROOT}/src/")
+
+ add_executable(main "${SRCROOT}/src/main.cpp")
+ setup_executable_target(main "${SRCROOT}")
+ target_link_libraries(main tudat_cr3bp tudat_gravitation tudat_basic_astrodynamics tudat_numerical_integrators ${TUDAT_CORE_LIBRARIES} ${Eigen_LIBRARIES} ${Boost_LIBRARIES})
+
+
+ #add_executable(main "${SRCROOT}/src/main.cpp")
+#setup_executable_target(main "${SRCROOT}")
+#target_link_libraries(main tudat_gravitation tudat_basic_astrodynamics tudat_numerical_integrators ${TUDAT_CORE_LIBRARIES} ${Eigen_LIBRARIES} ${Boost_LIBRARIES})

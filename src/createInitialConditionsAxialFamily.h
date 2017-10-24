@@ -3,7 +3,7 @@
 
 
 
-#include "createInitialConditionsAxialFamily.cpp"
+#include <Eigen/Core>
 
 
 void createInitialConditionsAxialFamily( Eigen::VectorXd initialStateVector1, Eigen::VectorXd initialStateVector2,
