@@ -200,6 +200,7 @@ list(APPEND TUDAT_APPLICATION_PROPAGATION_LIBRARIES tudat_simulation_setup tudat
          "${SRCROOT}/src/completeInitialConditionsHaloFamily.cpp"
          "${SRCROOT}/src/computeDifferentialCorrection.cpp"
          "${SRCROOT}/src/computeManifolds.cpp"
+         "${SRCROOT}/src/connectManifoldsAtTheta.cpp"
          "${SRCROOT}/src/createInitialConditions.cpp"
          "${SRCROOT}/src/createInitialConditionsAxialFamily.cpp"
          "${SRCROOT}/src/propagateOrbit.cpp"
@@ -215,6 +216,7 @@ list(APPEND TUDAT_APPLICATION_PROPAGATION_LIBRARIES tudat_simulation_setup tudat
          "${SRCROOT}/src/completeInitialConditionsHaloFamily.h"
          "${SRCROOT}/src/computeDifferentialCorrection.h"
          "${SRCROOT}/src/computeManifolds.h"
+         "${SRCROOT}/src/connectManifoldsAtTheta.h"
          "${SRCROOT}/src/createInitialConditions.h"
          "${SRCROOT}/src/createInitialConditionsAxialFamily.h"
          "${SRCROOT}/src/propagateOrbit.h"
@@ -224,8 +226,8 @@ list(APPEND TUDAT_APPLICATION_PROPAGATION_LIBRARIES tudat_simulation_setup tudat
          )
 
  # Add static libraries.
- add_library(tudat_cr3bp_new STATIC ${CR3BP_SOURCES} ${CR3BP_HEADERS})
- setup_library_target(tudat_cr3bp_new "${SRCROOT}/src/")
+ add_library(tudat_cr3bp STATIC ${CR3BP_SOURCES} ${CR3BP_HEADERS})
+ setup_library_target(tudat_cr3bp "${SRCROOT}/src/")
 
  add_executable(main "${SRCROOT}/src/main.cpp")
  setup_executable_target(main "${SRCROOT}")

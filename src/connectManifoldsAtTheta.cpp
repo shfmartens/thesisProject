@@ -15,8 +15,10 @@
 #include "Tudat/Astrodynamics/BasicAstrodynamics/celestialBodyConstants.h"
 #include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
 #include "Tudat/Astrodynamics/Gravitation/jacobiEnergy.h"
+
 #include "applyDifferentialCorrection.h"
 #include "computeDifferentialCorrection.h"
+#include "computeManifolds.h"
 #include "connectManifoldsAtTheta.h"
 #include "propagateOrbit.h"
 
@@ -191,6 +193,7 @@ void computeManifoldStatesAtTheta( std::map< int, std::map< double, Eigen::Vecto
         }
 
         stateVectorInclSTMAndTime = propagateOrbit(manifoldStartingState, massParameter, 0.0, integrationTimeDirection);
+        previousStateVectorInclSTMAndTime = stateVectorInclSTMAndTime;  // set first value of this parameter
         stateVectorInclSTM = stateVectorInclSTMAndTime.first;
         currentTime = stateVectorInclSTMAndTime.second;
 
@@ -203,7 +206,7 @@ void computeManifoldStatesAtTheta( std::map< int, std::map< double, Eigen::Vecto
             fullManifoldComputed = jacobiOutsideBounds;
 
             // Check whether end condition has been reached
-            currentAngleOnManifold = atan2(stateVectorInclSTM(1, 0), stateVectorInclSTM(0, 0) - (1.0 - massParameter)) * 180 / tudat::mathematical_constants::PI;
+            currentAngleOnManifold = atan2(stateVectorInclSTM(1, 0), stateVectorInclSTM(0, 0) - (1.0 - massParameter)) * 180.0 / tudat::mathematical_constants::PI;
 
             if (currentAngleOnManifold * integrationTimeDirection > thetaStoppingAngle * integrationTimeDirection and
                 currentAngleOnManifold * thetaStoppingAngle > 0.0) {
@@ -212,7 +215,7 @@ void computeManifoldStatesAtTheta( std::map< int, std::map< double, Eigen::Vecto
                 stateVectorInclSTM        = stateVectorInclSTMAndTime.first;
                 currentTime               = stateVectorInclSTMAndTime.second;
 
-                currentAngleOnManifold = atan2(stateVectorInclSTM(1, 0), stateVectorInclSTM(0, 0) - (1.0 - massParameter)) * 180 / tudat::mathematical_constants::PI;
+                currentAngleOnManifold = atan2(stateVectorInclSTM(1, 0), stateVectorInclSTM(0, 0) - (1.0 - massParameter)) * 180.0 / tudat::mathematical_constants::PI;
 
                 std::cout << "||currentAngle - thetaStoppingAngle|| = "
                           << std::abs(currentAngleOnManifold - thetaStoppingAngle)

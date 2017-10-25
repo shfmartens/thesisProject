@@ -1,8 +1,13 @@
-#ifndef TUDATBUNDLE_REFINEORBITCLEVEL_H
-#define TUDATBUNDLE_REFINEORBITCLEVEL_H
+#ifndef TUDATBUNDLE_CONNECTMANIFOLDSATTHETA_H
+#define TUDATBUNDLE_CONNECTMANIFOLDSATTHETA_H
 
 
+#include <string>
+#include <vector>
 
+#include <Eigen/Core>
+
+#include "Tudat/Basics/basicTypedefs.h"
 
 Eigen::VectorXd readInitialConditionsFromFile(const int librationPointNr, const std::string orbitType,
                                               int orbitIdOne, int orbitIdTwo, const double massParameter);

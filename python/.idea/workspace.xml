@@ -17,31 +17,31 @@
       <file leaf-file-name="load_data.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/util/load_data.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2205">
+            <state relative-caret-position="0">
               <caret line="148" column="50" lean-forward="false" selection-start-line="148" selection-start-column="4" selection-end-line="148" selection-end-column="50" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="check_refactoring.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/scratch/refactoring/check_refactoring.py">
+      <file leaf-file-name="verify_manifolds_by_symmetry.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/phase_2/verify_manifolds_by_symmetry.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="385">
-              <caret line="403" column="33" lean-forward="true" selection-start-line="403" selection-start-column="33" selection-end-line="403" selection-end-column="33" />
-              <folding />
+            <state relative-caret-position="370">
+              <caret line="427" column="28" lean-forward="true" selection-start-line="427" selection-start-column="28" selection-end-line="427" selection-end-column="28" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="minimum_impulse_manifold_connections.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/phase_3/minimum_impulse_manifold_connections.py">
+      <file leaf-file-name="manifold_connection_discrepancies.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/phase_3/manifold_connection_discrepancies.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4905">
-              <caret line="336" column="60" lean-forward="false" selection-start-line="336" selection-start-column="12" selection-end-line="336" selection-end-column="60" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="285">
+              <caret line="28" column="38" lean-forward="false" selection-start-line="28" selection-start-column="38" selection-end-line="28" selection-end-column="38" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -57,10 +57,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>plotColorIndexBasedOnTheta</find>
-      <find>ha</find>
-      <find>legen</find>
-      <find>label</find>
       <find>''</find>
       <find>min(\Delta \mathbf{V})</find>
       <find>min(\Delta</find>
@@ -87,6 +83,10 @@
       <find>self.W_S_plus.xs(i).head(1)</find>
       <find>legend(</find>
       <find>(i)</find>
+      <find>orbitDf</find>
+      <find>private</find>
+      <find>poincare_sections</find>
+      <find>orbitdf</find>
     </findStrings>
     <replaceStrings>
       <replace>1, 1</replace>
@@ -114,6 +114,7 @@
       <replace>self.W_U_plus.xs(i).tail(1)</replace>
       <replace>self.W_U_min.xs(i).tail(1)</replace>
       <replace>((n - i) % n)</replace>
+      <replace>manifolds</replace>
     </replaceStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$</dir>
@@ -123,8 +124,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/equal_energy_plot/display_families_equal_energy.py" />
-        <option value="$PROJECT_DIR$/initial_conditions/lindstedt_poincare.py" />
         <option value="$PROJECT_DIR$/equal_energy_plot/display_families_of_equal_energy.py" />
         <option value="$PROJECT_DIR$/verification/poincare/display_poincare_howell_lyapunov.py" />
         <option value="$PROJECT_DIR$/poincare/__init__.py" />
@@ -174,6 +173,8 @@
         <option value="$PROJECT_DIR$/util/load_data.py" />
         <option value="$PROJECT_DIR$/phase_3/minimum_impulse_manifold_connections.py" />
         <option value="$PROJECT_DIR$/scratch/refactoring/check_refactoring.py" />
+        <option value="$PROJECT_DIR$/phase_3/verify_manifolds_by_symmetry.py" />
+        <option value="$PROJECT_DIR$/phase_2/verify_manifolds_by_symmetry.py" />
       </list>
     </option>
   </component>
@@ -196,8 +197,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -225,60 +224,12 @@
               <item name="python" type="462c0819:PsiDirectoryNode" />
               <item name="phase_3" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="python" type="b2602c69:ProjectViewProjectNode" />
-              <item name="python" type="462c0819:PsiDirectoryNode" />
-              <item name="scratch" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="python" type="b2602c69:ProjectViewProjectNode" />
-              <item name="python" type="462c0819:PsiDirectoryNode" />
-              <item name="scratch" type="462c0819:PsiDirectoryNode" />
-              <item name="refactoring" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="python" type="b2602c69:ProjectViewProjectNode" />
-              <item name="python" type="462c0819:PsiDirectoryNode" />
-              <item name="util" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="python" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-            </path>
-            <path>
-              <item name="python" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="&lt; Python 3.5.2 (~/anaconda/bin/python.app) &gt;" type="70bed36:NamedLibraryElementNode" />
-            </path>
-            <path>
-              <item name="python" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="&lt; Python 3.5.2 (~/anaconda/bin/python.app) &gt;" type="70bed36:NamedLibraryElementNode" />
-              <item name="python3.5" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="python" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="&lt; Python 3.5.2 (~/anaconda/bin/python.app) &gt;" type="70bed36:NamedLibraryElementNode" />
-              <item name="site-packages" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="python" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="&lt; Python 3.5.2 (~/anaconda/bin/python.app) &gt;" type="70bed36:NamedLibraryElementNode" />
-              <item name="site-packages" type="462c0819:PsiDirectoryNode" />
-              <item name="matplotlib" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="python" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="&lt; Python 3.5.2 (~/anaconda/bin/python.app) &gt;" type="70bed36:NamedLibraryElementNode" />
-              <item name="-2008076625" type="70582d5e:PySkeletonsNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -289,19 +240,19 @@
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$2/Languages" value="TEXT" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/animations/bifurcations" />
-      <recent name="$PROJECT_DIR$/scratch" />
-      <recent name="$PROJECT_DIR$/util" />
-      <recent name="$PROJECT_DIR$/animation/manifold" />
-      <recent name="$PROJECT_DIR$/poincare" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/phase_3" />
       <recent name="$PROJECT_DIR$/animations/bifurcations" />
       <recent name="$PROJECT_DIR$/animations/orbits" />
       <recent name="$PROJECT_DIR$/animations/manifolds" />
       <recent name="$PROJECT_DIR$/animations/reference_frame" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/phase_2" />
+      <recent name="$PROJECT_DIR$/phase_3" />
+      <recent name="$PROJECT_DIR$/verify_manifolds_by_symmetry" />
+      <recent name="$PROJECT_DIR$/animations/bifurcations" />
+      <recent name="$PROJECT_DIR$/scratch" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -409,7 +360,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="python" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scratch/refactoring/check_refactoring.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/phase_2/verify_manifolds_by_symmetry.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -526,13 +477,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.315832" sideWeight="0.464" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3206785" sideWeight="0.464" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3287483" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.09628611" sideWeight="0.5121163" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22696011" sideWeight="0.50080776" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22696011" sideWeight="0.50080776" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4181568" sideWeight="0.4878837" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26272354" sideWeight="0.4878837" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3287483" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32737276" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -866,13 +818,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/phase_3/manifold_connection_discrepancies.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scratch/animate_3d_zoom.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="81">
@@ -882,7 +827,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/util/load_data.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2205">
+        <state relative-caret-position="0">
           <caret line="148" column="50" lean-forward="false" selection-start-line="148" selection-start-column="4" selection-end-line="148" selection-end-column="50" />
           <folding />
         </state>
@@ -890,19 +835,29 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/phase_3/minimum_impulse_manifold_connections.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4905">
+        <state relative-caret-position="40">
           <caret line="336" column="60" lean-forward="false" selection-start-line="336" selection-start-column="12" selection-end-line="336" selection-end-column="60" />
           <folding>
-            <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#0#18#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scratch/refactoring/check_refactoring.py">
+    <entry file="file://$PROJECT_DIR$/phase_3/manifold_connection_discrepancies.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="385">
-          <caret line="403" column="33" lean-forward="true" selection-start-line="403" selection-start-column="33" selection-end-line="403" selection-end-column="33" />
+        <state relative-caret-position="285">
+          <caret line="28" column="38" lean-forward="false" selection-start-line="28" selection-start-column="38" selection-end-line="28" selection-end-column="38" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/phase_2/verify_manifolds_by_symmetry.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="370">
+          <caret line="427" column="28" lean-forward="true" selection-start-line="427" selection-start-column="28" selection-end-line="427" selection-end-column="28" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

@@ -19,57 +19,59 @@
 //#include "completeInitialConditionsHaloFamily.h"
 //#include "createInitialConditionsAxialFamily.h"
 #include "connectManifoldsAtTheta.h"
+//#include "omp.h"
+
 
 double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER, tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER );
 
 int main (){
 
-//    std::vector< std::pair< double, Eigen::MatrixXd > > assembledResults;
-//
-//    #pragma omp parallel num_threads(30)
-//    {
-//        #pragma omp for
-//        for (int i=-180; i<=0; i++)
-//        {
-//            double thetaStoppingAngle = static_cast<double>(i);
-//            Eigen::MatrixXd minimumImpulseStateVectorsAtPoincare = connectManifoldsAtTheta( "vertical",  thetaStoppingAngle, 10000, 3.1 );
-//            assembledResults.push_back(std::make_pair(thetaStoppingAngle, minimumImpulseStateVectorsAtPoincare));
-//        }
-//    }
-//
-//    remove("../data/raw/poincare_sections/vertical_3.1_minimum_impulse_connections.txt");
-//    std::ofstream textFileAssembledResults("../data/raw/poincare_sections/vertical_3.1_minimum_impulse_connections.txt");
-//    textFileAssembledResults.precision(std::numeric_limits<double>::digits10);
-//
-//    for (int i=-180; i<=0; i++)
-//    {
-//        double thetaStoppingAngle = static_cast<double>(i);
-//
-//        for (unsigned int idx = 0; idx < assembledResults.size(); idx++)
-//        {
-//            if (assembledResults.at(idx).first == thetaStoppingAngle)
-//            {
-//                textFileAssembledResults << std::left << std::scientific << std::setw(30) << thetaStoppingAngle << std::setw(30)
-//                                         << assembledResults.at(idx).second(0, 0)  << std::setw(30)
-//                                         << assembledResults.at(idx).second(0, 1)  << std::setw(30)
-//                                         << assembledResults.at(idx).second(0, 2)  << std::setw(30)
-//                                         << assembledResults.at(idx).second(0, 3)  << std::setw(30)
-//                                         << assembledResults.at(idx).second(0, 4)  << std::setw(30)
-//                                         << assembledResults.at(idx).second(0, 5)  << std::setw(30)
-//                                         << assembledResults.at(idx).second(0, 6)  << std::setw(30)
-//                                         << assembledResults.at(idx).second(0, 7)  << std::setw(30)
-//                                         << assembledResults.at(idx).second(1, 0)  << std::setw(30)
-//                                         << assembledResults.at(idx).second(1, 1)  << std::setw(30)
-//                                         << assembledResults.at(idx).second(1, 2)  << std::setw(30)
-//                                         << assembledResults.at(idx).second(1, 3)  << std::setw(30)
-//                                         << assembledResults.at(idx).second(1, 4)  << std::setw(30)
-//                                         << assembledResults.at(idx).second(1, 5)  << std::setw(30)
-//                                         << assembledResults.at(idx).second(1, 6)  << std::setw(30)
-//                                         << assembledResults.at(idx).second(1, 7)  << std::endl;
-//            }
-//        }
-//    }
-//    textFileAssembledResults.close();
+    std::vector< std::pair< double, Eigen::MatrixXd > > assembledResults;
+
+    #pragma omp parallel num_threads(30)
+    {
+        #pragma omp for
+        for (int i=-180; i<=0; i++)
+        {
+            double thetaStoppingAngle = static_cast<double>(i);
+            Eigen::MatrixXd minimumImpulseStateVectorsAtPoincare = connectManifoldsAtTheta( "vertical",  thetaStoppingAngle, 1000, 3.1 );
+            assembledResults.push_back(std::make_pair(thetaStoppingAngle, minimumImpulseStateVectorsAtPoincare));
+        }
+    }
+
+    remove("../data/raw/poincare_sections/vertical_3.1_minimum_impulse_connections.txt");
+    std::ofstream textFileAssembledResults("../data/raw/poincare_sections/vertical_3.1_minimum_impulse_connections.txt");
+    textFileAssembledResults.precision(std::numeric_limits<double>::digits10);
+
+    for (int i=-180; i<=0; i++)
+    {
+        double thetaStoppingAngle = static_cast<double>(i);
+
+        for (unsigned int idx = 0; idx < assembledResults.size(); idx++)
+        {
+            if (assembledResults.at(idx).first == thetaStoppingAngle)
+            {
+                textFileAssembledResults << std::left << std::scientific << std::setw(30) << thetaStoppingAngle << std::setw(30)
+                                         << assembledResults.at(idx).second(0, 0)  << std::setw(30)
+                                         << assembledResults.at(idx).second(0, 1)  << std::setw(30)
+                                         << assembledResults.at(idx).second(0, 2)  << std::setw(30)
+                                         << assembledResults.at(idx).second(0, 3)  << std::setw(30)
+                                         << assembledResults.at(idx).second(0, 4)  << std::setw(30)
+                                         << assembledResults.at(idx).second(0, 5)  << std::setw(30)
+                                         << assembledResults.at(idx).second(0, 6)  << std::setw(30)
+                                         << assembledResults.at(idx).second(0, 7)  << std::setw(30)
+                                         << assembledResults.at(idx).second(1, 0)  << std::setw(30)
+                                         << assembledResults.at(idx).second(1, 1)  << std::setw(30)
+                                         << assembledResults.at(idx).second(1, 2)  << std::setw(30)
+                                         << assembledResults.at(idx).second(1, 3)  << std::setw(30)
+                                         << assembledResults.at(idx).second(1, 4)  << std::setw(30)
+                                         << assembledResults.at(idx).second(1, 5)  << std::setw(30)
+                                         << assembledResults.at(idx).second(1, 6)  << std::setw(30)
+                                         << assembledResults.at(idx).second(1, 7)  << std::endl;
+            }
+        }
+    }
+    textFileAssembledResults.close();
 
 //    sleep(1E10);
     // ================================0
@@ -110,56 +112,141 @@ int main (){
 //    sleep( 1000000.0 );
 
 
-//    #pragma omp parallel num_threads(2)
-    {
+//    #pragma omp parallel num_threads(18)
+//    {
 //        #pragma omp for
-        for (unsigned int i=0; i<6; i++) {
+//        for (unsigned int i=0; i<18; i++) {
+//
+//            std::string orbitType;
+//            int librationPointNr;
+//            int orbitIdOne;
+//            double desiredJacobiEnergy;
+//
+//            if (i == 0){
+//                orbitType = "horizontal";
+//                librationPointNr = 1;
+//                orbitIdOne = 808;
+//                desiredJacobiEnergy = 3.05;
+//            } if (i == 1){
+//                orbitType = "horizontal";
+//                librationPointNr = 1;
+//                orbitIdOne = 577;
+//                desiredJacobiEnergy = 3.1;
+//            } if (i == 2){
+//                orbitType = "horizontal";
+//                librationPointNr = 1;
+//                orbitIdOne = 330;
+//                desiredJacobiEnergy = 3.15;
+//            } if (i == 3){
+//                orbitType = "horizontal";
+//                librationPointNr = 2;
+//                orbitIdOne = 1066;
+//                desiredJacobiEnergy = 3.05;
+//            } if (i == 4){
+//                orbitType = "horizontal";
+//                librationPointNr = 2;
+//                orbitIdOne = 760;
+//                desiredJacobiEnergy = 3.1;
+//            } if (i == 5){
+//                orbitType = "horizontal";
+//                librationPointNr = 2;
+//                orbitIdOne = 373;
+//                desiredJacobiEnergy = 3.15;
+//            } if (i == 6){
+//                orbitType = "halo";
+//                librationPointNr = 1;
+//                orbitIdOne = 1235;
+//                desiredJacobiEnergy = 3.05;
+//            } if (i == 7){
+//                orbitType = "halo";
+//                librationPointNr = 1;
+//                orbitIdOne = 836;
+//                desiredJacobiEnergy = 3.1;
+//            } if (i == 8){
+//                orbitType = "halo";
+//                librationPointNr = 1;
+//                orbitIdOne = 358;
+//                desiredJacobiEnergy = 3.15;
+//            } if (i == 9){
+//                orbitType = "halo";
+//                librationPointNr = 2;
+//                orbitIdOne = 1093;
+//                desiredJacobiEnergy = 3.05;
+//            } if (i == 10){
+//                orbitType = "halo";
+//                librationPointNr = 2;
+//                orbitIdOne = 651;
+//                desiredJacobiEnergy = 3.1;
+//            } if (i == 11){
+//                orbitType = "halo";
+//                librationPointNr = 2;
+//                orbitIdOne = 0;
+//                desiredJacobiEnergy = 3.15;
+//            } if (i == 12){
+//                orbitType = "vertical";
+//                librationPointNr = 1;
+//                orbitIdOne = 1664;
+//                desiredJacobiEnergy = 3.05;
+//            } if (i == 13){
+//                orbitType = "vertical";
+//                librationPointNr = 1;
+//                orbitIdOne = 1159;
+//                desiredJacobiEnergy = 3.1;
+//            } if (i == 14){
+//                orbitType = "vertical";
+//                librationPointNr = 1;
+//                orbitIdOne = 600;
+//                desiredJacobiEnergy = 3.15;
+//            } if (i == 15){
+//                orbitType = "vertical";
+//                librationPointNr = 2;
+//                orbitIdOne = 1878;
+//                desiredJacobiEnergy = 3.05;
+//            } if (i == 16){
+//                orbitType = "vertical";
+//                librationPointNr = 2;
+//                orbitIdOne = 1275;
+//                desiredJacobiEnergy = 3.1;
+//            } if (i == 17){
+//                orbitType = "vertical";
+//                librationPointNr = 2;
+//                orbitIdOne = 513;
+//                desiredJacobiEnergy = 3.15;
+//            }
+//
+//            Eigen::VectorXd selectedInitialConditions = readInitialConditionsFromFile(librationPointNr, orbitType, orbitIdOne, orbitIdOne + 1, massParameter);
+//            Eigen::VectorXd refinedJacobiEnergyResult = refineOrbitJacobiEnergy(librationPointNr, orbitType, desiredJacobiEnergy,
+//                                                                                selectedInitialConditions.segment(1, 6),
+//                                                                                selectedInitialConditions(0),
+//                                                                                selectedInitialConditions.segment(8, 6),
+//                                                                                selectedInitialConditions(7), massParameter);
+//            Eigen::VectorXd initialStateVector = refinedJacobiEnergyResult.segment(0, 6);
+//            double orbitalPeriod               = refinedJacobiEnergyResult(6);
 
-            std::string orbitType;
-            int librationPointNr;
 
-            if (i == 0){
-                orbitType = "horizontal";
-                librationPointNr = 1;
-            } if (i == 1){
-                orbitType = "horizontal";
-                librationPointNr = 2;
-            } if (i == 2){
-                orbitType = "halo";
-                librationPointNr = 1;
-            } if (i == 3){
-                orbitType = "halo";
-                librationPointNr = 2;
-            } if (i == 4){
-                orbitType = "vertical";
-                librationPointNr = 1;
-            } if (i == 5){
-                orbitType = "vertical";
-                librationPointNr = 2;
-            }
 //                    for (unsigned int librationPointNr = 2; librationPointNr <= 2; librationPointNr++) {
 
             // =========================================
             // == Load precomputed initial conditions ==
             // =========================================
 
-            std::ifstream textFileInitialConditions("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + orbitType + "_initial_conditions.txt");
-            std::vector<std::vector<double>> initialConditions;
-
-            if (textFileInitialConditions) {
-                std::string line;
-
-                while (std::getline(textFileInitialConditions, line)) {
-                    initialConditions.push_back(std::vector<double>());
-
-                    // Break down the row into column values
-                    std::stringstream split(line);
-                    double value;
-
-                    while (split >> value)
-                        initialConditions.back().push_back(value);
-                }
-            }
+//            std::ifstream textFileInitialConditions("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + orbitType + "_initial_conditions.txt");
+//            std::vector<std::vector<double>> initialConditions;
+//
+//            if (textFileInitialConditions) {
+//                std::string line;
+//
+//                while (std::getline(textFileInitialConditions, line)) {
+//                    initialConditions.push_back(std::vector<double>());
+//
+//                    // Break down the row into column values
+//                    std::stringstream split(line);
+//                    double value;
+//
+//                    while (split >> value)
+//                        initialConditions.back().push_back(value);
+//                }
+//            }
 //            double orbitalPeriod1;
 //            double orbitalPeriod2;
 //            Eigen::VectorXd initialStateVector1;
@@ -234,64 +321,10 @@ int main (){
             // ===============================================================
             // == Compute manifolds based on precomputed initial conditions ==
             // ===============================================================
+//            computeManifolds(initialStateVector, orbitalPeriod, orbitIdOne, librationPointNr, orbitType);
 
-            int orbitIdForManifold;
-            if (orbitType == "horizontal") {
-                if (librationPointNr == 1) {
-//                    orbitIdForManifold = 808;  // C = 3.05
-//                    orbitIdForManifold = 577;  // C = 3.1
-                    orbitIdForManifold = 330;  // C = 3.15
-//                    orbitIdForManifold = 0;  // C = 3.15
-                } else {
-//                    orbitIdForManifold = 1066;  // C = 3.05
-//                    orbitIdForManifold = 760;  // C = 3.1
-                    orbitIdForManifold = 373;  // C = 3.15
-//                    orbitIdForManifold = 0;  // C = 3.15
-                }
-            } if (orbitType == "halo") {
-                if (librationPointNr == 1) {
-//                    orbitIdForManifold = 1235;  // C = 3.05
-//                    orbitIdForManifold = 836;  // C = 3.1
-                    orbitIdForManifold = 358;  // C = 3.15
-                } else {
-//                    orbitIdForManifold = 1093;  // C = 3.05
-//                    orbitIdForManifold = 651;  // C = 3.1
-                    orbitIdForManifold = 0;  // C = 3.15
-                }
-            } if (orbitType == "vertical") {
-                if (librationPointNr == 1) {
-//                    orbitIdForManifold = 1664;  // C = 3.05
-//                    orbitIdForManifold = 1159;  // C = 3.1
-                    orbitIdForManifold = 600;  // C = 3.15
-                } else {
-//                    orbitIdForManifold = 1878;  // C = 3.05
-//                    orbitIdForManifold = 1275;  // C = 3.1
-                    orbitIdForManifold = 513;  // C = 3.15
-                }
-            }
-
-            double orbitalPeriod               = initialConditions[orbitIdForManifold][1];
-            Eigen::Vector6d initialStateVector = Eigen::VectorXd::Zero(6);
-            initialStateVector(0) = initialConditions[orbitIdForManifold][2];
-            initialStateVector(1) = initialConditions[orbitIdForManifold][3];
-            initialStateVector(2) = initialConditions[orbitIdForManifold][4];
-            initialStateVector(3) = initialConditions[orbitIdForManifold][5];
-            initialStateVector(4) = initialConditions[orbitIdForManifold][6];
-            initialStateVector(5) = initialConditions[orbitIdForManifold][7];
-
-            //stateVectorInclSTM     = writePeriodicOrbitToFile( initialStateVector, librationPointNr, orbitType, orbitIdForManifold, orbitalPeriod, massParameter, false, 100);
-
-//            std::string selected_orbit = "L" + std::to_string(librationPointNr) + "_" + orbitType + "_W_" + std::to_string(orbitIdForManifold);
-//            std::cout                                                                                 << std::endl;
-//            std::cout << "=================================================================="         << std::endl;
-//            std::cout << "                          " << selected_orbit << "                        " << std::endl;
-//            std::cout << "=================================================================="         << std::endl;
-//
-//            computeManifolds(initialStateVector, orbitalPeriod, librationPointNr, orbitType, orbitIdForManifold);
-            computeManifolds(initialStateVector, orbitalPeriod, orbitIdForManifold, librationPointNr, orbitType);
-
-        }
-    }
+//        }
+//    }
 
     return 0;
 }

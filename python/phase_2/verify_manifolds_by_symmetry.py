@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import json
 import matplotlib
-# matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
+matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from mpl_toolkits.mplot3d import Axes3D
@@ -20,12 +20,12 @@ plt.rcParams.update(params)
 import time
 import sys
 from matplotlib.ticker import ScalarFormatter, FormatStrFormatter
-sys.path.append('../../util')
+sys.path.append('../util')
 from load_data import load_orbit, load_bodies_location, load_lagrange_points_location, load_differential_corrections, \
     load_initial_conditions_incl_M, load_manifold, computeJacobiEnergy, load_manifold_incl_stm, load_manifold_refactored
 
 
-class CheckRefactoring:
+class VerifyManifoldsBySymmetry:
     def __init__(self, orbit_type, lagrange_point_nr, orbit_id, c_level):
         self.orbitType = orbit_type
         self.orbitId = orbit_id
@@ -40,17 +40,17 @@ class CheckRefactoring:
         MOON_GRAVITATIONAL_PARAMETER = SUN_GRAVITATIONAL_PARAMETER / (328900.56 * (1.0 + 81.30059))
         self.massParameter = MOON_GRAVITATIONAL_PARAMETER / (MOON_GRAVITATIONAL_PARAMETER + EARTH_GRAVITATIONAL_PARAMETER)
 
-        self.eigenvectorDf_S = pd.read_table('/Users/koen/tudatBundle/tudatApplications/PrivateTudatApplications/data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_plus_eigenvector.txt', delim_whitespace=True, header=None).filter(list(range(6)))
-        self.eigenvectorDf_U = pd.read_table('/Users/koen/tudatBundle/tudatApplications/PrivateTudatApplications/data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus_eigenvector.txt', delim_whitespace=True, header=None).filter(list(range(6)))
-        self.eigenvectorLocationDf_S = pd.read_table('/Users/koen/tudatBundle/tudatApplications/PrivateTudatApplications/data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_plus_eigenvector_location.txt', delim_whitespace=True, header=None).filter(list(range(6)))
-        self.eigenvectorLocationDf_U = pd.read_table('/Users/koen/tudatBundle/tudatApplications/PrivateTudatApplications/data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus_eigenvector_location.txt', delim_whitespace=True, header=None).filter(list(range(6)))
+        self.eigenvectorDf_S = pd.read_table('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_plus_eigenvector.txt', delim_whitespace=True, header=None).filter(list(range(6)))
+        self.eigenvectorDf_U = pd.read_table('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus_eigenvector.txt', delim_whitespace=True, header=None).filter(list(range(6)))
+        self.eigenvectorLocationDf_S = pd.read_table('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_plus_eigenvector_location.txt', delim_whitespace=True, header=None).filter(list(range(6)))
+        self.eigenvectorLocationDf_U = pd.read_table('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus_eigenvector_location.txt', delim_whitespace=True, header=None).filter(list(range(6)))
 
-        self.W_S_plus = load_manifold_refactored('/Users/koen/tudatBundle/tudatApplications/PrivateTudatApplications/data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_plus.txt')
-        self.W_S_min = load_manifold_refactored('/Users/koen/tudatBundle/tudatApplications/PrivateTudatApplications/data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_min.txt')
-        self.W_U_plus = load_manifold_refactored('/Users/koen/tudatBundle/tudatApplications/PrivateTudatApplications/data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus.txt')
-        self.W_U_min = load_manifold_refactored('/Users/koen/tudatBundle/tudatApplications/PrivateTudatApplications/data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_min.txt')
+        self.W_S_plus = load_manifold_refactored('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_plus.txt')
+        self.W_S_min = load_manifold_refactored('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_min.txt')
+        self.W_U_plus = load_manifold_refactored('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus.txt')
+        self.W_U_min = load_manifold_refactored('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_min.txt')
 
-        self.orbitDf = load_orbit('../../../data/raw/orbits/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '.txt')
+        self.orbitDf = load_orbit('../../data/raw/orbits/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '.txt')
 
         self.numberOfOrbitsPerManifold = len(set(self.W_S_plus.index.get_level_values(0)))
         self.figSize = (7 * (1 + np.sqrt(5)) / 2, 7)
@@ -116,8 +116,7 @@ class CheckRefactoring:
         fig.subplots_adjust(top=0.9)
 
         plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial overview', size=self.suptitleSize)
-        # plt.savefig('/Users/koen/tudatBundle/tudatApplications/PrivateTudatApplications/data/figures/poincare_sections/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
-        #     self.orbitId) + '_manifold.pdf')
+        plt.savefig('../../data/figures/manifolds/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold.pdf')
         pass
 
     def plot_eigenvectors(self):
@@ -132,6 +131,7 @@ class CheckRefactoring:
         plot_alpha = 1
         line_width = 1
         color = self.plottingColors['orbit']
+        # Todo get actual orbits
         ax0.plot(self.orbitDf['x'], self.orbitDf['y'], color=color, linewidth=line_width)
         ax1.plot(self.orbitDf['x'], self.orbitDf['z'], color=color, linewidth=line_width)
         ax2.plot(self.orbitDf['y'], self.orbitDf['z'], color=color, linewidth=line_width)
@@ -195,10 +195,7 @@ class CheckRefactoring:
         fig.subplots_adjust(top=0.8)
 
         fig.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathbf{X_i} \pm \epsilon \\frac{\mathbf{v}^S_i}{|\mathbf{v}^S_i|}, \mathbf{X_i} \pm \epsilon \\frac{\mathbf{v}^U_i}{|\mathbf{v}^U_i|} \}$ - Spatial overview', size=self.suptitleSize)
-        # plt.savefig(
-        #     '/Users/koen/tudatBundle/tudatApplications/PrivateTudatApplications/data/figures/poincare_sections/L' + str(
-        #         self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
-        #         self.orbitId) + '_eigenvector.pdf')
+        plt.savefig('../../data/figures/manifolds/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_eigenvector.pdf')
         pass
 
     def show_phase_difference(self):
@@ -216,7 +213,7 @@ class CheckRefactoring:
             ls = [a[0] for a in ls]
             ax.legend(handles=ls)
             # plt.savefig(
-            #     '/Users/koen/tudatBundle/tudatApplications/PrivateTudatApplications/data/figures/poincare_sections/L' + str(
+            #     '/Users/koen/tudatBundle/tudatApplications/PrivateTudatApplications/data/figures/manifolds/L' + str(
             #         self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
             #         self.orbitId) + '_phase_difference_overview.pdf')
             # plt.close()
@@ -404,21 +401,17 @@ class CheckRefactoring:
             self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Symmetry validation',
                      size=self.suptitleSize)
         plt.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
-        # plt.savefig(
-        #     '/Users/koen/tudatBundle/tudatApplications/PrivateTudatApplications/data/figures/poincare_sections/L' + str(
-        #         self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
-        #         self.orbitId) + '_phase_difference.pdf')
+        plt.savefig('../../data/figures/manifolds/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_phase_difference.pdf')
         pass
 
 
 if __name__ == '__main__':
-    orbit_ids = {'horizontal': {1: {3.15: 330}, 2: {3.15: 373}},
-                 'vertical': {1: {3.15: 600}, 2: {3.15: 513}},
-                 'halo': {1: {3.15: 358}, 2: {3.15: 0}}}
+    orbit_ids = {'horizontal': {1: {3.05: 808, 3.10: 577, 3.15: 330}, 2: {3.05: 1066, 3.10: 760, 3.15: 373}},
+                 'vertical': {1: {3.05: 1664, 3.10: 1159, 3.15: 600}, 2: {3.05: 1878, 3.10: 1275, 3.15: 513}},
+                 'halo': {1: {3.05: 1235, 3.10: 836, 3.15: 358}, 2: {3.05: 1093, 3.10: 651, 3.15: 0}}}
 
     lagrange_points = [1, 2]
     orbit_types = ['horizontal', 'vertical', 'halo']
-    orbit_types = ['horizontal']
     lagrange_points = [1]
     c_levels = [3.15]
 
@@ -428,8 +421,8 @@ if __name__ == '__main__':
             print(lagrange_point)
             for c_level in c_levels:
                 print(c_level)
-                check_refactoring = CheckRefactoring(orbit_type, lagrange_point, orbit_ids[orbit_type][lagrange_point][c_level], c_level)
-                check_refactoring.plot_manifolds()
-                check_refactoring.plot_eigenvectors()
-                check_refactoring.show_phase_difference()
-                plt.show()
+                verify_manifolds_by_symmetry = VerifyManifoldsBySymmetry(orbit_type, lagrange_point, orbit_ids[orbit_type][lagrange_point][c_level], c_level)
+                # verify_manifolds_by_symmetry.plot_manifolds()
+                verify_manifolds_by_symmetry.plot_eigenvectors()
+                # verify_manifolds_by_symmetry.show_phase_difference()
+                # plt.show()
