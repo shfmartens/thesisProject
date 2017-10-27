@@ -212,11 +212,11 @@ class VerifyManifoldsBySymmetry:
                 ls.append(ax.plot(self.W_U_min.xs(i)['x'], self.W_U_min.xs(i)['y'], label='u'+str(i), color=c[i]))
             ls = [a[0] for a in ls]
             ax.legend(handles=ls)
-            # plt.savefig(
-            #     '/Users/koen/tudatBundle/tudatApplications/PrivateTudatApplications/data/figures/manifolds/L' + str(
-            #         self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
-            #         self.orbitId) + '_phase_difference_overview.pdf')
-            # plt.close()
+            plt.savefig(
+                '../../data/figures/manifolds/L' + str(
+                    self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
+                    self.orbitId) + '_phase_difference_overview.pdf')
+            plt.close()
 
         n = self.numberOfOrbitsPerManifold
 
@@ -313,7 +313,7 @@ class VerifyManifoldsBySymmetry:
         deviation_w_min = pd.DataFrame({'dt': dt_min, 'dx': dx_min, 'dy': dy_min, 'dz': dz_min, 'dxdot': dxdot_min, 'dydot': dydot_min, 'dzdot': dzdot_min})
         deviation_w_plus = pd.DataFrame({'dt': dt_plus, 'dx': dx_plus, 'dy': dy_plus, 'dz': dz_plus, 'dxdot': dxdot_plus, 'dydot': dydot_plus,'dzdot': dzdot_plus})
 
-        fig2, axarr = plt.subplots(3, figsize=self.figSize, sharex=True)
+        fig2, axarr = plt.subplots(2, figsize=self.figSize, sharex=True)
         tau = [i/self.numberOfOrbitsPerManifold for i in range(self.numberOfOrbitsPerManifold)]
         l0, = axarr[0].plot(tau, deviation_w_min['dt'], c=self.plottingColors['limit'])
         l1, = axarr[0].plot(tau, deviation_w_min['dx'], c=self.plottingColors['tripleLine'][0])
@@ -338,11 +338,11 @@ class VerifyManifoldsBySymmetry:
             axarr[0].set_title('$\mathcal{W}^{S -} \cap \mathcal{W}^{U -}$ (at $U_2, U_3$)')
             axarr[1].set_title('$\mathcal{W}^{S +} \cap \mathcal{W}^{U +}$ (at $U_4$)')
 
-        axarr[2].plot(tau, jacobi_s_plus, label='$\mathcal{W}^{S +}$')
-        axarr[2].plot(tau, jacobi_s_min, label='$\mathcal{W}^{S -}$')
-        axarr[2].plot(tau, jacobi_u_plus, label='$\mathcal{W}^{U +}$')
-        axarr[2].plot(tau, jacobi_u_min, label='$\mathcal{W}^{U -}$')
-        axarr[2].legend(frameon=True, bbox_to_anchor=(1, 1))
+        # axarr[2].plot(tau, jacobi_s_plus, label='$\mathcal{W}^{S +}$')
+        # axarr[2].plot(tau, jacobi_s_min, label='$\mathcal{W}^{S -}$')
+        # axarr[2].plot(tau, jacobi_u_plus, label='$\mathcal{W}^{U +}$')
+        # axarr[2].plot(tau, jacobi_u_min, label='$\mathcal{W}^{U -}$')
+        # axarr[2].legend(frameon=True, bbox_to_anchor=(1, 1))
 
         axarr[0].legend(handles=(l0, l1, l2, l3, l4, l5, l6),
                     labels=('$\delta t$', '$\delta x$', '$\delta y$', '$\delta z$', '$\delta \dot{x}$', '$\delta \dot{y}$', '$\delta \dot{z}$'),
@@ -385,7 +385,7 @@ class VerifyManifoldsBySymmetry:
                       verticalalignment='bottom', bbox={'facecolor': 'navy', 'alpha': 0.1, 'pad': 3})
 
         # np.mean([self.W_S_plus.xs(i).head(1)['y'].get_values()[0] for i in range(100)])
-        for i in range(3):
+        for i in range(2):
             axarr[i].grid(True, which='both', ls=':')
             axarr[i].set_xlabel('$\\tau_s$ [-]')
             axarr[i].set_xlim([0, 1])
@@ -412,7 +412,6 @@ if __name__ == '__main__':
 
     lagrange_points = [1, 2]
     orbit_types = ['horizontal', 'vertical', 'halo']
-    lagrange_points = [1]
     c_levels = [3.15]
 
     for orbit_type in orbit_types:
@@ -423,6 +422,6 @@ if __name__ == '__main__':
                 print(c_level)
                 verify_manifolds_by_symmetry = VerifyManifoldsBySymmetry(orbit_type, lagrange_point, orbit_ids[orbit_type][lagrange_point][c_level], c_level)
                 # verify_manifolds_by_symmetry.plot_manifolds()
-                verify_manifolds_by_symmetry.plot_eigenvectors()
-                # verify_manifolds_by_symmetry.show_phase_difference()
+                # verify_manifolds_by_symmetry.plot_eigenvectors()
+                verify_manifolds_by_symmetry.show_phase_difference()
                 # plt.show()

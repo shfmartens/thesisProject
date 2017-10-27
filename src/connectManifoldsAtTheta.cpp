@@ -100,7 +100,7 @@ bool checkJacobiOnManifoldOutsideBounds( Eigen::VectorXd currentStateVector, con
 
 void computeManifoldStatesAtTheta( std::map< int, std::map< double, Eigen::Vector6d > >& manifoldStateHistory,
                                    Eigen::VectorXd initialStateVector, double orbitalPeriod, int librationPointNr,
-                                   const double massParameter, int displacementFromOrbitSign, int integrationTimeDirection,
+                                   const double massParameter, double displacementFromOrbitSign, double integrationTimeDirection,
                                    double thetaStoppingAngle, const int numberOfTrajectoriesPerManifold,
                                    const int saveFrequency, const double eigenvectorDisplacementFromOrbit,
                                    const double maximumIntegrationTimeManifoldTrajectories,
@@ -340,7 +340,7 @@ Eigen::VectorXd refineOrbitJacobiEnergy( const int librationPointNr, const std::
 
 void writePoincareSectionToFile( std::map< int, std::map< double, Eigen::Vector6d > >& manifoldStateHistory,
                                  int librationPointNr, std::string orbitType, double desiredJacobiEnergy,
-                                 int displacementFromOrbitSign, int integrationTimeDirection, double thetaStoppingAngle,
+                                 double displacementFromOrbitSign, double integrationTimeDirection, double thetaStoppingAngle,
                                  int numberOfTrajectoriesPerManifold )
 {
     // Rounding-off values for file name
@@ -389,7 +389,7 @@ void writePoincareSectionToFile( std::map< int, std::map< double, Eigen::Vector6
                 break;
             }
         }
-            else {
+        else {
             for (auto ent2 = ent1.second.begin(); ent2 != ent1.second.end(); ++ent2) {
                 textFileStateVectorsAtPoincare << std::left << std::scientific << std::setw(25) << phase
                                                << std::setw(25) << ent2->first
@@ -417,23 +417,31 @@ Eigen::MatrixXd findMinimumImpulseManifoldConnection( std::map< int, std::map< d
     Eigen::VectorXd unstableStateVectorAtPoincare        = Eigen::VectorXd::Zero(8);
     Eigen::MatrixXd minimumImpulseStateVectorsAtPoincare = Eigen::MatrixXd::Zero(2, 8);
 
-    for (int i = 0; i < numberOfTrajectoriesPerManifold; i++)
+    for (int stableTrajectoryNumber = 0; stableTrajectoryNumber < numberOfTrajectoriesPerManifold; stableTrajectoryNumber++)
     {
-        // For last state on manifold trajectory
-        for ( auto its = stableManifoldStateHistoryAtTheta.at(i).begin(); its != stableManifoldStateHistoryAtTheta.at(i).end(); ++its ) {
-            stableStateVectorAtPoincare(0)            = i / (double) numberOfTrajectoriesPerManifold;
-            stableStateVectorAtPoincare(1)            = its->first;
-            stableStateVectorAtPoincare.segment(2, 8) = its->second;
-            break;
-        }
+        stableStateVectorAtPoincare(0) = static_cast<double>(stableTrajectoryNumber) / static_cast<double>(numberOfTrajectoriesPerManifold);
+        stableStateVectorAtPoincare(1) = stableManifoldStateHistoryAtTheta.at(stableTrajectoryNumber).begin()->first;
+        stableStateVectorAtPoincare(2) = stableManifoldStateHistoryAtTheta.at(stableTrajectoryNumber).begin()->second(0);
+        stableStateVectorAtPoincare(3) = stableManifoldStateHistoryAtTheta.at(stableTrajectoryNumber).begin()->second(1);
+        stableStateVectorAtPoincare(4) = stableManifoldStateHistoryAtTheta.at(stableTrajectoryNumber).begin()->second(2);
+        stableStateVectorAtPoincare(5) = stableManifoldStateHistoryAtTheta.at(stableTrajectoryNumber).begin()->second(3);
+        stableStateVectorAtPoincare(6) = stableManifoldStateHistoryAtTheta.at(stableTrajectoryNumber).begin()->second(4);
+        stableStateVectorAtPoincare(7) = stableManifoldStateHistoryAtTheta.at(stableTrajectoryNumber).begin()->second(5);
 
-        for (int j = 0; j < numberOfTrajectoriesPerManifold; j++) {
-            for ( auto itu = unstableManifoldStateHistoryAtTheta.at(j).rbegin(); itu != unstableManifoldStateHistoryAtTheta.at(j).rend(); ++itu ) {
-                unstableStateVectorAtPoincare(0)            = j / (double) numberOfTrajectoriesPerManifold;
-                unstableStateVectorAtPoincare(1)            = itu->first;
-                unstableStateVectorAtPoincare.segment(2, 8) = itu->second;
-                break;
-            }
+//        stableStateVectorAtPoincare.segment(2, 8) = stableManifoldStateHistoryAtTheta.at(stableTrajectoryNumber).begin()->second;
+
+        for (int unstableTrajectoryNumber = 0; unstableTrajectoryNumber < numberOfTrajectoriesPerManifold; unstableTrajectoryNumber++) {
+//            unstableStateVectorAtPoincare(0)            = static_cast<double>(unstableTrajectoryNumber) / static_cast<double>(numberOfTrajectoriesPerManifold);
+//            unstableStateVectorAtPoincare(1)            = unstableManifoldStateHistoryAtTheta.at(unstableTrajectoryNumber).rbegin()->first;
+//            unstableStateVectorAtPoincare.segment(2, 8) = unstableManifoldStateHistoryAtTheta.at(unstableTrajectoryNumber).rbegin()->second;
+            unstableStateVectorAtPoincare(0) = static_cast<double>(unstableTrajectoryNumber) / static_cast<double>(numberOfTrajectoriesPerManifold);
+            unstableStateVectorAtPoincare(1) = unstableManifoldStateHistoryAtTheta.at(unstableTrajectoryNumber).rbegin()->first;
+            unstableStateVectorAtPoincare(2) = unstableManifoldStateHistoryAtTheta.at(unstableTrajectoryNumber).rbegin()->second(0);
+            unstableStateVectorAtPoincare(3) = unstableManifoldStateHistoryAtTheta.at(unstableTrajectoryNumber).rbegin()->second(1);
+            unstableStateVectorAtPoincare(4) = unstableManifoldStateHistoryAtTheta.at(unstableTrajectoryNumber).rbegin()->second(2);
+            unstableStateVectorAtPoincare(5) = unstableManifoldStateHistoryAtTheta.at(unstableTrajectoryNumber).rbegin()->second(3);
+            unstableStateVectorAtPoincare(6) = unstableManifoldStateHistoryAtTheta.at(unstableTrajectoryNumber).rbegin()->second(4);
+            unstableStateVectorAtPoincare(7) = unstableManifoldStateHistoryAtTheta.at(unstableTrajectoryNumber).rbegin()->second(5);
 
             deltaVelocity = std::sqrt( (stableStateVectorAtPoincare(5) - unstableStateVectorAtPoincare(5)) * (stableStateVectorAtPoincare(5) - unstableStateVectorAtPoincare(5)) +
                                        (stableStateVectorAtPoincare(6) - unstableStateVectorAtPoincare(6)) * (stableStateVectorAtPoincare(6) - unstableStateVectorAtPoincare(6)) +
@@ -463,7 +471,7 @@ Eigen::MatrixXd findMinimumImpulseManifoldConnection( std::map< int, std::map< d
 
 void writeManifoldStateHistoryAtThetaToFile( std::map< int, std::map< double, Eigen::Vector6d > >& manifoldStateHistory,
                                              int librationPointNr, std::string orbitType, double desiredJacobiEnergy,
-                                             int displacementFromOrbitSign, int integrationTimeDirection, double thetaStoppingAngle)
+                                             double displacementFromOrbitSign, double integrationTimeDirection, double thetaStoppingAngle)
 {
     // Rounding-off values for file name
     std::string fileNameString;
@@ -561,7 +569,6 @@ Eigen::MatrixXd connectManifoldsAtTheta( const std::string orbitType, const doub
     Eigen::MatrixXd minimumImpulseStateVectorsAtPoincare = findMinimumImpulseManifoldConnection( stableManifoldStateHistoryAtTheta,
                                                                                                  unstableManifoldStateHistoryAtTheta,
                                                                                                  numberOfTrajectoriesPerManifold );
-
 /*
  * write initial orbits to file
  * per angle: write trajectory to file

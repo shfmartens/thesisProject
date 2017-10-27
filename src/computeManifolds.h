@@ -17,7 +17,7 @@ double determineEigenvectorSign( Eigen::Vector6d& eigenvector );
 
 bool checkJacobiOnManifoldOutsideBounds( Eigen::MatrixXd& stateVectorInclSTM, double& referenceJacobiEnergy,
                                          const double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter(tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER, tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER ),
-                                         const double maxJacobiEnergyDeviation = 1.0e-12 );
+                                         const double maxJacobiEnergyDeviation = 1.0e-11 );
 
 void reduceOvershootAtPoincareSectionU1U4( std::pair< Eigen::MatrixXd, double >& stateVectorInclSTMAndTime,
                                            std::pair< Eigen::MatrixXd, double >& previousStateVectorInclSTMAndTime,

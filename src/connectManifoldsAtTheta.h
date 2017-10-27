@@ -13,11 +13,11 @@ Eigen::VectorXd readInitialConditionsFromFile(const int librationPointNr, const 
                                               int orbitIdOne, int orbitIdTwo, const double massParameter);
 
 bool checkJacobiOnManifoldOutsideBounds( Eigen::VectorXd currentStateVector, const double referenceJacobiEnergy,
-                                         const double massParameter, const double maxJacobiEnergyDeviation = 1.0E-12 );
+                                         const double massParameter, const double maxJacobiEnergyDeviation = 1.0E-11 );
 
 void computeManifoldStatesAtTheta( std::map< int, std::map< double, Eigen::Vector6d > >& manifoldStateHistory,
                                    Eigen::VectorXd initialStateVector, double orbitalPeriod, int librationPointNr,
-                                   const double massParameter, int displacementFromOrbitSign, int integrationTimeDirection,
+                                   const double massParameter, double displacementFromOrbitSign, double integrationTimeDirection,
                                    double thetaStoppingAngle, const int numberOfTrajectoriesPerManifold,
                                    const int saveFrequency = 1000,
                                    const double eigenvectorDisplacementFromOrbit = 1.0E-6,
@@ -34,7 +34,7 @@ Eigen::VectorXd refineOrbitJacobiEnergy( const int librationPointNr, const std::
 
 void writePoincareSectionToFile( std::map< int, std::map< double, Eigen::Vector6d > >& manifoldStateHistory,
                                  int librationPointNr, std::string orbitType, double desiredJacobiEnergy,
-                                 int displacementFromOrbitSign, int integrationTimeDirection, double thetaStoppingAngle,
+                                 double displacementFromOrbitSign, double integrationTimeDirection, double thetaStoppingAngle,
                                  int numberOfTrajectoriesPerManifold );
 
 Eigen::MatrixXd findMinimumImpulseManifoldConnection( std::map< int, std::map< double, Eigen::Vector6d > >& stableManifoldStateHistoryAtTheta,
@@ -43,7 +43,7 @@ Eigen::MatrixXd findMinimumImpulseManifoldConnection( std::map< int, std::map< d
 
 void writeManifoldStateHistoryAtThetaToFile( std::map< int, std::map< double, Eigen::Vector6d > >& manifoldStateHistory,
                                              int librationPointNr, std::string orbitType, double desiredJacobiEnergy,
-                                             int displacementFromOrbitSign, int integrationTimeDirection, double thetaStoppingAngle);
+                                             double displacementFromOrbitSign, double integrationTimeDirection, double thetaStoppingAngle);
 
 Eigen::MatrixXd connectManifoldsAtTheta( const std::string orbitType = "vertical", const double thetaStoppingAngle = -90.0,
                                          const int numberOfTrajectoriesPerManifold = 100, const double desiredJacobiEnergy = 3.1,

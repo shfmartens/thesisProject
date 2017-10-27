@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import json
 import matplotlib
-# matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
+matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from mpl_toolkits.mplot3d import Axes3D
@@ -24,17 +24,17 @@ from load_data import load_orbit, load_bodies_location, load_lagrange_points_loc
 
 
 class MinimumImpulseManifoldConnections:
-    def __init__(self, number_of_orbits_per_manifold=100, max_position_dev=1e-3):
+    def __init__(self, number_of_orbits_per_manifold=100, max_position_dev=1e-3, orbit_type='vertical'):
         self.suptitleSize = 20
         self.figSize = (7 * (1 + np.sqrt(5)) / 2, 7)
-
+        self.orbitType = orbit_type
         self.numberOfOrbitsPerManifold = number_of_orbits_per_manifold
         self.maximumPositionDeviation = max_position_dev
         # TODO fix proper constants
         self.positionDimensionFactor = 384400
         self.velocityDimensionFactor = 384400e3 / (27.3 * 24 * 3600)
 
-        df = pd.read_table('../../data/raw/poincare_sections/' + str(self.numberOfOrbitsPerManifold) + '/vertical_3.1_minimum_impulse_connections.txt', delim_whitespace=True, header=None).filter(list(range(17)))
+        df = pd.read_table('../../data/raw/poincare_sections/' + str(self.numberOfOrbitsPerManifold) + '/' + self.orbitType + '_3.1_minimum_impulse_connections.txt', delim_whitespace=True, header=None).filter(list(range(17)))
         df.columns = ['theta', 'tau1', 't1', 'x1', 'y1', 'z1', 'xdot1', 'ydot1', 'zdot1', 'tau2', 't2', 'x2', 'y2', 'z2', 'xdot2', 'ydot2', 'zdot2']
         df['dr'] = np.sqrt((df['x1'] - df['x2']) ** 2 + (df['y1'] - df['y2']) ** 2 + (df['z1'] - df['z2']) ** 2)
         df['dv'] = np.sqrt((df['xdot1'] - df['xdot2']) ** 2 + (df['ydot1'] - df['ydot2']) ** 2 + (df['zdot1'] - df['zdot2']) ** 2)
@@ -115,7 +115,7 @@ class MinimumImpulseManifoldConnections:
         plt.suptitle('Near-heteroclinic connection for $min(\Delta V) \enskip \\forall \Delta r < 10^{-3}$ (at $\mathcal{W}^{U+} \cup \mathcal{W}^{S-}$, C = 3.1, \#' +
                      str(self.numberOfOrbitsPerManifold) + ')', size=self.suptitleSize)
 
-        plt.savefig('../../data/figures/poincare_sections/' + str(self.numberOfOrbitsPerManifold) + '/vertical_3.1_' + str(self.numberOfOrbitsPerManifold) + '_heteroclinic_connection_validation.pdf')
+        plt.savefig('../../data/figures/poincare_sections/' + str(self.numberOfOrbitsPerManifold) + '/' + self.orbitType + '_3.1_' + str(self.numberOfOrbitsPerManifold) + '_heteroclinic_connection_validation.pdf')
         plt.close()
         pass
 
@@ -127,8 +127,8 @@ class MinimumImpulseManifoldConnections:
         for theta in self.thetaRangeList:
             print(theta)
 
-            df_s = load_manifold('../../data/raw/poincare_sections/' + str(self.numberOfOrbitsPerManifold) + '/L2_vertical_W_S_min_3.1_' + str(int(theta)) + '_full.txt')
-            df_u = load_manifold('../../data/raw/poincare_sections/' + str(self.numberOfOrbitsPerManifold) + '/L1_vertical_W_U_plus_3.1_' + str(int(theta)) + '_full.txt')
+            df_s = load_manifold('../../data/raw/poincare_sections/' + str(self.numberOfOrbitsPerManifold) + '/L2_' + self.orbitType + '_W_S_min_3.1_' + str(int(theta)) + '_full.txt')
+            df_u = load_manifold('../../data/raw/poincare_sections/' + str(self.numberOfOrbitsPerManifold) + '/L1_' + self.orbitType + '_W_U_plus_3.1_' + str(int(theta)) + '_full.txt')
 
             fig = plt.figure(figsize=self.figSize)
             ax0 = fig.add_subplot(2, 2, 1, projection='3d')
@@ -229,9 +229,9 @@ class MinimumImpulseManifoldConnections:
             fig.subplots_adjust(top=0.9)
             plt.suptitle('Near-heteroclinic connection for $min(\Delta V) \enskip \\forall \Delta r < 10^{-3}$ (at  $\mathcal{W}^{U+} \cup \mathcal{W}^{S-}$, C = 3.1, $\\theta$ = ' + str(theta) + '$^\circ$)',
                          size=self.suptitleSize)
-            plt.show()
-            # plt.savefig('../../data/figures/poincare_sections/' + str(self.numberOfOrbitsPerManifold) + '/vertical_3.1_heteroclinic_connection_' + str(theta) + '.pdf')
-            # plt.close()
+            # plt.show()
+            plt.savefig('../../data/figures/poincare_sections/' + str(self.numberOfOrbitsPerManifold) + '/' + self.orbitType + '_3.1_heteroclinic_connection_' + str(theta) + '.pdf')
+            plt.close()
         pass
 
     def plot_poincare_spread(self):
@@ -242,12 +242,12 @@ class MinimumImpulseManifoldConnections:
             ax = fig.gca()
 
             df_s = pd.read_table('../../data/raw/poincare_sections/' + str(
-                self.numberOfOrbitsPerManifold) + '/L2_vertical_W_S_min_3.1_' + str(int(theta)) + '_poincare.txt',
+                self.numberOfOrbitsPerManifold) + '/L2_' + self.orbitType + '_W_S_min_3.1_' + str(int(theta)) + '_poincare.txt',
                                  delim_whitespace=True, header=None).filter(list(range(8)))
             df_s.columns = ['tau', 't', 'x', 'y', 'z', 'xdot', 'ydot', 'zdot']
 
             df_u = pd.read_table('../../data/raw/poincare_sections/' + str(
-                self.numberOfOrbitsPerManifold) + '/L1_vertical_W_U_plus_3.1_' + str(int(theta)) + '_poincare.txt',
+                self.numberOfOrbitsPerManifold) + '/L1_' + self.orbitType + '_W_U_plus_3.1_' + str(int(theta)) + '_poincare.txt',
                           delim_whitespace=True, header=None).filter(list(range(8)))
             df_u.columns = ['tau', 't', 'x', 'y', 'z', 'xdot', 'ydot', 'zdot']
 
@@ -302,9 +302,9 @@ class MinimumImpulseManifoldConnections:
             plt.suptitle('State vecor discrepancy (at  $\mathcal{W}^{U+} \cup \mathcal{W}^{S-}$, C = 3.1, $\\theta$ = '
                          + str(theta) + '$^\circ, \# = $' + str(self.numberOfOrbitsPerManifold) + ')',
                          size=self.suptitleSize)
-            plt.show()
-            # plt.savefig('../../data/figures/poincare_sections/' + str(self.numberOfOrbitsPerManifold) + '/vertical_3.1_heteroclinic_connection_' + str(theta) + '_poincare_scatter.pdf')
-            # plt.close()
+            # plt.show()
+            plt.savefig('../../data/figures/poincare_sections/' + str(self.numberOfOrbitsPerManifold) + '/' + self.orbitType + '_3.1_heteroclinic_connection_' + str(theta) + '_poincare_scatter.pdf')
+            plt.close()
         pass
 
     def compare_number_of_orbits_per_manifold(self, number_of_orbits_per_manifold_ls):
@@ -313,7 +313,7 @@ class MinimumImpulseManifoldConnections:
         blues = sns.color_palette('Blues', len(number_of_orbits_per_manifold_ls))
 
         for idx, number_of_orbits_per_manifold in enumerate(number_of_orbits_per_manifold_ls):
-            df = pd.read_table('../../data/raw/poincare_sections/' + str(number_of_orbits_per_manifold) + '/vertical_3.1_minimum_impulse_connections.txt', delim_whitespace=True, header=None).filter(list(range(17)))
+            df = pd.read_table('../../data/raw/poincare_sections/' + str(number_of_orbits_per_manifold) + '/' + self.orbitType + '_3.1_minimum_impulse_connections.txt', delim_whitespace=True, header=None).filter(list(range(17)))
             df.columns = ['theta', 'tau1', 't1', 'x1', 'y1', 'z1', 'xdot1', 'ydot1', 'zdot1', 'tau2', 't2', 'x2', 'y2', 'z2', 'xdot2', 'ydot2', 'zdot2']
             df['dr'] = np.sqrt((df['x1'] - df['x2']) ** 2 + (df['y1'] - df['y2']) ** 2 + (df['z1'] - df['z2']) ** 2)
             df['dv'] = np.sqrt((df['xdot1'] - df['xdot2']) ** 2 + (df['ydot1'] - df['ydot2']) ** 2 + (df['zdot1'] - df['zdot2']) ** 2)
@@ -341,19 +341,23 @@ class MinimumImpulseManifoldConnections:
         plt.suptitle('Heteroclinic connection $\mathcal{W}^{U+} \cup \mathcal{W}^{S-}$ (at C = 3.1)',
                      size=self.suptitleSize)
         # plt.show()
-        plt.savefig('../../data/figures/poincare_sections/vertical_3.1_heteroclinic_connection_comparison.pdf')
+        plt.savefig('../../data/figures/poincare_sections/' + self.orbitType + '_3.1_heteroclinic_connection_comparison.pdf')
         plt.close()
         pass
 
 
 if __name__ == '__main__':
     max_position_deviation = {100: 1e-3, 1000: 1e-4, 10000: 1e-5}
-    for number_of_orbits_per_manifold in [1000]:
-        minimum_impulse_manifold_connections = MinimumImpulseManifoldConnections(number_of_orbits_per_manifold=number_of_orbits_per_manifold,
-                                                                                 max_position_dev=max_position_deviation[number_of_orbits_per_manifold])
-        # minimum_impulse_manifold_connections.plot_impulse_angle()
-        minimum_impulse_manifold_connections.plot_manifolds()
-        # minimum_impulse_manifold_connections.plot_poincare_spread()
+    orbit_types = ['horizontal', 'vertical', 'halo']
+
+    for orbit_type in orbit_types:
+        for number_of_orbits_per_manifold in [100]:
+            minimum_impulse_manifold_connections = MinimumImpulseManifoldConnections(number_of_orbits_per_manifold=number_of_orbits_per_manifold,
+                                                                                     max_position_dev=max_position_deviation[number_of_orbits_per_manifold],
+                                                                                     orbit_type=orbit_type)
+            minimum_impulse_manifold_connections.plot_impulse_angle()
+            minimum_impulse_manifold_connections.plot_manifolds()
+            minimum_impulse_manifold_connections.plot_poincare_spread()
 
     # minimum_impulse_manifold_connections = MinimumImpulseManifoldConnections()
     # minimum_impulse_manifold_connections.compare_number_of_orbits_per_manifold([100, 1000, 10000])
