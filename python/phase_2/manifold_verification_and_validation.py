@@ -31,7 +31,7 @@ class DisplayPeriodicityValidation:
         self.orbitType = orbit_type
         self.orbitId = orbit_id
         self.orbitTypeForTitle = orbit_type.capitalize()
-        if self.orbitTypeForTitle == ('Horizontal' or 'Vertical'):
+        if (self.orbitTypeForTitle == 'Horizontal') or (self.orbitTypeForTitle == 'Vertical'):
             self.orbitTypeForTitle += ' Lyapunov'
 
         self.lagrangePointNr = lagrange_point_nr

@@ -28,10 +28,6 @@ class MinimumImpulseManifoldConnections:
         self.suptitleSize = 20
         self.figSize = (7 * (1 + np.sqrt(5)) / 2, 7)
         self.orbitType = orbit_type
-        self.orbitTypeForTitle = orbit_type.capitalize()
-        if (self.orbitTypeForTitle == 'Horizontal') or (self.orbitTypeForTitle == 'Vertical'):
-            self.orbitTypeForTitle += ' Lyapunov'
-
         self.numberOfOrbitsPerManifold = number_of_orbits_per_manifold
         self.maximumPositionDeviation = max_position_dev
         # TODO fix proper constants
@@ -75,13 +71,13 @@ class MinimumImpulseManifoldConnections:
 
         axarr[0, 0].semilogy(self.minimumImpulse['dv'], color='navy')
         axarr[0, 0].set_xlabel('$ \\theta [^\circ] $')
-        axarr[0, 0].set_ylabel('$ \Delta V [m/s]  \quad \\forall \enskip min(\Delta r), \Delta V < 0.5$')
+        axarr[0, 0].set_ylabel('$ \Delta \mathbf{V} [m/s] $')
         axarr[0, 0].set_title('Velocity discrepancy')
 
         axarr[0, 1].semilogy(self.minimumImpulse['dr'], color='navy')
         axarr[0, 1].axhline(self.maximumPositionDeviation * self.positionDimensionFactor, c=self.plottingColors['limit'], linewidth=1, linestyle='--')
         axarr[0, 1].set_xlabel('$ \\theta [^\circ]$')
-        axarr[0, 1].set_ylabel('$ \Delta r [km]   \quad \\forall \enskip min(\Delta r), \Delta V < 0.5$')
+        axarr[0, 1].set_ylabel('$ \Delta \mathbf{r} [km] $')
         axarr[0, 1].set_title('Position discrepancy')
 
         theta_normalized = [(theta-min(list(self.minimumImpulse.index)))/(max(list(self.minimumImpulse.index))-min(list(self.minimumImpulse.index))) for theta in self.thetaRangeList]
@@ -116,7 +112,7 @@ class MinimumImpulseManifoldConnections:
         cax, kw = matplotlib.colorbar.make_axes([axarr[1, 0]])
         plt.colorbar(sm, cax=cax, label='$\\theta [^\circ]$', **kw)
 
-        plt.suptitle(self.orbitTypeForTitle + ' near-heteroclinic connection $\mathcal{W}^{U+} \cup \mathcal{W}^{S-}$ (at C = 3.1, \#' +
+        plt.suptitle('Near-heteroclinic connection for $min(\Delta r) \enskip \\forall \Delta V < 0.5$ (at $\mathcal{W}^{U+} \cup \mathcal{W}^{S-}$, C = 3.1, \#' +
                      str(self.numberOfOrbitsPerManifold) + ')', size=self.suptitleSize)
 
         plt.savefig('../../data/figures/poincare_sections/' + str(self.numberOfOrbitsPerManifold) + '/' + self.orbitType + '_3.1_' + str(self.numberOfOrbitsPerManifold) + '_heteroclinic_connection_validation.pdf')
@@ -257,16 +253,13 @@ class MinimumImpulseManifoldConnections:
 
             dr_ls = []
             dv_ls = []
-            theta_ls = []
-            # tau_normalized = [i/self.numberOfOrbitsPerManifold for i in range(0, self.numberOfOrbitsPerManifold+1, 1)]
-            # colors = matplotlib.colors.ListedColormap(sns.color_palette("YlGnBu"), N=self.numberOfOrbitsPerManifold+1)(tau_normalized)
-            #
-            # sm = plt.cm.ScalarMappable(cmap=matplotlib.colors.ListedColormap(sns.color_palette("YlGnBu")),
-            #                            norm=plt.Normalize(vmin=0, vmax=1))
-            # clean the array of the scalar mappable
-            # sm._A = []
+            tau_normalized = [i/self.numberOfOrbitsPerManifold for i in range(0, self.numberOfOrbitsPerManifold+1, 1)]
+            colors = matplotlib.colors.ListedColormap(sns.color_palette("YlGnBu"), N=self.numberOfOrbitsPerManifold+1)(tau_normalized)
 
-            scatter_size = 15
+            sm = plt.cm.ScalarMappable(cmap=matplotlib.colors.ListedColormap(sns.color_palette("YlGnBu")),
+                                       norm=plt.Normalize(vmin=0, vmax=1))
+            # clean the array of the scalar mappable
+            sm._A = []
 
             print('Matrix size: ' + str(len(df_s)) + ' x ' + str(len(df_s.columns)))
             for idx_s, row_s in df_s.iterrows():
@@ -278,32 +271,23 @@ class MinimumImpulseManifoldConnections:
                         dv = np.sqrt((row_s['xdot'] - row_u['xdot']) ** 2 + (row_s['ydot'] - row_u['ydot']) ** 2 + (row_s['zdot'] - row_u['zdot']) ** 2)
                         dtheta = abs(row_s['tau'] - row_u['tau'])
 
-                        # plot_color_index = int(np.round(dtheta * self.numberOfOrbitsPerManifold))
-                        # plot_color_index = int(np.round(abs(row_s['tau']) * self.numberOfOrbitsPerManifold))
-                        # plot_color = colors[plot_color_index]
+                        plot_color_index = int(np.round(dtheta * self.numberOfOrbitsPerManifold))
+                        plot_color = colors[plot_color_index]
 
                         dr_ls.append(dr * self.positionDimensionFactor)
                         dv_ls.append(dv * self.velocityDimensionFactor)
-                        # print('tau_s = ' + str(row_s['tau']) + ', tau_u = ' + str(row_u['tau']) +
-                        #       ', dtheta = ' + str(abs(row_s['tau'] - row_u['tau'])) +
-                        #       ', dr = ' + str(dr * self.positionDimensionFactor) + ', dV = ' +
-                        #       str(dv * self.velocityDimensionFactor))
-                        theta_ls.append(dtheta)
-                        # ax.scatter(dv * self.velocityDimensionFactor, dr * self.positionDimensionFactor, c=plot_color, alpha=1, s=scatter_size)
-            sc = ax.scatter(dv_ls, dr_ls, c=theta_ls, alpha=0.9, cmap='viridis', vmin=0, vmax=1, s=scatter_size)
-            cb = plt.colorbar(sc)
-            cb.set_label('$|\\tau_s - \\tau_u| \enskip [-]$')
-            print(pd.DataFrame({'dtau': theta_ls}).describe())
+                        ax.scatter(dv * self.velocityDimensionFactor, dr * self.positionDimensionFactor, c=plot_color, alpha=1)
+            # ax.scatter(dv_ls, dr_ls, c='navy', alpha=0.5)
             try:
                 min_impulse_line = ax.scatter(self.minimumImpulse.loc[theta]['dv'], self.minimumImpulse.loc[theta]['dr'],
-                                              c='r', label='$min(\Delta r) \quad  \\forall \enskip \Delta V < 0.5$', s=scatter_size)
+                                              c='r', label='$min(\Delta r) \enskip \\forall \Delta V < 0.5$')
                 ax.legend(frameon=True, loc='lower right', handles=[min_impulse_line])
             except KeyError:
                 pass
 
             ax.axhline(self.maximumPositionDeviation * self.positionDimensionFactor, c=self.plottingColors['limit'], linewidth=1, linestyle='--')
-            ax.set_xlabel('$\Delta \mathbf{V} \enskip [m/s]$')
-            ax.set_ylabel('$\Delta \mathbf{r} \enskip [km]$')
+            ax.set_xlabel('$\Delta \mathbf{V} [m/s]$')
+            ax.set_ylabel('$\Delta \mathbf{r} [km]$')
             ax.set_yscale('log')
             ax.set_xlim([0, 100])
             ax.set_ylim([self.maximumPositionDeviation * self.positionDimensionFactor / 100,
@@ -312,10 +296,10 @@ class MinimumImpulseManifoldConnections:
 
             fig.tight_layout()
             fig.subplots_adjust(top=0.9)
-            # cax, kw = matplotlib.colorbar.make_axes([ax])
-            # plt.colorbar(sm, cax=cax, label='$|\\tau_1 - \\tau_2| [-]$', **kw)
+            cax, kw = matplotlib.colorbar.make_axes([ax])
+            plt.colorbar(sm, cax=cax, label='$|\\tau_1 - \\tau_2| [-]$', **kw)
 
-            plt.suptitle(self.orbitTypeForTitle + ' $\mathcal{W}^{U+} \cup \mathcal{W}^{S-}$ at $\mathcal{U}_{2}$ (C = 3.1, $\\theta$ = '
+            plt.suptitle('State vector discrepancy (at  $\mathcal{W}^{U+} \cup \mathcal{W}^{S-}$, C = 3.1, $\\theta$ = '
                          + str(theta) + '$^\circ, \# = $' + str(self.numberOfOrbitsPerManifold) + ')',
                          size=self.suptitleSize)
             # plt.show()
@@ -327,10 +311,6 @@ class MinimumImpulseManifoldConnections:
         fig, axarr = plt.subplots(2, 1, figsize=self.figSize, sharex=True)
 
         blues = sns.color_palette('Blues', len(number_of_orbits_per_manifold_ls))
-        # linestyles = ['-.', '--', '-']
-        linestyles = ['--', '-', '-']
-        linewidth = 2
-        alpha = 0.7
 
         for idx, number_of_orbits_per_manifold in enumerate(number_of_orbits_per_manifold_ls):
             df = pd.read_table('../../data/raw/poincare_sections/' + str(number_of_orbits_per_manifold) + '/' + self.orbitType + '_3.1_minimum_impulse_connections.txt', delim_whitespace=True, header=None).filter(list(range(17)))
@@ -344,85 +324,24 @@ class MinimumImpulseManifoldConnections:
             df['dv'] = df['dv'] * self.velocityDimensionFactor
             df = df[df['dv'] != 0]
 
-            axarr[0].semilogy(df['dv'], color=self.plottingColors['tripleLine'][idx], label='$\#$ = ' + str(number_of_orbits_per_manifold), linestyle=linestyles[idx], linewidth=linewidth, alpha=alpha)
+            axarr[0].semilogy(df['dv'], color=blues[idx], label=str(number_of_orbits_per_manifold))
 
-            axarr[1].semilogy(df['dr'], color=self.plottingColors['tripleLine'][idx], label='$\#$ = ' + str(number_of_orbits_per_manifold), linestyle=linestyles[idx], linewidth=linewidth, alpha=alpha)
+            axarr[1].semilogy(df['dr'], color=blues[idx], label=str(number_of_orbits_per_manifold))
 
-        axarr[0].set_ylabel('$ \Delta V [m/s] \quad \\forall \enskip min(\Delta r), \Delta V < 0.5$')
+        axarr[0].set_ylabel('$ \Delta V [m/s]  \enskip \\forall min(\Delta r), \Delta V < 0.5$')
         axarr[1].set_xlabel('$ \\theta [^\circ]$')
-        axarr[1].set_ylabel('$ \Delta r [m] \quad \\forall \enskip min(\Delta r), \Delta V < 0.5$')
-
-        axarr[0].set_title('Velocity discrepancy')
-        axarr[1].set_title('Position discrepancy')
+        axarr[1].set_ylabel('$ \Delta r [m] \enskip \\forall min(\Delta r), \Delta V < 0.5 $')
 
         for i in range(2):
             axarr[i].grid(True, which='both', ls=':')
+        axarr[0].legend(frameon=True, bbox_to_anchor=(1, 0))
         fig.tight_layout()
-        fig.subplots_adjust(top=0.9, right=0.875)
-        axarr[0].legend(frameon=True, bbox_to_anchor=(1.14, 0))
+        fig.subplots_adjust(top=0.9, right=0.9)
 
-        plt.suptitle(self.orbitTypeForTitle + ' near-heteroclinic connection $\mathcal{W}^{U+} \cup \mathcal{W}^{S-}$ (at C = 3.1) - Sampling validation',
+        plt.suptitle('Near-heteroclinic connection $\mathcal{W}^{U+} \cup \mathcal{W}^{S-}$ (at C = 3.1) - Sampling validation',
                      size=self.suptitleSize)
         # plt.show()
-        plt.savefig('../../data/figures/poincare_sections/' + self.orbitType + '_3.1_heteroclinic_sampling_validation.pdf')
-        plt.close()
-        pass
-
-    def compare_orbit_types(self, number_of_orbits_per_manifold):
-        fig, axarr = plt.subplots(2, 1, figsize=self.figSize, sharex=True)
-
-        linestyles = ['-', '-', '-']
-        linewidth = 2
-        alpha = 0.7
-
-        orbit_types = ['horizontal', 'vertical', 'halo']
-        for idx, orbit_type in enumerate(orbit_types):
-            df = pd.read_table('../../data/raw/poincare_sections/' + str(
-                number_of_orbits_per_manifold) + '/' + orbit_type + '_3.1_minimum_impulse_connections.txt',
-                               delim_whitespace=True, header=None).filter(list(range(17)))
-            df.columns = ['theta', 'tau1', 't1', 'x1', 'y1', 'z1', 'xdot1', 'ydot1', 'zdot1', 'tau2', 't2', 'x2', 'y2',
-                          'z2', 'xdot2', 'ydot2', 'zdot2']
-            df['dr'] = np.sqrt((df['x1'] - df['x2']) ** 2 + (df['y1'] - df['y2']) ** 2 + (df['z1'] - df['z2']) ** 2)
-            df['dv'] = np.sqrt(
-                (df['xdot1'] - df['xdot2']) ** 2 + (df['ydot1'] - df['ydot2']) ** 2 + (df['zdot1'] - df['zdot2']) ** 2)
-            df = df.set_index('theta')
-
-            # TODO fix proper constants
-            df['dr'] = df['dr'] * self.positionDimensionFactor
-            df['dv'] = df['dv'] * self.velocityDimensionFactor
-            df = df[df['dv'] != 0]
-
-            orbit_type_for_label = orbit_type.capitalize()
-            if (orbit_type_for_label == 'Horizontal') or (orbit_type_for_label == 'Vertical'):
-                orbit_type_for_label += ' Lyapunov'
-
-            axarr[0].semilogy(df['dv'], color=self.plottingColors['tripleLine'][idx],
-                              label=orbit_type_for_label, linestyle=linestyles[idx], linewidth=linewidth,
-                              alpha=alpha)
-
-            axarr[1].semilogy(df['dr'], color=self.plottingColors['tripleLine'][idx],
-                              label=orbit_type_for_label, linestyle=linestyles[idx], linewidth=linewidth,
-                              alpha=alpha)
-
-        axarr[0].set_ylabel('$ \Delta V [m/s] \quad \\forall \enskip min(\Delta r), \Delta V < 0.5$')
-        axarr[1].set_xlabel('$ \\theta [^\circ]$')
-        axarr[1].set_ylabel('$ \Delta r [m] \quad \\forall \enskip min(\Delta r), \Delta V < 0.5$')
-
-        axarr[0].set_title('Velocity discrepancy')
-        axarr[1].set_title('Position discrepancy')
-
-        for i in range(2):
-            axarr[i].grid(True, which='both', ls=':')
-        fig.tight_layout()
-        fig.subplots_adjust(top=0.9, right=0.825)
-        axarr[0].legend(frameon=True, bbox_to_anchor=(1.22, 0))
-
-        plt.suptitle('Near-heteroclinic connection $\mathcal{W}^{U+} \cup \mathcal{W}^{S-}$ (at C = 3.1, \# = ' +
-                     str(number_of_orbits_per_manifold) + ') - Family overview',
-            size=self.suptitleSize)
-        # plt.show()
-        plt.savefig(
-            '../../data/figures/poincare_sections/3.1_heteroclinic_family_overview_' + str(number_of_orbits_per_manifold) + '.pdf')
+        plt.savefig('../../data/figures/poincare_sections/' + self.orbitType + '_3.1_heteroclinic_connection_comparison.pdf')
         plt.close()
         pass
 
@@ -430,29 +349,16 @@ class MinimumImpulseManifoldConnections:
 if __name__ == '__main__':
     max_position_deviation = {100: 1e-3, 1000: 1e-4, 10000: 1e-5}
     orbit_types = ['horizontal', 'vertical', 'halo']
-
-    for orbit_type in orbit_types:
-        for number_of_orbits_per_manifold in [100]:
-            minimum_impulse_manifold_connections = MinimumImpulseManifoldConnections(number_of_orbits_per_manifold=number_of_orbits_per_manifold,
-                                                                                     max_position_dev=max_position_deviation[number_of_orbits_per_manifold],
-                                                                                     orbit_type=orbit_type)
-            minimum_impulse_manifold_connections.plot_impulse_angle()
-            # minimum_impulse_manifold_connections.plot_manifolds()
-            minimum_impulse_manifold_connections.plot_poincare_spread()
-
-    for number_of_orbits_per_manifold in [100]:
-        minimum_impulse_manifold_connections = MinimumImpulseManifoldConnections()
-        minimum_impulse_manifold_connections.compare_orbit_types(number_of_orbits_per_manifold)
-
     orbit_types = ['vertical']
-    for orbit_type in orbit_types:
-        for number_of_orbits_per_manifold in [1000]:
-            minimum_impulse_manifold_connections = MinimumImpulseManifoldConnections(number_of_orbits_per_manifold=number_of_orbits_per_manifold,
-                                                                                     max_position_dev=max_position_deviation[number_of_orbits_per_manifold],
-                                                                                     orbit_type=orbit_type)
-            minimum_impulse_manifold_connections.plot_impulse_angle()
-            # minimum_impulse_manifold_connections.plot_manifolds()
-            minimum_impulse_manifold_connections.plot_poincare_spread()
+
+    # for orbit_type in orbit_types:
+    #     for number_of_orbits_per_manifold in [100]:
+    #         minimum_impulse_manifold_connections = MinimumImpulseManifoldConnections(number_of_orbits_per_manifold=number_of_orbits_per_manifold,
+    #                                                                                  max_position_dev=max_position_deviation[number_of_orbits_per_manifold],
+    #                                                                                  orbit_type=orbit_type)
+    #         minimum_impulse_manifold_connections.plot_impulse_angle()
+    #         minimum_impulse_manifold_connections.plot_manifolds()
+    #         minimum_impulse_manifold_connections.plot_poincare_spread()
 
     minimum_impulse_manifold_connections = MinimumImpulseManifoldConnections()
     minimum_impulse_manifold_connections.compare_number_of_orbits_per_manifold([100, 1000])

@@ -49,7 +49,7 @@ class SpatialManifoldsZoomAnimation:
         self.timeText = ''  # Will become a plt.text-object
 
         self.orbitTypeForTitle = orbit_type.capitalize()
-        if self.orbitTypeForTitle == ('Horizontal' or 'Vertical'):
+        if (self.orbitTypeForTitle == 'Horizontal') or (self.orbitTypeForTitle == 'Vertical'):
             self.orbitTypeForTitle += ' Lyapunov'
 
         print(self.orbitTypeForTitle + ' at C = ' + str(self.cLevel))

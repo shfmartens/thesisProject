@@ -46,7 +46,7 @@ class PlanarManifoldsAnimation:
         self.timeText = plt.text(0, 0, 's')
 
         self.orbitTypeForTitle = orbit_type.capitalize()
-        if self.orbitTypeForTitle == ('Horizontal' or 'Vertical'):
+        if (self.orbitTypeForTitle == 'Horizontal') or (self.orbitTypeForTitle == 'Vertical'):
             self.orbitTypeForTitle += ' Lyapunov'
 
         print(self.orbitTypeForTitle + ' at C = ' + str(c_level))

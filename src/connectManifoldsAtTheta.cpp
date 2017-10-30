@@ -523,8 +523,30 @@ Eigen::MatrixXd connectManifoldsAtTheta( const std::string orbitType, const doub
     // Set output maximum precision
     std::cout.precision(std::numeric_limits<double>::digits10);
 
+    int orbitOneL1;
+    int orbitTwoL1;
+    int orbitOneL2;
+    int orbitTwoL2;
+
+    if ( orbitType == "horizontal" ){
+        orbitOneL1 = 577;
+        orbitTwoL1 = 578;
+        orbitOneL2 = 759;
+        orbitTwoL2 = 760;
+    } if ( orbitType == "vertical" ){
+        orbitOneL1 = 1159;
+        orbitTwoL1 = 1160;
+        orbitOneL2 = 1274;
+        orbitTwoL2 = 1275;
+    } if ( orbitType == "halo" ){
+        orbitOneL1 = 836;
+        orbitTwoL1 = 837;
+        orbitOneL2 = 650;
+        orbitTwoL2 = 651;
+    }
+
     // Load orbits in L1 and refine to specific Jacobi energy
-    Eigen::VectorXd selectedInitialConditions = readInitialConditionsFromFile(1, orbitType, 1159, 1160, massParameter);
+    Eigen::VectorXd selectedInitialConditions = readInitialConditionsFromFile(1, orbitType, orbitOneL1, orbitTwoL1, massParameter);
     Eigen::VectorXd refinedJacobiEnergyResult = refineOrbitJacobiEnergy(1, orbitType, desiredJacobiEnergy,
                                                                         selectedInitialConditions.segment(1, 6),
                                                                         selectedInitialConditions(0),
@@ -545,7 +567,7 @@ Eigen::MatrixXd connectManifoldsAtTheta( const std::string orbitType, const doub
     }
 
     // Load orbits in L2 and refine to specific Jacobi energy
-    selectedInitialConditions = readInitialConditionsFromFile(2, orbitType, 1274, 1275, massParameter);
+    selectedInitialConditions = readInitialConditionsFromFile(2, orbitType, orbitOneL2, orbitTwoL2, massParameter);
     refinedJacobiEnergyResult = refineOrbitJacobiEnergy(2, orbitType, desiredJacobiEnergy,
                                                         selectedInitialConditions.segment(1, 6),
                                                         selectedInitialConditions(0),

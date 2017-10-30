@@ -32,7 +32,7 @@ class ManifoldComparisonForVaryingC:
         self.orbitIdPerC = orbit_id_per_c
 
         self.orbitTypeForTitle = orbit_type.capitalize()
-        if self.orbitTypeForTitle == ('Horizontal' or 'Vertical'):
+        if (self.orbitTypeForTitle == 'Horizontal') or (self.orbitTypeForTitle == 'Vertical'):
             self.orbitTypeForTitle += ' Lyapunov'
 
         self.lagrangePointNr = lagrange_point_nr

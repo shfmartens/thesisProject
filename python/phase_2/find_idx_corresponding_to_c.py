@@ -32,7 +32,7 @@ def findIdxCorrespondingToC(c_level):
 
     for idx, orbit_type in enumerate(orbit_types):
         for lagrange_point_nr in lagrange_point_nrs:
-            initial_conditions_file_path = '../../data/raw/orbit/L' + str(
+            initial_conditions_file_path = '../../data/raw/orbits/L' + str(
                 lagrange_point_nr) + '_' + orbit_type + '_initial_conditions.txt'
             initial_conditions_incl_m_df = load_initial_conditions_incl_M(initial_conditions_file_path)
 
@@ -47,5 +47,5 @@ def findIdxCorrespondingToC(c_level):
 
 
 if __name__ == '__main__':
-    c_level = 3.05
+    c_level = 3.1
     findIdxCorrespondingToC(c_level)

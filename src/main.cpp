@@ -19,60 +19,79 @@
 //#include "completeInitialConditionsHaloFamily.h"
 //#include "createInitialConditionsAxialFamily.h"
 #include "connectManifoldsAtTheta.h"
-#include "omp.h"
+//#include "omp.h"
 
 
 double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER, tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER );
 
 int main (){
 
-    std::vector< std::pair< double, Eigen::MatrixXd > > assembledResults;
+    double desiredJacobiEnergy = 3.1;
+    int thetaStoppingAngleMin = -180;
+    int thetaStoppingAngleMax = 0;
+    int numberOfTrajectoriesPerManifold = 1000;
 
-    #pragma omp parallel num_threads(30)
-    {
-        #pragma omp for
-        for (int i=-180; i<=0; i++)
-        {
-            double thetaStoppingAngle = static_cast<double>(i);
-            Eigen::MatrixXd minimumImpulseStateVectorsAtPoincare = connectManifoldsAtTheta( "vertical",  thetaStoppingAngle, 1000, 3.1 );
-            assembledResults.push_back(std::make_pair(thetaStoppingAngle, minimumImpulseStateVectorsAtPoincare));
+    for (int orbitTypeNumber = 0; orbitTypeNumber <= 1; orbitTypeNumber++) {
+
+        std::string orbitType;
+        if (orbitTypeNumber == 0) {
+            orbitType = "horizontal";
+        } else {
+            orbitType = "halo";
         }
-    }
 
-    remove("../data/raw/poincare_sections/vertical_3.1_minimum_impulse_connections.txt");
-    std::ofstream textFileAssembledResults("../data/raw/poincare_sections/vertical_3.1_minimum_impulse_connections.txt");
-    textFileAssembledResults.precision(std::numeric_limits<double>::digits10);
+        std::vector<std::pair<double, Eigen::MatrixXd> > assembledResults;
 
-    for (int i=-180; i<=0; i++)
-    {
-        double thetaStoppingAngle = static_cast<double>(i);
-
-        for (unsigned int idx = 0; idx < assembledResults.size(); idx++)
+        #pragma omp parallel num_threads(30)
         {
-            if (assembledResults.at(idx).first == thetaStoppingAngle)
-            {
-                textFileAssembledResults << std::left << std::scientific << std::setw(30) << thetaStoppingAngle << std::setw(30)
-                                         << assembledResults.at(idx).second(0, 0)  << std::setw(30)
-                                         << assembledResults.at(idx).second(0, 1)  << std::setw(30)
-                                         << assembledResults.at(idx).second(0, 2)  << std::setw(30)
-                                         << assembledResults.at(idx).second(0, 3)  << std::setw(30)
-                                         << assembledResults.at(idx).second(0, 4)  << std::setw(30)
-                                         << assembledResults.at(idx).second(0, 5)  << std::setw(30)
-                                         << assembledResults.at(idx).second(0, 6)  << std::setw(30)
-                                         << assembledResults.at(idx).second(0, 7)  << std::setw(30)
-                                         << assembledResults.at(idx).second(1, 0)  << std::setw(30)
-                                         << assembledResults.at(idx).second(1, 1)  << std::setw(30)
-                                         << assembledResults.at(idx).second(1, 2)  << std::setw(30)
-                                         << assembledResults.at(idx).second(1, 3)  << std::setw(30)
-                                         << assembledResults.at(idx).second(1, 4)  << std::setw(30)
-                                         << assembledResults.at(idx).second(1, 5)  << std::setw(30)
-                                         << assembledResults.at(idx).second(1, 6)  << std::setw(30)
-                                         << assembledResults.at(idx).second(1, 7)  << std::endl;
+            #pragma omp for
+            for (int i = thetaStoppingAngleMin; i <= thetaStoppingAngleMax; i++) {
+                double thetaStoppingAngle = static_cast<double>(i);
+                Eigen::MatrixXd minimumImpulseStateVectorsAtPoincare = connectManifoldsAtTheta(orbitType,
+                                                                                               thetaStoppingAngle,
+                                                                                               numberOfTrajectoriesPerManifold,
+                                                                                               desiredJacobiEnergy);
+                assembledResults.push_back(std::make_pair(thetaStoppingAngle, minimumImpulseStateVectorsAtPoincare));
             }
         }
-    }
-    textFileAssembledResults.close();
 
+        std::ostringstream desiredJacobiEnergyStr;
+        std::string fileNameString;
+        desiredJacobiEnergyStr << std::setprecision(4) << desiredJacobiEnergy;
+        fileNameString = ("../data/raw/poincare_sections/" + orbitType + "_" + desiredJacobiEnergyStr.str() + "_minimum_impulse_connections.txt");
+        remove(fileNameString.c_str());
+        std::ofstream textFileAssembledResults(fileNameString.c_str());
+
+        textFileAssembledResults.precision(std::numeric_limits<double>::digits10);
+
+        for (int i = thetaStoppingAngleMin; i <= thetaStoppingAngleMax; i++) {
+            double thetaStoppingAngle = static_cast<double>(i);
+
+            for (unsigned int idx = 0; idx < assembledResults.size(); idx++) {
+                if (assembledResults.at(idx).first == thetaStoppingAngle) {
+                    textFileAssembledResults << std::left << std::scientific << std::setw(30) << thetaStoppingAngle
+                                             << std::setw(30)
+                                             << assembledResults.at(idx).second(0, 0) << std::setw(30)
+                                             << assembledResults.at(idx).second(0, 1) << std::setw(30)
+                                             << assembledResults.at(idx).second(0, 2) << std::setw(30)
+                                             << assembledResults.at(idx).second(0, 3) << std::setw(30)
+                                             << assembledResults.at(idx).second(0, 4) << std::setw(30)
+                                             << assembledResults.at(idx).second(0, 5) << std::setw(30)
+                                             << assembledResults.at(idx).second(0, 6) << std::setw(30)
+                                             << assembledResults.at(idx).second(0, 7) << std::setw(30)
+                                             << assembledResults.at(idx).second(1, 0) << std::setw(30)
+                                             << assembledResults.at(idx).second(1, 1) << std::setw(30)
+                                             << assembledResults.at(idx).second(1, 2) << std::setw(30)
+                                             << assembledResults.at(idx).second(1, 3) << std::setw(30)
+                                             << assembledResults.at(idx).second(1, 4) << std::setw(30)
+                                             << assembledResults.at(idx).second(1, 5) << std::setw(30)
+                                             << assembledResults.at(idx).second(1, 6) << std::setw(30)
+                                             << assembledResults.at(idx).second(1, 7) << std::endl;
+                }
+            }
+        }
+        textFileAssembledResults.close();
+    }
 //    sleep(1E10);
     // ================================0
     // == Compute initial conditions ==
