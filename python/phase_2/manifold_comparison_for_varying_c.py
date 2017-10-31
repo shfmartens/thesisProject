@@ -20,7 +20,7 @@ plt.rcParams.update(params)
 import sys
 sys.path.append('../util')
 from load_data import load_orbit, load_bodies_location, load_lagrange_points_location, load_differential_corrections, \
-    load_initial_conditions_incl_M, load_manifold, computeJacobiEnergy, load_manifold_incl_stm
+    load_initial_conditions_incl_M, load_manifold, computeJacobiEnergy, load_manifold_incl_stm, load_manifold_refactored
 
 
 class ManifoldComparisonForVaryingC:
@@ -54,20 +54,25 @@ class ManifoldComparisonForVaryingC:
 
         for c_level in reversed(sorted(orbit_id_per_c)):
             orbit_id = orbit_id_per_c[c_level]
-            self.C.append(initial_conditions_incl_m_df.iloc[orbit_id][0])
+            # self.C.append(initial_conditions_incl_m_df.iloc[orbit_id][0])
             self.orbitDf.append(load_orbit(
-                '../../data/raw/orbits/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '.txt'))
-            self.W_S_plus.append(load_manifold(
-                '../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(
+                '../../data/raw/orbits/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '.txt'))
+
+            self.C.append(computeJacobiEnergy(self.orbitDf[-1].iloc[0]['x'], self.orbitDf[-1].iloc[0]['y'],
+                                              self.orbitDf[-1].iloc[0]['z'], self.orbitDf[-1].iloc[0]['xdot'],
+                                              self.orbitDf[-1].iloc[0]['ydot'], self.orbitDf[-1].iloc[0]['zdot']))
+
+            self.W_S_plus.append(load_manifold_refactored(
+                '../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(
                     orbit_id) + '_W_S_plus.txt'))
-            self.W_S_min.append(load_manifold(
-                '../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(
+            self.W_S_min.append(load_manifold_refactored(
+                '../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(
                     orbit_id) + '_W_S_min.txt'))
-            self.W_U_plus.append(load_manifold(
-                '../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(
+            self.W_U_plus.append(load_manifold_refactored(
+                '../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(
                     orbit_id) + '_W_U_plus.txt'))
-            self.W_U_min.append(load_manifold(
-                '../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(
+            self.W_U_min.append(load_manifold_refactored(
+                '../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(
                     orbit_id) + '_W_U_min.txt'))
 
         self.numberOfOrbitsPerManifold = len(set(self.W_S_plus[0].index.get_level_values(0)))
@@ -94,23 +99,35 @@ class ManifoldComparisonForVaryingC:
                                'limit': 'black',
                                'orbit': 'navy'}
         self.suptitleSize = 20
+
         pass
 
     def plot_manifolds(self):
         # Plot: subplots
-        fig = plt.figure(figsize=self.figSize)
-        ax00 = fig.add_subplot(4, 3, 1, projection='3d')
-        ax01 = fig.add_subplot(4, 3, 2, projection='3d')
-        ax02 = fig.add_subplot(4, 3, 3, projection='3d')
-        ax10 = fig.add_subplot(4, 3, 4)
-        ax11 = fig.add_subplot(4, 3, 5)
-        ax12 = fig.add_subplot(4, 3, 6)
-        ax20 = fig.add_subplot(4, 3, 7)
-        ax21 = fig.add_subplot(4, 3, 8)
-        ax22 = fig.add_subplot(4, 3, 9)
-        ax30 = fig.add_subplot(4, 3, 10)
-        ax31 = fig.add_subplot(4, 3, 11)
-        ax32 = fig.add_subplot(4, 3, 12)
+        if self.orbitType == 'horizontal':
+           figsize = (self.figSize[0], self.figSize[1]/2)
+           fig = plt.figure(figsize=figsize)
+           ax00 = fig.add_subplot(2, 3, 1, projection='3d')
+           ax01 = fig.add_subplot(2, 3, 2, projection='3d')
+           ax02 = fig.add_subplot(2, 3, 3, projection='3d')
+           ax10 = fig.add_subplot(2, 3, 4)
+           ax11 = fig.add_subplot(2, 3, 5)
+           ax12 = fig.add_subplot(2, 3, 6)
+        else:
+            figsize = self.figSize
+            fig = plt.figure(figsize=figsize)
+            ax00 = fig.add_subplot(4, 3, 1, projection='3d')
+            ax01 = fig.add_subplot(4, 3, 2, projection='3d')
+            ax02 = fig.add_subplot(4, 3, 3, projection='3d')
+            ax10 = fig.add_subplot(4, 3, 4)
+            ax11 = fig.add_subplot(4, 3, 5)
+            ax12 = fig.add_subplot(4, 3, 6)
+            ax20 = fig.add_subplot(4, 3, 7)
+            ax21 = fig.add_subplot(4, 3, 8)
+            ax22 = fig.add_subplot(4, 3, 9)
+            ax30 = fig.add_subplot(4, 3, 10)
+            ax31 = fig.add_subplot(4, 3, 11)
+            ax32 = fig.add_subplot(4, 3, 12)
 
         lagrange_points_df = load_lagrange_points_location()
         lagrange_point_nrs = ['L1', 'L2']
@@ -129,20 +146,20 @@ class ManifoldComparisonForVaryingC:
                          color='black', marker='x')
             ax12.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
                          color='black', marker='x')
+            if self.orbitType != 'horizontal':
+                ax20.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['z'],
+                             color='black', marker='x')
+                ax21.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['z'],
+                             color='black', marker='x')
+                ax22.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['z'],
+                             color='black', marker='x')
 
-            ax20.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['z'],
-                         color='black', marker='x')
-            ax21.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['z'],
-                         color='black', marker='x')
-            ax22.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['z'],
-                         color='black', marker='x')
-
-            ax30.scatter(lagrange_points_df[lagrange_point_nr]['y'], lagrange_points_df[lagrange_point_nr]['z'],
-                         color='black', marker='x')
-            ax31.scatter(lagrange_points_df[lagrange_point_nr]['y'], lagrange_points_df[lagrange_point_nr]['z'],
-                         color='black', marker='x')
-            ax32.scatter(lagrange_points_df[lagrange_point_nr]['y'], lagrange_points_df[lagrange_point_nr]['z'],
-                         color='black', marker='x')
+                ax30.scatter(lagrange_points_df[lagrange_point_nr]['y'], lagrange_points_df[lagrange_point_nr]['z'],
+                             color='black', marker='x')
+                ax31.scatter(lagrange_points_df[lagrange_point_nr]['y'], lagrange_points_df[lagrange_point_nr]['z'],
+                             color='black', marker='x')
+                ax32.scatter(lagrange_points_df[lagrange_point_nr]['y'], lagrange_points_df[lagrange_point_nr]['z'],
+                             color='black', marker='x')
 
         u = np.linspace(0, 2 * np.pi, 100)
         v = np.linspace(0, np.pi, 100)
@@ -158,12 +175,13 @@ class ManifoldComparisonForVaryingC:
             ax10.contourf(x, y, z, colors='black')
             ax11.contourf(x, y, z, colors='black')
             ax12.contourf(x, y, z, colors='black')
-            ax20.contourf(x, z, y, colors='black')
-            ax21.contourf(x, z, y, colors='black')
-            ax22.contourf(x, z, y, colors='black')
-            ax30.contourf(y, z, x, colors='black')
-            ax31.contourf(y, z, x, colors='black')
-            ax32.contourf(y, z, x, colors='black')
+            if self.orbitType != 'horizontal':
+                ax20.contourf(x, z, y, colors='black')
+                ax21.contourf(x, z, y, colors='black')
+                ax22.contourf(x, z, y, colors='black')
+                ax30.contourf(y, z, x, colors='black')
+                ax31.contourf(y, z, x, colors='black')
+                ax32.contourf(y, z, x, colors='black')
 
         # Determine color for plot
         plot_alpha = 1
@@ -186,19 +204,20 @@ class ManifoldComparisonForVaryingC:
             ax12.plot(self.W_S_plus[2].xs(manifold_orbit_number)['x'], self.W_S_plus[2].xs(manifold_orbit_number)['y'],
                       color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
 
-            ax20.plot(self.W_S_plus[0].xs(manifold_orbit_number)['x'], self.W_S_plus[0].xs(manifold_orbit_number)['z'],
-                      color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-            ax21.plot(self.W_S_plus[1].xs(manifold_orbit_number)['x'], self.W_S_plus[1].xs(manifold_orbit_number)['z'],
-                      color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-            ax22.plot(self.W_S_plus[2].xs(manifold_orbit_number)['x'], self.W_S_plus[2].xs(manifold_orbit_number)['z'],
-                      color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            if self.orbitType != 'horizontal':
+                ax20.plot(self.W_S_plus[0].xs(manifold_orbit_number)['x'], self.W_S_plus[0].xs(manifold_orbit_number)['z'],
+                          color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax21.plot(self.W_S_plus[1].xs(manifold_orbit_number)['x'], self.W_S_plus[1].xs(manifold_orbit_number)['z'],
+                          color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax22.plot(self.W_S_plus[2].xs(manifold_orbit_number)['x'], self.W_S_plus[2].xs(manifold_orbit_number)['z'],
+                          color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
 
-            ax30.plot(self.W_S_plus[0].xs(manifold_orbit_number)['y'], self.W_S_plus[0].xs(manifold_orbit_number)['z'],
-                      color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-            ax31.plot(self.W_S_plus[1].xs(manifold_orbit_number)['y'], self.W_S_plus[1].xs(manifold_orbit_number)['z'],
-                      color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-            ax32.plot(self.W_S_plus[2].xs(manifold_orbit_number)['y'], self.W_S_plus[2].xs(manifold_orbit_number)['z'],
-                      color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax30.plot(self.W_S_plus[0].xs(manifold_orbit_number)['y'], self.W_S_plus[0].xs(manifold_orbit_number)['z'],
+                          color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax31.plot(self.W_S_plus[1].xs(manifold_orbit_number)['y'], self.W_S_plus[1].xs(manifold_orbit_number)['z'],
+                          color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax32.plot(self.W_S_plus[2].xs(manifold_orbit_number)['y'], self.W_S_plus[2].xs(manifold_orbit_number)['z'],
+                          color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
 
             ax00.plot(self.W_S_min[0].xs(manifold_orbit_number)['x'], self.W_S_min[0].xs(manifold_orbit_number)['y'],
                       self.W_S_min[0].xs(manifold_orbit_number)['z'],
@@ -216,20 +235,20 @@ class ManifoldComparisonForVaryingC:
                       color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
             ax12.plot(self.W_S_min[2].xs(manifold_orbit_number)['x'], self.W_S_min[2].xs(manifold_orbit_number)['y'],
                       color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            if self.orbitType != 'horizontal':
+                ax20.plot(self.W_S_min[0].xs(manifold_orbit_number)['x'], self.W_S_min[0].xs(manifold_orbit_number)['z'],
+                          color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax21.plot(self.W_S_min[1].xs(manifold_orbit_number)['x'], self.W_S_min[1].xs(manifold_orbit_number)['z'],
+                          color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax22.plot(self.W_S_min[2].xs(manifold_orbit_number)['x'], self.W_S_min[2].xs(manifold_orbit_number)['z'],
+                          color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
 
-            ax20.plot(self.W_S_min[0].xs(manifold_orbit_number)['x'], self.W_S_min[0].xs(manifold_orbit_number)['z'],
-                      color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-            ax21.plot(self.W_S_min[1].xs(manifold_orbit_number)['x'], self.W_S_min[1].xs(manifold_orbit_number)['z'],
-                      color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-            ax22.plot(self.W_S_min[2].xs(manifold_orbit_number)['x'], self.W_S_min[2].xs(manifold_orbit_number)['z'],
-                      color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-
-            ax30.plot(self.W_S_min[0].xs(manifold_orbit_number)['y'], self.W_S_min[0].xs(manifold_orbit_number)['z'],
-                      color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-            ax31.plot(self.W_S_min[1].xs(manifold_orbit_number)['y'], self.W_S_min[1].xs(manifold_orbit_number)['z'],
-                      color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-            ax32.plot(self.W_S_min[2].xs(manifold_orbit_number)['y'], self.W_S_min[2].xs(manifold_orbit_number)['z'],
-                      color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax30.plot(self.W_S_min[0].xs(manifold_orbit_number)['y'], self.W_S_min[0].xs(manifold_orbit_number)['z'],
+                          color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax31.plot(self.W_S_min[1].xs(manifold_orbit_number)['y'], self.W_S_min[1].xs(manifold_orbit_number)['z'],
+                          color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax32.plot(self.W_S_min[2].xs(manifold_orbit_number)['y'], self.W_S_min[2].xs(manifold_orbit_number)['z'],
+                          color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
 
             ax00.plot(self.W_U_plus[0].xs(manifold_orbit_number)['x'], self.W_U_plus[0].xs(manifold_orbit_number)['y'],
                       self.W_U_plus[0].xs(manifold_orbit_number)['z'],
@@ -247,20 +266,20 @@ class ManifoldComparisonForVaryingC:
                       color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
             ax12.plot(self.W_U_plus[2].xs(manifold_orbit_number)['x'], self.W_U_plus[2].xs(manifold_orbit_number)['y'],
                       color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            if self.orbitType != 'horizontal':
+                ax20.plot(self.W_U_plus[0].xs(manifold_orbit_number)['x'], self.W_U_plus[0].xs(manifold_orbit_number)['z'],
+                          color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax21.plot(self.W_U_plus[1].xs(manifold_orbit_number)['x'], self.W_U_plus[1].xs(manifold_orbit_number)['z'],
+                          color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax22.plot(self.W_U_plus[2].xs(manifold_orbit_number)['x'], self.W_U_plus[2].xs(manifold_orbit_number)['z'],
+                          color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
 
-            ax20.plot(self.W_U_plus[0].xs(manifold_orbit_number)['x'], self.W_U_plus[0].xs(manifold_orbit_number)['z'],
-                      color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-            ax21.plot(self.W_U_plus[1].xs(manifold_orbit_number)['x'], self.W_U_plus[1].xs(manifold_orbit_number)['z'],
-                      color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-            ax22.plot(self.W_U_plus[2].xs(manifold_orbit_number)['x'], self.W_U_plus[2].xs(manifold_orbit_number)['z'],
-                      color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-
-            ax30.plot(self.W_U_plus[0].xs(manifold_orbit_number)['y'], self.W_U_plus[0].xs(manifold_orbit_number)['z'],
-                      color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-            ax31.plot(self.W_U_plus[1].xs(manifold_orbit_number)['y'], self.W_U_plus[1].xs(manifold_orbit_number)['z'],
-                      color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-            ax32.plot(self.W_U_plus[2].xs(manifold_orbit_number)['y'], self.W_U_plus[2].xs(manifold_orbit_number)['z'],
-                      color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax30.plot(self.W_U_plus[0].xs(manifold_orbit_number)['y'], self.W_U_plus[0].xs(manifold_orbit_number)['z'],
+                          color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax31.plot(self.W_U_plus[1].xs(manifold_orbit_number)['y'], self.W_U_plus[1].xs(manifold_orbit_number)['z'],
+                          color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax32.plot(self.W_U_plus[2].xs(manifold_orbit_number)['y'], self.W_U_plus[2].xs(manifold_orbit_number)['z'],
+                          color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
 
             ax00.plot(self.W_U_min[0].xs(manifold_orbit_number)['x'], self.W_U_min[0].xs(manifold_orbit_number)['y'],
                       self.W_U_min[0].xs(manifold_orbit_number)['z'],
@@ -279,22 +298,24 @@ class ManifoldComparisonForVaryingC:
             ax12.plot(self.W_U_min[2].xs(manifold_orbit_number)['x'], self.W_U_min[2].xs(manifold_orbit_number)['y'],
                       color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
 
-            ax20.plot(self.W_U_min[0].xs(manifold_orbit_number)['x'], self.W_U_min[0].xs(manifold_orbit_number)['z'],
-                      color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-            ax21.plot(self.W_U_min[1].xs(manifold_orbit_number)['x'], self.W_U_min[1].xs(manifold_orbit_number)['z'],
-                      color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-            ax22.plot(self.W_U_min[2].xs(manifold_orbit_number)['x'], self.W_U_min[2].xs(manifold_orbit_number)['z'],
-                      color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            if self.orbitType != 'horizontal':
+                ax20.plot(self.W_U_min[0].xs(manifold_orbit_number)['x'], self.W_U_min[0].xs(manifold_orbit_number)['z'],
+                          color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax21.plot(self.W_U_min[1].xs(manifold_orbit_number)['x'], self.W_U_min[1].xs(manifold_orbit_number)['z'],
+                          color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax22.plot(self.W_U_min[2].xs(manifold_orbit_number)['x'], self.W_U_min[2].xs(manifold_orbit_number)['z'],
+                          color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
 
-            ax30.plot(self.W_U_min[0].xs(manifold_orbit_number)['y'], self.W_U_min[0].xs(manifold_orbit_number)['z'],
-                      color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-            ax31.plot(self.W_U_min[1].xs(manifold_orbit_number)['y'], self.W_U_min[1].xs(manifold_orbit_number)['z'],
-                      color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-            ax32.plot(self.W_U_min[2].xs(manifold_orbit_number)['y'], self.W_U_min[2].xs(manifold_orbit_number)['z'],
-                      color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax30.plot(self.W_U_min[0].xs(manifold_orbit_number)['y'], self.W_U_min[0].xs(manifold_orbit_number)['z'],
+                          color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax31.plot(self.W_U_min[1].xs(manifold_orbit_number)['y'], self.W_U_min[1].xs(manifold_orbit_number)['z'],
+                          color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax32.plot(self.W_U_min[2].xs(manifold_orbit_number)['y'], self.W_U_min[2].xs(manifold_orbit_number)['z'],
+                          color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
 
         plot_alpha = 1
         line_width = 2
+
         ax00.plot(self.orbitDf[0]['x'], self.orbitDf[0]['y'], self.orbitDf[0]['z'], color=self.plottingColors['orbit'],
                   alpha=plot_alpha, linewidth=line_width)
         ax01.plot(self.orbitDf[1]['x'], self.orbitDf[1]['y'], self.orbitDf[1]['z'], color=self.plottingColors['orbit'],
@@ -308,39 +329,40 @@ class ManifoldComparisonForVaryingC:
                   linewidth=line_width)
         ax12.plot(self.orbitDf[2]['x'], self.orbitDf[2]['y'], color=self.plottingColors['orbit'], alpha=plot_alpha,
                   linewidth=line_width)
+        if self.orbitType != 'horizontal':
+            ax20.plot(self.orbitDf[0]['x'], self.orbitDf[0]['z'], color=self.plottingColors['orbit'], alpha=plot_alpha,
+                      linewidth=line_width)
+            ax21.plot(self.orbitDf[1]['x'], self.orbitDf[1]['z'], color=self.plottingColors['orbit'], alpha=plot_alpha,
+                      linewidth=line_width)
+            ax22.plot(self.orbitDf[2]['x'], self.orbitDf[2]['z'], color=self.plottingColors['orbit'], alpha=plot_alpha,
+                      linewidth=line_width)
 
-        ax20.plot(self.orbitDf[0]['x'], self.orbitDf[0]['z'], color=self.plottingColors['orbit'], alpha=plot_alpha,
-                  linewidth=line_width)
-        ax21.plot(self.orbitDf[1]['x'], self.orbitDf[1]['z'], color=self.plottingColors['orbit'], alpha=plot_alpha,
-                  linewidth=line_width)
-        ax22.plot(self.orbitDf[2]['x'], self.orbitDf[2]['z'], color=self.plottingColors['orbit'], alpha=plot_alpha,
-                  linewidth=line_width)
-
-        ax30.plot(self.orbitDf[0]['y'], self.orbitDf[0]['z'], color=self.plottingColors['orbit'], alpha=plot_alpha,
-                  linewidth=line_width)
-        ax31.plot(self.orbitDf[1]['y'], self.orbitDf[1]['z'], color=self.plottingColors['orbit'], alpha=plot_alpha,
-                  linewidth=line_width)
-        ax32.plot(self.orbitDf[2]['y'], self.orbitDf[2]['z'], color=self.plottingColors['orbit'], alpha=plot_alpha,
-                  linewidth=line_width)
+            ax30.plot(self.orbitDf[0]['y'], self.orbitDf[0]['z'], color=self.plottingColors['orbit'], alpha=plot_alpha,
+                      linewidth=line_width)
+            ax31.plot(self.orbitDf[1]['y'], self.orbitDf[1]['z'], color=self.plottingColors['orbit'], alpha=plot_alpha,
+                      linewidth=line_width)
+            ax32.plot(self.orbitDf[2]['y'], self.orbitDf[2]['z'], color=self.plottingColors['orbit'], alpha=plot_alpha,
+                      linewidth=line_width)
 
         ax00.set_xlabel('x [-]')
         ax00.set_ylabel('y [-]')
         ax00.set_zlabel('z [-]')
-        # ax00.set_zlim([-0.4, 0.4])
         ax00.grid(True, which='both', ls=':')
         ax00.view_init(30, -120)
         ax00.set_title('C = ' + str(self.C[0]))
         ax01.set_xlabel('x [-]')
         ax01.set_ylabel('y [-]')
         ax01.set_zlabel('z [-]')
-        # ax01.set_zlim([-0.4, 0.4])
         ax01.grid(True, which='both', ls=':')
         ax01.view_init(30, -120)
         ax01.set_title('C = ' + str(self.C[1]))
         ax02.set_xlabel('x [-]')
         ax02.set_ylabel('y [-]')
         ax02.set_zlabel('z [-]')
-        # ax02.set_zlim([-0.4, 0.4])
+        if self.orbitType == 'horizontal':
+            ax00.set_zlim([-0.4, 0.4])
+            ax01.set_zlim([-0.4, 0.4])
+            ax02.set_zlim([-0.4, 0.4])
         ax02.grid(True, which='both', ls=':')
         ax02.view_init(30, -120)
         ax02.set_title('C = ' + str(self.C[2]))
@@ -377,45 +399,49 @@ class ManifoldComparisonForVaryingC:
         ax11.grid(True, which='both', ls=':')
         ax12.grid(True, which='both', ls=':')
 
-        ax21.set_xlabel('x [-]')
-        ax20.set_ylabel('z [-]')
-        xlim = [min(ax20.get_xlim()[0], ax21.get_xlim()[0], ax22.get_xlim()[0]),
-                max(ax20.get_xlim()[1], ax21.get_xlim()[1], ax22.get_xlim()[1])]
-        ylim = [min(ax20.get_ylim()[0], ax21.get_ylim()[0], ax22.get_ylim()[0]),
-                max(ax20.get_ylim()[1], ax21.get_ylim()[1], ax22.get_ylim()[1])]
-        ax20.set_xlim(xlim)
-        ax21.set_xlim(xlim)
-        ax22.set_xlim(xlim)
-        ax20.set_ylim(ylim)
-        ax21.set_ylim(ylim)
-        ax22.set_ylim(ylim)
-        ax20.grid(True, which='both', ls=':')
-        ax21.grid(True, which='both', ls=':')
-        ax22.grid(True, which='both', ls=':')
+        if self.orbitType != 'horizontal':
+            ax21.set_xlabel('x [-]')
+            ax20.set_ylabel('z [-]')
+            xlim = [min(ax20.get_xlim()[0], ax21.get_xlim()[0], ax22.get_xlim()[0]),
+                    max(ax20.get_xlim()[1], ax21.get_xlim()[1], ax22.get_xlim()[1])]
+            ylim = [min(ax20.get_ylim()[0], ax21.get_ylim()[0], ax22.get_ylim()[0]),
+                    max(ax20.get_ylim()[1], ax21.get_ylim()[1], ax22.get_ylim()[1])]
+            ax20.set_xlim(xlim)
+            ax21.set_xlim(xlim)
+            ax22.set_xlim(xlim)
+            ax20.set_ylim(ylim)
+            ax21.set_ylim(ylim)
+            ax22.set_ylim(ylim)
+            ax20.grid(True, which='both', ls=':')
+            ax21.grid(True, which='both', ls=':')
+            ax22.grid(True, which='both', ls=':')
 
-        ax31.set_xlabel('y [-]')
-        ax30.set_ylabel('z [-]')
-        xlim = [min(ax30.get_xlim()[0], ax31.get_xlim()[0], ax32.get_xlim()[0]),
-                max(ax30.get_xlim()[1], ax31.get_xlim()[1], ax32.get_xlim()[1])]
-        ylim = [min(ax30.get_ylim()[0], ax31.get_ylim()[0], ax32.get_ylim()[0]),
-                max(ax30.get_ylim()[1], ax31.get_ylim()[1], ax32.get_ylim()[1])]
-        ax30.set_xlim(xlim)
-        ax31.set_xlim(xlim)
-        ax32.set_xlim(xlim)
-        ax30.set_ylim(ylim)
-        ax31.set_ylim(ylim)
-        ax32.set_ylim(ylim)
-        ax30.grid(True, which='both', ls=':')
-        ax31.grid(True, which='both', ls=':')
-        ax32.grid(True, which='both', ls=':')
+            ax31.set_xlabel('y [-]')
+            ax30.set_ylabel('z [-]')
+            xlim = [min(ax30.get_xlim()[0], ax31.get_xlim()[0], ax32.get_xlim()[0]),
+                    max(ax30.get_xlim()[1], ax31.get_xlim()[1], ax32.get_xlim()[1])]
+            ylim = [min(ax30.get_ylim()[0], ax31.get_ylim()[0], ax32.get_ylim()[0]),
+                    max(ax30.get_ylim()[1], ax31.get_ylim()[1], ax32.get_ylim()[1])]
+            ax30.set_xlim(xlim)
+            ax31.set_xlim(xlim)
+            ax32.set_xlim(xlim)
+            ax30.set_ylim(ylim)
+            ax31.set_ylim(ylim)
+            ax32.set_ylim(ylim)
+            ax30.grid(True, which='both', ls=':')
+            ax31.grid(True, which='both', ls=':')
+            ax32.grid(True, which='both', ls=':')
 
         fig.tight_layout()
-        fig.subplots_adjust(top=0.9)
+        if self.orbitType == 'horizontal':
+            fig.subplots_adjust(top=0.8)
+        else:
+            fig.subplots_adjust(top=0.9)
 
         plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle +
                      ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial comparison', size=self.suptitleSize)
 
-        fig.savefig('../../data/figures/manifolds/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_manifold_comparison.pdf')
+        fig.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_manifold_comparison.pdf')
         # fig.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots.png')
         plt.close()
         pass

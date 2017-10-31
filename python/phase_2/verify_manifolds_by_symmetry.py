@@ -40,17 +40,17 @@ class VerifyManifoldsBySymmetry:
         MOON_GRAVITATIONAL_PARAMETER = SUN_GRAVITATIONAL_PARAMETER / (328900.56 * (1.0 + 81.30059))
         self.massParameter = MOON_GRAVITATIONAL_PARAMETER / (MOON_GRAVITATIONAL_PARAMETER + EARTH_GRAVITATIONAL_PARAMETER)
 
-        self.eigenvectorDf_S = pd.read_table('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_plus_eigenvector.txt', delim_whitespace=True, header=None).filter(list(range(6)))
-        self.eigenvectorDf_U = pd.read_table('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus_eigenvector.txt', delim_whitespace=True, header=None).filter(list(range(6)))
-        self.eigenvectorLocationDf_S = pd.read_table('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_plus_eigenvector_location.txt', delim_whitespace=True, header=None).filter(list(range(6)))
-        self.eigenvectorLocationDf_U = pd.read_table('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus_eigenvector_location.txt', delim_whitespace=True, header=None).filter(list(range(6)))
+        self.eigenvectorDf_S = pd.read_table('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_plus_eigenvector.txt', delim_whitespace=True, header=None).filter(list(range(6)))
+        self.eigenvectorDf_U = pd.read_table('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus_eigenvector.txt', delim_whitespace=True, header=None).filter(list(range(6)))
+        self.eigenvectorLocationDf_S = pd.read_table('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_plus_eigenvector_location.txt', delim_whitespace=True, header=None).filter(list(range(6)))
+        self.eigenvectorLocationDf_U = pd.read_table('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus_eigenvector_location.txt', delim_whitespace=True, header=None).filter(list(range(6)))
 
-        self.W_S_plus = load_manifold_refactored('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_plus.txt')
-        self.W_S_min = load_manifold_refactored('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_min.txt')
-        self.W_U_plus = load_manifold_refactored('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus.txt')
-        self.W_U_min = load_manifold_refactored('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_min.txt')
+        self.W_S_plus = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_plus.txt')
+        self.W_S_min = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_min.txt')
+        self.W_U_plus = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus.txt')
+        self.W_U_min = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_min.txt')
 
-        self.orbitDf = load_orbit('../../data/raw/orbits/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '.txt')
+        self.orbitDf = load_orbit('../../data/raw/orbits/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '.txt')
 
         self.numberOfOrbitsPerManifold = len(set(self.W_S_plus.index.get_level_values(0)))
         self.figSize = (7 * (1 + np.sqrt(5)) / 2, 7)
@@ -116,7 +116,7 @@ class VerifyManifoldsBySymmetry:
         fig.subplots_adjust(top=0.9)
 
         plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial overview', size=self.suptitleSize)
-        plt.savefig('../../data/figures/manifolds/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold.pdf')
+        plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold.pdf')
         pass
 
     def plot_eigenvectors(self):
@@ -195,7 +195,7 @@ class VerifyManifoldsBySymmetry:
         fig.subplots_adjust(top=0.8)
 
         fig.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathbf{X_i} \pm \epsilon \\frac{\mathbf{v}^S_i}{|\mathbf{v}^S_i|}, \mathbf{X_i} \pm \epsilon \\frac{\mathbf{v}^U_i}{|\mathbf{v}^U_i|} \}$ - Spatial overview', size=self.suptitleSize)
-        plt.savefig('../../data/figures/manifolds/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_eigenvector.pdf')
+        plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_eigenvector.pdf')
         pass
 
     def show_phase_difference(self):
@@ -213,7 +213,7 @@ class VerifyManifoldsBySymmetry:
             ls = [a[0] for a in ls]
             ax.legend(handles=ls)
             plt.savefig(
-                '../../data/figures/manifolds/L' + str(
+                '../../data/figures/manifolds/refined_for_c/L' + str(
                     self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
                     self.orbitId) + '_phase_difference_overview.pdf')
             plt.close()
@@ -344,10 +344,6 @@ class VerifyManifoldsBySymmetry:
         # axarr[2].plot(tau, jacobi_u_min, label='$\mathcal{W}^{U -}$')
         # axarr[2].legend(frameon=True, bbox_to_anchor=(1, 1))
 
-        axarr[0].legend(handles=(l0, l1, l2, l3, l4, l5, l6),
-                    labels=('$\delta t$', '$\delta x$', '$\delta y$', '$\delta z$', '$\delta \dot{x}$', '$\delta \dot{y}$', '$\delta \dot{z}$'),
-                    frameon=True, bbox_to_anchor=(1, 0.2))
-
         text_min = '$\\bar{\mathbf{X}}^{S-} (t_{s0})= [$' + \
                    str(np.round(np.mean([self.W_S_min.xs(i).head(1)['x'].get_values()[0] for i in range(self.numberOfOrbitsPerManifold)]), 3)) + ', ' + \
                    str(np.round(np.mean([self.W_S_min.xs(i).head(1)['y'].get_values()[0] for i in range(self.numberOfOrbitsPerManifold)]), 3)) + ', ' + \
@@ -379,29 +375,32 @@ class VerifyManifoldsBySymmetry:
                     str(np.round(np.mean([self.W_U_plus.xs(i).tail(1)['zdot'].get_values()[0] for i in range(self.numberOfOrbitsPerManifold)]), 3)) + '],  $ \\bar{t}_{uf} = $' + \
                     str(np.round(np.mean([self.W_U_plus.xs(i).tail(1).index.get_values()[0] for i in range(self.numberOfOrbitsPerManifold)]), 3))
 
-        axarr[0].text(0.99, -0.1, text_min, transform=axarr[0].transAxes, horizontalalignment='right',
-                      verticalalignment='bottom', bbox={'facecolor': 'navy', 'alpha': 0.1, 'pad': 3})
-        axarr[1].text(0.99, -0.1, text_plus, transform=axarr[1].transAxes, horizontalalignment='right',
-                      verticalalignment='bottom', bbox={'facecolor': 'navy', 'alpha': 0.1, 'pad': 3})
+        axarr[0].text(0.5, 0.025, s=text_min, horizontalalignment='left', verticalalignment='bottom',
+                      transform=axarr[0].transAxes, bbox=dict(boxstyle="round", fc="w", alpha=0.5))
+        axarr[1].text(0.5, 0.025, s=text_plus, horizontalalignment='left', verticalalignment='bottom',
+                      transform=axarr[1].transAxes, bbox=dict(boxstyle="round", fc="w", alpha=0.5))
 
-        # np.mean([self.W_S_plus.xs(i).head(1)['y'].get_values()[0] for i in range(100)])
         for i in range(2):
             axarr[i].grid(True, which='both', ls=':')
             axarr[i].set_xlabel('$\\tau_s$ [-]')
             axarr[i].set_xlim([0, 1])
-            # axarr[i].set_ylim([-1E-4, 1E-4])
 
         axarr[0].set_ylabel('$\\bar{\mathbf{X}}^{S-} (t_{s0}) - \\bar{\mathbf{X}}^{U-} (t_{uf}) \quad \\forall \quad \\tau_u = 1 - \\tau_s$ [-]')
         axarr[1].set_ylabel('$\\bar{\mathbf{X}}^{S+} (t_{s0}) - \\bar{\mathbf{X}}^{U+} (t_{uf}) \quad \\forall \quad \\tau_u = 1 - \\tau_s$ [-]')
 
         fig2.tight_layout()
         fig2.subplots_adjust(top=0.9, right=0.9)
+        axarr[0].legend(handles=(l0, l1, l2, l3, l4, l5, l6),
+                        labels=(
+                        '$\delta t$', '$\delta x$', '$\delta y$', '$\delta z$', '$\delta \dot{x}$', '$\delta \dot{y}$',
+                        '$\delta \dot{z}$'),
+                        frameon=True, bbox_to_anchor=(1.1, 0.2))
 
         plt.suptitle('$L_' + str(
             self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Symmetry validation',
                      size=self.suptitleSize)
         plt.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
-        plt.savefig('../../data/figures/manifolds/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_phase_difference.pdf')
+        plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_phase_difference.pdf')
         pass
 
 
@@ -421,7 +420,7 @@ if __name__ == '__main__':
             for c_level in c_levels:
                 print(c_level)
                 verify_manifolds_by_symmetry = VerifyManifoldsBySymmetry(orbit_type, lagrange_point, orbit_ids[orbit_type][lagrange_point][c_level], c_level)
-                # verify_manifolds_by_symmetry.plot_manifolds()
-                # verify_manifolds_by_symmetry.plot_eigenvectors()
+                verify_manifolds_by_symmetry.plot_manifolds()
+                verify_manifolds_by_symmetry.plot_eigenvectors()
                 verify_manifolds_by_symmetry.show_phase_difference()
                 # plt.show()

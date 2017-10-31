@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import json
 import matplotlib
-# matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
+matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from mpl_toolkits.mplot3d import Axes3D
@@ -20,7 +20,7 @@ plt.rcParams.update(params)
 import sys
 sys.path.append('../util')
 from load_data import load_orbit, load_bodies_location, load_lagrange_points_location, load_differential_corrections, \
-    load_initial_conditions_incl_M, load_manifold, computeJacobiEnergy, load_manifold_incl_stm
+    load_initial_conditions_incl_M, load_manifold, computeJacobiEnergy, load_manifold_incl_stm, load_manifold_refactored
 
 
 class DisplayPeriodicityValidation:
@@ -60,21 +60,24 @@ class DisplayPeriodicityValidation:
 
         self.maxEigenvalueDeviation = 1.0e-3
 
-        initial_conditions_file_path = '../../data/raw/orbits/L' + str(lagrange_point_nr) + '_' + orbit_type + '_initial_conditions.txt'
-        initial_conditions_incl_m_df = load_initial_conditions_incl_M(initial_conditions_file_path)
-        self.C = initial_conditions_incl_m_df.iloc[orbit_id][0]
+        # initial_conditions_file_path = '../../data/raw/orbits/L' + str(lagrange_point_nr) + '_' + orbit_type + '_initial_conditions.txt'
+        # initial_conditions_incl_m_df = load_initial_conditions_incl_M(initial_conditions_file_path)
+        # self.C = initial_conditions_incl_m_df.iloc[orbit_id][0]
 
-        self.orbitDf = load_orbit('../../data/raw/orbits/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '.txt')
+        self.orbitDf = load_orbit('../../data/raw/orbits/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '.txt')
+        self.C = computeJacobiEnergy(self.orbitDf.iloc[0]['x'], self.orbitDf.iloc[0]['y'],
+                                     self.orbitDf.iloc[0]['z'], self.orbitDf.iloc[0]['xdot'],
+                                     self.orbitDf.iloc[0]['ydot'], self.orbitDf.iloc[0]['zdot'])
 
-        self.eigenvectorDf_S = pd.read_table('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_plus_eigenvector.txt', delim_whitespace=True, header=None).filter(list(range(6)))
-        self.eigenvectorDf_U = pd.read_table('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus_eigenvector.txt', delim_whitespace=True, header=None).filter(list(range(6)))
-        self.eigenvectorLocationDf_S = pd.read_table('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_plus_eigenvector_location.txt', delim_whitespace=True, header=None).filter(list(range(6)))
-        self.eigenvectorLocationDf_U = pd.read_table('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus_eigenvector_location.txt', delim_whitespace=True, header=None).filter(list(range(6)))
+        self.eigenvectorDf_S = pd.read_table('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_plus_eigenvector.txt', delim_whitespace=True, header=None).filter(list(range(6)))
+        self.eigenvectorDf_U = pd.read_table('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus_eigenvector.txt', delim_whitespace=True, header=None).filter(list(range(6)))
+        self.eigenvectorLocationDf_S = pd.read_table('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_plus_eigenvector_location.txt', delim_whitespace=True, header=None).filter(list(range(6)))
+        self.eigenvectorLocationDf_U = pd.read_table('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus_eigenvector_location.txt', delim_whitespace=True, header=None).filter(list(range(6)))
 
-        self.W_S_plus = load_manifold('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_plus.txt')
-        self.W_S_min = load_manifold('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_min.txt')
-        self.W_U_plus = load_manifold('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus.txt')
-        self.W_U_min = load_manifold('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_min.txt')
+        self.W_S_plus = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_plus.txt')
+        self.W_S_min = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_min.txt')
+        self.W_U_plus = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus.txt')
+        self.W_U_min = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_min.txt')
 
         self.numberOfOrbitsPerManifold = len(set(self.W_S_plus.index.get_level_values(0)))
         self.phase = []
@@ -101,18 +104,18 @@ class DisplayPeriodicityValidation:
         self.W_U_min_dx = []
         self.W_U_min_dy = []
 
-        first_state_on_manifold = self.W_S_plus.xs(0).head(1).values[0]
+        first_state_on_manifold = self.W_S_plus.xs(0).tail(1).values[0]
         first_jacobi_on_manifold = computeJacobiEnergy(first_state_on_manifold[0], first_state_on_manifold[1], first_state_on_manifold[2], first_state_on_manifold[3], first_state_on_manifold[4], first_state_on_manifold[5])
-        for row in self.W_S_plus.xs(0).iterrows():
+        for row in self.W_S_plus.xs(0).iloc[::-1].iterrows():
             self.T_along_0_W_S_plus.append(abs(row[0]))
             state_on_manifold = row[1].values
             jacobi_on_manifold = computeJacobiEnergy(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2],
                                                      state_on_manifold[3], state_on_manifold[4], state_on_manifold[5])
             self.C_along_0_W_S_plus.append(abs(jacobi_on_manifold-first_jacobi_on_manifold))
 
-        first_state_on_manifold = self.W_S_min.xs(0).head(1).values[0]
+        first_state_on_manifold = self.W_S_min.xs(0).tail(1).values[0]
         first_jacobi_on_manifold = computeJacobiEnergy(first_state_on_manifold[0], first_state_on_manifold[1], first_state_on_manifold[2], first_state_on_manifold[3], first_state_on_manifold[4], first_state_on_manifold[5])
-        for row in self.W_S_min.xs(0).iterrows():
+        for row in self.W_S_min.xs(0).iloc[::-1].iterrows():
             self.T_along_0_W_S_min.append(abs(row[0]))
             state_on_manifold = row[1].values
             jacobi_on_manifold = computeJacobiEnergy(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2],
@@ -144,11 +147,11 @@ class DisplayPeriodicityValidation:
                                                   state_on_orbit[3], state_on_orbit[4], state_on_orbit[5])
 
             # W_S_plus
-            state_on_manifold = self.W_S_plus.xs(i).head(1).values[0]
+            state_on_manifold = self.W_S_plus.xs(i).tail(1).values[0]
             jacobi_on_manifold = computeJacobiEnergy(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2],
                                                      state_on_manifold[3], state_on_manifold[4], state_on_manifold[5])
             self.C_diff_start_W_S_plus.append(abs(jacobi_on_manifold-jacobi_on_orbit))
-            state_on_manifold = self.W_S_plus.xs(i).tail(1).values[0]
+            state_on_manifold = self.W_S_plus.xs(i).head(1).values[0]
             # either very close to 1-mu or dy
             if abs(state_on_manifold[1]) < abs(state_on_manifold[0] - (1-self.massParameter)):
                 self.W_S_plus_dx.append(0)
@@ -158,11 +161,11 @@ class DisplayPeriodicityValidation:
                 self.W_S_plus_dy.append(0)
 
             # W_S_min
-            state_on_manifold = self.W_S_min.xs(i).head(1).values[0]
+            state_on_manifold = self.W_S_min.xs(i).tail(1).values[0]
             jacobi_on_manifold = computeJacobiEnergy(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2],
                                                      state_on_manifold[3], state_on_manifold[4], state_on_manifold[5])
             self.C_diff_start_W_S_min.append(abs(jacobi_on_manifold - jacobi_on_orbit))
-            state_on_manifold = self.W_S_min.xs(i).tail(1).values[0]
+            state_on_manifold = self.W_S_min.xs(i).head(1).values[0]
             # either very close to 1-mu or dy
             if abs(state_on_manifold[1]) < abs(state_on_manifold[0] - (1-self.massParameter)):
                 self.W_S_min_dx.append(0)
@@ -200,47 +203,47 @@ class DisplayPeriodicityValidation:
                 self.W_U_min_dy.append(0)
             pass
 
-        W_S_plus_incl_STM = load_manifold_incl_stm(
-            '../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(
-                orbit_id) + '_W_S_plus.txt')
-
-        for row in W_S_plus_incl_STM.xs(0).iterrows():
-
-            self.T.append(row[0])
-            self.x.append(row[1][1])
-            self.X.append(np.array(row[1][0:6]))
-            # self.X.append(np.array(row[1][3:9]))
-            M = np.matrix(
-                [list(row[1][6:12]), list(row[1][12:18]), list(row[1][18:24]), list(row[1][24:30]), list(row[1][30:36]),
-                 list(row[1][36:42])])
-            eigenvalue = np.linalg.eigvals(M)
-            sorting_indices = abs(eigenvalue).argsort()[::-1]
-            self.eigenvalues.append(eigenvalue[sorting_indices])
-            self.lambda1.append(eigenvalue[sorting_indices[0]])
-            self.lambda2.append(eigenvalue[sorting_indices[1]])
-            self.lambda3.append(eigenvalue[sorting_indices[2]])
-            self.lambda4.append(eigenvalue[sorting_indices[3]])
-            self.lambda5.append(eigenvalue[sorting_indices[4]])
-            self.lambda6.append(eigenvalue[sorting_indices[5]])
-
-            # Determine order of linear instability
-            reduction = 0
-            for i in range(6):
-                if (abs(eigenvalue[i]) - 1.0) < 1e-2:
-                    reduction += 1
-
-            if len(self.orderOfLinearInstability) > 0:
-                # Check for a bifurcation, when the order of linear instability changes
-                if (6 - reduction) != self.orderOfLinearInstability[-1]:
-                    self.orbitIdBifurcations.append(row[0])
-
-            self.orderOfLinearInstability.append(6 - reduction)
-            self.v1.append(abs(eigenvalue[sorting_indices[0]] + eigenvalue[sorting_indices[5]]) / 2)
-            self.v2.append(abs(eigenvalue[sorting_indices[1]] + eigenvalue[sorting_indices[4]]) / 2)
-            self.v3.append(abs(eigenvalue[sorting_indices[2]] + eigenvalue[sorting_indices[3]]) / 2)
-            self.D.append(np.linalg.det(M))
-        print('Index for bifurcations: ')
-        print(self.orbitIdBifurcations)
+        # W_S_plus_incl_STM = load_manifold_incl_stm(
+        #     '../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(
+        #         orbit_id) + '_W_S_plus.txt')
+        #
+        # for row in W_S_plus_incl_STM.xs(0).iterrows():
+        #
+        #     self.T.append(row[0])
+        #     self.x.append(row[1][1])
+        #     self.X.append(np.array(row[1][0:6]))
+        #     # self.X.append(np.array(row[1][3:9]))
+        #     M = np.matrix(
+        #         [list(row[1][6:12]), list(row[1][12:18]), list(row[1][18:24]), list(row[1][24:30]), list(row[1][30:36]),
+        #          list(row[1][36:42])])
+        #     eigenvalue = np.linalg.eigvals(M)
+        #     sorting_indices = abs(eigenvalue).argsort()[::-1]
+        #     self.eigenvalues.append(eigenvalue[sorting_indices])
+        #     self.lambda1.append(eigenvalue[sorting_indices[0]])
+        #     self.lambda2.append(eigenvalue[sorting_indices[1]])
+        #     self.lambda3.append(eigenvalue[sorting_indices[2]])
+        #     self.lambda4.append(eigenvalue[sorting_indices[3]])
+        #     self.lambda5.append(eigenvalue[sorting_indices[4]])
+        #     self.lambda6.append(eigenvalue[sorting_indices[5]])
+        #
+        #     # Determine order of linear instability
+        #     reduction = 0
+        #     for i in range(6):
+        #         if (abs(eigenvalue[i]) - 1.0) < 1e-2:
+        #             reduction += 1
+        #
+        #     if len(self.orderOfLinearInstability) > 0:
+        #         # Check for a bifurcation, when the order of linear instability changes
+        #         if (6 - reduction) != self.orderOfLinearInstability[-1]:
+        #             self.orbitIdBifurcations.append(row[0])
+        #
+        #     self.orderOfLinearInstability.append(6 - reduction)
+        #     self.v1.append(abs(eigenvalue[sorting_indices[0]] + eigenvalue[sorting_indices[5]]) / 2)
+        #     self.v2.append(abs(eigenvalue[sorting_indices[1]] + eigenvalue[sorting_indices[4]]) / 2)
+        #     self.v3.append(abs(eigenvalue[sorting_indices[2]] + eigenvalue[sorting_indices[3]]) / 2)
+        #     self.D.append(np.linalg.det(M))
+        # print('Index for bifurcations: ')
+        # print(self.orbitIdBifurcations)
 
         self.figSize = (7 * (1 + np.sqrt(5)) / 2, 7)
         blues = sns.color_palette('Blues', 100)
@@ -264,25 +267,31 @@ class DisplayPeriodicityValidation:
                                'limit': 'black',
                                'orbit': 'navy'}
         self.suptitleSize = 20
-        self.xlim = [min(self.x), max(self.x)]
+        # self.xlim = [min(self.x), max(self.x)]
         pass
 
     def plot_manifolds(self):
         # Plot: subplots
-        fig = plt.figure(figsize=self.figSize)
-        ax0 = fig.add_subplot(2, 2, 1, projection='3d')
-        ax1 = fig.add_subplot(2, 2, 4)
-        ax2 = fig.add_subplot(2, 2, 3)
-        ax3 = fig.add_subplot(2, 2, 2)
+        if self.orbitType == 'horizontal':
+            fig = plt.figure(figsize=(self.figSize[0], self.figSize[1]/2))
+            ax0 = fig.add_subplot(1, 2, 1, projection='3d')
+            ax3 = fig.add_subplot(1, 2, 2)
+        else:
+            fig = plt.figure(figsize=self.figSize)
+            ax0 = fig.add_subplot(2, 2, 1, projection='3d')
+            ax1 = fig.add_subplot(2, 2, 4)
+            ax2 = fig.add_subplot(2, 2, 3)
+            ax3 = fig.add_subplot(2, 2, 2)
 
         lagrange_points_df = load_lagrange_points_location()
         lagrange_point_nrs = ['L1', 'L2']
         # Lagrange points and bodies
         for lagrange_point_nr in lagrange_point_nrs:
             ax0.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'], lagrange_points_df[lagrange_point_nr]['z'], color='black', marker='x')
-            ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['z'], color='black', marker='x')
-            ax2.scatter(lagrange_points_df[lagrange_point_nr]['y'], lagrange_points_df[lagrange_point_nr]['z'], color='black', marker='x')
             ax3.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'], color='black', marker='x')
+            if self.orbitType != 'horizontal':
+                ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['z'], color='black', marker='x')
+                ax2.scatter(lagrange_points_df[lagrange_point_nr]['y'], lagrange_points_df[lagrange_point_nr]['z'], color='black', marker='x')
 
         u = np.linspace(0, 2 * np.pi, 100)
         v = np.linspace(0, np.pi, 100)
@@ -293,39 +302,45 @@ class DisplayPeriodicityValidation:
             z = bodies_df[body]['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
 
             ax0.plot_surface(x, y, z, color='black')
-            ax1.contourf(x, z, y, colors='black')
-            ax2.contourf(y, z, x, colors='black')
             ax3.contourf(x, y, z, colors='black')
+            if self.orbitType != 'horizontal':
+                ax1.contourf(x, z, y, colors='black')
+                ax2.contourf(y, z, x, colors='black')
 
         # Determine color for plot
         plot_alpha = 1
         line_width = 0.5
         for manifold_orbit_number in range(self.numberOfOrbitsPerManifold):
             ax0.plot(self.W_S_plus.xs(manifold_orbit_number)['x'], self.W_S_plus.xs(manifold_orbit_number)['y'], self.W_S_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-            ax1.plot(self.W_S_plus.xs(manifold_orbit_number)['x'], self.W_S_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-            ax2.plot(self.W_S_plus.xs(manifold_orbit_number)['y'], self.W_S_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
             ax3.plot(self.W_S_plus.xs(manifold_orbit_number)['x'], self.W_S_plus.xs(manifold_orbit_number)['y'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            if self.orbitType != 'horizontal':
+                ax1.plot(self.W_S_plus.xs(manifold_orbit_number)['x'], self.W_S_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax2.plot(self.W_S_plus.xs(manifold_orbit_number)['y'], self.W_S_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
 
             ax0.plot(self.W_S_min.xs(manifold_orbit_number)['x'], self.W_S_min.xs(manifold_orbit_number)['y'], self.W_S_min.xs(manifold_orbit_number)['z'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-            ax1.plot(self.W_S_min.xs(manifold_orbit_number)['x'], self.W_S_min.xs(manifold_orbit_number)['z'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-            ax2.plot(self.W_S_min.xs(manifold_orbit_number)['y'], self.W_S_min.xs(manifold_orbit_number)['z'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
             ax3.plot(self.W_S_min.xs(manifold_orbit_number)['x'], self.W_S_min.xs(manifold_orbit_number)['y'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            if self.orbitType != 'horizontal':
+                ax1.plot(self.W_S_min.xs(manifold_orbit_number)['x'], self.W_S_min.xs(manifold_orbit_number)['z'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax2.plot(self.W_S_min.xs(manifold_orbit_number)['y'], self.W_S_min.xs(manifold_orbit_number)['z'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
 
             ax0.plot(self.W_U_plus.xs(manifold_orbit_number)['x'], self.W_U_plus.xs(manifold_orbit_number)['y'], self.W_U_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-            ax1.plot(self.W_U_plus.xs(manifold_orbit_number)['x'], self.W_U_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-            ax2.plot(self.W_U_plus.xs(manifold_orbit_number)['y'], self.W_U_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
             ax3.plot(self.W_U_plus.xs(manifold_orbit_number)['x'], self.W_U_plus.xs(manifold_orbit_number)['y'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            if self.orbitType != 'horizontal':
+                ax1.plot(self.W_U_plus.xs(manifold_orbit_number)['x'], self.W_U_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax2.plot(self.W_U_plus.xs(manifold_orbit_number)['y'], self.W_U_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
 
             ax0.plot(self.W_U_min.xs(manifold_orbit_number)['x'], self.W_U_min.xs(manifold_orbit_number)['y'], self.W_U_min.xs(manifold_orbit_number)['z'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-            ax1.plot(self.W_U_min.xs(manifold_orbit_number)['x'], self.W_U_min.xs(manifold_orbit_number)['z'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-            ax2.plot(self.W_U_min.xs(manifold_orbit_number)['y'], self.W_U_min.xs(manifold_orbit_number)['z'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
             ax3.plot(self.W_U_min.xs(manifold_orbit_number)['x'], self.W_U_min.xs(manifold_orbit_number)['y'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            if self.orbitType != 'horizontal':
+                ax1.plot(self.W_U_min.xs(manifold_orbit_number)['x'], self.W_U_min.xs(manifold_orbit_number)['z'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax2.plot(self.W_U_min.xs(manifold_orbit_number)['y'], self.W_U_min.xs(manifold_orbit_number)['z'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
         plot_alpha = 1
         line_width = 2
         ax0.plot(self.orbitDf['x'], self.orbitDf['y'], self.orbitDf['z'], color=self.plottingColors['orbit'], alpha=plot_alpha, linewidth=line_width)
-        ax1.plot(self.orbitDf['x'], self.orbitDf['z'], color=self.plottingColors['orbit'], alpha=plot_alpha, linewidth=line_width)
-        ax2.plot(self.orbitDf['y'], self.orbitDf['z'], color=self.plottingColors['orbit'], alpha=plot_alpha, linewidth=line_width)
         ax3.plot(self.orbitDf['x'], self.orbitDf['y'], color=self.plottingColors['orbit'], alpha=plot_alpha, linewidth=line_width)
+        if self.orbitType != 'horizontal':
+            ax1.plot(self.orbitDf['x'], self.orbitDf['z'], color=self.plottingColors['orbit'], alpha=plot_alpha, linewidth=line_width)
+            ax2.plot(self.orbitDf['y'], self.orbitDf['z'], color=self.plottingColors['orbit'], alpha=plot_alpha, linewidth=line_width)
 
         ax0.set_xlabel('x [-]')
         ax0.set_ylabel('y [-]')
@@ -334,27 +349,31 @@ class DisplayPeriodicityValidation:
         ax0.grid(True, which='both', ls=':')
         ax0.view_init(30, -120)
 
-        ax1.set_xlabel('x [-]')
-        ax1.set_ylabel('z [-]')
-        # ax1.set_ylim([-0.4, 0.4])
-        ax1.grid(True, which='both', ls=':')
+        if self.orbitType != 'horizontal':
+            ax1.set_xlabel('x [-]')
+            ax1.set_ylabel('z [-]')
+            # ax1.set_ylim([-0.4, 0.4])
+            ax1.grid(True, which='both', ls=':')
 
-        ax2.set_xlabel('y [-]')
-        ax2.set_ylabel('z [-]')
-        # ax2.set_ylim([-0.4, 0.4])
-        ax2.grid(True, which='both', ls=':')
+            ax2.set_xlabel('y [-]')
+            ax2.set_ylabel('z [-]')
+            # ax2.set_ylim([-0.4, 0.4])
+            ax2.grid(True, which='both', ls=':')
 
         ax3.set_xlabel('x [-]')
         ax3.set_ylabel('y [-]')
         ax3.grid(True, which='both', ls=':')
 
         fig.tight_layout()
-        fig.subplots_adjust(top=0.9)
+        if self.orbitType != 'horizontal':
+            fig.subplots_adjust(top=0.9)
+        else:
+            fig.subplots_adjust(top=0.8)
 
         plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial overview at C = ' + str(np.round(self.C, 3)),
                      size=self.suptitleSize)
 
-        fig.savefig('../../data/figures/manifolds/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots.pdf')
+        fig.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots.pdf')
         # fig.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots.png')
         plt.close()
         pass
@@ -438,7 +457,7 @@ class DisplayPeriodicityValidation:
         fig.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathbf{X_i} \pm \epsilon \\frac{\mathbf{v}^S_i}{|\mathbf{v}^S_i|}, \mathbf{X_i} \pm \epsilon \\frac{\mathbf{v}^U_i}{|\mathbf{v}^U_i|} \}$ - Spatial overview  at C = ' + str(np.round(self.C, 3)),
                      size=self.suptitleSize)
 
-        fig.savefig('../../data/figures/manifolds/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_eigenvector_subplots.pdf')
+        fig.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_eigenvector_subplots.pdf')
 #        fig.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_eigenvector_subplots.png')
         plt.close()
         pass
@@ -495,7 +514,7 @@ class DisplayPeriodicityValidation:
             '$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' - Eigensystem analysis STM  $(\\tau = 0 \in \mathcal{W}^{S+})$',
             size=self.suptitleSize)
 
-        plt.savefig('../../data/figures/manifold/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_stm_analysis.pdf')
+        plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_stm_analysis.pdf')
         # plt.close()
         pass
 
@@ -576,7 +595,7 @@ class DisplayPeriodicityValidation:
         plt.suptitle('$L_' + str(
             self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' - Eigenvalues $\lambda_i$ \& stability index $v_i$ $(\\tau = 0 \in \mathcal{W}^{S+})$',
                      size=self.suptitleSize)
-        plt.savefig('../../data/figures/manifold/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_stability.pdf')
+        plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_stability.pdf')
         plt.close()
         pass
 
@@ -648,7 +667,7 @@ class DisplayPeriodicityValidation:
             '$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Validation at C = ' + str(np.round(self.C, 3)),
             size=self.suptitleSize)
 
-        plt.savefig('../../data/figures/manifolds/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_periodicity.pdf')
+        plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_periodicity.pdf')
         # plt.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_periodicity.png')
         plt.close()
         pass
@@ -868,9 +887,9 @@ class DisplayPeriodicityValidation:
         arr[2, 1].set_title('Energy deviation along the manifold ($\\forall i \in \mathcal{W}^{U-}$)', loc='right')
         arr[2, 1].set_xlabel('$|t| [-] $')
 
-        for i in range(1,3):
-            for j in range(2):
-                arr[i, j].set_ylim([-6e-11, 6e-11])
+        # for i in range(1,3):
+        #     for j in range(2):
+        #         arr[i, j].set_ylim([-6e-11, 6e-11])
         # arr[2, 1].set_yscale('symlog')
 
         for i in range(3):
@@ -883,14 +902,14 @@ class DisplayPeriodicityValidation:
         plt.suptitle(
             '$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Validation at C = ' + str(np.round(self.C, 3)),
             size=self.suptitleSize)
-        plt.show()
-        plt.savefig('../../data/figures/manifolds/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_jacobi_validation.pdf')
+
+        plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_jacobi_validation.pdf')
         # plt.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_periodicity.png')
         plt.close()
         pass
 
     def plot_orbit_offsets(self):
-        f, arr = plt.subplots(3, 2, figsize=self.figSize)
+        f, arr = plt.subplots(3, 2, figsize=self.figSize, sharex=True)
 
         linewidth = 1
         scatter_size = 10
@@ -911,7 +930,8 @@ class DisplayPeriodicityValidation:
             arr[0, i].plot(self.phase, self.eigenvectorLocationDf_S[5].values, label='$\dot{z}$', linewidth=linewidth,
                                c=self.plottingColors['tripleLine'][2], linestyle='--')
         arr[0, 0].set_title('State on orbit')
-        arr[0, 1].legend(frameon=True, loc='upper right')
+        arr[0, 1].set_title('State on orbit')
+        arr[0, 1].legend(frameon=True, bbox_to_anchor=(1.2, 0))
 
         arr[1, 0].plot(self.phase, abs(self.eigenvectorDf_S[0].values), label='x', linewidth=linewidth,
                            c=self.plottingColors['tripleLine'][0])
@@ -925,10 +945,10 @@ class DisplayPeriodicityValidation:
                            c=self.plottingColors['tripleLine'][1], linestyle='--')
         arr[1, 0].plot(self.phase, abs(self.eigenvectorDf_S[5].values), label='$\dot{z}$', linewidth=linewidth,
                            c=self.plottingColors['tripleLine'][2], linestyle='--')
-        arr[1, 0].plot(self.phase, np.sqrt(self.eigenvectorDf_S[0].values**2 + self.eigenvectorDf_S[1].values**2 +
-                                           self.eigenvectorDf_S[2].values**2), label='pos', linewidth=2, c='orange')
-        arr[1, 0].plot(self.phase, np.sqrt(self.eigenvectorDf_S[3].values ** 2 + self.eigenvectorDf_S[4].values ** 2 +
-                                           self.eigenvectorDf_S[5].values ** 2), label='vel', linewidth=2, c='r')
+        # arr[1, 0].plot(self.phase, np.sqrt(self.eigenvectorDf_S[0].values**2 + self.eigenvectorDf_S[1].values**2 +
+        #                                    self.eigenvectorDf_S[2].values**2), label='pos', linewidth=2, c='orange')
+        # arr[1, 0].plot(self.phase, np.sqrt(self.eigenvectorDf_S[3].values ** 2 + self.eigenvectorDf_S[4].values ** 2 +
+        #                                    self.eigenvectorDf_S[5].values ** 2), label='vel', linewidth=2, c='r')
 
         arr[1, 0].set_title('Absolute stable eigenvector offset from orbit')
 
@@ -945,46 +965,45 @@ class DisplayPeriodicityValidation:
         arr[1, 1].plot(self.phase, abs(self.eigenvectorDf_U[5].values), label='$\dot{z}$', linewidth=linewidth,
                        c=self.plottingColors['tripleLine'][2], linestyle='--')
 
-        arr[1, 1].plot(self.phase, np.sqrt(self.eigenvectorDf_U[0].values ** 2 + self.eigenvectorDf_U[1].values ** 2 +
-                                           self.eigenvectorDf_U[2].values ** 2), label='pos', linewidth=2, c='orange')
-        arr[1, 1].plot(self.phase, np.sqrt(self.eigenvectorDf_U[3].values ** 2 + self.eigenvectorDf_U[4].values ** 2 +
-                                           self.eigenvectorDf_U[5].values ** 2), label='vel', linewidth=2, c='r')
+        # arr[1, 1].plot(self.phase, np.sqrt(self.eigenvectorDf_U[0].values ** 2 + self.eigenvectorDf_U[1].values ** 2 +
+        #                                    self.eigenvectorDf_U[2].values ** 2), label='pos', linewidth=2, c='orange')
+        # arr[1, 1].plot(self.phase, np.sqrt(self.eigenvectorDf_U[3].values ** 2 + self.eigenvectorDf_U[4].values ** 2 +
+        #                                    self.eigenvectorDf_U[5].values ** 2), label='vel', linewidth=2, c='r')
         arr[1, 1].set_title('Absolute unstable eigenvector offset from orbit')
-        arr[1, 1].legend(frameon=True, loc='upper right')
 
-        arr[2, 0].plot(self.phase, self.C_diff_start_W_S_plus, linewidth=linewidth, c=self.plottingColors['W_S_plus'],
+
+        l1, = arr[2, 0].semilogy(self.phase, self.C_diff_start_W_S_plus, linewidth=linewidth, c=self.plottingColors['W_S_plus'],
                         label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{S+}$')
-        arr[2, 0].plot(self.phase, self.C_diff_start_W_S_min, linewidth=linewidth, c=self.plottingColors['W_S_min'],
+        l2, = arr[2, 0].semilogy(self.phase, self.C_diff_start_W_S_min, linewidth=linewidth, c=self.plottingColors['W_S_min'],
                         label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
-        arr[2, 1].plot(self.phase, self.C_diff_start_W_U_plus, linewidth=linewidth, c=self.plottingColors['W_U_plus'],
+        l3, = arr[2, 1].semilogy(self.phase, self.C_diff_start_W_U_plus, linewidth=linewidth, c=self.plottingColors['W_U_plus'],
                         label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{U+}$')
-        arr[2, 1].plot(self.phase, self.C_diff_start_W_U_min, linewidth=linewidth, c=self.plottingColors['W_U_min'],
+        l4, = arr[2, 1].semilogy(self.phase, self.C_diff_start_W_U_min, linewidth=linewidth, c=self.plottingColors['W_U_min'],
                         label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
-        # arr[2, 0].legend(frameon=True, loc='upper right')
+        arr[2, 1].legend(frameon=True, bbox_to_anchor=(1.4, 0.9), handles=[l1, l2, l3, l4])
 
-        # arr[0, 0].set_xlim([0, 1])
         arr[2, 0].set_xlabel('$\\tau$ [-]')
-        # arr[0, 0].set_ylim(ylim)
         arr[2, 0].set_ylabel('$|C(\mathbf{X^i_0}) - C(\mathbf{X^p})|$ [-]')
         arr[2, 0].set_title('Jacobi energy deviation between orbit and manifold')
+        arr[2, 1].set_title('Jacobi energy deviation between orbit and manifold')
 
-        # for i in range(1,3):
-        #     for j in range(2):
-        #         arr[i, j].set_ylim([-6e-11, 6e-11])
-        # arr[2, 1].set_yscale('symlog')
-
+        arr[0, 0].set_ylabel('$x [-]$')
+        arr[1, 0].set_ylabel('$x [-]$')
+        arr[0, 0].set_xlim([0, 1])
+        arr[1, 0].set_ylim([0, 1])
+        arr[1, 1].set_ylim([0, 1])
         for i in range(3):
             for j in range(2):
                 arr[i, j].grid(True, which='both', ls=':')
 
         plt.tight_layout()
-        plt.subplots_adjust(top=0.9)
+        plt.subplots_adjust(top=0.9, right=0.85)
 
         plt.suptitle(
             '$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Validation at C = ' + str(np.round(self.C, 3)),
             size=self.suptitleSize)
-        plt.show()
-        # plt.savefig('../../data/figures/manifolds/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_orbit_offsets.pdf')
+        # plt.show()
+        plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_orbit_offsets.pdf')
         plt.close()
         pass
 
@@ -1003,12 +1022,14 @@ if __name__ == '__main__':
         for lagrange_point in lagrange_points:
             for c_level in c_levels:
                 display_periodicity_validation = DisplayPeriodicityValidation(orbit_type, lagrange_point, orbit_ids[orbit_type][lagrange_point][c_level])
-                # display_periodicity_validation.plot_manifolds()
+                display_periodicity_validation.plot_manifolds()
+
                 # display_periodicity_validation.plot_eigenvectors()
                 # display_periodicity_validation.plot_stm_analysis()
                 # display_periodicity_validation.plot_stability()
-                # display_periodicity_validation.plot_periodicity_validation()
-                # display_periodicity_validation.plot_jacobi_validation()
+
+                display_periodicity_validation.plot_periodicity_validation()
+                display_periodicity_validation.plot_jacobi_validation()
                 display_periodicity_validation.plot_orbit_offsets()
                 # plt.show()
                 del display_periodicity_validation
