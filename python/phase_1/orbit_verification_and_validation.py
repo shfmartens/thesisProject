@@ -524,10 +524,10 @@ class DisplayPeriodicityValidation:
 
     def plot_family(self):
         c_normalized = [(value-min(self.C))/(max(self.C)-min(self.C)) for value in self.C]
-        colors = matplotlib.colors.ListedColormap(sns.color_palette("Blues"))(c_normalized)
+        colors = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r"))(c_normalized)
         # colors = matplotlib.colors.ListedColormap(sns.dark_palette("blue", reverse=True))(c_normalized)
 
-        sm = plt.cm.ScalarMappable(cmap=matplotlib.colors.ListedColormap(sns.color_palette("Blues_r")),
+        sm = plt.cm.ScalarMappable(cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis", len(self.C))),
                                    norm=plt.Normalize(vmin=min(self.C), vmax=max(self.C)))
         # sm = plt.cm.ScalarMappable(cmap=sns.dark_palette("blue", as_cmap=True, reverse=True), norm=plt.Normalize(vmin=min(self.C), vmax=max(self.C)))
         # clean the array of the scalar mappable
@@ -538,11 +538,16 @@ class DisplayPeriodicityValidation:
         ax1 = fig1.gca()
 
         # Plot 2: subplots
-        fig2 = plt.figure(figsize=self.figSize)
-        ax2 = fig2.add_subplot(2, 2, 1, projection='3d')
-        ax3 = fig2.add_subplot(2, 2, 4)
-        ax4 = fig2.add_subplot(2, 2, 3)
-        ax5 = fig2.add_subplot(2, 2, 2)
+        if self.orbitType == 'horizontal':
+           fig2 = plt.figure(figsize=(self.figSize[0], self.figSize[1]/2))
+           ax2 = fig2.add_subplot(1, 2, 1, projection='3d')
+           ax5 = fig2.add_subplot(1, 2, 2)
+        else:
+            fig2 = plt.figure(figsize=self.figSize)
+            ax2 = fig2.add_subplot(2, 2, 1, projection='3d')
+            ax3 = fig2.add_subplot(2, 2, 4)
+            ax4 = fig2.add_subplot(2, 2, 3)
+            ax5 = fig2.add_subplot(2, 2, 2)
 
         lagrange_points_df = load_lagrange_points_location()
         lagrange_point_nrs = ['L1', 'L2']
@@ -550,9 +555,10 @@ class DisplayPeriodicityValidation:
         for lagrange_point_nr in lagrange_point_nrs:
             ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'], color='black', marker='x')
             ax2.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'], lagrange_points_df[lagrange_point_nr]['z'], color='black', marker='x')
-            ax3.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['z'], color='black', marker='x')
-            ax4.scatter(lagrange_points_df[lagrange_point_nr]['y'], lagrange_points_df[lagrange_point_nr]['z'], color='black', marker='x')
             ax5.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'], color='black', marker='x')
+            if self.orbitType != 'horizontal':
+                ax3.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['z'], color='black', marker='x')
+                ax4.scatter(lagrange_points_df[lagrange_point_nr]['y'], lagrange_points_df[lagrange_point_nr]['z'], color='black', marker='x')
 
         bodies_df = load_bodies_location()
         u = np.linspace(0, 2 * np.pi, 100)
@@ -563,9 +569,10 @@ class DisplayPeriodicityValidation:
 
         ax1.contourf(x, y, z, colors='black')
         ax2.plot_surface(x, y, z, color='black')
-        ax3.contourf(x, z, y, colors='black')
-        ax4.contourf(y, z, x,  colors='black')
         ax5.contourf(x, y, z, colors='black')
+        if self.orbitType != 'horizontal':
+            ax3.contourf(x, z, y, colors='black')
+            ax4.contourf(y, z, x,  colors='black')
 
         # Determine color for plot
         # colorOrderOfLinearInstability = ['whitesmoke', 'silver', 'dimgrey']
@@ -585,9 +592,10 @@ class DisplayPeriodicityValidation:
                             i) + '.txt')
                     ax1.plot(df['x'], df['y'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
                     ax2.plot(df['x'], df['y'], df['z'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
-                    ax3.plot(df['x'], df['z'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
-                    ax4.plot(df['y'], df['z'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
                     ax5.plot(df['x'], df['y'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
+                    if self.orbitType != 'horizontal':
+                        ax3.plot(df['x'], df['z'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
+                        ax4.plot(df['y'], df['z'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
 
         # Plot every 100th member, including the ultimate member of the family
         orbitIdsPlot = list(range(0, len(self.C)-self.numberOfHaloExtensionOrbits-1, 100))
@@ -601,9 +609,10 @@ class DisplayPeriodicityValidation:
             df = load_orbit('../../data/raw/orbits/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(i) + '.txt')
             ax1.plot(df['x'], df['y'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
             ax2.plot(df['x'], df['y'], df['z'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
-            ax3.plot(df['x'], df['z'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
-            ax4.plot(df['y'], df['z'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
             ax5.plot(df['x'], df['y'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
+            if self.orbitType != 'horizontal':
+                ax3.plot(df['x'], df['z'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
+                ax4.plot(df['y'], df['z'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
 
         # Plot the bifurcations
         for i in self.orbitIdBifurcations:
@@ -612,9 +621,10 @@ class DisplayPeriodicityValidation:
             df = load_orbit('../../data/raw/orbits/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(i) + '.txt')
             ax1.plot(df['x'], df['y'], color=plot_color, linewidth=3)
             ax2.plot(df['x'], df['y'], df['z'], color=plot_color, linewidth=3)
-            ax3.plot(df['x'], df['z'], color=plot_color, linewidth=3)
-            ax4.plot(df['y'], df['z'], color=plot_color, linewidth=3)
             ax5.plot(df['x'], df['y'], color=plot_color, linewidth=3)
+            if self.orbitType != 'horizontal':
+                ax3.plot(df['x'], df['z'], color=plot_color, linewidth=3)
+                ax4.plot(df['y'], df['z'], color=plot_color, linewidth=3)
 
         ax1.set_xlabel('x [-]')
         ax1.set_ylabel('y [-]')
@@ -627,24 +637,33 @@ class DisplayPeriodicityValidation:
         ax2.grid(True, which='both', ls=':')
         ax2.view_init(30, -120)
 
-        ax3.set_xlabel('x [-]')
-        ax3.set_ylabel('z [-]')
-        ax3.set_ylim([-0.4, 0.4])
-        ax3.grid(True, which='both', ls=':')
+        if self.orbitType != 'horizontal':
+            ax3.set_xlabel('x [-]')
+            ax3.set_ylabel('z [-]')
+            ax3.set_ylim([-0.4, 0.4])
+            ax3.grid(True, which='both', ls=':')
 
-        ax4.set_xlabel('y [-]')
-        ax4.set_ylabel('z [-]')
-        ax4.set_ylim([-0.4, 0.4])
-        ax4.grid(True, which='both', ls=':')
+            ax4.set_xlabel('y [-]')
+            ax4.set_ylabel('z [-]')
+            ax4.set_ylim([-0.4, 0.4])
+            ax4.grid(True, which='both', ls=':')
 
         ax5.set_xlabel('x [-]')
         ax5.set_ylabel('y [-]')
         ax5.grid(True, which='both', ls=':')
 
         fig2.tight_layout()
-        fig2.subplots_adjust(top=0.9)
-        cax, kw = matplotlib.colorbar.make_axes([ax2, ax3, ax4, ax5])
-        plt.colorbar(sm, cax=cax, label='C [-]', **kw)
+        if self.orbitType == 'horizontal':
+            fig2.subplots_adjust(top=0.8)
+        else:
+            fig2.subplots_adjust(top=0.9)
+
+        if self.orbitType != 'horizontal':
+            cax, kw = matplotlib.colorbar.make_axes([ax2, ax3, ax4, ax5])
+        else:
+            cax, kw = matplotlib.colorbar.make_axes([ax2, ax5])
+        cbar = plt.colorbar(sm, cax=cax, label='C [-]', **kw)
+
         plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' - Spatial overview',
                      size=self.suptitleSize)
 
@@ -682,7 +701,7 @@ class DisplayPeriodicityValidation:
         plt.tight_layout()
         plt.subplots_adjust(top=0.8)
         plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' - Orbital energy and period', size=self.suptitleSize)
-        plt.savefig('../../data/figures/orbits/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_orbital_energy.pdf',
+        plt.savefig('../../data/figures/orbit/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_orbital_energy.pdf',
                     transparent=True)
         # plt.show()
         plt.close()
@@ -735,7 +754,7 @@ class DisplayPeriodicityValidation:
             for j in range(2):
                 arr[i, j].grid(True, which='both', ls=':')
         plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' - Eigensystem analysis monodromy matrix', size=self.suptitleSize)
-        plt.savefig('../../data/figures/orbits/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_monodromy_analysis.pdf',
+        plt.savefig('../../data/figures/orbit/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_monodromy_analysis.pdf',
                     transparent=True)
         # plt.show()
         plt.close()
@@ -816,7 +835,7 @@ class DisplayPeriodicityValidation:
         plt.tight_layout()
         plt.subplots_adjust(top=0.9)
         plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' - Eigenvalues $\lambda_i$ \& stability index $v_i$', size=self.suptitleSize)
-        plt.savefig('../../data/figures/orbits/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_stability.pdf',
+        plt.savefig('../../data/figures/orbit/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_stability.pdf',
                     transparent=True)
         # plt.show()
         plt.close()
@@ -899,7 +918,7 @@ class DisplayPeriodicityValidation:
         plt.subplots_adjust(top=0.9)
 
         plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' - Periodicity constraints validation', size=self.suptitleSize)
-        plt.savefig('../../data/figures/orbits/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_periodicity.pdf',
+        plt.savefig('../../data/figures/orbit/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_periodicity.pdf',
                     transparent=True)
         # plt.show()
         plt.close()
