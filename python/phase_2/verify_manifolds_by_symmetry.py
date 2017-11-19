@@ -116,7 +116,9 @@ class VerifyManifoldsBySymmetry:
         fig.subplots_adjust(top=0.9)
 
         plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial overview', size=self.suptitleSize)
-        plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold.pdf')
+        plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold.pdf',
+                    transparent=True)
+        plt.close()
         pass
 
     def plot_eigenvectors(self):
@@ -195,7 +197,9 @@ class VerifyManifoldsBySymmetry:
         fig.subplots_adjust(top=0.8)
 
         fig.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathbf{X_i} \pm \epsilon \\frac{\mathbf{v}^S_i}{|\mathbf{v}^S_i|}, \mathbf{X_i} \pm \epsilon \\frac{\mathbf{v}^U_i}{|\mathbf{v}^U_i|} \}$ - Spatial overview', size=self.suptitleSize)
-        plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_eigenvector.pdf')
+        plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_eigenvector.pdf',
+                    transparent=True)
+        plt.close()
         pass
 
     def show_phase_difference(self):
@@ -215,7 +219,7 @@ class VerifyManifoldsBySymmetry:
             plt.savefig(
                 '../../data/figures/manifolds/refined_for_c/L' + str(
                     self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
-                    self.orbitId) + '_phase_difference_overview.pdf')
+                    self.orbitId) + '_phase_difference_overview.pdf', transparent=True)
             plt.close()
 
         n = self.numberOfOrbitsPerManifold
@@ -400,7 +404,9 @@ class VerifyManifoldsBySymmetry:
             self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Symmetry validation',
                      size=self.suptitleSize)
         plt.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
-        plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_phase_difference.pdf')
+        plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_phase_difference.pdf',
+                    transparent=True)
+        plt.close()
         pass
 
 

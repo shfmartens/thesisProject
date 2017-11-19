@@ -44,7 +44,7 @@ ax = fig.gca()
 
 for idx, orbit_type in enumerate(orbit_types):
     for lagrange_point_nr in lagrange_point_nrs:
-        initial_conditions_file_path = '../../data/raw/orbit/L' + str(lagrange_point_nr) + '_' + orbit_type + '_initial_conditions.txt'
+        initial_conditions_file_path = '../../data/raw/orbits/L' + str(lagrange_point_nr) + '_' + orbit_type + '_initial_conditions.txt'
         initial_conditions_incl_m_df = load_initial_conditions_incl_M(initial_conditions_file_path)
 
         plot_label = orbit_type.capitalize()
@@ -68,5 +68,5 @@ ax.grid(True, which='both', ls=':')
 fig.tight_layout()
 fig.subplots_adjust(top=0.9)
 fig.suptitle('Families overview - Orbital energy and period', size=20)
-fig.savefig('../../data/figures/orbit/overview_families_orbital_energy_period.pdf')
+fig.savefig('../../data/figures/orbits/overview_families_orbital_energy_period.pdf', transparent=True)
 # plt.show()

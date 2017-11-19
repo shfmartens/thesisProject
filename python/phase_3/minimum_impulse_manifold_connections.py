@@ -141,7 +141,8 @@ class MinimumImpulseManifoldConnections:
                      str(self.numberOfOrbitsPerManifold) + ')', size=self.suptitleSize)
 
         # plt.show()
-        plt.savefig('../../data/figures/poincare_sections/' + str(self.numberOfOrbitsPerManifold) + '/' + self.orbitType + '_3.1_' + str(self.numberOfOrbitsPerManifold) + '_heteroclinic_connection_validation.pdf')
+        plt.savefig('../../data/figures/poincare_sections/' + str(self.numberOfOrbitsPerManifold) + '/' + self.orbitType + '_3.1_' + str(self.numberOfOrbitsPerManifold) + '_heteroclinic_connection_validation.pdf',
+                    transparent=True)
         plt.close()
         pass
 
@@ -257,7 +258,8 @@ class MinimumImpulseManifoldConnections:
             plt.suptitle(self.orbitTypeForTitle + ' near-heteroclinic connection  $\mathcal{W}^{U+} \cup \mathcal{W}^{S-}$ (C = 3.1, $\\theta$ = ' + str(theta) + '$^\circ$)',
                          size=self.suptitleSize)
             # plt.show()
-            plt.savefig('../../data/figures/poincare_sections/' + str(self.numberOfOrbitsPerManifold) + '/' + self.orbitType + '_3.1_heteroclinic_connection_' + str(theta) + '.pdf')
+            plt.savefig('../../data/figures/poincare_sections/' + str(self.numberOfOrbitsPerManifold) + '/' + self.orbitType + '_3.1_heteroclinic_connection_' + str(theta) + '.pdf',
+                        transparent=True)
             plt.close()
         pass
 
@@ -354,7 +356,8 @@ class MinimumImpulseManifoldConnections:
             plt.suptitle(self.orbitTypeForTitle + ' near-heteroclinic cycle  $\mathcal{W}^{U+} \cup \mathcal{W}^{S-}$ (C = 3.1, $\\theta$ = ' + str(theta) + '$^\circ$)',
                          size=self.suptitleSize)
             # plt.show()
-            plt.savefig('../../data/figures/poincare_sections/' + str(self.numberOfOrbitsPerManifold) + '/' + self.orbitType + '_3.1_heteroclinic_cycle_' + str(theta) + '.pdf')
+            plt.savefig('../../data/figures/poincare_sections/' + str(self.numberOfOrbitsPerManifold) + '/' + self.orbitType + '_3.1_heteroclinic_cycle_' + str(theta) + '.pdf',
+                        transparent=True)
             plt.close()
         pass
 
@@ -420,8 +423,9 @@ class MinimumImpulseManifoldConnections:
                 ax.legend(frameon=True, loc='lower right', handles=[min_impulse_line])
             except KeyError:
                 pass
-
-            ax.axhline(self.maximumPositionDeviation * self.positionDimensionFactor, c=self.plottingColors['limit'], linewidth=1, linestyle='--')
+            ax.axvline(0.5 * self.velocityDimensionFactor, c=self.plottingColors['limit'],
+                       linewidth=1, linestyle='--')
+            # ax.axhline(self.maximumPositionDeviation * self.positionDimensionFactor, c=self.plottingColors['limit'], linewidth=1, linestyle='--')
             ax.set_xlabel('$\Delta \mathbf{V} \enskip [m/s]$')
             ax.set_ylabel('$\Delta \mathbf{r} \enskip [km]$')
             ax.set_yscale('log')
@@ -445,7 +449,82 @@ class MinimumImpulseManifoldConnections:
                          + str(theta) + '$^\circ, \# = $' + str(self.numberOfOrbitsPerManifold) + ')',
                          size=self.suptitleSize)
             # plt.show()
-            plt.savefig('../../data/figures/poincare_sections/' + str(self.numberOfOrbitsPerManifold) + '/' + self.orbitType + '_3.1_heteroclinic_connection_' + str(theta) + '_poincare_scatter.pdf')
+            plt.savefig('../../data/figures/poincare_sections/' + str(self.numberOfOrbitsPerManifold) + '/' + self.orbitType + '_3.1_heteroclinic_connection_' + str(theta) + '_poincare_scatter.pdf',
+                        transparent=True)
+            plt.close()
+        pass
+
+    def plot_poincare_spread_zoomed_out(self):
+        print('Theta:')
+        for theta in self.thetaRangeList:
+            print(theta)
+
+            fig = plt.figure(figsize=self.figSize)
+            ax = fig.gca()
+
+            df_s = pd.read_table('../../data/raw/poincare_sections/' + str(
+                self.numberOfOrbitsPerManifold) + '/L2_' + self.orbitType + '_W_S_min_3.1_' + str(
+                int(theta)) + '_poincare.txt',
+                                 delim_whitespace=True, header=None).filter(list(range(8)))
+            df_s.columns = ['tau', 't', 'x', 'y', 'z', 'xdot', 'ydot', 'zdot']
+
+            df_u = pd.read_table('../../data/raw/poincare_sections/' + str(
+                self.numberOfOrbitsPerManifold) + '/L1_' + self.orbitType + '_W_U_plus_3.1_' + str(
+                int(theta)) + '_poincare.txt',
+                                 delim_whitespace=True, header=None).filter(list(range(8)))
+            df_u.columns = ['tau', 't', 'x', 'y', 'z', 'xdot', 'ydot', 'zdot']
+
+            dr_ls = []
+            dv_ls = []
+            theta_ls = []
+            scatter_size = 5
+
+            print('Matrix size: ' + str(len(df_s)) + ' x ' + str(len(df_s.columns)))
+            for idx_s, row_s in df_s.iterrows():
+                print('s: ' + str(idx_s))
+                for idx_u, row_u in df_u.iterrows():
+                    dr = np.sqrt((row_s['x'] - row_u['x']) ** 2 + (row_s['y'] - row_u['y']) ** 2 + (row_s['z'] - row_u['z']) ** 2)
+                    dv = np.sqrt((row_s['xdot'] - row_u['xdot']) ** 2 + (row_s['ydot'] - row_u['ydot']) ** 2 + (row_s['zdot'] - row_u['zdot']) ** 2)
+                    dtheta = abs(row_s['tau'] - row_u['tau'])
+                    dr_ls.append(dr * self.positionDimensionFactor)
+                    dv_ls.append(dv * self.velocityDimensionFactor)
+                    theta_ls.append(dtheta)
+
+            sc = ax.scatter(dv_ls, dr_ls, c=theta_ls, alpha=0.9, cmap='viridis', vmin=0, vmax=1, s=scatter_size)
+            cb = plt.colorbar(sc)
+            cb.set_label('$|\\tau_s - \\tau_u| \enskip [-]$')
+            print(pd.DataFrame({'dtau': theta_ls}).describe())
+            try:
+                min_impulse_line = ax.scatter(self.minimumImpulse.loc[theta]['dv'],
+                                              self.minimumImpulse.loc[theta]['dr'],
+                                              c='r', label='$min(\Delta r) \quad  \\forall \enskip \Delta V < 0.5$',
+                                              s=scatter_size)
+                ax.legend(frameon=True, loc='lower right', handles=[min_impulse_line])
+            except KeyError:
+                pass
+
+            ax.axvline(0.5 * self.velocityDimensionFactor, c=self.plottingColors['limit'],
+                       linewidth=1, linestyle='--')
+            ax.set_xlabel('$\Delta \mathbf{V} \enskip [m/s]$')
+            ax.set_ylabel('$\Delta \mathbf{r} \enskip [km]$')
+            ax.set_yscale('log')
+            ax.set_xlim([0, max(dv_ls)])
+            ax.grid(True, which='both', ls=':')
+
+            fig.tight_layout()
+            fig.subplots_adjust(top=0.9)
+
+            plt.suptitle(
+                self.orbitTypeForTitle + ' $\mathcal{W}^{U+} \cup \mathcal{W}^{S-}$ at $\mathcal{U}_{2}$ (C = 3.1, $\\theta$ = '
+                + str(theta) + '$^\circ, \# = $' + str(self.numberOfOrbitsPerManifold) + ')',
+                size=self.suptitleSize)
+            # plt.show()
+            plt.savefig('../../data/figures/poincare_sections/' + str(
+                self.numberOfOrbitsPerManifold) + '/' + self.orbitType + '_3.1_heteroclinic_connection_' + str(
+                theta) + '_poincare_scatter_zoomed_out.pdf', transparent=True)
+            plt.savefig('../../data/figures/poincare_sections/' + str(
+                self.numberOfOrbitsPerManifold) + '/' + self.orbitType + '_3.1_heteroclinic_connection_' + str(
+                theta) + '_poincare_scatter_zoomed_out.png', dpi=300, transparent=True)
             plt.close()
         pass
 
@@ -490,7 +569,8 @@ class MinimumImpulseManifoldConnections:
         plt.suptitle(self.orbitTypeForTitle + ' near-heteroclinic connection $\mathcal{W}^{U+} \cup \mathcal{W}^{S-}$ (C = 3.1) - Sampling validation',
                      size=self.suptitleSize)
         # plt.show()
-        plt.savefig('../../data/figures/poincare_sections/' + self.orbitType + '_3.1_heteroclinic_sampling_validation.pdf')
+        plt.savefig('../../data/figures/poincare_sections/' + self.orbitType + '_3.1_heteroclinic_sampling_validation.pdf',
+                    transparent=True)
         plt.close()
         pass
 
@@ -548,31 +628,34 @@ class MinimumImpulseManifoldConnections:
             size=self.suptitleSize)
         # plt.show()
         plt.savefig(
-            '../../data/figures/poincare_sections/3.1_heteroclinic_family_overview_' + str(number_of_orbits_per_manifold) + '.pdf')
+            '../../data/figures/poincare_sections/3.1_heteroclinic_family_overview_' + str(number_of_orbits_per_manifold) + '.pdf',
+            transparent=True)
         plt.close()
         pass
 
 
 if __name__ == '__main__':
-    max_position_deviation = {100: 1e-3, 1000: 1e-4, 10000: 1e-5}
-    orbit_types = ['horizontal', 'vertical', 'halo']
+    max_position_deviation = {100: 1e-3, 1000: 1e-4, 5000: 1e-4}
+    # orbit_types = ['horizontal', 'vertical', 'halo']
+    orbit_types = ['vertical']
+    
     for orbit_type in orbit_types:
+        minimum_impulse_manifold_connections = MinimumImpulseManifoldConnections(orbit_type=orbit_type)
+        # minimum_impulse_manifold_connections.compare_number_of_orbits_per_manifold([100, 1000, 5000])
+        minimum_impulse_manifold_connections.compare_number_of_orbits_per_manifold([100, 1000])
+
         for number_of_orbits_per_manifold in [100, 1000]:
-            if orbit_type == 'halo' and number_of_orbits_per_manifold == 1000:
-                continue
+        # for number_of_orbits_per_manifold in [5000]:
+
             minimum_impulse_manifold_connections = MinimumImpulseManifoldConnections(number_of_orbits_per_manifold=number_of_orbits_per_manifold,
                                                                                      max_position_dev=max_position_deviation[number_of_orbits_per_manifold],
                                                                                      orbit_type=orbit_type)
             minimum_impulse_manifold_connections.plot_impulse_angle()
-            # minimum_impulse_manifold_connections.plot_manifolds()
-            # minimum_impulse_manifold_connections.plot_image_trajectories()
-            # minimum_impulse_manifold_connections.plot_poincare_spread()
+            minimum_impulse_manifold_connections.plot_manifolds()
+            minimum_impulse_manifold_connections.plot_image_trajectories()
+            minimum_impulse_manifold_connections.plot_poincare_spread()
+            minimum_impulse_manifold_connections.plot_poincare_spread_zoomed_out()
 
-            # for number_of_orbits_per_manifold in [100]:
-            #     minimum_impulse_manifold_connections = MinimumImpulseManifoldConnections()
-            #     minimum_impulse_manifold_connections.compare_orbit_types(number_of_orbits_per_manifold)
-
-            # minimum_impulse_manifold_connections = MinimumImpulseManifoldConnections(orbit_type='vertical')
-            # minimum_impulse_manifold_connections.compare_number_of_orbits_per_manifold([100, 1000])
-            # minimum_impulse_manifold_connections = MinimumImpulseManifoldConnections(orbit_type='horizontal')
-            # minimum_impulse_manifold_connections.compare_number_of_orbits_per_manifold([100, 1000])
+    for number_of_orbits_per_manifold in [100, 1000]:
+        minimum_impulse_manifold_connections = MinimumImpulseManifoldConnections()
+        minimum_impulse_manifold_connections.compare_orbit_types(number_of_orbits_per_manifold)
