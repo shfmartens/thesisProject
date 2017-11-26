@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import json
 import matplotlib
-matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
+# matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from mpl_toolkits.mplot3d import Axes3D
@@ -508,16 +508,28 @@ class DisplayPeriodicityValidation:
         self.figSize = (7*(1+np.sqrt(5))/2, 7)
         blues = sns.color_palette('Blues', 100)
         greens = sns.color_palette('BuGn', 100)
-        self.plottingColors = {'lambda1': blues[40],
-                               'lambda2': greens[50],
-                               'lambda3': blues[90],
-                               'lambda4': blues[90],
-                               'lambda5': greens[70],
-                               'lambda6': blues[60],
-                               'singleLine': blues[80],
-                               'doubleLine': [greens[50], blues[80]],
-                               'tripleLine': [blues[40], greens[50], blues[80]],
+        n_colors = 3
+        n_colors_l = 6
+        self.plottingColors = {'lambda1': sns.color_palette("viridis", n_colors_l)[0],
+                               'lambda2': sns.color_palette("viridis", n_colors_l)[2],
+                               'lambda3': sns.color_palette("viridis", n_colors_l)[4],
+                               'lambda4': sns.color_palette("viridis", n_colors_l)[5],
+                               'lambda5': sns.color_palette("viridis", n_colors_l)[3],
+                               'lambda6': sns.color_palette("viridis", n_colors_l)[1],
+                               # 'lambda1': blues[40],
+                               # 'lambda2': greens[50],
+                               # 'lambda3': blues[90],
+                               # 'lambda4': blues[90],
+                               # 'lambda5': greens[70],
+                               # 'lambda6': blues[60],
+                               # 'singleLine': blues[80],
+                               # 'doubleLine': [greens[50], blues[80]],
+                               # 'tripleLine': [blues[40], greens[50], blues[80]],
+                               'singleLine': sns.color_palette("viridis", n_colors)[0],
+                               'doubleLine': [sns.color_palette("viridis", n_colors)[n_colors-1], sns.color_palette("viridis", n_colors)[0]],
+                               'tripleLine': [sns.color_palette("viridis", n_colors)[n_colors-1], sns.color_palette("viridis", n_colors)[int((n_colors-1)/2)], sns.color_palette("viridis", n_colors)[0]],
                                'limit': 'black'}
+
         self.suptitleSize = 20
         self.xlim = [min(self.x), max(self.x)]
         pass
@@ -701,7 +713,7 @@ class DisplayPeriodicityValidation:
         plt.tight_layout()
         plt.subplots_adjust(top=0.8)
         plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' - Orbital energy and period', size=self.suptitleSize)
-        plt.savefig('../../data/figures/orbit/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_orbital_energy.pdf',
+        plt.savefig('../../data/figures/orbits/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_orbital_energy.pdf',
                     transparent=True)
         # plt.show()
         plt.close()
@@ -754,7 +766,7 @@ class DisplayPeriodicityValidation:
             for j in range(2):
                 arr[i, j].grid(True, which='both', ls=':')
         plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' - Eigensystem analysis monodromy matrix', size=self.suptitleSize)
-        plt.savefig('../../data/figures/orbit/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_monodromy_analysis.pdf',
+        plt.savefig('../../data/figures/orbits/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_monodromy_analysis.pdf',
                     transparent=True)
         # plt.show()
         plt.close()
@@ -835,7 +847,7 @@ class DisplayPeriodicityValidation:
         plt.tight_layout()
         plt.subplots_adjust(top=0.9)
         plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' - Eigenvalues $\lambda_i$ \& stability index $v_i$', size=self.suptitleSize)
-        plt.savefig('../../data/figures/orbit/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_stability.pdf',
+        plt.savefig('../../data/figures/orbits/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_stability.pdf',
                     transparent=True)
         # plt.show()
         plt.close()
@@ -918,7 +930,7 @@ class DisplayPeriodicityValidation:
         plt.subplots_adjust(top=0.9)
 
         plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' - Periodicity constraints validation', size=self.suptitleSize)
-        plt.savefig('../../data/figures/orbit/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_periodicity.pdf',
+        plt.savefig('../../data/figures/orbits/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_periodicity.pdf',
                     transparent=True)
         # plt.show()
         plt.close()

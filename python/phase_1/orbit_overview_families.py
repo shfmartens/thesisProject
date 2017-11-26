@@ -23,11 +23,12 @@ sys.path.append('../util')
 from load_data import load_orbit, load_bodies_location, load_lagrange_points_location, load_differential_corrections, load_initial_conditions_incl_M, load_manifold
 
 
-orbit_types = ['horizontal', 'vertical', 'halo']
+orbit_types = ['halo', 'vertical', 'horizontal']
 lagrange_point_nrs = [1, 2]
 
 blues = sns.color_palette('Blues', 100)
 greens = sns.color_palette('BuGn', 100)
+n_colors = 3
 plottingColors = {'lambda1': blues[40],
                    'lambda2': greens[50],
                    'lambda3': blues[90],
@@ -36,7 +37,8 @@ plottingColors = {'lambda1': blues[40],
                    'lambda6': blues[60],
                    'singleLine': blues[80],
                    'doubleLine': [greens[50], blues[80]],
-                   'tripleLine': [blues[80], greens[50], blues[40]],
+                   # 'tripleLine': [blues[80], greens[50], blues[40]],
+                   'tripleLine': [sns.color_palette("viridis", n_colors)[n_colors-1], sns.color_palette("viridis", n_colors)[int((n_colors-1)/2)], sns.color_palette("viridis", n_colors)[0]],
                    'limit': 'black'}
 
 fig = plt.figure(figsize=(7 * (1 + np.sqrt(5)) / 2, 3.5))
@@ -66,7 +68,7 @@ ax.set_ylabel('C [-]')
 ax.grid(True, which='both', ls=':')
 
 fig.tight_layout()
-fig.subplots_adjust(top=0.9)
+fig.subplots_adjust(top=0.8)
 fig.suptitle('Families overview - Orbital energy and period', size=20)
 fig.savefig('../../data/figures/orbits/overview_families_orbital_energy_period.pdf', transparent=True)
 # plt.show()

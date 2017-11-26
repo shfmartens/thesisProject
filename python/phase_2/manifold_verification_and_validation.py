@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import json
 import matplotlib
-matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
+# matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from mpl_toolkits.mplot3d import Axes3D
@@ -20,7 +20,7 @@ plt.rcParams.update(params)
 import sys
 sys.path.append('../util')
 from load_data import load_orbit, load_bodies_location, load_lagrange_points_location, load_differential_corrections, \
-    load_initial_conditions_incl_M, load_manifold, computeJacobiEnergy, load_manifold_incl_stm, load_manifold_refactored
+    load_initial_conditions_incl_M, load_manifold, computeJacobiEnergy, load_manifold_incl_stm, load_manifold_refactored, cr3bp_velocity
 
 
 class DisplayPeriodicityValidation:
@@ -374,6 +374,443 @@ class DisplayPeriodicityValidation:
                      size=self.suptitleSize)
 
         fig.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots.pdf',
+                    transparent=True)
+        # fig.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots.png')
+        plt.close()
+        pass
+
+    def plot_manifold_zoom(self):
+        # Plot: subplots
+        fig = plt.figure(figsize=self.figSize)
+        ax = fig.gca()
+
+        # Determine color for plot
+        plot_alpha = 1
+        line_width = 0.5
+        for manifold_orbit_number in range(self.numberOfOrbitsPerManifold):
+            ax.plot(self.W_S_plus.xs(manifold_orbit_number)['x'], self.W_S_plus.xs(manifold_orbit_number)['y'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax.plot(self.W_S_min.xs(manifold_orbit_number)['x'], self.W_S_min.xs(manifold_orbit_number)['y'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax.plot(self.W_U_plus.xs(manifold_orbit_number)['x'], self.W_U_plus.xs(manifold_orbit_number)['y'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax.plot(self.W_U_min.xs(manifold_orbit_number)['x'], self.W_U_min.xs(manifold_orbit_number)['y'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+
+        plot_alpha = 1
+        line_width = 2
+        ax.plot(self.orbitDf['x'], self.orbitDf['y'], color=self.plottingColors['orbit'], alpha=plot_alpha, linewidth=line_width)
+
+        ax.set_xlabel('x [-]')
+        ax.set_ylabel('y [-]')
+        ax.grid(True, which='both', ls=':')
+
+        fig.tight_layout()
+        fig.subplots_adjust(top=0.9)
+
+        if self.lagrangePointNr == 2:
+            if self.orbitType == 'horizontal':
+                ax.set_xlim([1-self.massParameter, 1.45])
+                ax.set_ylim(-0.15, 0.15)
+            else:
+                ax.set_xlim([1 - self.massParameter, 1.25])
+                ax.set_ylim(-0.05, 0.05)
+
+        lagrange_points_df = load_lagrange_points_location()
+        lagrange_point_nrs = ['L2']
+
+        # Lagrange points and bodies
+        for lagrange_point_nr in lagrange_point_nrs:
+            ax.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'], color='black', marker='x')
+
+        u = np.linspace(0, 2 * np.pi, 100)
+        v = np.linspace(0, np.pi, 100)
+        bodies_df = load_bodies_location()
+        for body in bodies_df:
+            x = bodies_df[body]['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df[body]['x']
+            y = bodies_df[body]['r'] * np.outer(np.sin(u), np.sin(v))
+            z = bodies_df[body]['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
+            ax.contourf(x, y, z, colors='black', label='Moon')
+
+        plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial overview at C = ' + str(np.round(self.C, 3)),
+                     size=self.suptitleSize)
+
+        ax.annotate('\\textbf{Unstable exterior} $\\mathbf{ \mathcal{W}^{U+}}$',
+                    xy=(1.44, -0.1), xycoords='data',
+                    xytext=(-100, 50), textcoords='offset points',
+                    arrowprops=dict(arrowstyle="->", color=self.plottingColors['W_U_plus'], linewidth=2))
+
+        ax.annotate('\\textbf{Stable exterior} $\\mathbf{ \mathcal{W}^{S+}}$',
+                    xy=(1.37, 0.025), xycoords='data',
+                    xytext=(20, 50), textcoords='offset points',
+                    arrowprops=dict(arrowstyle="->", color=self.plottingColors['W_S_plus'], linewidth=2))
+
+        ax.annotate('\\textbf{Unstable interior} $\\mathbf{ \mathcal{W}^{U-}}$',
+                    xy=(1.01, 0.11), xycoords='data',
+                    xytext=(50, 10), textcoords='offset points',
+                    arrowprops=dict(arrowstyle="->", color=self.plottingColors['W_U_min'], linewidth=2))
+        ax.annotate('\\textbf{Stable interior} $\\mathbf{ \mathcal{W}^{S-}}$',
+                    xy=(1.1, -0.11), xycoords='data',
+                    xytext=(-150, -10), textcoords='offset points',
+                    arrowprops=dict(arrowstyle="->", color=self.plottingColors['W_S_min'], linewidth=2))
+
+        # plt.show()
+        fig.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots_zoom.pdf',
+                    transparent=True)
+        # fig.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots.png')
+        plt.close()
+        pass
+
+    def plot_manifold_total(self):
+        # Plot: subplots
+        fig = plt.figure(figsize=self.figSize)
+        ax = fig.gca()
+
+        # Determine color for plot
+        plot_alpha = 1
+        line_width = 0.5
+        W_S_plus_L1 = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_S_plus.txt')
+        W_S_min_L1 = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_S_min.txt')
+        W_U_plus_L1 = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_U_plus.txt')
+        W_U_min_L1 = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_U_min.txt')
+
+        for manifold_orbit_number in range(self.numberOfOrbitsPerManifold):
+            ax.plot(self.W_S_plus.xs(manifold_orbit_number)['x'], self.W_S_plus.xs(manifold_orbit_number)['y'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax.plot(self.W_S_min.xs(manifold_orbit_number)['x'], self.W_S_min.xs(manifold_orbit_number)['y'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax.plot(self.W_U_plus.xs(manifold_orbit_number)['x'], self.W_U_plus.xs(manifold_orbit_number)['y'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax.plot(self.W_U_min.xs(manifold_orbit_number)['x'], self.W_U_min.xs(manifold_orbit_number)['y'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+
+            ax.plot(W_S_plus_L1.xs(manifold_orbit_number)['x'], W_S_plus_L1.xs(manifold_orbit_number)['y'],
+                    color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax.plot(W_S_min_L1.xs(manifold_orbit_number)['x'], W_S_min_L1.xs(manifold_orbit_number)['y'],
+                    color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax.plot(W_U_plus_L1.xs(manifold_orbit_number)['x'], W_U_plus_L1.xs(manifold_orbit_number)['y'],
+                    color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax.plot(W_U_min_L1.xs(manifold_orbit_number)['x'], W_U_min_L1.xs(manifold_orbit_number)['y'],
+                    color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+
+        plot_alpha = 1
+        line_width = 2
+        orbitDf_L1 = load_orbit('../../data/raw/orbits/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '.txt')
+        ax.plot(self.orbitDf['x'], self.orbitDf['y'], color=self.plottingColors['orbit'], alpha=plot_alpha, linewidth=line_width)
+        ax.plot(orbitDf_L1['x'], orbitDf_L1['y'], color=self.plottingColors['orbit'], alpha=plot_alpha,
+                linewidth=line_width)
+
+        ax.set_xlabel('x [-]')
+        ax.set_ylabel('y [-]')
+        ax.grid(True, which='both', ls=':')
+
+        fig.tight_layout()
+        fig.subplots_adjust(top=0.9)
+
+        lagrange_points_df = load_lagrange_points_location()
+        lagrange_point_nrs = ['L1', 'L2']
+
+        # Plot zero velocity surface
+        x_range = np.arange(ax.get_xlim()[0], ax.get_xlim()[1], 0.001)
+        y_range = np.arange(ax.get_ylim()[0], ax.get_ylim()[1], 0.001)
+        x_mesh, y_mesh = np.meshgrid(x_range, y_range)
+        z_mesh = cr3bp_velocity(x_mesh, y_mesh, 3.15)
+        if z_mesh.min() < 0:
+            plt.contourf(x_mesh, y_mesh, z_mesh, list(np.linspace(z_mesh.min(), 0, 10)), cmap='gist_gray_r', alpha=0.5)
+
+        # Lagrange points and bodies
+        for lagrange_point_nr in lagrange_point_nrs:
+            ax.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'], color='black', marker='x')
+
+        u = np.linspace(0, 2 * np.pi, 100)
+        v = np.linspace(0, np.pi, 100)
+        bodies_df = load_bodies_location()
+        for body in bodies_df:
+            x = bodies_df[body]['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df[body]['x']
+            y = bodies_df[body]['r'] * np.outer(np.sin(u), np.sin(v))
+            z = bodies_df[body]['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
+            ax.contourf(x, y, z, colors='black', label='Moon')
+
+        plt.suptitle('$L_1, L_2$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial overview at C = ' + str(np.round(self.C, 3)),
+                     size=self.suptitleSize)
+        line_width = 2
+        plt.plot([-2.3, -3.8], [0, 0], 'k-', lw=line_width)
+        plt.plot([-0.78, -0.25], [0, 0], 'k-', lw=line_width)
+        plt.plot([1 - self.massParameter, 1 - self.massParameter], [0.0, 0.11], 'k-', lw=line_width)
+        plt.plot([1 - self.massParameter, 1 - self.massParameter], [0.0, -0.11], 'k-', lw=line_width)
+
+        size = 15
+        ax.text(-2.1, 0, "$\mathbf{U_4}$", ha="center", va="center", size=size)
+        ax.text(-1.0, 0, "$\mathbf{U_1}$", ha="center", va="center", size=size)
+        ax.text(1.0 - self.massParameter, 0.25, "$\mathbf{U_3}$", ha="center", va="center", size=size)
+        ax.text(1.0 - self.massParameter, -0.3, "$\mathbf{U_2}$", ha="center", va="center", size=size)
+
+        ax.set_xlim([-6, 4])
+        ax.set_ylim([-3, 3])
+
+        # plt.show()
+        fig.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots_total.pdf',
+                    transparent=True)
+        # fig.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots.png')
+        plt.close()
+        pass
+
+    def plot_manifold_total_zoom(self):
+        # Plot: subplots
+        fig = plt.figure(figsize=self.figSize)
+        ax = fig.gca()
+
+        # Determine color for plot
+        plot_alpha = 1
+        line_width = 0.5
+        W_S_plus_L1 = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_S_plus.txt')
+        W_S_min_L1 = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_S_min.txt')
+        W_U_plus_L1 = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_U_plus.txt')
+        W_U_min_L1 = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_U_min.txt')
+
+        for manifold_orbit_number in range(self.numberOfOrbitsPerManifold):
+            ax.plot(self.W_S_plus.xs(manifold_orbit_number)['x'], self.W_S_plus.xs(manifold_orbit_number)['y'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax.plot(self.W_S_min.xs(manifold_orbit_number)['x'], self.W_S_min.xs(manifold_orbit_number)['y'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax.plot(self.W_U_plus.xs(manifold_orbit_number)['x'], self.W_U_plus.xs(manifold_orbit_number)['y'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax.plot(self.W_U_min.xs(manifold_orbit_number)['x'], self.W_U_min.xs(manifold_orbit_number)['y'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+
+            ax.plot(W_S_plus_L1.xs(manifold_orbit_number)['x'], W_S_plus_L1.xs(manifold_orbit_number)['y'],
+                    color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax.plot(W_S_min_L1.xs(manifold_orbit_number)['x'], W_S_min_L1.xs(manifold_orbit_number)['y'],
+                    color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax.plot(W_U_plus_L1.xs(manifold_orbit_number)['x'], W_U_plus_L1.xs(manifold_orbit_number)['y'],
+                    color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax.plot(W_U_min_L1.xs(manifold_orbit_number)['x'], W_U_min_L1.xs(manifold_orbit_number)['y'],
+                    color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+
+        plot_alpha = 1
+        line_width = 2
+        orbitDf_L1 = load_orbit('../../data/raw/orbits/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '.txt')
+        ax.plot(self.orbitDf['x'], self.orbitDf['y'], color=self.plottingColors['orbit'], alpha=plot_alpha, linewidth=line_width)
+        ax.plot(orbitDf_L1['x'], orbitDf_L1['y'], color=self.plottingColors['orbit'], alpha=plot_alpha,
+                linewidth=line_width)
+
+        ax.set_xlabel('x [-]')
+        ax.set_ylabel('y [-]')
+        ax.grid(True, which='both', ls=':')
+
+        fig.tight_layout()
+        fig.subplots_adjust(top=0.9)
+
+        lagrange_points_df = load_lagrange_points_location()
+        lagrange_point_nrs = ['L1', 'L2']
+
+        # Plot zero velocity surface
+        x_range = np.arange(ax.get_xlim()[0], ax.get_xlim()[1], 0.001)
+        y_range = np.arange(ax.get_ylim()[0], ax.get_ylim()[1], 0.001)
+        x_mesh, y_mesh = np.meshgrid(x_range, y_range)
+        z_mesh = cr3bp_velocity(x_mesh, y_mesh, 3.15)
+        if z_mesh.min() < 0:
+            plt.contourf(x_mesh, y_mesh, z_mesh, list(np.linspace(z_mesh.min(), 0, 10)), cmap='gist_gray_r', alpha=0.5)
+
+        # Lagrange points and bodies
+        for lagrange_point_nr in lagrange_point_nrs:
+            ax.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'], color='black', marker='x')
+
+        u = np.linspace(0, 2 * np.pi, 100)
+        v = np.linspace(0, np.pi, 100)
+        bodies_df = load_bodies_location()
+        for body in bodies_df:
+            x = bodies_df[body]['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df[body]['x']
+            y = bodies_df[body]['r'] * np.outer(np.sin(u), np.sin(v))
+            z = bodies_df[body]['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
+            ax.contourf(x, y, z, colors='black', label='Moon')
+
+        plt.suptitle('$L_1, L_2$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial overview at C = ' + str(np.round(self.C, 3)),
+                     size=self.suptitleSize)
+        line_width = 2
+        plt.plot([-2.3, -3.8], [0, 0], 'k-', lw=line_width)
+        plt.plot([-0.78, -0.25], [0, 0], 'k-', lw=line_width)
+        plt.plot([1 - self.massParameter, 1 - self.massParameter], [0.0, 0.11], 'k-', lw=line_width)
+        plt.plot([1 - self.massParameter, 1 - self.massParameter], [0.0, -0.11], 'k-', lw=line_width)
+
+        size = 15
+        ax.text(-2.1, 0, "$\mathbf{U_4}$", ha="center", va="center", size=size)
+        ax.text(-1.0, 0, "$\mathbf{U_1}$", ha="center", va="center", size=size)
+        ax.text(1.005, 0.11, "$\mathbf{U_3}$", ha="center", va="center", size=size)
+        ax.text(1.005, -0.115, "$\mathbf{U_2}$", ha="center", va="center", size=size)
+
+        ax.set_xlim([0.55, 1.45])
+        ax.set_ylim([-0.2, 0.2])
+
+        # plt.show()
+        fig.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots_total_zoom.pdf',
+                    transparent=True)
+        # fig.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots.png')
+        plt.close()
+        pass
+
+    def plot_manifold_total_zoom_2(self):
+        # Plot: subplots
+        fig = plt.figure(figsize=self.figSize)
+        ax = fig.gca()
+
+        # Determine color for plot
+        plot_alpha = 1
+        line_width = 0.5
+        W_S_plus_L1 = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_S_plus.txt')
+        W_S_min_L1 = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_S_min.txt')
+        W_U_plus_L1 = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_U_plus.txt')
+        W_U_min_L1 = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_U_min.txt')
+
+        for manifold_orbit_number in range(self.numberOfOrbitsPerManifold):
+            # ax.plot(self.W_S_plus.xs(manifold_orbit_number)['x'], self.W_S_plus.xs(manifold_orbit_number)['y'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            # ax.plot(self.W_S_min.xs(manifold_orbit_number)['x'], self.W_S_min.xs(manifold_orbit_number)['y'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            # ax.plot(self.W_U_plus.xs(manifold_orbit_number)['x'], self.W_U_plus.xs(manifold_orbit_number)['y'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            # ax.plot(self.W_U_min.xs(manifold_orbit_number)['x'], self.W_U_min.xs(manifold_orbit_number)['y'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+
+            # ax.plot(W_S_plus_L1.xs(manifold_orbit_number)['x'], W_S_plus_L1.xs(manifold_orbit_number)['y'],
+            #         color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax.plot(W_S_min_L1.xs(manifold_orbit_number)['x'], W_S_min_L1.xs(manifold_orbit_number)['y'],
+                    color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            # ax.plot(W_U_plus_L1.xs(manifold_orbit_number)['x'], W_U_plus_L1.xs(manifold_orbit_number)['y'],
+            #         color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax.plot(W_U_min_L1.xs(manifold_orbit_number)['x'], W_U_min_L1.xs(manifold_orbit_number)['y'],
+                    color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+
+        plot_alpha = 1
+        line_width = 2
+        # orbitDf_L1 = load_orbit('../../data/raw/orbits/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '.txt')
+        # ax.plot(self.orbitDf['x'], self.orbitDf['y'], color=self.plottingColors['orbit'], alpha=plot_alpha, linewidth=line_width)
+        # ax.plot(orbitDf_L1['x'], orbitDf_L1['y'], color=self.plottingColors['orbit'], alpha=plot_alpha,
+        #         linewidth=line_width)
+
+        ax.set_xlabel('x [-]')
+        ax.set_ylabel('y [-]')
+        ax.grid(True, which='both', ls=':')
+
+        fig.tight_layout()
+        fig.subplots_adjust(top=0.9)
+
+        lagrange_points_df = load_lagrange_points_location()
+        lagrange_point_nrs = ['L1', 'L2']
+
+        ax.set_xlim([-1.0, 0.0])
+        ax.set_ylim([-0.3, 0.3])
+
+        # Plot zero velocity surface
+        x_range = np.arange(-6.0, 4.0, 0.001)
+        y_range = np.arange(-3.0, 3.0, 0.001)
+        x_mesh, y_mesh = np.meshgrid(x_range, y_range)
+        z_mesh = cr3bp_velocity(x_mesh, y_mesh, 3.15)
+        if z_mesh.min() < 0:
+            plt.contourf(x_mesh, y_mesh, z_mesh, list(np.linspace(z_mesh.min(), 0, 10)), cmap='gist_gray_r', alpha=0.5)
+
+        # Lagrange points and bodies
+        for lagrange_point_nr in lagrange_point_nrs:
+            ax.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'], color='black', marker='x')
+
+        u = np.linspace(0, 2 * np.pi, 100)
+        v = np.linspace(0, np.pi, 100)
+        bodies_df = load_bodies_location()
+        for body in bodies_df:
+            x = bodies_df[body]['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df[body]['x']
+            y = bodies_df[body]['r'] * np.outer(np.sin(u), np.sin(v))
+            z = bodies_df[body]['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
+            ax.contourf(x, y, z, colors='black', label='Moon')
+
+        plt.suptitle('$L_1$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S-}, \mathcal{W}^{U-} \}$ - Spatial overview at C = ' + str(np.round(self.C, 3)),
+                     size=self.suptitleSize)
+        line_width = 2
+        # plt.plot([-2.3, -3.8], [0, 0], 'k-', lw=line_width)
+        plt.plot([-0.78, -0.25], [0, 0], 'k-', lw=line_width)
+        # plt.plot([1 - self.massParameter, 1 - self.massParameter], [0.0, 0.11], 'k-', lw=line_width)
+        # plt.plot([1 - self.massParameter, 1 - self.massParameter], [0.0, -0.11], 'k-', lw=line_width)
+
+        size = 15
+        # ax.text(-2.1, 0, "$\mathbf{U_4}$", ha="center", va="center", size=size)
+        ax.text(-0.2, 0, "$\mathbf{U_1}$", ha="center", va="center", size=size)
+        # ax.text(1.005, 0.11, "$\mathbf{U_3}$", ha="center", va="center", size=size)
+        # ax.text(1.005, -0.115, "$\mathbf{U_2}$", ha="center", va="center", size=size)
+
+        # plt.show()
+        fig.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots_total_zoom_2.pdf',
+                    transparent=True)
+        # fig.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots.png')
+        plt.close()
+        pass
+
+    def plot_manifold_total_zoom_3(self):
+        # Plot: subplots
+        fig = plt.figure(figsize=self.figSize)
+        ax = fig.gca()
+
+        # Determine color for plot
+        plot_alpha = 1
+        line_width = 0.5
+        # W_S_plus_L1 = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_S_plus.txt')
+        # W_S_min_L1 = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_S_min.txt')
+        # W_U_plus_L1 = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_U_plus.txt')
+        # W_U_min_L1 = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_U_min.txt')
+
+        for manifold_orbit_number in range(self.numberOfOrbitsPerManifold):
+            ax.plot(self.W_S_plus.xs(manifold_orbit_number)['x'], self.W_S_plus.xs(manifold_orbit_number)['y'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            # ax.plot(self.W_S_min.xs(manifold_orbit_number)['x'], self.W_S_min.xs(manifold_orbit_number)['y'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax.plot(self.W_U_plus.xs(manifold_orbit_number)['x'], self.W_U_plus.xs(manifold_orbit_number)['y'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            # ax.plot(self.W_U_min.xs(manifold_orbit_number)['x'], self.W_U_min.xs(manifold_orbit_number)['y'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+
+            # ax.plot(W_S_plus_L1.xs(manifold_orbit_number)['x'], W_S_plus_L1.xs(manifold_orbit_number)['y'],
+            #         color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            # ax.plot(W_S_min_L1.xs(manifold_orbit_number)['x'], W_S_min_L1.xs(manifold_orbit_number)['y'],
+            #         color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            # ax.plot(W_U_plus_L1.xs(manifold_orbit_number)['x'], W_U_plus_L1.xs(manifold_orbit_number)['y'],
+            #         color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            # ax.plot(W_U_min_L1.xs(manifold_orbit_number)['x'], W_U_min_L1.xs(manifold_orbit_number)['y'],
+            #         color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+
+        plot_alpha = 1
+        line_width = 2
+        # orbitDf_L1 = load_orbit('../../data/raw/orbits/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '.txt')
+        # ax.plot(self.orbitDf['x'], self.orbitDf['y'], color=self.plottingColors['orbit'], alpha=plot_alpha, linewidth=line_width)
+        # ax.plot(orbitDf_L1['x'], orbitDf_L1['y'], color=self.plottingColors['orbit'], alpha=plot_alpha,
+        #         linewidth=line_width)
+
+        ax.set_xlabel('x [-]')
+        ax.set_ylabel('y [-]')
+        ax.grid(True, which='both', ls=':')
+
+        fig.tight_layout()
+        fig.subplots_adjust(top=0.9)
+
+        lagrange_points_df = load_lagrange_points_location()
+        lagrange_point_nrs = ['L1', 'L2']
+
+        # Plot zero velocity surface
+        x_range = np.arange(-6.0, 4.0, 0.001)
+        y_range = np.arange(-3.0, 3.0, 0.001)
+        x_mesh, y_mesh = np.meshgrid(x_range, y_range)
+        z_mesh = cr3bp_velocity(x_mesh, y_mesh, 3.15)
+        if z_mesh.min() < 0:
+            plt.contourf(x_mesh, y_mesh, z_mesh, list(np.linspace(z_mesh.min(), 0, 10)), cmap='gist_gray_r', alpha=0.5)
+
+        # Lagrange points and bodies
+        for lagrange_point_nr in lagrange_point_nrs:
+            ax.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'], color='black', marker='x')
+
+        u = np.linspace(0, 2 * np.pi, 100)
+        v = np.linspace(0, np.pi, 100)
+        bodies_df = load_bodies_location()
+        for body in bodies_df:
+            x = bodies_df[body]['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df[body]['x']
+            y = bodies_df[body]['r'] * np.outer(np.sin(u), np.sin(v))
+            z = bodies_df[body]['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
+            ax.contourf(x, y, z, colors='black', label='Moon')
+
+        plt.suptitle('$L_2$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S+}, \mathcal{W}^{U+} \}$ - Spatial overview at C = ' + str(np.round(self.C, 3)),
+                     size=self.suptitleSize)
+        line_width = 2
+        plt.plot([-2.3, -3.8], [0, 0], 'k-', lw=line_width)
+        # plt.plot([-0.78, -0.25], [0, 0], 'k-', lw=line_width)
+        # plt.plot([1 - self.massParameter, 1 - self.massParameter], [0.0, 0.11], 'k-', lw=line_width)
+        # plt.plot([1 - self.massParameter, 1 - self.massParameter], [0.0, -0.11], 'k-', lw=line_width)
+
+        size = 15
+        ax.text(-2.1, 0, "$\mathbf{U_4}$", ha="center", va="center", size=size)
+        # ax.text(-0.2, 0, "$\mathbf{U_1}$", ha="center", va="center", size=size)
+        # ax.text(1.005, 0.11, "$\mathbf{U_3}$", ha="center", va="center", size=size)
+        # ax.text(1.005, -0.115, "$\mathbf{U_2}$", ha="center", va="center", size=size)
+        ax.set_xlim([-4.0, -0.5])
+        ax.set_ylim([-1.0, 1.0])
+
+        # plt.show()
+        fig.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots_total_zoom_3.pdf',
                     transparent=True)
         # fig.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots.png')
         plt.close()
@@ -1018,8 +1455,11 @@ class DisplayPeriodicityValidation:
 if __name__ == '__main__':
     lagrange_points = [1, 2]
     orbit_types = ['horizontal', 'vertical', 'halo']
-
     c_levels = [3.05, 3.1, 3.15]
+
+    lagrange_points = [2]
+    orbit_types = ['horizontal']
+    c_levels = [3.15]
 
     orbit_ids = {'horizontal':  {1: {3.05: 808, 3.1: 577, 3.15: 330}, 2: {3.05: 1066, 3.1: 760, 3.15: 373}},
                  'halo':  {1: {3.05: 1235, 3.1: 836, 3.15: 358}, 2: {3.05: 1093, 3.1: 651, 3.15: 0}},
@@ -1029,14 +1469,19 @@ if __name__ == '__main__':
         for lagrange_point in lagrange_points:
             for c_level in c_levels:
                 display_periodicity_validation = DisplayPeriodicityValidation(orbit_type, lagrange_point, orbit_ids[orbit_type][lagrange_point][c_level])
-                display_periodicity_validation.plot_manifolds()
+                # display_periodicity_validation.plot_manifolds()
+                # display_periodicity_validation.plot_manifold_zoom()
+                # display_periodicity_validation.plot_manifold_total()
+                # display_periodicity_validation.plot_manifold_total_zoom()
+                # display_periodicity_validation.plot_manifold_total_zoom_2()
+                display_periodicity_validation.plot_manifold_total_zoom_3()
 
                 # display_periodicity_validation.plot_eigenvectors()
                 # display_periodicity_validation.plot_stm_analysis()
                 # display_periodicity_validation.plot_stability()
 
-                display_periodicity_validation.plot_periodicity_validation()
-                display_periodicity_validation.plot_jacobi_validation()
-                display_periodicity_validation.plot_orbit_offsets()
+                # display_periodicity_validation.plot_periodicity_validation()
+                # display_periodicity_validation.plot_jacobi_validation()
+                # display_periodicity_validation.plot_orbit_offsets()
                 # plt.show()
                 del display_periodicity_validation

@@ -21,9 +21,8 @@ params = {'text.usetex' : True,
           }
 plt.rcParams.update(params)
 import sys
-sys.path.append('../util')
-from load_data import load_orbit, load_bodies_location, load_lagrange_points_location, load_differential_corrections, \
-    load_initial_conditions_incl_M, cr3bp_velocity
+sys.path.append('../util/')
+from load_data import load_orbit, load_bodies_location, load_lagrange_points_location, load_differential_corrections, load_initial_conditions_incl_M, load_manifold, cr3bp_velocity
 
 
 class DisplayFamiliesOfEqualEnergy:
@@ -82,24 +81,24 @@ class DisplayFamiliesOfEqualEnergy:
         if Z.min() < 0:
             plt.contourf(X, Y, Z, 0, colors='black', alpha=0.05, zorder=1000)
 
-        linewidth=1
+        linewidth=2
         df = load_orbit('../../data/raw_equal_energy/horizontal_L1_577.txt')
-        ax.plot(df['x'], df['y'], df['z'], color='b', alpha=0.75, linestyle='-', label='Horizontal Lyapunov', linewidth=linewidth)
+        ax.plot(df['x'], df['y'], df['z'], color=sns.color_palette("viridis", 3)[0], alpha=0.75, linestyle='-', label='Horizontal Lyapunov', linewidth=linewidth)
 
         df = load_orbit('../../data/raw_equal_energy/vertical_L1_1163.txt')
-        ax.plot(df['x'], df['y'], df['z'], color='b', alpha=0.75, linestyle='--', label='Vertical Lyapunov', linewidth=linewidth)
+        ax.plot(df['x'], df['y'], df['z'], color=sns.color_palette("viridis", 3)[1], alpha=0.75, linestyle='-', label='Vertical Lyapunov', linewidth=linewidth)
 
         df = load_orbit('../../data/raw_equal_energy/halo_L1_799.txt')
-        ax.plot(df['x'], df['y'], df['z'], color='b', alpha=0.75, linestyle=':', label='Halo', linewidth=linewidth)
+        ax.plot(df['x'], df['y'], df['z'], color=sns.color_palette("viridis", 3)[2], alpha=0.75, linestyle='-', label='Halo', linewidth=linewidth)
 
         ax.legend(frameon=True, loc='lower right')
 
         df = load_orbit('../../data/raw_equal_energy/horizontal_L2_760.txt')
-        ax.plot(df['x'], df['y'], df['z'], color='b', alpha=0.75, linestyle='-', linewidth=linewidth)
+        ax.plot(df['x'], df['y'], df['z'], color=sns.color_palette("viridis", 3)[0], alpha=0.75, linestyle='-', linewidth=linewidth)
         df = load_orbit('../../data/raw_equal_energy/vertical_L2_1299.txt')
-        ax.plot(df['x'], df['y'], df['z'], color='b', alpha=0.75, linestyle='--', linewidth=linewidth)
+        ax.plot(df['x'], df['y'], df['z'], color=sns.color_palette("viridis", 3)[1], alpha=0.75, linestyle='-', linewidth=linewidth)
         df = load_orbit('../../data/raw_equal_energy/halo_L2_651.txt')
-        ax.plot(df['x'], df['y'], df['z'], color='b', alpha=0.75, linestyle=':', linewidth=linewidth)
+        ax.plot(df['x'], df['y'], df['z'], color=sns.color_palette("viridis", 3)[2], alpha=0.75, linestyle='-', linewidth=linewidth)
 
         ax.set_xlabel('x [-]')
         ax.set_ylabel('y [-]')
@@ -120,8 +119,9 @@ class DisplayFamiliesOfEqualEnergy:
         # fig.savefig('../../../data/figures/family_of_equal_energy.png')
         fig.savefig('../../data/figures/new_family_of_equal_energy.pdf', transparent=True)
         # tikz_save('../../../data/figures/family_of_equal_energy.tex')
-        # plt.close()
+        plt.close()
         pass
+
 
 if __name__ == '__main__':
     display_families_of_equal_energy = DisplayFamiliesOfEqualEnergy()

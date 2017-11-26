@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import json
 import matplotlib
-matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
+# matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from mpl_toolkits.mplot3d import Axes3D
@@ -199,6 +199,62 @@ class VerifyManifoldsBySymmetry:
         fig.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathbf{X_i} \pm \epsilon \\frac{\mathbf{v}^S_i}{|\mathbf{v}^S_i|}, \mathbf{X_i} \pm \epsilon \\frac{\mathbf{v}^U_i}{|\mathbf{v}^U_i|} \}$ - Spatial overview', size=self.suptitleSize)
         plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_eigenvector.pdf',
                     transparent=True)
+        plt.close()
+        pass
+
+    def plot_eigenvectors_zoom(self):
+        # Plot: subplots
+        fig = plt.figure(figsize=self.figSize)
+        ax = fig.gca()
+
+        # Determine color for plot
+        plot_alpha = 1
+        line_width = 2
+        color = self.plottingColors['orbit']
+        ax.plot(self.orbitDf['x'], self.orbitDf['y'], color=color, linewidth=line_width)
+
+        # Determine color for plot
+        if self.orbitType == 'vertical':
+            eigenvector_offset = 0.004
+        else:
+            eigenvector_offset = 0.02
+
+        for idx in range(self.numberOfOrbitsPerManifold):
+            # if self.numberOfOrbitsPerManifold > 10 and idx % 2 != 0:
+            #     continue
+
+            x_S = [self.eigenvectorLocationDf_S.xs(idx)[0] - eigenvector_offset * self.eigenvectorDf_S.xs(idx)[0],
+                   self.eigenvectorLocationDf_S.xs(idx)[0] + eigenvector_offset * self.eigenvectorDf_S.xs(idx)[0]]
+            y_S = [self.eigenvectorLocationDf_S.xs(idx)[1] - eigenvector_offset * self.eigenvectorDf_S.xs(idx)[1],
+                   self.eigenvectorLocationDf_S.xs(idx)[1] + eigenvector_offset * self.eigenvectorDf_S.xs(idx)[1]]
+            z_S = [self.eigenvectorLocationDf_S.xs(idx)[2] - eigenvector_offset * self.eigenvectorDf_S.xs(idx)[2],
+                   self.eigenvectorLocationDf_S.xs(idx)[2] + eigenvector_offset * self.eigenvectorDf_S.xs(idx)[2]]
+
+            x_U = [self.eigenvectorLocationDf_U.xs(idx)[0] - eigenvector_offset * self.eigenvectorDf_U.xs(idx)[0],
+                   self.eigenvectorLocationDf_U.xs(idx)[0] + eigenvector_offset * self.eigenvectorDf_U.xs(idx)[0]]
+            y_U = [self.eigenvectorLocationDf_U.xs(idx)[1] - eigenvector_offset * self.eigenvectorDf_U.xs(idx)[1],
+                   self.eigenvectorLocationDf_U.xs(idx)[1] + eigenvector_offset * self.eigenvectorDf_U.xs(idx)[1]]
+            z_U = [self.eigenvectorLocationDf_U.xs(idx)[2] - eigenvector_offset * self.eigenvectorDf_U.xs(idx)[2],
+                   self.eigenvectorLocationDf_U.xs(idx)[2] + eigenvector_offset * self.eigenvectorDf_U.xs(idx)[2]]
+
+            ax.annotate("", xy=(x_S[0], y_S[0]), xytext=(x_S[1], y_S[1]), arrowprops=dict(arrowstyle='<->, head_width=1e-1, head_length=2e-1', color=self.plottingColors['W_S_plus'], shrinkA=0, shrinkB=0))
+            ax.annotate("", xy=(x_U[0], y_U[0]), xytext=(x_U[1], y_U[1]), arrowprops=dict(arrowstyle='<->, head_width=1e-1, head_length=2e-1', color=self.plottingColors['W_U_plus'], shrinkA=0, shrinkB=0))
+            pass
+
+        xlim = ax.get_xlim()
+        ylim = ax.get_ylim()
+        ax.set_xlim(xlim[0] * 0.975, xlim[1] * 1.025)
+        ax.set_ylim(ylim[0] * 1.2, ylim[1] * 1.2)
+        ax.set_xlabel('x [-]')
+        ax.set_ylabel('y [-]')
+        ax.grid(True, which='both', ls=':')
+
+        fig.tight_layout()
+        fig.subplots_adjust(top=0.9)
+
+        fig.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathbf{X_i} \pm \epsilon \\frac{\mathbf{v}^S_i}{\|\mathbf{v}^S_i\|}, \mathbf{X_i} \pm \epsilon \\frac{\mathbf{v}^U_i}{|\mathbf{v}^U_i|} \}$ - Spatial overview', size=self.suptitleSize)
+        # plt.show()
+        plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_eigenvector_zoom.pdf', transparent=True)
         plt.close()
         pass
 
@@ -419,6 +475,8 @@ if __name__ == '__main__':
     orbit_types = ['horizontal', 'vertical', 'halo']
     c_levels = [3.15]
 
+    lagrange_points = [2]
+    orbit_types = ['horizontal']
     for orbit_type in orbit_types:
         print(orbit_type)
         for lagrange_point in lagrange_points:
@@ -426,7 +484,8 @@ if __name__ == '__main__':
             for c_level in c_levels:
                 print(c_level)
                 verify_manifolds_by_symmetry = VerifyManifoldsBySymmetry(orbit_type, lagrange_point, orbit_ids[orbit_type][lagrange_point][c_level], c_level)
-                verify_manifolds_by_symmetry.plot_manifolds()
-                verify_manifolds_by_symmetry.plot_eigenvectors()
-                verify_manifolds_by_symmetry.show_phase_difference()
+                # verify_manifolds_by_symmetry.plot_manifolds()
+                # verify_manifolds_by_symmetry.plot_eigenvectors()
+                verify_manifolds_by_symmetry.plot_eigenvectors_zoom()
+                # verify_manifolds_by_symmetry.show_phase_difference()
                 # plt.show()
