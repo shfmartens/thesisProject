@@ -107,8 +107,8 @@ class OrbitShootingConditions:
         ax.set_ylabel('z [-]')
         ax.grid(True, which='both', ls=':')
         fig.tight_layout()
-        fig.subplots_adjust(top=0.8)
-        plt.suptitle('$L_1, L_2$ - Shooting conditions', size=self.suptitleSize)
+        fig.subplots_adjust(top=0.9)
+        plt.suptitle('$L_1, L_2$ - Shooting conditions for H-L, halo, and V-L', size=self.suptitleSize)
         fig.savefig('../../data/figures/orbits/orbit_shooting_conditions_2d.pdf', transparent=True)
         pass
 
@@ -163,7 +163,7 @@ class OrbitShootingConditions:
         ax.set_zlabel('z [-]')
         ax.grid(True, which='both', ls=':')
         fig.tight_layout()
-        fig.subplots_adjust(top=0.8)
+        fig.subplots_adjust(top=0.9)
         plt.suptitle('$L_1, L_2$ - Shooting conditions', size=self.suptitleSize)
         fig.savefig('../../data/figures/orbits/orbit_shooting_conditions_3d.pdf', transparent=True)
         pass
@@ -243,12 +243,12 @@ class OrbitShootingConditions:
         fig.tight_layout()
         fig.subplots_adjust(top=0.9)
         plt.suptitle('$L_1, L_2$ - Shooting conditions', size=self.suptitleSize)
-        # fig.savefig('../../data/figures/orbits/orbit_shooting_conditions_2d_3d.pdf', transparent=True)
+        fig.savefig('../../data/figures/orbits/orbit_shooting_conditions_2d_3d.pdf', transparent=True)
         pass
 
 if __name__ == '__main__':
     orbit_shooting_conditions = OrbitShootingConditions()
-    # orbit_shooting_conditions.plot_2d_shooting_conditions()
+    orbit_shooting_conditions.plot_2d_shooting_conditions()
     # orbit_shooting_conditions.plot_3d_shooting_conditions()
-    orbit_shooting_conditions.plot_2d_3d_shooting_conditions()
-    plt.show()
+    # orbit_shooting_conditions.plot_2d_3d_shooting_conditions()
+    # plt.show()

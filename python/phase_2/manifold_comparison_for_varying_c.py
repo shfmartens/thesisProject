@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import json
 import matplotlib
-matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
+# matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from mpl_toolkits.mplot3d import Axes3D
@@ -20,7 +20,8 @@ plt.rcParams.update(params)
 import sys
 sys.path.append('../util')
 from load_data import load_orbit, load_bodies_location, load_lagrange_points_location, load_differential_corrections, \
-    load_initial_conditions_incl_M, load_manifold, computeJacobiEnergy, load_manifold_incl_stm, load_manifold_refactored
+    load_initial_conditions_incl_M, load_manifold, computeJacobiEnergy, load_manifold_incl_stm, load_manifold_refactored, \
+    cr3bp_velocity
 
 
 class ManifoldComparisonForVaryingC:
@@ -77,7 +78,7 @@ class ManifoldComparisonForVaryingC:
 
         self.numberOfOrbitsPerManifold = len(set(self.W_S_plus[0].index.get_level_values(0)))
 
-        self.figSize = (7 * (1 + np.sqrt(5)) / 2, 7)
+        self.figSize = (7 * (1 + np.sqrt(5)) / 2, 7*1.5)
         blues = sns.color_palette('Blues', 100)
         greens = sns.color_palette('BuGn', 100)
         self.colorPaletteStable = sns.dark_palette('green', n_colors=self.numberOfOrbitsPerManifold)
@@ -398,6 +399,21 @@ class ManifoldComparisonForVaryingC:
         ax10.grid(True, which='both', ls=':')
         ax11.grid(True, which='both', ls=':')
         ax12.grid(True, which='both', ls=':')
+
+
+        # Plot zero velocity surface
+        x_range = np.arange(-6.0, 4.0, 0.001)
+        y_range = np.arange(-3.0, 3.0, 0.001)
+        x_mesh, y_mesh = np.meshgrid(x_range, y_range)
+        z_mesh0 = cr3bp_velocity(x_mesh, y_mesh, 3.15)
+        z_mesh1 = cr3bp_velocity(x_mesh, y_mesh, 3.1)
+        z_mesh2 = cr3bp_velocity(x_mesh, y_mesh, 3.05)
+        if z_mesh0.min() < 0:
+            ax10.contourf(x_mesh, y_mesh, z_mesh0, list(np.linspace(z_mesh0.min(), 0, 10)), cmap='gist_gray_r', alpha=0.5)
+        if z_mesh1.min() < 0:
+            ax11.contourf(x_mesh, y_mesh, z_mesh1, list(np.linspace(z_mesh1.min(), 0, 10)), cmap='gist_gray_r', alpha=0.5)
+        if z_mesh2.min() < 0:
+            ax12.contourf(x_mesh, y_mesh, z_mesh2, list(np.linspace(z_mesh2.min(), 0, 10)), cmap='gist_gray_r', alpha=0.5)
 
         if self.orbitType != 'horizontal':
             ax21.set_xlabel('x [-]')

@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import json
 import matplotlib
-# matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
+matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from mpl_toolkits.mplot3d import Axes3D
@@ -610,7 +610,11 @@ class DisplayPeriodicityValidation:
                         ax4.plot(df['y'], df['z'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
 
         # Plot every 100th member, including the ultimate member of the family
-        orbitIdsPlot = list(range(0, len(self.C)-self.numberOfHaloExtensionOrbits-1, 100))
+        if self.orbitType=='vertical' or self.orbitType=='halo':
+            spacing_factor = 100
+        else:
+            spacing_factor = 50
+        orbitIdsPlot = list(range(0, len(self.C)-self.numberOfHaloExtensionOrbits-1, spacing_factor))
         if orbitIdsPlot[-1] != len(self.C)-self.numberOfHaloExtensionOrbits-1:
             orbitIdsPlot.append(len(self.C)-self.numberOfHaloExtensionOrbits-1)
 
@@ -676,15 +680,15 @@ class DisplayPeriodicityValidation:
             cax, kw = matplotlib.colorbar.make_axes([ax2, ax5])
         cbar = plt.colorbar(sm, cax=cax, label='C [-]', **kw)
 
-        plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' - Spatial overview',
+        plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' - Orthographic projection',
                      size=self.suptitleSize)
 
         fig1.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ': family', size=self.suptitleSize)
-        # fig1.savefig('../../data/figures/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_family.pdf')
+
         fig2.savefig('../../data/figures/orbits/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_family_subplots.pdf',
                      transparent=True)
         plt.close(fig2)
-        # plt.show()
+
         plt.close()
         pass
 
@@ -765,7 +769,7 @@ class DisplayPeriodicityValidation:
         for i in range(2):
             for j in range(2):
                 arr[i, j].grid(True, which='both', ls=':')
-        plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' - Eigensystem analysis monodromy matrix', size=self.suptitleSize)
+        plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' - Monodromy matrix eigensystem validation', size=self.suptitleSize)
         plt.savefig('../../data/figures/orbits/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_monodromy_analysis.pdf',
                     transparent=True)
         # plt.show()
@@ -929,7 +933,7 @@ class DisplayPeriodicityValidation:
         plt.tight_layout()
         plt.subplots_adjust(top=0.9)
 
-        plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' - Periodicity constraints validation', size=self.suptitleSize)
+        plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' - Periodicity constraints verification', size=self.suptitleSize)
         plt.savefig('../../data/figures/orbits/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_periodicity.pdf',
                     transparent=True)
         # plt.show()
@@ -939,6 +943,7 @@ class DisplayPeriodicityValidation:
 
 if __name__ == '__main__':
     orbit_types = ['horizontal', 'vertical', 'halo', 'axial']
+    orbit_types = ['vertical']
     lagrange_points = [1, 2]
 
     for orbit_type in orbit_types:
@@ -949,4 +954,5 @@ if __name__ == '__main__':
             display_periodicity_validation.plot_monodromy_analysis()
             display_periodicity_validation.plot_stability()
             display_periodicity_validation.plot_periodicity_validation()
+            # plt.show()
             del display_periodicity_validation

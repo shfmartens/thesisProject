@@ -23,7 +23,7 @@ sys.path.append('../util')
 from load_data import load_orbit, load_bodies_location, load_lagrange_points_location, load_differential_corrections, load_initial_conditions_incl_M, load_manifold
 
 
-orbit_types = ['halo', 'vertical', 'horizontal']
+orbit_types = ['horizontal', 'halo', 'vertical']
 lagrange_point_nrs = [1, 2]
 
 blues = sns.color_palette('Blues', 100)
@@ -38,14 +38,14 @@ plottingColors = {'lambda1': blues[40],
                    'singleLine': blues[80],
                    'doubleLine': [greens[50], blues[80]],
                    # 'tripleLine': [blues[80], greens[50], blues[40]],
-                   'tripleLine': [sns.color_palette("viridis", n_colors)[n_colors-1], sns.color_palette("viridis", n_colors)[int((n_colors-1)/2)], sns.color_palette("viridis", n_colors)[0]],
+                   'tripleLine': [sns.color_palette("viridis", n_colors)[0], sns.color_palette("viridis", n_colors)[n_colors-1], sns.color_palette("viridis", n_colors)[int((n_colors-1)/2)]],
                    'limit': 'black'}
 
 fig = plt.figure(figsize=(7 * (1 + np.sqrt(5)) / 2, 3.5))
 ax = fig.gca()
+for lagrange_point_nr in lagrange_point_nrs:
+    for idx, orbit_type in enumerate(orbit_types):
 
-for idx, orbit_type in enumerate(orbit_types):
-    for lagrange_point_nr in lagrange_point_nrs:
         initial_conditions_file_path = '../../data/raw/orbits/L' + str(lagrange_point_nr) + '_' + orbit_type + '_initial_conditions.txt'
         initial_conditions_incl_m_df = load_initial_conditions_incl_M(initial_conditions_file_path)
 

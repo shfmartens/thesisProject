@@ -58,15 +58,21 @@ class VerifyManifoldsBySymmetry:
         greens = sns.color_palette('BuGn', 100)
         self.colorPaletteStable = sns.dark_palette('green', n_colors=self.numberOfOrbitsPerManifold)
         self.colorPaletteUnstable = sns.dark_palette('red', n_colors=self.numberOfOrbitsPerManifold)
-        self.plottingColors = {'lambda1': blues[40],
-                               'lambda2': greens[50],
-                               'lambda3': blues[90],
-                               'lambda4': blues[90],
-                               'lambda5': greens[70],
-                               'lambda6': blues[60],
-                               'singleLine': blues[80],
-                               'doubleLine': [greens[50], blues[80]],
-                               'tripleLine': [blues[40], greens[50], blues[80]],
+
+        n_colors = 3
+        n_colors_l = 6
+        self.plottingColors = {'lambda1': sns.color_palette("viridis", n_colors_l)[0],
+                               'lambda2': sns.color_palette("viridis", n_colors_l)[2],
+                               'lambda3': sns.color_palette("viridis", n_colors_l)[4],
+                               'lambda4': sns.color_palette("viridis", n_colors_l)[5],
+                               'lambda5': sns.color_palette("viridis", n_colors_l)[3],
+                               'lambda6': sns.color_palette("viridis", n_colors_l)[1],
+                               'singleLine': sns.color_palette("viridis", n_colors)[0],
+                               'doubleLine': [sns.color_palette("viridis", n_colors)[n_colors - 1],
+                                              sns.color_palette("viridis", n_colors)[0]],
+                               'tripleLine': [sns.color_palette("viridis", n_colors)[n_colors - 1],
+                                              sns.color_palette("viridis", n_colors)[int((n_colors - 1) / 2)],
+                                              sns.color_palette("viridis", n_colors)[0]],
                                'W_S_plus': self.colorPaletteStable[int(0.9*self.numberOfOrbitsPerManifold)],
                                'W_S_min': self.colorPaletteStable[int(0.4*self.numberOfOrbitsPerManifold)],
                                'W_U_plus': self.colorPaletteUnstable[int(0.9*self.numberOfOrbitsPerManifold)],
@@ -475,8 +481,8 @@ if __name__ == '__main__':
     orbit_types = ['horizontal', 'vertical', 'halo']
     c_levels = [3.15]
 
-    lagrange_points = [2]
-    orbit_types = ['horizontal']
+    # lagrange_points = [2]
+    # orbit_types = ['horizontal']
     for orbit_type in orbit_types:
         print(orbit_type)
         for lagrange_point in lagrange_points:
@@ -484,8 +490,8 @@ if __name__ == '__main__':
             for c_level in c_levels:
                 print(c_level)
                 verify_manifolds_by_symmetry = VerifyManifoldsBySymmetry(orbit_type, lagrange_point, orbit_ids[orbit_type][lagrange_point][c_level], c_level)
-                # verify_manifolds_by_symmetry.plot_manifolds()
-                # verify_manifolds_by_symmetry.plot_eigenvectors()
+                verify_manifolds_by_symmetry.plot_manifolds()
+                verify_manifolds_by_symmetry.plot_eigenvectors()
                 verify_manifolds_by_symmetry.plot_eigenvectors_zoom()
-                # verify_manifolds_by_symmetry.show_phase_difference()
+                verify_manifolds_by_symmetry.show_phase_difference()
                 # plt.show()

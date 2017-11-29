@@ -85,11 +85,11 @@ class DisplayFamiliesOfEqualEnergy:
         df = load_orbit('../../data/raw_equal_energy/horizontal_L1_577.txt')
         ax.plot(df['x'], df['y'], df['z'], color=sns.color_palette("viridis", 3)[0], alpha=0.75, linestyle='-', label='Horizontal Lyapunov', linewidth=linewidth)
 
-        df = load_orbit('../../data/raw_equal_energy/vertical_L1_1163.txt')
-        ax.plot(df['x'], df['y'], df['z'], color=sns.color_palette("viridis", 3)[1], alpha=0.75, linestyle='-', label='Vertical Lyapunov', linewidth=linewidth)
-
         df = load_orbit('../../data/raw_equal_energy/halo_L1_799.txt')
         ax.plot(df['x'], df['y'], df['z'], color=sns.color_palette("viridis", 3)[2], alpha=0.75, linestyle='-', label='Halo', linewidth=linewidth)
+
+        df = load_orbit('../../data/raw_equal_energy/vertical_L1_1163.txt')
+        ax.plot(df['x'], df['y'], df['z'], color=sns.color_palette("viridis", 3)[1], alpha=0.75, linestyle='-', label='Vertical Lyapunov', linewidth=linewidth)
 
         ax.legend(frameon=True, loc='lower right')
 

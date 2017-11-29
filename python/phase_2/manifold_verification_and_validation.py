@@ -251,19 +251,24 @@ class DisplayPeriodicityValidation:
         self.colorPaletteStable = sns.dark_palette('green', n_colors=self.numberOfOrbitsPerManifold)
         self.colorPaletteUnstable = sns.dark_palette('red', n_colors=self.numberOfOrbitsPerManifold)
 
-        self.plottingColors = {'lambda1': blues[40],
-                               'lambda2': greens[50],
-                               'lambda3': blues[90],
-                               'lambda4': blues[90],
-                               'lambda5': greens[70],
-                               'lambda6': blues[60],
-                               'singleLine': blues[80],
-                               'doubleLine': [greens[50], blues[80]],
-                               'tripleLine': [blues[40], greens[50], blues[80]],
-                               'W_S_plus': self.colorPaletteStable[90],
-                               'W_S_min': self.colorPaletteStable[40],
-                               'W_U_plus': self.colorPaletteUnstable[90],
-                               'W_U_min': self.colorPaletteUnstable[40],
+        n_colors = 3
+        n_colors_l = 6
+        self.plottingColors = {'lambda1': sns.color_palette("viridis", n_colors_l)[0],
+                               'lambda2': sns.color_palette("viridis", n_colors_l)[2],
+                               'lambda3': sns.color_palette("viridis", n_colors_l)[4],
+                               'lambda4': sns.color_palette("viridis", n_colors_l)[5],
+                               'lambda5': sns.color_palette("viridis", n_colors_l)[3],
+                               'lambda6': sns.color_palette("viridis", n_colors_l)[1],
+                               'singleLine': sns.color_palette("viridis", n_colors)[0],
+                               'doubleLine': [sns.color_palette("viridis", n_colors)[n_colors - 1],
+                                              sns.color_palette("viridis", n_colors)[0]],
+                               'tripleLine': [sns.color_palette("viridis", n_colors)[n_colors - 1],
+                                              sns.color_palette("viridis", n_colors)[int((n_colors - 1) / 2)],
+                                              sns.color_palette("viridis", n_colors)[0]],
+                               'W_S_plus': self.colorPaletteStable[int(0.9*self.numberOfOrbitsPerManifold)],
+                               'W_S_min': self.colorPaletteStable[int(0.4*self.numberOfOrbitsPerManifold)],
+                               'W_U_plus': self.colorPaletteUnstable[int(0.9*self.numberOfOrbitsPerManifold)],
+                               'W_U_min': self.colorPaletteUnstable[int(0.4*self.numberOfOrbitsPerManifold)],
                                'limit': 'black',
                                'orbit': 'navy'}
         self.suptitleSize = 20
@@ -1474,14 +1479,14 @@ if __name__ == '__main__':
                 # display_periodicity_validation.plot_manifold_total()
                 # display_periodicity_validation.plot_manifold_total_zoom()
                 # display_periodicity_validation.plot_manifold_total_zoom_2()
-                display_periodicity_validation.plot_manifold_total_zoom_3()
+                # display_periodicity_validation.plot_manifold_total_zoom_3()
 
                 # display_periodicity_validation.plot_eigenvectors()
                 # display_periodicity_validation.plot_stm_analysis()
                 # display_periodicity_validation.plot_stability()
 
                 # display_periodicity_validation.plot_periodicity_validation()
-                # display_periodicity_validation.plot_jacobi_validation()
-                # display_periodicity_validation.plot_orbit_offsets()
+                display_periodicity_validation.plot_jacobi_validation()
+                display_periodicity_validation.plot_orbit_offsets()
                 # plt.show()
                 del display_periodicity_validation
