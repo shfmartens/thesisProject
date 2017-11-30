@@ -591,28 +591,28 @@ class MinimumImpulseManifoldConnections:
 if __name__ == '__main__':
     max_position_deviation = {100: 1e-3, 1000: 1e-4, 5000: 1e-4}
     orbit_types = ['horizontal', 'vertical', 'halo']
-    # orbit_types = ['vertical', 'halo']
+    orbit_types = ['halo']
     
     for orbit_type in orbit_types:
-        minimum_impulse_manifold_connections = MinimumImpulseManifoldConnections(orbit_type=orbit_type)
-        if orbit_type =='horizontal':
-            minimum_impulse_manifold_connections.compare_number_of_orbits_per_manifold([100, 1000])
-        else:
-            minimum_impulse_manifold_connections.compare_number_of_orbits_per_manifold([100, 1000, 5000])
+        # minimum_impulse_manifold_connections = MinimumImpulseManifoldConnections(orbit_type=orbit_type)
+        # if orbit_type =='horizontal':
+        #     minimum_impulse_manifold_connections.compare_number_of_orbits_per_manifold([100, 1000])
+        # else:
+        #     minimum_impulse_manifold_connections.compare_number_of_orbits_per_manifold([100, 1000, 5000])
 
         # for number_of_orbits_per_manifold in [100]:
         # for number_of_orbits_per_manifold in [1000]:
-        # for number_of_orbits_per_manifold in [5000]:
+        for number_of_orbits_per_manifold in [5000]:
 
-            # minimum_impulse_manifold_connections = MinimumImpulseManifoldConnections(number_of_orbits_per_manifold=number_of_orbits_per_manifold,
-            #                                                                          max_position_dev=max_position_deviation[number_of_orbits_per_manifold],
-            #                                                                          orbit_type=orbit_type)
-            # minimum_impulse_manifold_connections.plot_impulse_angle()
-            # minimum_impulse_manifold_connections.plot_manifolds()
-            # minimum_impulse_manifold_connections.plot_image_trajectories()
-            # minimum_impulse_manifold_connections.plot_poincare_spread()
+            minimum_impulse_manifold_connections = MinimumImpulseManifoldConnections(number_of_orbits_per_manifold=number_of_orbits_per_manifold,
+                                                                                     max_position_dev=max_position_deviation[number_of_orbits_per_manifold],
+                                                                                     orbit_type=orbit_type)
+            minimum_impulse_manifold_connections.plot_impulse_angle()
+            minimum_impulse_manifold_connections.plot_manifolds()
+            minimum_impulse_manifold_connections.plot_image_trajectories()
+            minimum_impulse_manifold_connections.plot_poincare_spread()
             # minimum_impulse_manifold_connections.plot_poincare_spread_zoomed_out()
 
-    for number_of_orbits_per_manifold in [100, 1000, 5000]:
-        minimum_impulse_manifold_connections = MinimumImpulseManifoldConnections()
-        minimum_impulse_manifold_connections.compare_orbit_types(number_of_orbits_per_manifold)
+    # for number_of_orbits_per_manifold in [100, 1000, 5000]:
+    #     minimum_impulse_manifold_connections = MinimumImpulseManifoldConnections()
+    #     minimum_impulse_manifold_connections.compare_orbit_types(number_of_orbits_per_manifold)

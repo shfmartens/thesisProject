@@ -78,7 +78,7 @@ class ManifoldComparisonForVaryingC:
 
         self.numberOfOrbitsPerManifold = len(set(self.W_S_plus[0].index.get_level_values(0)))
 
-        self.figSize = (7 * (1 + np.sqrt(5)) / 2, 7*1.5)
+        self.figSize = (7 * (1 + np.sqrt(5)) / 2, 7*2)
         blues = sns.color_palette('Blues', 100)
         greens = sns.color_palette('BuGn', 100)
         self.colorPaletteStable = sns.dark_palette('green', n_colors=self.numberOfOrbitsPerManifold)
@@ -384,7 +384,9 @@ class ManifoldComparisonForVaryingC:
         ax01.set_zlim(zlim)
         ax02.set_zlim(zlim)
 
+        ax10.set_xlabel('x [-]')
         ax11.set_xlabel('x [-]')
+        ax12.set_xlabel('x [-]')
         ax10.set_ylabel('y [-]')
         xlim = [min(ax10.get_xlim()[0], ax11.get_xlim()[0], ax12.get_xlim()[0]),
                 max(ax10.get_xlim()[1], ax11.get_xlim()[1], ax12.get_xlim()[1])]
@@ -416,7 +418,9 @@ class ManifoldComparisonForVaryingC:
             ax12.contourf(x_mesh, y_mesh, z_mesh2, list(np.linspace(z_mesh2.min(), 0, 10)), cmap='gist_gray_r', alpha=0.5)
 
         if self.orbitType != 'horizontal':
+            ax20.set_xlabel('x [-]')
             ax21.set_xlabel('x [-]')
+            ax22.set_xlabel('x [-]')
             ax20.set_ylabel('z [-]')
             xlim = [min(ax20.get_xlim()[0], ax21.get_xlim()[0], ax22.get_xlim()[0]),
                     max(ax20.get_xlim()[1], ax21.get_xlim()[1], ax22.get_xlim()[1])]
@@ -432,7 +436,9 @@ class ManifoldComparisonForVaryingC:
             ax21.grid(True, which='both', ls=':')
             ax22.grid(True, which='both', ls=':')
 
+            ax30.set_xlabel('y [-]')
             ax31.set_xlabel('y [-]')
+            ax32.set_xlabel('y [-]')
             ax30.set_ylabel('z [-]')
             xlim = [min(ax30.get_xlim()[0], ax31.get_xlim()[0], ax32.get_xlim()[0]),
                     max(ax30.get_xlim()[1], ax31.get_xlim()[1], ax32.get_xlim()[1])]
@@ -450,9 +456,9 @@ class ManifoldComparisonForVaryingC:
 
         fig.tight_layout()
         if self.orbitType == 'horizontal':
-            fig.subplots_adjust(top=0.8)
-        else:
             fig.subplots_adjust(top=0.9)
+        else:
+            fig.subplots_adjust(top=0.95)
 
         plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle +
                      ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial comparison', size=self.suptitleSize)

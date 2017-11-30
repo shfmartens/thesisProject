@@ -1080,7 +1080,7 @@ class DisplayPeriodicityValidation:
                            label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', s=scatter_size,
                            marker='v')
 
-        arr[1].set_ylabel('$|x^i_n - (1-\mu)|, \; |y^i_n| [-]$')  #  \; \\forall i =0, 1, \ldots m \in \mathcal{W}
+        arr[1].set_ylabel('$|x^i_n - (1-\mu)|, \; |y^i_n|$ [-]')  #  \; \\forall i =0, 1, \ldots m \in \mathcal{W}
         arr[1].set_yscale("log")
         arr[1].legend(frameon=True, loc='upper right')
         arr[1].set_xlim([0, 1])
@@ -1122,23 +1122,20 @@ class DisplayPeriodicityValidation:
     def plot_jacobi_validation(self):
         f, arr = plt.subplots(3, 2, figsize=self.figSize)
 
-        linewidth = 1
-        scatter_size = 10
         highlight_alpha = 0.2
         ylim = [1e-16, 1e-9]
-        legend_loc = 'lower left'
         t_min = 0
         step_size = 0.05
 
-        arr[0, 0].semilogy(self.phase, self.C_diff_start_W_S_plus, linewidth=linewidth, c=self.plottingColors['W_S_plus'],
+        arr[0, 0].semilogy(self.phase, self.C_diff_start_W_S_plus, c=self.plottingColors['W_S_plus'],
                         label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{S+}$')
-        arr[0, 0].semilogy(self.phase, self.C_diff_start_W_S_min, linewidth=linewidth, c=self.plottingColors['W_S_min'],
+        arr[0, 0].semilogy(self.phase, self.C_diff_start_W_S_min, c=self.plottingColors['W_S_min'],
                         label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
-        arr[0, 0].semilogy(self.phase, self.C_diff_start_W_U_plus, linewidth=linewidth, c=self.plottingColors['W_U_plus'],
+        arr[0, 0].semilogy(self.phase, self.C_diff_start_W_U_plus, c=self.plottingColors['W_U_plus'],
                         label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{U+}$')
-        arr[0, 0].semilogy(self.phase, self.C_diff_start_W_U_min, linewidth=linewidth, c=self.plottingColors['W_U_min'],
+        arr[0, 0].semilogy(self.phase, self.C_diff_start_W_U_min, c=self.plottingColors['W_U_min'],
                         label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
-        arr[0, 0].legend(frameon=True, loc='upper right')
+        # arr[0, 0].legend(frameon=True, loc='upper right')
 
         arr[0, 0].set_xlim([0, 1])
         arr[0, 0].set_xlabel('$\\tau$ [-]')
@@ -1184,8 +1181,8 @@ class DisplayPeriodicityValidation:
             arr[0, 1].semilogy(w_u_min_dx[w_u_min_dx['dx'] < 1e-10], c=self.plottingColors['W_U_min'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
-        arr[0, 1].set_ylabel('$|x^i_{t_f} - (1-\mu)|, \; |y^i_{t_f}| [-]$')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
-        arr[0, 1].legend(frameon=True, loc='upper right')
+        arr[0, 1].set_ylabel('$|x^i_{t_f} - (1-\mu)|, \; |y^i_{t_f}|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
+        arr[0, 1].legend(frameon=True, loc='center left',  bbox_to_anchor=(1, 0.5))
         arr[0, 1].set_xlim([0, 1])
         arr[0, 1].set_xlabel('$\\tau$ [-]')
         arr[0, 1].set_ylim(ylim)
@@ -1286,70 +1283,72 @@ class DisplayPeriodicityValidation:
                                y1=y1,
                                y2=y2, where=y1 >= y2,
                                facecolor=self.plottingColors['W_S_plus'], interpolate=True, alpha=highlight_alpha)
-        arr[1, 0].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3*w_s_plus_df.std(axis=1).fillna(method='ffill'), label='$\\bar{\Delta J} \pm 3\sigma$', color=self.plottingColors['W_S_plus'], linestyle=':')
-        arr[1, 0].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill'), label='$\\bar{\Delta J}$', color=self.plottingColors['W_S_plus'])
-        arr[1, 0].legend(frameon=True, loc=legend_loc)
+        l1, = arr[1, 0].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3*w_s_plus_df.std(axis=1).fillna(method='ffill'), label='$\Delta \\bar{C}_t^{S+} \pm 3\sigma_t^{S+} $', color=self.plottingColors['W_S_plus'], linestyle=':')
+        l2, = arr[1, 0].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{C}_t^{S+}$', color=self.plottingColors['W_S_plus'])
         arr[1, 0].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3*w_s_plus_df.std(axis=1).fillna(method='ffill'), color=self.plottingColors['W_S_plus'], linestyle=':')
         arr[1, 0].set_ylabel('$C(\mathbf{X^i_t}) - C(\mathbf{X^i_0})$ [-]')
-        arr[1, 0].set_title('Energy deviation along the manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
-        # arr[1, 0].set_yscale('symlog')
+        arr[1, 0].set_title('Energy deviation on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
+
 
         # Plot W^S-
         arr[1, 1].fill_between(w_s_min_df.mean(axis=1).index,
                                y1=w_s_min_df.mean(axis=1).fillna(method='ffill') + 3*w_s_min_df.std(axis=1),
                                y2=w_s_min_df.mean(axis=1).fillna(method='ffill') - 3*w_s_min_df.std(axis=1),
                                facecolor=self.plottingColors['W_S_min'], interpolate=True, alpha=highlight_alpha)
-        arr[1, 1].plot(w_s_min_df.mean(axis=1).fillna(method='ffill') + 3*w_s_min_df.std(axis=1).fillna(method='ffill'), label='$\\bar{\Delta J} \pm 3\sigma$', color=self.plottingColors['W_S_min'], linestyle=':')
-        arr[1, 1].plot(w_s_min_df.mean(axis=1).fillna(method='ffill'), label='$\\bar{\Delta J}$', color=self.plottingColors['W_S_min'])
-        arr[1, 1].legend(frameon=True, loc=legend_loc)
+        l3, = arr[1, 1].plot(w_s_min_df.mean(axis=1).fillna(method='ffill') + 3*w_s_min_df.std(axis=1).fillna(method='ffill'), label='$\Delta \\bar{C}_t^{S-} \pm 3\sigma_t^{S-}$', color=self.plottingColors['W_S_min'], linestyle=':')
+        l4, = arr[1, 1].plot(w_s_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{C}_t^{S-}$', color=self.plottingColors['W_S_min'])
+        arr[1, 1].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l1, l2, l3, l4])
         arr[1, 1].plot(w_s_min_df.mean(axis=1).fillna(method='ffill') - 3*w_s_min_df.std(axis=1).fillna(method='ffill'), color=self.plottingColors['W_S_min'], linestyle=':')
         arr[1, 1].set_ylabel('$C(\mathbf{X^i_t}) - C(\mathbf{X^i_0})$ [-]')
-        arr[1, 1].set_xlabel('$|t| [-] $')
-        arr[1, 1].set_title('Energy deviation along the manifold ($\\forall i \in \mathcal{W}^{S-}$)', loc='right')
-        # arr[1, 1].set_yscale('symlog')
+
+        arr[1, 1].set_title('Energy deviation on manifold ($\\forall i \in \mathcal{W}^{S-}$)', loc='right')
+
 
         # Plot W^U+
         arr[2, 0].fill_between(w_u_plus_df.mean(axis=1).index,
                                y1=w_u_plus_df.mean(axis=1).fillna(method='ffill') + 3*w_u_plus_df.std(axis=1),
                                y2=w_u_plus_df.mean(axis=1).fillna(method='ffill') - 3*w_u_plus_df.std(axis=1),
                                facecolor=self.plottingColors['W_U_plus'], interpolate=True, alpha=highlight_alpha)
-        arr[2, 0].plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') + 3*w_u_plus_df.std(axis=1).fillna(method='ffill'), label='$\\bar{\Delta J} \pm 3\sigma$', color=self.plottingColors['W_U_plus'], linestyle=':')
-        arr[2, 0].plot(w_u_plus_df.mean(axis=1).fillna(method='ffill'), label='$\\bar{\Delta J}$', color=self.plottingColors['W_U_plus'])
-        arr[2, 0].legend(frameon=True, loc=legend_loc)
+        l5, = arr[2, 0].plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') + 3*w_u_plus_df.std(axis=1).fillna(method='ffill'), label='$\Delta \\bar{C}_t^{U+} \pm 3\sigma_t^{U+}$', color=self.plottingColors['W_U_plus'], linestyle=':')
+        l6, = arr[2, 0].plot(w_u_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{C}_t^{U+}$', color=self.plottingColors['W_U_plus'])
         arr[2, 0].plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') - 3*w_u_plus_df.std(axis=1).fillna(method='ffill'), color=self.plottingColors['W_U_plus'], linestyle=':')
-        arr[2, 0].set_ylabel('$C(\mathbf{X^i_t}) - C(\mathbf{X^i_0})$ [-]')
-        arr[2, 0].set_title('Energy deviation along the manifold ($\\forall i \in \mathcal{W}^{U+}$)', loc='right')
-        # arr[2, 0].set_yscale('symlog')
+        arr[2, 0].set_ylabel('$C(\mathbf{X^i_t}) - C(\mathbf{X^i_0})$  [-]')
+        arr[2, 0].set_title('Energy deviation on manifold ($\\forall i \in \mathcal{W}^{U+}$)', loc='right')
+
 
         # Plot W^U-
         arr[2, 1].fill_between(w_u_min_df.mean(axis=1).index,
                                y1=w_u_min_df.mean(axis=1).fillna(method='ffill') + 3*w_u_min_df.std(axis=1).fillna(method='ffill'),
                                y2=w_u_min_df.mean(axis=1).fillna(method='ffill') - 3*w_u_min_df.std(axis=1).fillna(method='ffill'),
                                facecolor=self.plottingColors['W_U_min'], interpolate=True, alpha=highlight_alpha)
-        arr[2, 1].plot(w_u_min_df.mean(axis=1).fillna(method='ffill') + 3*w_u_min_df.std(axis=1).fillna(method='ffill'), label='$\\bar{\Delta J} \pm 3\sigma$', color=self.plottingColors['W_U_min'], linestyle=':')
-        arr[2, 1].plot(w_u_min_df.mean(axis=1).fillna(method='ffill'), label='$\\bar{\Delta J}$', color=self.plottingColors['W_U_min'])
-        arr[2, 1].legend(frameon=True, loc=legend_loc)
+        l7, = arr[2, 1].plot(w_u_min_df.mean(axis=1).fillna(method='ffill') + 3*w_u_min_df.std(axis=1).fillna(method='ffill'), label='$\Delta \\bar{C}_t^{U-} \pm 3\sigma_t^{U-}$', color=self.plottingColors['W_U_min'], linestyle=':')
+        l8, = arr[2, 1].plot(w_u_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{C}_t^{U-}$', color=self.plottingColors['W_U_min'])
+        arr[2, 1].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l5, l6, l7, l8])
         arr[2, 1].plot(w_u_min_df.mean(axis=1).fillna(method='ffill') - 3*w_u_min_df.std(axis=1).fillna(method='ffill'), color=self.plottingColors['W_U_min'], linestyle=':')
-        arr[2, 1].set_ylabel('$C(\mathbf{X^i_t}) - C(\mathbf{X^i_0})$ [-]')
-        arr[2, 1].set_title('Energy deviation along the manifold ($\\forall i \in \mathcal{W}^{U-}$)', loc='right')
-        arr[2, 1].set_xlabel('$|t| [-] $')
+        arr[2, 1].set_ylabel('$C(\mathbf{X^i_t}) - C(\mathbf{X^i_0})$  [-]')
+        arr[2, 1].set_title('Energy deviation on manifold ($\\forall i \in \mathcal{W}^{U-}$)', loc='right')
 
-        # for i in range(1,3):
-        #     for j in range(2):
-        #         arr[i, j].set_ylim([-6e-11, 6e-11])
-        # arr[2, 1].set_yscale('symlog')
+        arr[2, 0].set_xlabel('$|t|$ [-]')
+        arr[2, 1].set_xlabel('$|t|$  [-]')
+
+        ylim = [min(arr[1, 0].get_ylim()[0], arr[1, 1].get_ylim()[0], arr[2, 0].get_ylim()[0], arr[2, 1].get_ylim()[0]),
+                max(arr[1, 0].get_ylim()[1], arr[1, 1].get_ylim()[1], arr[2, 0].get_ylim()[1], arr[2, 1].get_ylim()[1])]
+
+        for i in range(1, 3):
+            for j in range(2):
+                arr[i, j].set_ylim(ylim)
 
         for i in range(3):
             for j in range(2):
                 arr[i, j].grid(True, which='both', ls=':')
 
         plt.tight_layout()
-        plt.subplots_adjust(top=0.9)
+        plt.subplots_adjust(top=0.9, right=0.85)
 
         plt.suptitle(
-            '$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Validation at C = ' + str(np.round(self.C, 3)),
+            '$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Jacobi verification at C = ' + str(np.round(self.C, 3)),
             size=self.suptitleSize)
-
+        # plt.show()
         plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_jacobi_validation.pdf',
                     transparent=True)
         # plt.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_periodicity.png')
@@ -1435,8 +1434,8 @@ class DisplayPeriodicityValidation:
         arr[2, 0].set_title('Jacobi energy deviation between orbit and manifold')
         arr[2, 1].set_title('Jacobi energy deviation between orbit and manifold')
 
-        arr[0, 0].set_ylabel('$x [-]$')
-        arr[1, 0].set_ylabel('$x [-]$')
+        arr[0, 0].set_ylabel('x [-]')
+        arr[1, 0].set_ylabel('x [-]')
         arr[0, 0].set_xlim([0, 1])
         arr[1, 0].set_ylim([0, 1])
         arr[1, 1].set_ylim([0, 1])
@@ -1462,8 +1461,8 @@ if __name__ == '__main__':
     orbit_types = ['horizontal', 'vertical', 'halo']
     c_levels = [3.05, 3.1, 3.15]
 
-    lagrange_points = [2]
-    orbit_types = ['horizontal']
+    # lagrange_points = [2]
+    # orbit_types = ['horizontal']
     c_levels = [3.15]
 
     orbit_ids = {'horizontal':  {1: {3.05: 808, 3.1: 577, 3.15: 330}, 2: {3.05: 1066, 3.1: 760, 3.15: 373}},
@@ -1487,6 +1486,6 @@ if __name__ == '__main__':
 
                 # display_periodicity_validation.plot_periodicity_validation()
                 display_periodicity_validation.plot_jacobi_validation()
-                display_periodicity_validation.plot_orbit_offsets()
+                # display_periodicity_validation.plot_orbit_offsets()
                 # plt.show()
                 del display_periodicity_validation

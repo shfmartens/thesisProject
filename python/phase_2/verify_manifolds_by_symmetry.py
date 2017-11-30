@@ -201,8 +201,10 @@ class VerifyManifoldsBySymmetry:
 
         fig.tight_layout()
         fig.subplots_adjust(top=0.8)
-
-        fig.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathbf{X_i} \pm \epsilon \\frac{\mathbf{v}^S_i}{|\mathbf{v}^S_i|}, \mathbf{X_i} \pm \epsilon \\frac{\mathbf{v}^U_i}{|\mathbf{v}^U_i|} \}$ - Spatial overview', size=self.suptitleSize)
+        fig.suptitle('$L_' + str(
+            self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' - Orientation of (un)stable modes at C = ' + str(self.cLevel),
+                     size=self.suptitleSize)
+        # fig.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathbf{X_i} \pm \epsilon \\frac{\mathbf{v}^S_i}{|\mathbf{v}^S_i|}, \mathbf{X_i} \pm \epsilon \\frac{\mathbf{v}^U_i}{|\mathbf{v}^U_i|} \}$ - Spatial overview', size=self.suptitleSize)
         plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_eigenvector.pdf',
                     transparent=True)
         plt.close()
@@ -463,9 +465,200 @@ class VerifyManifoldsBySymmetry:
                         frameon=True, bbox_to_anchor=(1.1, 0.2))
 
         plt.suptitle('$L_' + str(
-            self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Symmetry validation',
+            self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Symmetry validation at C = ' + str(self.cLevel),
                      size=self.suptitleSize)
         plt.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
+        plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_phase_difference.pdf',
+                    transparent=True)
+        plt.close()
+        pass
+
+    def show_phase_difference_refactored(self):
+        n = self.numberOfOrbitsPerManifold
+
+        dt_min = []
+        dx_min = []
+        dy_min = []
+        dz_min = []
+        dxdot_min = []
+        dydot_min = []
+        dzdot_min = []
+
+        dt_plus = []
+        dx_plus = []
+        dy_plus = []
+        dz_plus = []
+        dxdot_plus = []
+        dydot_plus = []
+        dzdot_plus = []
+
+        dt_min_0 = []
+        dx_min_0 = []
+        dy_min_0 = []
+        dz_min_0 = []
+        dxdot_min_0 = []
+        dydot_min_0 = []
+        dzdot_min_0 = []
+
+        dt_plus_0 = []
+        dx_plus_0 = []
+        dy_plus_0 = []
+        dz_plus_0 = []
+        dxdot_plus_0 = []
+        dydot_plus_0 = []
+        dzdot_plus_0 = []
+
+        min_intersect = False
+        plus_intersect = False
+
+        for i in range(n):
+            # Compute deviation at start of manifold
+            dt_min_0.append(self.W_S_min.xs(i).tail(1).index.get_values()[0] + self.W_U_min.xs((n - i) % n).head(1).index.get_values()[0])
+            dx_min_0.append(self.W_S_min.xs(i).tail(1)['x'].get_values()[0] - self.W_U_min.xs((n - i) % n).head(1)['x'].get_values()[0])
+            dy_min_0.append(self.W_S_min.xs(i).tail(1)['y'].get_values()[0] + self.W_U_min.xs((n - i) % n).head(1)['y'].get_values()[0])
+            dz_min_0.append(self.W_S_min.xs(i).tail(1)['z'].get_values()[0] - self.W_U_min.xs((n - i) % n).head(1)['z'].get_values()[0])
+            dxdot_min_0.append(self.W_S_min.xs(i).tail(1)['xdot'].get_values()[0] + self.W_U_min.xs((n - i) % n).head(1)['xdot'].get_values()[0])
+            dydot_min_0.append(self.W_S_min.xs(i).tail(1)['ydot'].get_values()[0] - self.W_U_min.xs((n - i) % n).head(1)['ydot'].get_values()[0])
+            dzdot_min_0.append(self.W_S_min.xs(i).tail(1)['zdot'].get_values()[0] + self.W_U_min.xs((n - i) % n).head(1)['zdot'].get_values()[0])
+
+            # Check whether the full trajectory has been integrated (not stopped due to exceeding Jacobi deviation)
+            if self.lagrangePointNr == 2 and ((abs(self.W_S_min.xs(i).head(1)['x'].get_values()[0] - (1 - self.massParameter)) > 1E-11) or (abs(self.W_U_min.xs((n - i) % n).tail(1)['x'].get_values()[0] - (1 - self.massParameter)) > 1E-11)):
+                min_intersect = True
+                dt_min.append(np.nan)
+                dx_min.append(np.nan)
+                dy_min.append(np.nan)
+                dz_min.append(np.nan)
+                dxdot_min.append(np.nan)
+                dydot_min.append(np.nan)
+                dzdot_min.append(np.nan)
+                print('min')
+                continue
+            dt_min.append(self.W_S_min.xs(i).head(1).index.get_values()[0] + self.W_U_min.xs((n - i) % n).tail(1).index.get_values()[0])
+            dx_min.append(self.W_S_min.xs(i).head(1)['x'].get_values()[0] - self.W_U_min.xs((n - i) % n).tail(1)['x'].get_values()[0])
+            dy_min.append(self.W_S_min.xs(i).head(1)['y'].get_values()[0] + self.W_U_min.xs((n - i) % n).tail(1)['y'].get_values()[0])
+            dz_min.append(self.W_S_min.xs(i).head(1)['z'].get_values()[0] - self.W_U_min.xs((n - i) % n).tail(1)['z'].get_values()[0])
+            dxdot_min.append(self.W_S_min.xs(i).head(1)['xdot'].get_values()[0] + self.W_U_min.xs((n - i) % n).tail(1)['xdot'].get_values()[0])
+            dydot_min.append(self.W_S_min.xs(i).head(1)['ydot'].get_values()[0] - self.W_U_min.xs((n - i) % n).tail(1)['ydot'].get_values()[0])
+            dzdot_min.append(self.W_S_min.xs(i).head(1)['zdot'].get_values()[0] + self.W_U_min.xs((n - i) % n).tail(1)['zdot'].get_values()[0])
+            pass
+
+        for i in range(n):
+            # Compute deviation at start of manifold
+            dt_plus_0.append(self.W_S_plus.xs(i).tail(1).index.get_values()[0] + self.W_U_plus.xs((n - i) % n).head(1).index.get_values()[0])
+            dx_plus_0.append(self.W_S_plus.xs(i).tail(1)['x'].get_values()[0] - self.W_U_plus.xs((n - i) % n).head(1)['x'].get_values()[0])
+            dy_plus_0.append(self.W_S_plus.xs(i).tail(1)['y'].get_values()[0] + self.W_U_plus.xs((n - i) % n).head(1)['y'].get_values()[0])
+            dz_plus_0.append(self.W_S_plus.xs(i).tail(1)['z'].get_values()[0] - self.W_U_plus.xs((n - i) % n).head(1)['z'].get_values()[0])
+            dxdot_plus_0.append(self.W_S_plus.xs(i).tail(1)['xdot'].get_values()[0] + self.W_U_plus.xs((n - i) % n).head(1)['xdot'].get_values()[0])
+            dydot_plus_0.append(self.W_S_plus.xs(i).tail(1)['ydot'].get_values()[0] - self.W_U_plus.xs((n - i) % n).head(1)['ydot'].get_values()[0])
+            dzdot_plus_0.append(self.W_S_plus.xs(i).tail(1)['zdot'].get_values()[0] + self.W_U_plus.xs((n - i) % n).head(1)['zdot'].get_values()[0])
+
+            # Check whether the full trajectory has been integrated (not stopped due to exceeding Jacobi deviation)
+            if self.lagrangePointNr == 1 and ((abs(self.W_S_plus.xs(i).head(1)['x'].get_values()[0] - (1 - self.massParameter)) > 1E-11) or (abs(self.W_U_plus.xs((n - i) % n).tail(1)['x'].get_values()[0] - (1 - self.massParameter)) > 1E-11)):
+                plus_intersect = True
+                dt_plus.append(np.nan)
+                dx_plus.append(np.nan)
+                dy_plus.append(np.nan)
+                dz_plus.append(np.nan)
+                dxdot_plus.append(np.nan)
+                dydot_plus.append(np.nan)
+                dzdot_plus.append(np.nan)
+                print('plus')
+                continue
+
+            dt_plus.append(self.W_S_plus.xs(i).head(1).index.get_values()[0] + self.W_U_plus.xs((n - i) % n).tail(1).index.get_values()[0])
+            dx_plus.append(self.W_S_plus.xs(i).head(1)['x'].get_values()[0] - self.W_U_plus.xs((n - i) % n).tail(1)['x'].get_values()[0])
+            dy_plus.append(self.W_S_plus.xs(i).head(1)['y'].get_values()[0] + self.W_U_plus.xs((n - i) % n).tail(1)['y'].get_values()[0])
+            dz_plus.append(self.W_S_plus.xs(i).head(1)['z'].get_values()[0] - self.W_U_plus.xs((n - i) % n).tail(1)['z'].get_values()[0])
+            dxdot_plus.append(self.W_S_plus.xs(i).head(1)['xdot'].get_values()[0] + self.W_U_plus.xs((n - i) % n).tail(1)['xdot'].get_values()[0])
+            dydot_plus.append(self.W_S_plus.xs(i).head(1)['ydot'].get_values()[0] - self.W_U_plus.xs((n - i) % n).tail(1)['ydot'].get_values()[0])
+            dzdot_plus.append(self.W_S_plus.xs(i).head(1)['zdot'].get_values()[0] + self.W_U_plus.xs((n - i) % n).tail(1)['zdot'].get_values()[0])
+            pass
+
+        deviation_w_min = pd.DataFrame({'dt': dt_min, 'dx': dx_min, 'dy': dy_min, 'dz': dz_min, 'dxdot': dxdot_min, 'dydot': dydot_min, 'dzdot': dzdot_min})
+        deviation_w_min_0 = pd.DataFrame({'dt': dt_min_0, 'dx': dx_min_0, 'dy': dy_min_0, 'dz': dz_min_0, 'dxdot': dxdot_min_0, 'dydot': dydot_min_0, 'dzdot': dzdot_min_0})
+        deviation_w_plus = pd.DataFrame({'dt': dt_plus, 'dx': dx_plus, 'dy': dy_plus, 'dz': dz_plus, 'dxdot': dxdot_plus, 'dydot': dydot_plus,'dzdot': dzdot_plus})
+        deviation_w_plus_0 = pd.DataFrame({'dt': dt_plus_0, 'dx': dx_plus_0, 'dy': dy_plus_0, 'dz': dz_plus_0, 'dxdot': dxdot_plus_0, 'dydot': dydot_plus_0, 'dzdot': dzdot_plus_0})
+
+        fig2, axarr = plt.subplots(2, 2, figsize=self.figSize, sharex=True)
+        tau = [i/self.numberOfOrbitsPerManifold for i in range(self.numberOfOrbitsPerManifold)]
+        l0, = axarr[0, 1].plot(tau, deviation_w_min['dt'], c=self.plottingColors['limit'])
+        l1, = axarr[0, 1].plot(tau, deviation_w_min['dx'], c=self.plottingColors['tripleLine'][0])
+        l2, = axarr[0, 1].plot(tau, deviation_w_min['dy'], c=self.plottingColors['tripleLine'][1])
+        l3, = axarr[0, 1].plot(tau, deviation_w_min['dz'], c=self.plottingColors['tripleLine'][2])
+        l4, = axarr[0, 1].plot(tau, deviation_w_min['dxdot'], c=self.plottingColors['tripleLine'][0], linestyle=':')
+        l5, = axarr[0, 1].plot(tau, deviation_w_min['dydot'], c=self.plottingColors['tripleLine'][1], linestyle=':')
+        l6, = axarr[0, 1].plot(tau, deviation_w_min['dzdot'], c=self.plottingColors['tripleLine'][2], linestyle=':')
+
+        axarr[1, 1].plot(tau, deviation_w_min_0['dt'], c=self.plottingColors['limit'])
+        axarr[1, 1].plot(tau, deviation_w_min_0['dx'], c=self.plottingColors['tripleLine'][0])
+        axarr[1, 1].plot(tau, deviation_w_min_0['dy'], c=self.plottingColors['tripleLine'][1])
+        axarr[1, 1].plot(tau, deviation_w_min_0['dz'], c=self.plottingColors['tripleLine'][2])
+        axarr[1, 1].plot(tau, deviation_w_min_0['dxdot'], c=self.plottingColors['tripleLine'][0], linestyle=':')
+        axarr[1, 1].plot(tau, deviation_w_min_0['dydot'], c=self.plottingColors['tripleLine'][1], linestyle=':')
+        axarr[1, 1].plot(tau, deviation_w_min_0['dzdot'], c=self.plottingColors['tripleLine'][2], linestyle=':')
+
+        axarr[0, 0].plot(tau, deviation_w_plus['dt'], c=self.plottingColors['limit'])
+        axarr[0, 0].plot(tau, deviation_w_plus['dx'], c=self.plottingColors['tripleLine'][0])
+        axarr[0, 0].plot(tau, deviation_w_plus['dy'], c=self.plottingColors['tripleLine'][1])
+        axarr[0, 0].plot(tau, deviation_w_plus['dz'], c=self.plottingColors['tripleLine'][2])
+        axarr[0, 0].plot(tau, deviation_w_plus['dxdot'], c=self.plottingColors['tripleLine'][0], linestyle=':')
+        axarr[0, 0].plot(tau, deviation_w_plus['dydot'], c=self.plottingColors['tripleLine'][1], linestyle=':')
+        axarr[0, 0].plot(tau, deviation_w_plus['dzdot'], c=self.plottingColors['tripleLine'][2], linestyle=':')
+
+        axarr[1, 0].plot(tau, deviation_w_plus_0['dt'], c=self.plottingColors['limit'])
+        axarr[1, 0].plot(tau, deviation_w_plus_0['dx'], c=self.plottingColors['tripleLine'][0])
+        axarr[1, 0].plot(tau, deviation_w_plus_0['dy'], c=self.plottingColors['tripleLine'][1])
+        axarr[1, 0].plot(tau, deviation_w_plus_0['dz'], c=self.plottingColors['tripleLine'][2])
+        axarr[1, 0].plot(tau, deviation_w_plus_0['dxdot'], c=self.plottingColors['tripleLine'][0], linestyle=':')
+        axarr[1, 0].plot(tau, deviation_w_plus_0['dydot'], c=self.plottingColors['tripleLine'][1], linestyle=':')
+        axarr[1, 0].plot(tau, deviation_w_plus_0['dzdot'], c=self.plottingColors['tripleLine'][2], linestyle=':')
+
+        if self.lagrangePointNr == 1:
+            axarr[0, 1].set_title('$\mathcal{W}^{S -} \cap \mathcal{W}^{U -}$ (at $U_1$)')
+            axarr[0, 0].set_title('$\mathcal{W}^{S +} \cap \mathcal{W}^{U +}$ (at $U_2, U_3$)')
+            axarr[1, 1].set_title('$\mathcal{W}^{S -} \cap \mathcal{W}^{U -}$ (near $L_1$)')
+            axarr[1, 0].set_title('$\mathcal{W}^{S +} \cap \mathcal{W}^{U +}$ (near $L_1$)')
+        else:
+            axarr[0, 1].set_title('$\mathcal{W}^{S -} \cap \mathcal{W}^{U -}$ (at $U_2, U_3$)')
+            axarr[0, 0].set_title('$\mathcal{W}^{S +} \cap \mathcal{W}^{U +}$ (at $U_4$)')
+            axarr[1, 1].set_title('$\mathcal{W}^{S -} \cap \mathcal{W}^{U -}$ (near $L_2$)')
+            axarr[1, 0].set_title('$\mathcal{W}^{S +} \cap \mathcal{W}^{U +}$ (near $L_2$)')
+
+        ylim = [min(axarr[0, 0].get_ylim()[0], axarr[0, 1].get_ylim()[0], axarr[1, 0].get_ylim()[0], axarr[1, 1].get_ylim()[0]),
+                max(axarr[0, 0].get_ylim()[1], axarr[0, 1].get_ylim()[1], axarr[1, 0].get_ylim()[1], axarr[1, 1].get_ylim()[1])]
+
+        axarr[0, 0].set_xlim([0, 1])
+        y_formatter = matplotlib.ticker.ScalarFormatter(useOffset=True)
+        for i in range(2):
+            axarr[1, i].set_xlabel('$\\tau_s$ [-]')
+            for j in range(2):
+                axarr[i, j].grid(True, which='both', ls=':')
+                axarr[i, j].yaxis.set_major_formatter(y_formatter)
+                if min_intersect:
+                    axarr[i, j].set_ylim(axarr[0, 0].get_ylim()[0], axarr[0, 0].get_ylim()[1])
+                elif plus_intersect:
+                    axarr[i, j].set_ylim(axarr[0, 1].get_ylim()[0], axarr[0, 1].get_ylim()[1])
+                else:
+                    axarr[i, j].set_ylim(ylim)
+
+        axarr[0, 1].set_ylabel('$\\bar{\mathbf{X}}^{S-} (t_{s0}) - \\bar{\mathbf{X}}^{U-} (t_{uf}) \quad \\forall \quad \\tau_u = 1 - \\tau_s$ [-]')
+        axarr[0, 0].set_ylabel('$\\bar{\mathbf{X}}^{S+} (t_{s0}) - \\bar{\mathbf{X}}^{U+} (t_{uf}) \quad \\forall \quad \\tau_u = 1 - \\tau_s$ [-]')
+        axarr[1, 1].set_ylabel('$\\bar{\mathbf{X}}^{S-} (t_{sf}) - \\bar{\mathbf{X}}^{U-} (t_{u0}) \quad \\forall \quad \\tau_u = 1 - \\tau_s$ [-]')
+        axarr[1, 0].set_ylabel('$\\bar{\mathbf{X}}^{S+} (t_{sf}) - \\bar{\mathbf{X}}^{U+} (t_{u0}) \quad \\forall \quad \\tau_u = 1 - \\tau_s$ [-]')
+
+        fig2.tight_layout()
+        fig2.subplots_adjust(top=0.9, right=0.9)
+        axarr[0, 1].legend(handles=(l0, l1, l2, l3, l4, l5, l6),
+                           labels=(
+                               '$\delta t$', '$\delta x$', '$\delta y$', '$\delta z$', '$\delta \dot{x}$', '$\delta \dot{y}$',
+                               '$\delta \dot{z}$'),
+                           frameon=True, loc='center left', bbox_to_anchor=(1, 0))
+
+        plt.suptitle('$L_' + str(
+            self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Symmetry validation at C = ' + str(self.cLevel),
+                     size=self.suptitleSize)
+        plt.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
+        # plt.show()
         plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_phase_difference.pdf',
                     transparent=True)
         plt.close()
@@ -477,12 +670,11 @@ if __name__ == '__main__':
                  'vertical': {1: {3.05: 1664, 3.10: 1159, 3.15: 600}, 2: {3.05: 1878, 3.10: 1275, 3.15: 513}},
                  'halo': {1: {3.05: 1235, 3.10: 836, 3.15: 358}, 2: {3.05: 1093, 3.10: 651, 3.15: 0}}}
 
+    c_levels = [3.05, 3.1, 3.15]
     lagrange_points = [1, 2]
     orbit_types = ['horizontal', 'vertical', 'halo']
     c_levels = [3.15]
 
-    # lagrange_points = [2]
-    # orbit_types = ['horizontal']
     for orbit_type in orbit_types:
         print(orbit_type)
         for lagrange_point in lagrange_points:
@@ -490,8 +682,9 @@ if __name__ == '__main__':
             for c_level in c_levels:
                 print(c_level)
                 verify_manifolds_by_symmetry = VerifyManifoldsBySymmetry(orbit_type, lagrange_point, orbit_ids[orbit_type][lagrange_point][c_level], c_level)
-                verify_manifolds_by_symmetry.plot_manifolds()
-                verify_manifolds_by_symmetry.plot_eigenvectors()
-                verify_manifolds_by_symmetry.plot_eigenvectors_zoom()
-                verify_manifolds_by_symmetry.show_phase_difference()
+                # verify_manifolds_by_symmetry.plot_manifolds()
+                # verify_manifolds_by_symmetry.plot_eigenvectors()
+                # verify_manifolds_by_symmetry.plot_eigenvectors_zoom()
+                # verify_manifolds_by_symmetry.show_phase_difference()
+                verify_manifolds_by_symmetry.show_phase_difference_refactored()
                 # plt.show()

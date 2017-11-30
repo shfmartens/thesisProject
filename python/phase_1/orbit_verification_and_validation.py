@@ -754,7 +754,7 @@ class DisplayPeriodicityValidation:
         arr[0, 1].semilogy(self.x, d, c=self.plottingColors['singleLine'], linewidth=1)
         arr[0, 1].set_xlim(self.xlim)
         arr[0, 1].set_ylim([1e-14, 1e-6])
-        arr[0, 1].set_ylabel('Error $| 1 - Det(M) |$')
+        arr[0, 1].set_ylabel('Error $| 1 - Det(M) |$ [-]')
 
         l3zoom = [abs(entry-1) for entry in l3]
         l4zoom = [abs(entry - 1) for entry in l4]
@@ -763,8 +763,10 @@ class DisplayPeriodicityValidation:
         arr[1, 1].semilogy(self.xlim, [1e-3, 1e-3], '--', c=self.plottingColors['limit'], linewidth=1)
         arr[1, 1].set_xlim(self.xlim)
         # arr[1, 1].set_ylim([0, 1.5e-3])
-        arr[1, 1].set_ylabel(' $|  | \lambda_i|-1  |  \\forall i=3,4$')
-        arr[1, 1].set_xlabel('x-axis [-]')
+        arr[1, 1].set_ylabel(' $|  | \lambda_i|-1  | \enskip \\forall \enskip i = 3, 4 $ [-]')
+
+        arr[1, 0].set_xlabel('x [-]')
+        arr[1, 1].set_xlabel('x [-]')
 
         for i in range(2):
             for j in range(2):
@@ -789,15 +791,15 @@ class DisplayPeriodicityValidation:
         arr[0, 0].set_xlim([0, 3000])
         arr[0, 0].set_ylim([-1000, 1000])
         arr[0, 0].set_title('$\lambda_1, 1/\lambda_1$')
-        arr[0, 0].set_xlabel('Re')
-        arr[0, 0].set_ylabel('Im')
+        arr[0, 0].set_xlabel('Re [-]')
+        arr[0, 0].set_ylabel('Im [-]')
 
         arr[0, 1].scatter(np.real(self.lambda2), np.imag(self.lambda2), c=self.plottingColors['lambda2'], s=size)
         arr[0, 1].scatter(np.real(self.lambda5), np.imag(self.lambda5), c=self.plottingColors['lambda5'], s=size)
         arr[0, 1].set_xlim([-8, 2])
         arr[0, 1].set_ylim([-4, 4])
         arr[0, 1].set_title('$\lambda_2, 1/\lambda_2$')
-        arr[0, 1].set_xlabel('Re')
+        arr[0, 1].set_xlabel('Re [-]')
         arr[0, 1].add_artist(unit_circle_1)
 
         arr[0, 2].scatter(np.real(self.lambda3), np.imag(self.lambda3), c=self.plottingColors['lambda3'], s=size)
@@ -805,7 +807,7 @@ class DisplayPeriodicityValidation:
         arr[0, 2].set_xlim([-1.5, 1.5])
         arr[0, 2].set_ylim([-1, 1])
         arr[0, 2].set_title('$\lambda_3, 1/\lambda_3$')
-        arr[0, 2].set_xlabel('Re')
+        arr[0, 2].set_xlabel('Re [-]')
         arr[0, 2].add_artist(unit_circle_2)
 
         arr[1, 0].scatter(self.x, np.angle(self.lambda1, deg=True), c=self.plottingColors['lambda1'], s=size)
@@ -828,7 +830,7 @@ class DisplayPeriodicityValidation:
         arr[2, 0].axhline(1, c=self.plottingColors['limit'], linewidth=1, linestyle='--')
         arr[2, 0].set_xlim(self.xlim)
         arr[2, 0].set_ylim([1e-1, 1e4])
-        arr[2, 0].set_ylabel('Value index [-]')
+        arr[2, 0].set_ylabel('Stability index [-]')
         arr[2, 0].set_title('$v_1$')
 
         arr[2, 1].semilogy(self.x, self.v2, c=self.plottingColors['lambda5'])
@@ -836,7 +838,10 @@ class DisplayPeriodicityValidation:
         arr[2, 1].set_xlim(self.xlim)
         arr[2, 1].set_ylim([1e-1, 1e1])
         arr[2, 1].set_title('$v_2$')
-        arr[2, 1].set_xlabel('x-axis [-]')
+
+        arr[2, 0].set_xlabel('x [-]')
+        arr[2, 1].set_xlabel('x [-]')
+        arr[2, 2].set_xlabel('x [-]')
 
         arr[2, 2].semilogy(self.x, self.v3, c=self.plottingColors['lambda4'])
         arr[2, 2].axhline(1, c=self.plottingColors['limit'], linewidth=1, linestyle='--')
@@ -850,7 +855,7 @@ class DisplayPeriodicityValidation:
 
         plt.tight_layout()
         plt.subplots_adjust(top=0.9)
-        plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' - Eigenvalues $\lambda_i$ \& stability index $v_i$', size=self.suptitleSize)
+        plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' - Eigenvalues $\lambda_i$ \& stability indices $v_i$', size=self.suptitleSize)
         plt.savefig('../../data/figures/orbits/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_stability.pdf',
                     transparent=True)
         # plt.show()
@@ -926,6 +931,11 @@ class DisplayPeriodicityValidation:
         arr[2, 0].set_ylim(ylim)
         arr[2, 0].set_title('Time deviation at half-period')
 
+        arr[0, 0].set_ylabel('$\Delta \mathbf{r}$ [-]')
+        arr[1, 0].set_ylabel('$\Delta \mathbf{V}$ [-]')
+        arr[2, 0].set_ylabel('$\Delta t$ [-]')
+        arr[2, 0].set_xlabel('x [-]')
+        arr[2, 1].set_xlabel('x [-]')
         for i in range(3):
             for j in range(2):
                 arr[i, j].grid(True, which='both', ls=':')
@@ -943,14 +953,14 @@ class DisplayPeriodicityValidation:
 
 if __name__ == '__main__':
     orbit_types = ['horizontal', 'vertical', 'halo', 'axial']
-    orbit_types = ['vertical']
+    # orbit_types = ['vertical']
     lagrange_points = [1, 2]
 
     for orbit_type in orbit_types:
         for lagrange_point in lagrange_points:
             display_periodicity_validation = DisplayPeriodicityValidation(orbit_type, lagrange_point)
-            display_periodicity_validation.plot_family()
-            display_periodicity_validation.plot_orbital_energy()
+            # display_periodicity_validation.plot_family()
+            # display_periodicity_validation.plot_orbital_energy()
             display_periodicity_validation.plot_monodromy_analysis()
             display_periodicity_validation.plot_stability()
             display_periodicity_validation.plot_periodicity_validation()
