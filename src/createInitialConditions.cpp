@@ -16,8 +16,9 @@
 #include "propagateOrbit.h"
 #include "richardsonThirdOrderApproximation.h"
 
+
 void appendResultsVector(const double jacobiEnergy, const double orbitalPeriod, const Eigen::VectorXd& initialStateVector,
-        const Eigen::VectorXd& stateVectorInclSTM, std::vector< Eigen::VectorXd >& initialConditions )
+        const Eigen::MatrixXd& stateVectorInclSTM, std::vector< Eigen::VectorXd >& initialConditions )
 {
     Eigen::VectorXd tempInitialCondition = Eigen::VectorXd( 44 );
 
@@ -31,9 +32,47 @@ void appendResultsVector(const double jacobiEnergy, const double orbitalPeriod, 
     }
 
     // Add Monodromy matrix
-    for (int i = 6; i <= 41; i++){
-        tempInitialCondition( i + 2 ) = stateVectorInclSTM(i);
-    }
+    tempInitialCondition( 8 ) = stateVectorInclSTM(0, 1);
+    tempInitialCondition( 9 ) = stateVectorInclSTM(0, 2);
+    tempInitialCondition( 10 ) = stateVectorInclSTM(0, 3);
+    tempInitialCondition( 11 ) = stateVectorInclSTM(0, 4);
+    tempInitialCondition( 12 ) = stateVectorInclSTM(0, 5);
+    tempInitialCondition( 13 ) = stateVectorInclSTM(0, 6);
+
+    tempInitialCondition( 14 ) = stateVectorInclSTM(1, 1);
+    tempInitialCondition( 15 ) = stateVectorInclSTM(1, 2);
+    tempInitialCondition( 16 ) = stateVectorInclSTM(1, 3);
+    tempInitialCondition( 17 ) = stateVectorInclSTM(1, 4);
+    tempInitialCondition( 18 ) = stateVectorInclSTM(1, 5);
+    tempInitialCondition( 19 ) = stateVectorInclSTM(1, 6);
+
+    tempInitialCondition( 20 ) = stateVectorInclSTM(2, 1);
+    tempInitialCondition( 21 ) = stateVectorInclSTM(2, 2);
+    tempInitialCondition( 22 ) = stateVectorInclSTM(2, 3);
+    tempInitialCondition( 23 ) = stateVectorInclSTM(2, 4);
+    tempInitialCondition( 24 ) = stateVectorInclSTM(2, 5);
+    tempInitialCondition( 25 ) = stateVectorInclSTM(2, 6);
+
+    tempInitialCondition( 26 ) = stateVectorInclSTM(3, 1);
+    tempInitialCondition( 27 ) = stateVectorInclSTM(3, 2);
+    tempInitialCondition( 28 ) = stateVectorInclSTM(3, 3);
+    tempInitialCondition( 29 ) = stateVectorInclSTM(3, 4);
+    tempInitialCondition( 30 ) = stateVectorInclSTM(3, 5);
+    tempInitialCondition( 31 ) = stateVectorInclSTM(3, 6);
+
+    tempInitialCondition( 32 ) = stateVectorInclSTM(4, 1);
+    tempInitialCondition( 33 ) = stateVectorInclSTM(4, 2);
+    tempInitialCondition( 34 ) = stateVectorInclSTM(4, 3);
+    tempInitialCondition( 35 ) = stateVectorInclSTM(4, 4);
+    tempInitialCondition( 36 ) = stateVectorInclSTM(4, 5);
+    tempInitialCondition( 37 ) = stateVectorInclSTM(4, 6);
+
+    tempInitialCondition( 38 ) = stateVectorInclSTM(5, 1);
+    tempInitialCondition( 39 ) = stateVectorInclSTM(5, 2);
+    tempInitialCondition( 40 ) = stateVectorInclSTM(5, 3);
+    tempInitialCondition( 41 ) = stateVectorInclSTM(5, 4);
+    tempInitialCondition( 42 ) = stateVectorInclSTM(5, 5);
+    tempInitialCondition( 43 ) = stateVectorInclSTM(5, 6);
 
     initialConditions.push_back(tempInitialCondition);
 }
@@ -198,28 +237,28 @@ void writeFinalResultsToFiles( const int librationPointNr, const std::string orb
     for (unsigned int i=0; i<initialConditions.size(); i++) {
 
         textFileInitialConditions << std::left << std::scientific                                          << std::setw(25)
-                                  << initialConditions[i][0]  << std::setw(25) << initialConditions[i][1 ]  << std::setw(25)
-                                  << initialConditions[i][2 ]  << std::setw(25) << initialConditions[i][3]  << std::setw(25)
+                                  << initialConditions[i][0]  << std::setw(25) << initialConditions[i][1]  << std::setw(25)
+                                  << initialConditions[i][2]  << std::setw(25) << initialConditions[i][3]  << std::setw(25)
                                   << initialConditions[i][4]  << std::setw(25) << initialConditions[i][5]  << std::setw(25)
                                   << initialConditions[i][6]  << std::setw(25) << initialConditions[i][7]  << std::setw(25)
                                   << initialConditions[i][8]  << std::setw(25) << initialConditions[i][9]  << std::setw(25)
-                                  << initialConditions[i][10] << std::setw(25) << initialConditions[i][11 ] << std::setw(25)
-                                  << initialConditions[i][12 ] << std::setw(25) << initialConditions[i][13] << std::setw(25)
+                                  << initialConditions[i][10] << std::setw(25) << initialConditions[i][11] << std::setw(25)
+                                  << initialConditions[i][12] << std::setw(25) << initialConditions[i][13] << std::setw(25)
                                   << initialConditions[i][14] << std::setw(25) << initialConditions[i][15] << std::setw(25)
                                   << initialConditions[i][16] << std::setw(25) << initialConditions[i][17] << std::setw(25)
                                   << initialConditions[i][18] << std::setw(25) << initialConditions[i][19] << std::setw(25)
-                                  << initialConditions[i][20] << std::setw(25) << initialConditions[i][21 ] << std::setw(25)
-                                  << initialConditions[i][22 ] << std::setw(25) << initialConditions[i][23] << std::setw(25)
+                                  << initialConditions[i][20] << std::setw(25) << initialConditions[i][21] << std::setw(25)
+                                  << initialConditions[i][22] << std::setw(25) << initialConditions[i][23] << std::setw(25)
                                   << initialConditions[i][24] << std::setw(25) << initialConditions[i][25] << std::setw(25)
                                   << initialConditions[i][26] << std::setw(25) << initialConditions[i][27] << std::setw(25)
                                   << initialConditions[i][28] << std::setw(25) << initialConditions[i][29] << std::setw(25)
-                                  << initialConditions[i][30] << std::setw(25) << initialConditions[i][31 ] << std::setw(25)
-                                  << initialConditions[i][32 ] << std::setw(25) << initialConditions[i][33] << std::setw(25)
+                                  << initialConditions[i][30] << std::setw(25) << initialConditions[i][31] << std::setw(25)
+                                  << initialConditions[i][32] << std::setw(25) << initialConditions[i][33] << std::setw(25)
                                   << initialConditions[i][34] << std::setw(25) << initialConditions[i][35] << std::setw(25)
                                   << initialConditions[i][36] << std::setw(25) << initialConditions[i][37] << std::setw(25)
                                   << initialConditions[i][38] << std::setw(25) << initialConditions[i][39] << std::setw(25)
-                                  << initialConditions[i][40] << std::setw(25) << initialConditions[i][41 ] << std::setw(25)
-                                  << initialConditions[i][42 ] << std::setw(25) << initialConditions[i][43] << std::endl;
+                                  << initialConditions[i][40] << std::setw(25) << initialConditions[i][41] << std::setw(25)
+                                  << initialConditions[i][42] << std::setw(25) << initialConditions[i][43] << std::endl;
 
         textFileDifferentialCorrection << std::left << std::scientific   << std::setw(25)
                                        << differentialCorrections[i][0]  << std::setw(25) << differentialCorrections[i][1 ]  << std::setw(25)
@@ -234,10 +273,10 @@ bool checkTermination( const std::vector< Eigen::VectorXd >& differentialCorrect
                        const Eigen::MatrixXd& stateVectorInclSTM, const std::string orbitType, const int librationPointNr,
                        const double maxEigenvalueDeviation )
 {
-    // Check termination condtions
-
+    // Check termination conditions
+    // TODO check does not function
     bool continueNumericalContinuation = true;
-    if ( differentialCorrections.at( differentialCorrections.size( ) - 1 ) == Eigen::VectorXd::Zero( 15 ) )
+    if ( differentialCorrections.at( differentialCorrections.size( ) - 1 ).segment(0, 6) == Eigen::VectorXd::Zero(6) )
     {
         continueNumericalContinuation = false;
         std::cout << "\n\nNUMERICAL CONTINUATION STOPPED DUE TO EXCEEDING MAXIMUM NUMBER OF ITERATIONS\n\n" << std::endl;
@@ -302,7 +341,8 @@ void createInitialConditions( const int librationPointNr, const std::string& orb
 
     // Set exit parameters of continuation procedure
     int numberOfInitialConditions = 2;
-    int maximumNumberOfInitialConditions = 4000;
+    int maximumNumberOfInitialConditions = 10000;
+//int maximumNumberOfInitialConditions = 3;
 
     // Generate periodic orbits until termination
     double orbitalPeriod  = 0.0, periodIncrement = 0.0, pseudoArcLengthCorrection = 0.0;
@@ -331,6 +371,11 @@ void createInitialConditions( const int librationPointNr, const std::string& orb
         continueNumericalContinuation = checkTermination(differentialCorrections, stateVectorInclSTM, orbitType, librationPointNr, maxEigenvalueDeviation );
 
         numberOfInitialConditions += 1;
+
+        // Alteration for compelete computation of the V-L family
+        if (initialStateVector(2) < 0.0){
+            continueNumericalContinuation = false;
+        }
     }
 
     writeFinalResultsToFiles( librationPointNr, orbitType, initialConditions, differentialCorrections );

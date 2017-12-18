@@ -60,6 +60,7 @@ def load_manifold_refactored(file_path):
     output_data = pd.concat(output_data).reset_index(drop=True).set_index(['orbitNumber', 'time'])
     return output_data
 
+
 def load_manifold_incl_stm(file_path):
     pd.options.mode.chained_assignment = None  # Turn off SettingWithCopyWarning
 
@@ -184,3 +185,7 @@ if __name__ == '__main__':
     # differential_correction_df = load_differential_corrections(differential_correction_file_path)
     # print(differential_correction_df)
 
+    import math
+    t_scale = 27.3217/(2*math.pi)
+    x_scale = 0.3844e6
+    v_scale = x_scale/t_scale/(24*3600)

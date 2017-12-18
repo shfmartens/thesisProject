@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import json
 import matplotlib
-matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
+# matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from mpl_toolkits.mplot3d import Axes3D
@@ -41,12 +41,16 @@ plottingColors = {'lambda1': blues[40],
                    'tripleLine': [sns.color_palette("viridis", n_colors)[0], sns.color_palette("viridis", n_colors)[n_colors-1], sns.color_palette("viridis", n_colors)[int((n_colors-1)/2)]],
                    'limit': 'black'}
 
-fig = plt.figure(figsize=(7 * (1 + np.sqrt(5)) / 2, 3.5))
+fig = plt.figure(figsize=(7 * (1 + np.sqrt(5)) / 2, 7))
 ax = fig.gca()
 for lagrange_point_nr in lagrange_point_nrs:
     for idx, orbit_type in enumerate(orbit_types):
-
-        initial_conditions_file_path = '../../data/raw/orbits/L' + str(lagrange_point_nr) + '_' + orbit_type + '_initial_conditions.txt'
+        if orbit_type == 'vertical':
+            initial_conditions_file_path = '../../data/raw/orbits/extended/L' + str(
+                lagrange_point_nr) + '_' + orbit_type + '_initial_conditions.txt'
+        else:
+            initial_conditions_file_path = '../../data/raw/orbits/L' + str(
+                lagrange_point_nr) + '_' + orbit_type + '_initial_conditions.txt'
         initial_conditions_incl_m_df = load_initial_conditions_incl_M(initial_conditions_file_path)
 
         plot_label = orbit_type.capitalize()
@@ -70,6 +74,6 @@ ax.grid(True, which='both', ls=':')
 fig.tight_layout()
 fig.subplots_adjust(top=0.8)
 fig.suptitle('Families overview - Orbital energy and period', size=20)
-fig.savefig('../../data/figures/orbits/overview_families_orbital_energy_period.pdf', transparent=True)
-fig.savefig('../../data/figures/orbits/overview_families_orbital_energy_period.png', transparent=True, dpi=150)
-# plt.show()
+plt.show()
+fig.savefig('../../data/figures/orbits/extended/overview_families_orbital_energy_period.pdf', transparent=True)
+fig.savefig('../../data/figures/orbits/extended/overview_families_orbital_energy_period.png', transparent=True, dpi=150)

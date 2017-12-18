@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import json
 import matplotlib
-# matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
+matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from mpl_toolkits.mplot3d import Axes3D
@@ -24,7 +24,10 @@ from load_data import load_orbit, load_bodies_location, load_lagrange_points_loc
 
 
 class OrbitBifurcation:
-    def __init__(self):
+    def __init__(self, low_dpi=False):
+        self.lowDPI = low_dpi
+        self.dpi = 150
+
         EARTH_GRAVITATIONAL_PARAMETER = 3.986004418E14
         SUN_GRAVITATIONAL_PARAMETER = 1.32712440018e20
         MOON_GRAVITATIONAL_PARAMETER = SUN_GRAVITATIONAL_PARAMETER / (328900.56 * (1.0 + 81.30059))
@@ -138,7 +141,10 @@ class OrbitBifurcation:
         plt.subplots_adjust(top=0.9)
         ax1.legend(frameon=True, handles=[l1, l2])
         plt.suptitle('$L_1$ Bifurcation - Halo family connecting to horizontal Lyapunov orbits', size=self.suptitleSize)
-        plt.savefig('../../data/figures/orbits/L1_bifurcation_halo.pdf', transparent=True)
+        if self.lowDPI:
+            plt.savefig('../../data/figures/orbits/L1_bifurcation_halo.png', transparent=True, dpi=self.dpi)
+        else:
+            plt.savefig('../../data/figures/orbits/L1_bifurcation_halo.pdf', transparent=True)
         plt.close()
         pass
 
@@ -229,13 +235,18 @@ class OrbitBifurcation:
         plt.subplots_adjust(top=0.9)
         ax1.legend(frameon=True, handles=[l1, l2, l3])
         plt.suptitle('$L_1$ Bifurcation - Axial family connecting horizontal and vertical Lyapunov orbits', size=self.suptitleSize)
-        plt.savefig('../../data/figures/orbits/L1_bifurcation_axial.pdf', transparent=True)
+        if self.lowDPI:
+            plt.savefig('../../data/figures/orbits/L1_bifurcation_axial.png', transparent=True, dpi=self.dpi)
+        else:
+            plt.savefig('../../data/figures/orbits/L1_bifurcation_axial.pdf', transparent=True)
         plt.close()
         pass
 
 
 if __name__ == '__main__':
-    orbit_bifurcation = OrbitBifurcation()
+    low_dpi = True
+
+    orbit_bifurcation = OrbitBifurcation(low_dpi=low_dpi)
     orbit_bifurcation.plot_horizontal_to_halo()
     orbit_bifurcation.plot_horizontal_to_axial_to_vertical()
     # plt.show()

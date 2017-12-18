@@ -6,8 +6,9 @@ import matplotlib.pyplot as plt
 from matplotlib import animation
 from mpl_toolkits.mplot3d import Axes3D
 import seaborn as sns
+import multiprocessing as mp
 sys.path.append('../../util')
-from load_data import load_orbit, load_manifold, load_bodies_location, load_lagrange_points_location, cr3bp_velocity
+from load_data import load_orbit, load_manifold_refactored, load_bodies_location, load_lagrange_points_location, cr3bp_velocity
 sns.set_style("whitegrid")
 params = {'text.latex.preamble': [r"\usepackage{lmodern}"],
           'text.usetex': True,
@@ -51,6 +52,9 @@ class SpatialManifoldsAnimation:
             self.orbitTypeForTitle += ' Lyapunov'
 
         print(self.orbitTypeForTitle + ' at C = ' + str(c_level))
+        self.fig = plt.figure()
+        self.ax = self.fig.add_subplot(111, projection='3d')
+        self.fig.tight_layout()
         pass
 
     def initiate_lines(self):
@@ -144,46 +148,44 @@ class SpatialManifoldsAnimation:
         return self.lines
 
     def animate(self):
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')
-
-        self.W_S_plus = [load_manifold('../../../data/raw/manifolds/L' + str(1) + '_' + self.orbitType + '_' + str(self.orbitIds[0]) + '_W_S_plus.txt'),
-                         load_manifold('../../../data/raw/manifolds/L' + str(2) + '_' + self.orbitType + '_' + str(self.orbitIds[1]) + '_W_S_plus.txt')]
-        self.W_S_min = [load_manifold('../../../data/raw/manifolds/L' + str(1) + '_' + self.orbitType + '_' + str(self.orbitIds[0]) + '_W_S_min.txt'),
-                        load_manifold('../../../data/raw/manifolds/L' + str(2) + '_' + self.orbitType + '_' + str(self.orbitIds[1]) + '_W_S_min.txt')]
-        self.W_U_plus = [load_manifold('../../../data/raw/manifolds/L' + str(1) + '_' + self.orbitType + '_' + str(self.orbitIds[0]) + '_W_U_plus.txt'),
-                         load_manifold('../../../data/raw/manifolds/L' + str(2) + '_' + self.orbitType + '_' + str(self.orbitIds[1]) + '_W_U_plus.txt')]
-        self.W_U_min = [load_manifold('../../../data/raw/manifolds/L' + str(1) + '_' + self.orbitType + '_' + str(self.orbitIds[0]) + '_W_U_min.txt'),
-                        load_manifold('../../../data/raw/manifolds/L' + str(2) + '_' + self.orbitType + '_' + str(self.orbitIds[1]) + '_W_U_min.txt')]
+        self.W_S_plus = [load_manifold_refactored('../../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(self.orbitIds[0]) + '_W_S_plus.txt'),
+                         load_manifold_refactored('../../../data/raw/manifolds/refined_for_c/L' + str(2) + '_' + self.orbitType + '_' + str(self.orbitIds[1]) + '_W_S_plus.txt')]
+        self.W_S_min = [load_manifold_refactored('../../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(self.orbitIds[0]) + '_W_S_min.txt'),
+                        load_manifold_refactored('../../../data/raw/manifolds/refined_for_c/L' + str(2) + '_' + self.orbitType + '_' + str(self.orbitIds[1]) + '_W_S_min.txt')]
+        self.W_U_plus = [load_manifold_refactored('../../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(self.orbitIds[0]) + '_W_U_plus.txt'),
+                         load_manifold_refactored('../../../data/raw/manifolds/refined_for_c/L' + str(2) + '_' + self.orbitType + '_' + str(self.orbitIds[1]) + '_W_U_plus.txt')]
+        self.W_U_min = [load_manifold_refactored('../../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(self.orbitIds[0]) + '_W_U_min.txt'),
+                        load_manifold_refactored('../../../data/raw/manifolds/refined_for_c/L' + str(2) + '_' + self.orbitType + '_' + str(self.orbitIds[1]) + '_W_U_min.txt')]
 
         self.numberOfOrbitsPerManifold = len(set(self.W_S_plus[0].index.get_level_values(0)))
         color_palette_green = sns.dark_palette('green', n_colors=self.numberOfOrbitsPerManifold)
         color_palette_red = sns.dark_palette('red', n_colors=self.numberOfOrbitsPerManifold)
 
-        self.lines = [plt.plot([], [], color=color_palette_red[idx], alpha=self.orbitAlpha)[0] for idx in range(self.numberOfOrbitsPerManifold)]
-        self.lines.extend([plt.plot([], [], color=color_palette_green[idx], alpha=self.orbitAlpha)[0] for idx in range(self.numberOfOrbitsPerManifold)])
-        self.lines.extend([plt.plot([], [], color=color_palette_red[idx], alpha=self.orbitAlpha)[0] for idx in range(self.numberOfOrbitsPerManifold)])
-        self.lines.extend([plt.plot([], [], color=color_palette_green[idx], alpha=self.orbitAlpha)[0] for idx in range(self.numberOfOrbitsPerManifold)])
-        self.lines.extend([plt.plot([], [], color=color_palette_red[idx], alpha=self.orbitAlpha)[0] for idx in range(self.numberOfOrbitsPerManifold)])
-        self.lines.extend([plt.plot([], [], color=color_palette_green[idx], alpha=self.orbitAlpha)[0] for idx in range(self.numberOfOrbitsPerManifold)])
-        self.lines.extend([plt.plot([], [], color=color_palette_green[idx], alpha=self.orbitAlpha)[0] for idx in range(self.numberOfOrbitsPerManifold)])
-        self.lines.extend([plt.plot([], [], color=color_palette_red[idx], alpha=self.orbitAlpha)[0] for idx in range(self.numberOfOrbitsPerManifold)])
+        self.lines = [self.ax.plot([], [], color=color_palette_red[idx], alpha=self.orbitAlpha)[0] for idx in range(self.numberOfOrbitsPerManifold)]
+        self.lines.extend([self.ax.plot([], [], color=color_palette_green[idx], alpha=self.orbitAlpha)[0] for idx in range(self.numberOfOrbitsPerManifold)])
+        self.lines.extend([self.ax.plot([], [], color=color_palette_red[idx], alpha=self.orbitAlpha)[0] for idx in range(self.numberOfOrbitsPerManifold)])
+        self.lines.extend([self.ax.plot([], [], color=color_palette_green[idx], alpha=self.orbitAlpha)[0] for idx in range(self.numberOfOrbitsPerManifold)])
+        self.lines.extend([self.ax.plot([], [], color=color_palette_red[idx], alpha=self.orbitAlpha)[0] for idx in range(self.numberOfOrbitsPerManifold)])
+        self.lines.extend([self.ax.plot([], [], color=color_palette_green[idx], alpha=self.orbitAlpha)[0] for idx in range(self.numberOfOrbitsPerManifold)])
+        self.lines.extend([self.ax.plot([], [], color=color_palette_green[idx], alpha=self.orbitAlpha)[0] for idx in range(self.numberOfOrbitsPerManifold)])
+        self.lines.extend([self.ax.plot([], [], color=color_palette_red[idx], alpha=self.orbitAlpha)[0] for idx in range(self.numberOfOrbitsPerManifold)])
 
         # Text object to display absolute normalized time of trajectories within the manifolds
-        self.timeText = ax.text2D(0.05, 0.05, s='$\|t\| \\approx 0$', transform=ax.transAxes, size=self.timeTextSize)
+        self.timeText = self.ax.text2D(0.05, 0.05, s='$\|t\| \\approx 0$', transform=self.ax.transAxes, size=self.timeTextSize)
 
         # Plot zero velocity surface
         x_range = np.arange(self.xLim[0], self.xLim[1], 0.001)
         y_range = np.arange(self.yLim[0], self.yLim[1], 0.001)
         x_mesh, y_mesh = np.meshgrid(x_range, y_range)
-        z_mesh = cr3bp_velocity(x_mesh, y_mesh, c_level)
+        z_mesh = cr3bp_velocity(x_mesh, y_mesh, self.cLevel)
         if z_mesh.min() < 0:
-            plt.contour(x_mesh, y_mesh, z_mesh, [z_mesh.min(), 0], colors='black', alpha=0.3)
+            # plt.contour(x_mesh, y_mesh, z_mesh, [z_mesh.min(), 0], colors='black', alpha=0.3)
+            self.ax.contour(x_mesh, y_mesh, z_mesh, list(np.linspace(z_mesh.min(), 0, 10)), cmap='gist_gray_r', alpha=0.5)
 
         # Plot both orbits
         for k in range(2):
-            orbit_df = load_orbit('../../../data/raw/orbits/L' + str(k+1) + '_' + self.orbitType + '_' + str(self.orbitIds[k]) + '.txt')
-            plt.plot(orbit_df['x'], orbit_df['y'], orbit_df['z'], color=self.orbitColor, alpha=self.orbitAlpha, linewidth=self.orbitLinewidth)
+            orbit_df = load_orbit('../../../data/raw/orbits/refined_for_c/L' + str(k+1) + '_' + self.orbitType + '_' + str(self.orbitIds[k]) + '.txt')
+            self.ax.plot(orbit_df['x'], orbit_df['y'], orbit_df['z'], color=self.orbitColor, alpha=self.orbitAlpha, linewidth=self.orbitLinewidth)
 
         # Plot both primaries
         u = np.linspace(0, 2 * np.pi, 100)
@@ -193,40 +195,40 @@ class SpatialManifoldsAnimation:
             x = bodies_df[body]['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df[body]['x']
             y = bodies_df[body]['r'] * np.outer(np.sin(u), np.sin(v))
             z = bodies_df[body]['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
-            ax.plot_surface(x, y, z, color='black')
+            self.ax.plot_surface(x, y, z, color='black')
 
         # Plot Lagrange points 1 and 2
         lagrange_points_df = load_lagrange_points_location()
         lagrange_point_nrs = ['L1', 'L2']
         for lagrange_point_nr in lagrange_point_nrs:
-            ax.scatter3D(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+            self.ax.scatter3D(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
                          lagrange_points_df[lagrange_point_nr]['z'], color='black', marker='x', s=self.lagrangePointMarkerSize)
 
-        title = self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial overview at C = ' + str(c_level)
+        title = self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Orthographic projection (C = ' + str(c_level) + ')'
 
-        ax.set_xlim3d(self.xLim)
-        ax.set_ylim3d(self.yLim)
-        ax.set_zlim3d(self.zLim)
-        ax.set_xlabel('x [-]')
-        ax.set_ylabel('y [-]')
-        ax.set_zlabel('z [-]')
+        self.ax.set_xlim(self.xLim)
+        self.ax.set_ylim(self.yLim)
+        self.ax.set_zlim(self.zLim)
+        self.ax.set_xlabel('x [-]')
+        self.ax.set_ylabel('y [-]')
+        self.ax.set_zlabel('z [-]')
 
-        ax.grid(True, which='both', ls=':')
-        fig.tight_layout()
-        fig.subplots_adjust(top=0.9)
-        plt.suptitle(title, size=self.suptitleSize)
+        self.ax.grid(True, which='both', ls=':')
+        # self.fig.tight_layout()
+        self.fig.subplots_adjust(top=0.9)
+        self.fig.suptitle(title, size=self.suptitleSize)
 
         # Fix overlap between labels and ticks
-        ax.xaxis._axinfo['label']['space_factor'] = 6.0
-        ax.yaxis._axinfo['label']['space_factor'] = 6.0
-        ax.zaxis._axinfo['label']['space_factor'] = 6.0
+        self.ax.xaxis._axinfo['label']['space_factor'] = 6.0
+        self.ax.yaxis._axinfo['label']['space_factor'] = 6.0
+        self.ax.zaxis._axinfo['label']['space_factor'] = 6.0
 
         # Determine the maximum value of t
         t_max = 0
         for lagrange_point_idx in [0, 1]:
             for index in range(self.numberOfOrbitsPerManifold):
-                t_max = max(t_max, abs(self.W_S_plus[lagrange_point_idx].xs(index).tail(1).index.values[0]))
-                t_max = max(t_max, abs(self.W_S_min[lagrange_point_idx].xs(index).tail(1).index.values[0]))
+                t_max = max(t_max, abs(self.W_S_plus[lagrange_point_idx].xs(index).head(1).index.values[0]))
+                t_max = max(t_max, abs(self.W_S_min[lagrange_point_idx].xs(index).head(1).index.values[0]))
                 t_max = max(t_max, abs(self.W_U_plus[lagrange_point_idx].xs(index).tail(1).index.values[0]))
                 t_max = max(t_max, abs(self.W_U_min[lagrange_point_idx].xs(index).tail(1).index.values[0]))
         print('Maximum value for t = ' + str(t_max) + ', animation t: = ')
@@ -234,8 +236,8 @@ class SpatialManifoldsAnimation:
         # Introduce a new time-vector for linearly spaced time throughout the animation
         self.t = np.linspace(0, t_max, np.round(t_max / 0.04) + 1)
 
-        animation_function = animation.FuncAnimation(fig, self.update_lines, init_func=self.initiate_lines,
-                                                     frames=len(self.t), interval=1, blit=True)
+        self.animation_function = animation.FuncAnimation(self.fig, self.update_lines, init_func=self.initiate_lines,
+                                                          frames=len(self.t), interval=1, blit=True)
 
         #
         # # Determine the maximum number of frames
@@ -250,20 +252,34 @@ class SpatialManifoldsAnimation:
         # animation_function = animation.FuncAnimation(fig, self.update_lines, init_func=self.initiate_lines,
         #                                              frames=int(number_of_frames), interval=1, blit=True)
 
-        empty_writer_object = animation.writers['ffmpeg']
-        animation_writer = empty_writer_object(fps=30, metadata=dict(artist='Koen Langemeijer'))
-        file_name = '../../../data/animations/manifolds/spatial_manifolds_' + orbit_type + '_' + str(c_level) + '.mp4'
-        animation_function.save(file_name, writer=animation_writer)
+        self.empty_writer_object = animation.writers['ffmpeg']
+        self.animation_writer = self.empty_writer_object(fps=30, metadata=dict(artist='Koen Langemeijer'))
+        self.file_name = '../../../data/animations/manifolds/spatial_manifolds_' + self.orbitType + '_' + str(self.cLevel) + '.mp4'
+        self.animation_function.save(self.file_name, writer=self.animation_writer)
+
+
+def worker(arg):
+    # Wrapper function to execute the function 'animate' in instance of class 'SpatialOrbitsRotatingAnimation'
+    obj = arg
+    return obj.animate()
 
 
 if __name__ == '__main__':
     orbit_types = ['horizontal', 'vertical', 'halo']
     c_levels = [3.05, 3.1, 3.15]
-    orbit_ids = {'horizontal':  {1: {3.05: 808, 3.1: 577, 3.15: 330}, 2: {3.05: 1066, 3.1: 760, 3.15: 373}},
-                 'halo':  {1: {3.05: 1235, 3.1: 836, 3.15: 358}, 2: {3.05: 1093, 3.1: 651, 3.15: 0}},
+    orbit_ids = {'horizontal': {1: {3.05: 808, 3.1: 577, 3.15: 330}, 2: {3.05: 1066, 3.1: 760, 3.15: 373}},
+                 'halo': {1: {3.05: 1235, 3.1: 836, 3.15: 358}, 2: {3.05: 1093, 3.1: 651, 3.15: 0}},
                  'vertical': {1: {3.05: 1664, 3.1: 1159, 3.15: 600}, 2: {3.05: 1878, 3.1: 1275, 3.15: 513}}}
 
+    list_of_objects = []
     for orbit_type in orbit_types:
         for c_level in c_levels:
             spatial_manifolds_animation = SpatialManifoldsAnimation(orbit_type, c_level, orbit_ids)
             spatial_manifolds_animation.animate()
+            # list_of_objects.append(SpatialManifoldsAnimation(orbit_type, c_level, orbit_ids))  # Instantiate the classes
+    #
+    # maximum_number_of_processes = min(14, mp.cpu_count()-1)  # 14 processes is the maximum on the server, but perform a safety check on the available number of threads
+    # pool1 = mp.Pool(min(maximum_number_of_processes, len(list_of_objects)))  # Start a pool of workers
+    # pool1.imap_unordered(worker, (obj for obj in list_of_objects))  # Execute the tasks in parallel, regardless of order
+    # pool1.close()  # No more tasks can be submitted to the pool
+    # pool1.join()  # Wait for processes in pool to exit

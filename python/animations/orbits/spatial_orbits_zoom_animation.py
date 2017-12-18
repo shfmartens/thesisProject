@@ -35,7 +35,6 @@ class SpatialOrbitsZoomAnimation:
         self.orbitAlpha = 0.8
         self.orbitLinewidth = 2
         self.lagrangePointMarkerSize = 300
-        self.orbitColor = 'navy'
         self.cLevel = c_level
         self.orbitIds = orbit_ids
         self.t = []
@@ -44,6 +43,9 @@ class SpatialOrbitsZoomAnimation:
         self.verticalLyapunov = []
         self.halo = []
         self.timeText = ''  # Will become a plt.text-object
+        self.orbitColors = {'horizontal': sns.color_palette("viridis", 3)[0],
+                            'halo': sns.color_palette("viridis", 3)[2],
+                            'vertical': sns.color_palette("viridis", 3)[1]}
         pass
 
     def initiate_lines(self):
@@ -82,16 +84,21 @@ class SpatialOrbitsZoomAnimation:
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
 
-        self.horizontalLyapunov = [load_orbit('../../../data/raw/orbits/L' + str(1) + '_horizontal_' + str(self.orbitIds['horizontal'][1][self.cLevel]) + '_100.txt'),
-                                   load_orbit('../../../data/raw/orbits/L' + str(2) + '_horizontal_' + str(self.orbitIds['horizontal'][2][self.cLevel]) + '_100.txt')]
+        self.horizontalLyapunov = [load_orbit('../../../data/raw/orbits/refined_for_c/L' + str(1) + '_horizontal_' + str(self.orbitIds['horizontal'][1][self.cLevel]) + '_100.txt'),
+                                   load_orbit('../../../data/raw/orbits/refined_for_c/L' + str(2) + '_horizontal_' + str(self.orbitIds['horizontal'][2][self.cLevel]) + '_100.txt')]
 
-        self.verticalLyapunov = [load_orbit('../../../data/raw/orbits/L' + str(1) + '_vertical_' + str(self.orbitIds['vertical'][1][self.cLevel]) + '_100.txt'),
-                                 load_orbit('../../../data/raw/orbits/L' + str(2) + '_vertical_' + str(self.orbitIds['vertical'][2][self.cLevel]) + '_100.txt')]
+        self.verticalLyapunov = [load_orbit('../../../data/raw/orbits/refined_for_c/L' + str(1) + '_vertical_' + str(self.orbitIds['vertical'][1][self.cLevel]) + '_100.txt'),
+                                 load_orbit('../../../data/raw/orbits/refined_for_c/L' + str(2) + '_vertical_' + str(self.orbitIds['vertical'][2][self.cLevel]) + '_100.txt')]
 
-        self.halo = [load_orbit('../../../data/raw/orbits/L' + str(1) + '_halo_' + str(self.orbitIds['halo'][1][self.cLevel]) + '_100.txt'),
-                     load_orbit('../../../data/raw/orbits/L' + str(2) + '_halo_' + str(self.orbitIds['halo'][2][self.cLevel]) + '_100.txt')]
+        self.halo = [load_orbit('../../../data/raw/orbits/refined_for_c/L' + str(1) + '_halo_' + str(self.orbitIds['halo'][1][self.cLevel]) + '_100.txt'),
+                     load_orbit('../../../data/raw/orbits/refined_for_c/L' + str(2) + '_halo_' + str(self.orbitIds['halo'][2][self.cLevel]) + '_100.txt')]
 
-        self.lines = [plt.plot([], [], color=self.orbitColor, alpha=self.orbitAlpha, marker='o', markevery=[-1])[0] for idx in range(6)]
+        self.lines = [plt.plot([], [], color=self.orbitColors['horizontal'], linewidth=self.orbitLinewidth, alpha=self.orbitAlpha, marker='o', markevery=[-1])[0],
+                      plt.plot([], [], color=self.orbitColors['horizontal'], linewidth=self.orbitLinewidth, alpha=self.orbitAlpha, marker='o', markevery=[-1])[0],
+                      plt.plot([], [], color=self.orbitColors['vertical'], linewidth=self.orbitLinewidth, alpha=self.orbitAlpha, marker='o', markevery=[-1])[0],
+                      plt.plot([], [], color=self.orbitColors['vertical'], linewidth=self.orbitLinewidth, alpha=self.orbitAlpha, marker='o', markevery=[-1])[0],
+                      plt.plot([], [], color=self.orbitColors['halo'], linewidth=self.orbitLinewidth, alpha=self.orbitAlpha, marker='o', markevery=[-1])[0],
+                      plt.plot([], [], color=self.orbitColors['halo'], linewidth=self.orbitLinewidth, alpha=self.orbitAlpha, marker='o', markevery=[-1])[0]]
 
         # Text object to display absolute normalized time of trajectories within the manifolds
         self.timeText = ax.text2D(0.05, 0.05, s='$\|t\| \\approx 0$', transform=ax.transAxes, size=self.timeTextSize)
@@ -99,11 +106,11 @@ class SpatialOrbitsZoomAnimation:
         # Plot both orbits
         for k in range(2):
             plt.plot(self.horizontalLyapunov[k]['x'], self.horizontalLyapunov[k]['y'], self.horizontalLyapunov[k]['z'],
-                     color=self.orbitColor, alpha=self.orbitAlpha, linewidth=self.orbitLinewidth, linestyle=':')
+                     color=self.orbitColors['horizontal'], alpha=self.orbitAlpha, linewidth=self.orbitLinewidth, linestyle=':')
             plt.plot(self.verticalLyapunov[k]['x'], self.verticalLyapunov[k]['y'], self.verticalLyapunov[k]['z'],
-                     color=self.orbitColor, alpha=self.orbitAlpha, linewidth=self.orbitLinewidth, linestyle=':')
+                     color=self.orbitColors['vertical'], alpha=self.orbitAlpha, linewidth=self.orbitLinewidth, linestyle=':')
             plt.plot(self.halo[k]['x'], self.halo[k]['y'], self.halo[k]['z'],
-                     color=self.orbitColor, alpha=self.orbitAlpha, linewidth=self.orbitLinewidth, linestyle=':')
+                     color=self.orbitColors['halo'], alpha=self.orbitAlpha, linewidth=self.orbitLinewidth, linestyle=':')
 
         # Plot the Moon
         u = np.linspace(0, 2 * np.pi, 100)
@@ -121,6 +128,15 @@ class SpatialOrbitsZoomAnimation:
         for lagrange_point_nr in lagrange_point_nrs:
             ax.scatter3D(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
                          lagrange_points_df[lagrange_point_nr]['z'], color='black', marker='x', s=self.lagrangePointMarkerSize)
+
+        # Plot zero velocity surface
+        x_range = np.arange(self.xLim[0], self.xLim[1], 0.001)
+        y_range = np.arange(self.yLim[0], self.yLim[1], 0.001)
+        x_mesh, y_mesh = np.meshgrid(x_range, y_range)
+        z_mesh = cr3bp_velocity(x_mesh, y_mesh, self.cLevel)
+        if z_mesh.min() < 0:
+            # plt.contour(x_mesh, y_mesh, z_mesh, [z_mesh.min(), 0], colors='black', alpha=0.3)
+            ax.contour(x_mesh, y_mesh, z_mesh, list(np.linspace(z_mesh.min(), 0, 10)), cmap='gist_gray_r', alpha=0.5)
 
         title = 'Types of periodic libration point motion - Spatial zoom at C = ' + str(c_level)
 
@@ -157,7 +173,7 @@ class SpatialOrbitsZoomAnimation:
 
         empty_writer_object = animation.writers['ffmpeg']
         animation_writer = empty_writer_object(fps=60, metadata=dict(artist='Koen Langemeijer'))
-        file_name = '../../../data/animations/orbits/spatial_orbits_zoom_' + str(c_level) + '.mp4'
+        file_name = '../../../data/animations/orbits/spatial_orbits_zoom_' + str(self.cLevel) + '.mp4'
         animation_function.save(file_name, writer=animation_writer)
 
 

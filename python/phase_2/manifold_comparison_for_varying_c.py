@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import json
 import matplotlib
-# matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
+matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from mpl_toolkits.mplot3d import Axes3D
@@ -25,7 +25,9 @@ from load_data import load_orbit, load_bodies_location, load_lagrange_points_loc
 
 
 class ManifoldComparisonForVaryingC:
-    def __init__(self, orbit_type, lagrange_point_nr, orbit_id_per_c):
+    def __init__(self, orbit_type, lagrange_point_nr, orbit_id_per_c, low_dpi=False):
+        self.lowDPI = low_dpi
+        self.dpi = 150
         print('=======================')
         print(str(orbit_type) + ' in L' + str(lagrange_point_nr))
         print('=======================')
@@ -462,18 +464,25 @@ class ManifoldComparisonForVaryingC:
 
         plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle +
                      ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial comparison', size=self.suptitleSize)
-
-        fig.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_manifold_comparison.pdf',
-                    transparent=True)
+        # plt.show()
+        if self.lowDPI:
+            fig.savefig('../../data/figures/manifolds/refined_for_c/L' + str(
+                self.lagrangePointNr) + '_' + self.orbitType + '_manifold_comparison.png',
+                        transparent=True, dpi=self.dpi)
+        else:
+            fig.savefig('../../data/figures/manifolds/refined_for_c/L' + str(
+                self.lagrangePointNr) + '_' + self.orbitType + '_manifold_comparison.pdf',
+                        transparent=True)
         # fig.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots.png')
         plt.close()
         pass
 
 
 if __name__ == '__main__':
+    low_dpi = True
     lagrange_points = [1, 2]
     orbit_types = ['horizontal', 'vertical', 'halo']
-
+    # lagrange_points = [2]
     c_levels = [3.05, 3.1, 3.15]
 
     orbit_ids = {'horizontal':  {1: {3.05: 808, 3.1: 577, 3.15: 330}, 2: {3.05: 1066, 3.1: 760, 3.15: 373}},
@@ -482,6 +491,8 @@ if __name__ == '__main__':
 
     for orbit_type in orbit_types:
         for lagrange_point in lagrange_points:
-            manifold_comparison_for_varying_c = ManifoldComparisonForVaryingC(orbit_type, lagrange_point, orbit_ids[orbit_type][lagrange_point])
+            manifold_comparison_for_varying_c = ManifoldComparisonForVaryingC(orbit_type, lagrange_point,
+                                                                              orbit_ids[orbit_type][lagrange_point],
+                                                                              low_dpi=low_dpi)
             manifold_comparison_for_varying_c.plot_manifolds()
             # plt.show()

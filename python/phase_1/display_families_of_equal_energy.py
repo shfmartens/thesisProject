@@ -26,7 +26,9 @@ from load_data import load_orbit, load_bodies_location, load_lagrange_points_loc
 
 
 class DisplayFamiliesOfEqualEnergy:
-    def __init__(self):
+    def __init__(self, low_dpi=False):
+        self.lowDPI = low_dpi
+        self.dpi = 150
         pass
 
     def plot(self):
@@ -117,12 +119,17 @@ class DisplayFamiliesOfEqualEnergy:
 
         # plt.show()
         # fig.savefig('../../../data/figures/family_of_equal_energy.png')
-        fig.savefig('../../data/figures/new_family_of_equal_energy.pdf', transparent=True)
+        if self.lowDPI:
+            fig.savefig('../../data/figures/new_family_of_equal_energy.png', transparent=True, dpi=self.dpi)
+        else:
+            fig.savefig('../../data/figures/new_family_of_equal_energy.pdf', transparent=True)
         # tikz_save('../../../data/figures/family_of_equal_energy.tex')
         plt.close()
         pass
 
 
 if __name__ == '__main__':
-    display_families_of_equal_energy = DisplayFamiliesOfEqualEnergy()
+    low_dpi = True
+
+    display_families_of_equal_energy = DisplayFamiliesOfEqualEnergy(low_dpi=low_dpi)
     display_families_of_equal_energy.plot()

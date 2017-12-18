@@ -65,9 +65,12 @@ Eigen::VectorXd applyDifferentialCorrection(const int librationPointNr, const st
     {
 
         // If the maximum number of iterations has been reached, return a zero vector to stop the numerical continuation
-        if (numberOfIterations > maxNumberOfIterations)
-        {
-            return Eigen::VectorXd::Zero(15);
+        if ( numberOfIterations > maxNumberOfIterations and deviationFromPeriodicOrbitRelaxed == false )
+        {   //TODO change to obtain full l2 v-l family
+            maxPositionDeviationFromPeriodicOrbit = 10.0 * maxPositionDeviationFromPeriodicOrbit;
+            maxVelocityDeviationFromPeriodicOrbit = 10.0 * maxVelocityDeviationFromPeriodicOrbit;
+            deviationFromPeriodicOrbitRelaxed = true;
+//            return Eigen::VectorXd::Zero(15);
         }
 
         // Relax the maximum deviation requirements to compute the horizontal Lyapunov family in L2

@@ -74,8 +74,13 @@ class OrbitShootingConditions:
         c = []
         for idx, orbit_type in enumerate(orbit_types):
             for lagrange_point_nr in lagrange_point_nrs:
-                initial_conditions_file_path = '../../data/raw/orbits/L' + str(
-                    lagrange_point_nr) + '_' + orbit_type + '_initial_conditions.txt'
+                if orbit_type == 'vertical':
+                    initial_conditions_file_path = '../../data/raw/orbits/extended/L' + str(
+                        lagrange_point_nr) + '_' + orbit_type + '_initial_conditions.txt'
+                else:
+                    initial_conditions_file_path = '../../data/raw/orbits/L' + str(
+                        lagrange_point_nr) + '_' + orbit_type + '_initial_conditions.txt'
+
                 initial_conditions_incl_m_df = load_initial_conditions_incl_M(initial_conditions_file_path)
 
                 plot_label = orbit_type.capitalize()
@@ -91,7 +96,7 @@ class OrbitShootingConditions:
         cb.set_label('$C \enskip [-]$')
 
         lagrange_points_df = load_lagrange_points_location()
-        lagrange_point_nrs = ['L1', 'L2']
+        lagrange_point_nrs = ['L1', 'L2', 'L3']
         # Lagrange points and bodies
         for lagrange_point_nr in lagrange_point_nrs:
             ax.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['z'], color='black', marker='x')
@@ -113,9 +118,9 @@ class OrbitShootingConditions:
         fig.subplots_adjust(top=0.9)
         plt.suptitle('$L_1, L_2$ - Shooting conditions for H-L, halo, and V-L', size=self.suptitleSize)
         if self.lowDPI:
-            fig.savefig('../../data/figures/orbits/orbit_shooting_conditions_2d.png', transparent=True, dpi=self.dpi)
+            fig.savefig('../../data/figures/orbits/extended/orbit_shooting_conditions_2d.png', transparent=True, dpi=self.dpi)
         else:
-            fig.savefig('../../data/figures/orbits/orbit_shooting_conditions_2d.pdf', transparent=True)
+            fig.savefig('../../data/figures/orbits/extended/orbit_shooting_conditions_2d.pdf', transparent=True)
         pass
 
     def plot_3d_shooting_conditions(self):
@@ -143,7 +148,7 @@ class OrbitShootingConditions:
                 lines.append(line)
 
         lagrange_points_df = load_lagrange_points_location()
-        lagrange_point_nrs = ['L1', 'L2']
+        lagrange_point_nrs = ['L1', 'L2', 'L3']
         # Lagrange points and bodies
         for lagrange_point_nr in lagrange_point_nrs:
             ax.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['z'],
@@ -254,7 +259,7 @@ class OrbitShootingConditions:
 
 
 if __name__ == '__main__':
-    low_dpi = True
+    low_dpi = False
 
     orbit_shooting_conditions = OrbitShootingConditions(low_dpi=low_dpi)
     orbit_shooting_conditions.plot_2d_shooting_conditions()

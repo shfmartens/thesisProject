@@ -23,7 +23,7 @@ void writeStateHistoryToFile(
         const int saveEveryNthIntegrationStep, const bool completeInitialConditionsHaloFamily )
 {
     std::string fileNameString;
-    std::string directoryString = "../data/raw/orbits3/";
+    std::string directoryString = "../data/raw/orbits/";
     // Prepare output file
     if (saveEveryNthIntegrationStep != 1000)
     {
@@ -135,6 +135,12 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitToFinalCondition(
         }
     }
 
+    // Add final state after minimizing overshoot
+    if ( saveFrequency > 0 )
+    {
+        stateHistory[ currentTime ] = currentState.first.block( 0, 0, 6, 1 );
+    }
+
     return currentState;
 }
 
@@ -158,13 +164,11 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitWithStateTransitionMatrixToF
     for (int i = 5; i <= 12; i++)
     {
         double initialStepSize = pow(10,(static_cast<float>(-i)));
-        // TODO make fixed step size an option
-//        double maximumStepSize = pow(10,(static_cast<float>(-i) + 1.0));
         double maximumStepSize = initialStepSize;
 
         while (currentTime <= finalTime )
         {
-            // Write every nth integration step to file. TODO but only for the same step-size (as you want equally spaced orbits along the manifold)
+            // Write every nth integration step to file.
             if ( saveFrequency > 0 && ( stepCounter % saveFrequency == 0 ) && i == 5 )
             {
                 stateTransitionMatrixHistory[ currentTime ] = currentState.first;

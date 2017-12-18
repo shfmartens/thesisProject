@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import json
 import matplotlib
-# matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
+matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from mpl_toolkits.mplot3d import Axes3D
@@ -24,7 +24,9 @@ from load_data import load_orbit, load_bodies_location, load_lagrange_points_loc
 
 
 class DisplayPeriodicityValidation:
-    def __init__(self, orbit_type, lagrange_point_nr, orbit_id):
+    def __init__(self, orbit_type, lagrange_point_nr, orbit_id, low_dpi=False):
+        self.lowDPI = low_dpi
+        self.dpi = 150
         print('=======================')
         print(str(orbit_type) + ' in L' + str(lagrange_point_nr))
         print('=======================')
@@ -1186,7 +1188,10 @@ class DisplayPeriodicityValidation:
         arr[0, 1].set_xlim([0, 1])
         arr[0, 1].set_xlabel('$\\tau$ [-]')
         arr[0, 1].set_ylim(ylim)
-        arr[0, 1].set_title('Position deviation at $U_i \;  \\forall \; i = 1, \ldots, 4$')
+        if self.lagrangePointNr == 1:
+            arr[0, 1].set_title('Position deviation at $U_i \;  \\forall \; i = 1, 2, 3$')
+        else:
+            arr[0, 1].set_title('Position deviation at $U_i \;  \\forall \; i = 2, 3, 4$')
 
         w_s_plus_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
         w_s_min_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
@@ -1286,7 +1291,7 @@ class DisplayPeriodicityValidation:
         l1, = arr[1, 0].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3*w_s_plus_df.std(axis=1).fillna(method='ffill'), label='$\Delta \\bar{C}_t^{S+} \pm 3\sigma_t^{S+} $', color=self.plottingColors['W_S_plus'], linestyle=':')
         l2, = arr[1, 0].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{C}_t^{S+}$', color=self.plottingColors['W_S_plus'])
         arr[1, 0].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3*w_s_plus_df.std(axis=1).fillna(method='ffill'), color=self.plottingColors['W_S_plus'], linestyle=':')
-        arr[1, 0].set_ylabel('$C(\mathbf{X^i_t}) - C(\mathbf{X^i_0})$ [-]')
+        arr[1, 0].set_ylabel('$C(\mathbf{X^i_t}) - C(\mathbf{X^p})$ [-]')
         arr[1, 0].set_title('Energy deviation on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
 
 
@@ -1299,7 +1304,7 @@ class DisplayPeriodicityValidation:
         l4, = arr[1, 1].plot(w_s_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{C}_t^{S-}$', color=self.plottingColors['W_S_min'])
         arr[1, 1].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l1, l2, l3, l4])
         arr[1, 1].plot(w_s_min_df.mean(axis=1).fillna(method='ffill') - 3*w_s_min_df.std(axis=1).fillna(method='ffill'), color=self.plottingColors['W_S_min'], linestyle=':')
-        arr[1, 1].set_ylabel('$C(\mathbf{X^i_t}) - C(\mathbf{X^i_0})$ [-]')
+        arr[1, 1].set_ylabel('$C(\mathbf{X^i_t}) - C(\mathbf{X^p})$ [-]')
 
         arr[1, 1].set_title('Energy deviation on manifold ($\\forall i \in \mathcal{W}^{S-}$)', loc='right')
 
@@ -1312,7 +1317,7 @@ class DisplayPeriodicityValidation:
         l5, = arr[2, 0].plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') + 3*w_u_plus_df.std(axis=1).fillna(method='ffill'), label='$\Delta \\bar{C}_t^{U+} \pm 3\sigma_t^{U+}$', color=self.plottingColors['W_U_plus'], linestyle=':')
         l6, = arr[2, 0].plot(w_u_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{C}_t^{U+}$', color=self.plottingColors['W_U_plus'])
         arr[2, 0].plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') - 3*w_u_plus_df.std(axis=1).fillna(method='ffill'), color=self.plottingColors['W_U_plus'], linestyle=':')
-        arr[2, 0].set_ylabel('$C(\mathbf{X^i_t}) - C(\mathbf{X^i_0})$  [-]')
+        arr[2, 0].set_ylabel('$C(\mathbf{X^i_t}) - C(\mathbf{X^p})$  [-]')
         arr[2, 0].set_title('Energy deviation on manifold ($\\forall i \in \mathcal{W}^{U+}$)', loc='right')
 
 
@@ -1325,7 +1330,7 @@ class DisplayPeriodicityValidation:
         l8, = arr[2, 1].plot(w_u_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{C}_t^{U-}$', color=self.plottingColors['W_U_min'])
         arr[2, 1].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l5, l6, l7, l8])
         arr[2, 1].plot(w_u_min_df.mean(axis=1).fillna(method='ffill') - 3*w_u_min_df.std(axis=1).fillna(method='ffill'), color=self.plottingColors['W_U_min'], linestyle=':')
-        arr[2, 1].set_ylabel('$C(\mathbf{X^i_t}) - C(\mathbf{X^i_0})$  [-]')
+        arr[2, 1].set_ylabel('$C(\mathbf{X^i_t}) - C(\mathbf{X^p})$  [-]')
         arr[2, 1].set_title('Energy deviation on manifold ($\\forall i \in \mathcal{W}^{U-}$)', loc='right')
 
         arr[2, 0].set_xlabel('$|t|$ [-]')
@@ -1349,8 +1354,16 @@ class DisplayPeriodicityValidation:
             '$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Jacobi verification at C = ' + str(np.round(self.C, 3)),
             size=self.suptitleSize)
         # plt.show()
-        plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_jacobi_validation.pdf',
-                    transparent=True)
+        if self.lowDPI:
+            plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(
+                self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
+                self.orbitId) + '_manifold_jacobi_validation.png',
+                        transparent=True, dpi=self.dpi)
+        else:
+            plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(
+                self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
+                self.orbitId) + '_manifold_jacobi_validation.pdf',
+                        transparent=True)
         # plt.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_periodicity.png')
         plt.close()
         pass
@@ -1449,7 +1462,7 @@ class DisplayPeriodicityValidation:
         plt.suptitle(
             '$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Validation at C = ' + str(np.round(self.C, 3)),
             size=self.suptitleSize)
-        # plt.show()
+        plt.show()
         plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_orbit_offsets.pdf',
                     transparent=True)
         plt.close()
@@ -1457,13 +1470,14 @@ class DisplayPeriodicityValidation:
 
 
 if __name__ == '__main__':
+    low_dpi = True
     lagrange_points = [1, 2]
     orbit_types = ['horizontal', 'vertical', 'halo']
     c_levels = [3.05, 3.1, 3.15]
 
     # lagrange_points = [2]
-    # orbit_types = ['horizontal']
-    c_levels = [3.15]
+    # orbit_types = ['vertical']
+    # c_levels = [3.15]
 
     orbit_ids = {'horizontal':  {1: {3.05: 808, 3.1: 577, 3.15: 330}, 2: {3.05: 1066, 3.1: 760, 3.15: 373}},
                  'halo':  {1: {3.05: 1235, 3.1: 836, 3.15: 358}, 2: {3.05: 1093, 3.1: 651, 3.15: 0}},
@@ -1472,7 +1486,9 @@ if __name__ == '__main__':
     for orbit_type in orbit_types:
         for lagrange_point in lagrange_points:
             for c_level in c_levels:
-                display_periodicity_validation = DisplayPeriodicityValidation(orbit_type, lagrange_point, orbit_ids[orbit_type][lagrange_point][c_level])
+                display_periodicity_validation = DisplayPeriodicityValidation(orbit_type, lagrange_point,
+                                                                              orbit_ids[orbit_type][lagrange_point][c_level],
+                                                                              low_dpi=low_dpi)
                 # display_periodicity_validation.plot_manifolds()
                 # display_periodicity_validation.plot_manifold_zoom()
                 # display_periodicity_validation.plot_manifold_total()

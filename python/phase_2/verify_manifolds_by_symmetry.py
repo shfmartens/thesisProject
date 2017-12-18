@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import json
 import matplotlib
-# matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
+matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from mpl_toolkits.mplot3d import Axes3D
@@ -26,7 +26,9 @@ from load_data import load_orbit, load_bodies_location, load_lagrange_points_loc
 
 
 class VerifyManifoldsBySymmetry:
-    def __init__(self, orbit_type, lagrange_point_nr, orbit_id, c_level):
+    def __init__(self, orbit_type, lagrange_point_nr, orbit_id, c_level, low_dpi=False):
+        self.lowDPI = low_dpi
+        self.dpi = 150
         self.orbitType = orbit_type
         self.orbitId = orbit_id
         self.cLevel = c_level
@@ -122,8 +124,14 @@ class VerifyManifoldsBySymmetry:
         fig.subplots_adjust(top=0.9)
 
         plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial overview', size=self.suptitleSize)
-        plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold.pdf',
-                    transparent=True)
+        if self.lowDPI:
+            plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(
+                self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold.png',
+                        transparent=True, dpi=self.dpi)
+        else:
+            plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(
+                self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold.pdf',
+                        transparent=True)
         plt.close()
         pass
 
@@ -136,10 +144,9 @@ class VerifyManifoldsBySymmetry:
         ax2 = fig.add_subplot(1, 3, 3)
 
         # Determine color for plot
-        plot_alpha = 1
         line_width = 1
         color = self.plottingColors['orbit']
-        # Todo get actual orbits
+
         ax0.plot(self.orbitDf['x'], self.orbitDf['y'], color=color, linewidth=line_width)
         ax1.plot(self.orbitDf['x'], self.orbitDf['z'], color=color, linewidth=line_width)
         ax2.plot(self.orbitDf['y'], self.orbitDf['z'], color=color, linewidth=line_width)
@@ -199,14 +206,28 @@ class VerifyManifoldsBySymmetry:
         ax2.set_ylabel('z [-]')
         ax2.grid(True, which='both', ls=':')
 
+        # Lagrange points and bodies
+        lagrange_points_df = load_lagrange_points_location()
+        lagrange_point_nr = 'L' + str(self.lagrangePointNr)
+        ax0.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'], color='black', marker='x')
+        ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['z'], color='black', marker='x')
+        ax2.scatter(lagrange_points_df[lagrange_point_nr]['y'], lagrange_points_df[lagrange_point_nr]['z'], color='black', marker='x')
+
         fig.tight_layout()
         fig.subplots_adjust(top=0.8)
         fig.suptitle('$L_' + str(
-            self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' - Orientation of (un)stable modes at C = ' + str(self.cLevel),
+            self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Orientation of (un)stable modes at C = ' + str(self.cLevel),
                      size=self.suptitleSize)
+        # plt.show()
         # fig.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathbf{X_i} \pm \epsilon \\frac{\mathbf{v}^S_i}{|\mathbf{v}^S_i|}, \mathbf{X_i} \pm \epsilon \\frac{\mathbf{v}^U_i}{|\mathbf{v}^U_i|} \}$ - Spatial overview', size=self.suptitleSize)
-        plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_eigenvector.pdf',
-                    transparent=True)
+        if self.lowDPI:
+            plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(
+                self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_eigenvector.png',
+                        transparent=True, dpi=self.dpi)
+        else:
+            plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(
+                self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_eigenvector.pdf',
+                        transparent=True)
         plt.close()
         pass
 
@@ -260,9 +281,16 @@ class VerifyManifoldsBySymmetry:
         fig.tight_layout()
         fig.subplots_adjust(top=0.9)
 
-        fig.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathbf{X_i} \pm \epsilon \\frac{\mathbf{v}^S_i}{\|\mathbf{v}^S_i\|}, \mathbf{X_i} \pm \epsilon \\frac{\mathbf{v}^U_i}{|\mathbf{v}^U_i|} \}$ - Spatial overview', size=self.suptitleSize)
+        fig.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + '  $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Orientation of (un)stable modes', size=self.suptitleSize)
         # plt.show()
-        plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_eigenvector_zoom.pdf', transparent=True)
+        if self.lowDPI:
+            plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(
+                self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_eigenvector_zoom.png',
+                        transparent=True, dpi=self.dpi)
+        else:
+            plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(
+                self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_eigenvector_zoom.pdf',
+                        transparent=True)
         plt.close()
         pass
 
@@ -468,8 +496,15 @@ class VerifyManifoldsBySymmetry:
             self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Symmetry validation at C = ' + str(self.cLevel),
                      size=self.suptitleSize)
         plt.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
-        plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_phase_difference.pdf',
-                    transparent=True)
+        if self.lowDPI:
+            plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(
+                self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_phase_difference.png',
+                        transparent=True, dpi=self.dpi)
+        else:
+            plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(
+                self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_phase_difference.pdf',
+                        transparent=True)
+
         plt.close()
         pass
 
@@ -659,13 +694,21 @@ class VerifyManifoldsBySymmetry:
                      size=self.suptitleSize)
         plt.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
         # plt.show()
-        plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_phase_difference.pdf',
-                    transparent=True)
+        if self.lowDPI:
+            plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(
+                self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_phase_difference.png',
+                        transparent=True, dpi=self.dpi)
+        else:
+            plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(
+                self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_phase_difference.pdf',
+                        transparent=True)
+
         plt.close()
         pass
 
 
 if __name__ == '__main__':
+    low_dpi = True
     orbit_ids = {'horizontal': {1: {3.05: 808, 3.10: 577, 3.15: 330}, 2: {3.05: 1066, 3.10: 760, 3.15: 373}},
                  'vertical': {1: {3.05: 1664, 3.10: 1159, 3.15: 600}, 2: {3.05: 1878, 3.10: 1275, 3.15: 513}},
                  'halo': {1: {3.05: 1235, 3.10: 836, 3.15: 358}, 2: {3.05: 1093, 3.10: 651, 3.15: 0}}}
@@ -673,6 +716,7 @@ if __name__ == '__main__':
     c_levels = [3.05, 3.1, 3.15]
     lagrange_points = [1, 2]
     orbit_types = ['horizontal', 'vertical', 'halo']
+    # orbit_types = ['horizontal']
     c_levels = [3.15]
 
     for orbit_type in orbit_types:
@@ -681,10 +725,12 @@ if __name__ == '__main__':
             print(lagrange_point)
             for c_level in c_levels:
                 print(c_level)
-                verify_manifolds_by_symmetry = VerifyManifoldsBySymmetry(orbit_type, lagrange_point, orbit_ids[orbit_type][lagrange_point][c_level], c_level)
-                # verify_manifolds_by_symmetry.plot_manifolds()
+                verify_manifolds_by_symmetry = VerifyManifoldsBySymmetry(orbit_type, lagrange_point,
+                                                                         orbit_ids[orbit_type][lagrange_point][c_level],
+                                                                         c_level, low_dpi=low_dpi)
+                verify_manifolds_by_symmetry.plot_manifolds()
                 # verify_manifolds_by_symmetry.plot_eigenvectors()
                 # verify_manifolds_by_symmetry.plot_eigenvectors_zoom()
                 # verify_manifolds_by_symmetry.show_phase_difference()
-                verify_manifolds_by_symmetry.show_phase_difference_refactored()
+                # verify_manifolds_by_symmetry.show_phase_difference_refactored()
                 # plt.show()

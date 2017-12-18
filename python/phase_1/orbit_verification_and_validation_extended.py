@@ -25,9 +25,7 @@ from load_data import load_orbit, load_bodies_location, load_lagrange_points_loc
 
 class DisplayPeriodicityValidation:
 
-    def __init__(self, orbit_type, lagrange_point_nr, low_dpi=False):
-        self.lowDPI = low_dpi
-        self.dpi = 150
+    def __init__(self, orbit_type, lagrange_point_nr):
         self.C = []
         self.T = []
         self.x = []
@@ -71,234 +69,19 @@ class DisplayPeriodicityValidation:
         if self.orbitTypeForTitle == 'Horizontal' or self.orbitTypeForTitle == 'Vertical':
             self.orbitTypeForTitle += ' Lyapunov'
 
-        self.numberOfHaloExtensionOrbits = 0
-        # Include reverse halo orbit continuation to horizontal Lyapunov tangent bifurcation
-        if orbit_type == 'halo':
-            initial_conditions_file_path = '../../data/raw/orbits/L' + str(
-                lagrange_point_nr) + '_' + orbit_type + '_n_initial_conditions.txt'
-            initial_conditions_incl_m_df = load_initial_conditions_incl_M(initial_conditions_file_path)[::-1]
-
-            differential_correction_file_path = '../../data/raw/orbits/L' + str(
-                lagrange_point_nr) + '_' + orbit_type + '_n_differential_correction.txt'
-            differential_correction_df = load_differential_corrections(differential_correction_file_path)[::-1]
-
-            self.numberOfHaloExtensionOrbits = len(initial_conditions_incl_m_df)
-
-            for row in differential_correction_df.iterrows():
-                self.numberOfIterations.append(row[1][0])
-                self.C_half_period.append(row[1][1])
-                self.T_half_period.append(row[1][2])
-                self.X_half_period.append(np.array(row[1][3:9]))
-
-            self.maxEigenvalueDeviation = 1.0e-3  # Changed from 1e-3
-
-            for row in initial_conditions_incl_m_df.iterrows():
-                self.C.append(row[1][0])
-                self.T.append(row[1][1])
-                self.x.append(row[1][2])
-                self.X.append(np.array(row[1][2:8]))
-
-                # self.X.append(np.array(row[1][3:9]))
-                M = np.matrix([list(row[1][8:14]), list(row[1][14:20]), list(row[1][20:26]), list(row[1][26:32]),
-                               list(row[1][32:38]), list(row[1][38:44])])
-
-                eigenvalue = np.linalg.eigvals(M)
-                print(str(row[0]) + ' at x-loc: ' + str(row[1][2]))
-
-                sorting_indices = [-1, -1, -1, -1, -1, -1]
-                idx_real_one = []
-                # Find indices of the first pair of real eigenvalue equal to one
-                for idx, l in enumerate(eigenvalue):
-                    if abs(l.imag) < self.maxEigenvalueDeviation:
-                        if abs(l.real - 1.0) < self.maxEigenvalueDeviation:
-                            if sorting_indices[2] == -1:
-                                sorting_indices[2] = idx
-                                idx_real_one.append(idx)
-                            elif sorting_indices[3] == -1:
-                                sorting_indices[3] = idx
-                                idx_real_one.append(idx)
-
-                # Find indices of the pair of largest/smallest real eigenvalue (corresponding to the unstable/stable subspace)
-                for idx, l in enumerate(eigenvalue):
-                    if idx == (sorting_indices[2] or sorting_indices[3]):
-                        continue
-                    if abs(l.imag) < self.maxEigenvalueDeviation:
-                        if abs(l.real) == max(abs(eigenvalue.real)):
-                            sorting_indices[0] = idx
-                        elif abs(abs(l.real) - 1.0 / max(abs(eigenvalue.real))) < self.maxEigenvalueDeviation:
-                            sorting_indices[5] = idx
-
-                missing_indices = sorted(list(set(list(range(-1, 6))) - set(sorting_indices)))
-                if eigenvalue.imag[missing_indices[0]] > eigenvalue.imag[missing_indices[1]]:
-                    sorting_indices[1] = missing_indices[0]
-                    sorting_indices[4] = missing_indices[1]
-                else:
-                    sorting_indices[1] = missing_indices[1]
-                    sorting_indices[4] = missing_indices[0]
-
-                # # TODO check that all indices are unique and no -
-                if len(sorting_indices) > len(set(sorting_indices)):
-                    print('\nWARNING: SORTING INDEX IS NOT UNIQUE FOR ' + self.orbitType + ' AT L' + str(
-                        self.lagrangePointNr))
-                    print(eigenvalue)
-                    if len(idx_real_one) != 2:
-                        idx_real_one = []
-                        # Find indices of the first pair of real eigenvalue equal to one
-                        for idx, l in enumerate(eigenvalue):
-                            if abs(l.imag) < 2 * self.maxEigenvalueDeviation:
-                                if abs(l.real - 1.0) < 2 * self.maxEigenvalueDeviation:
-                                    if sorting_indices[2] == -1:
-                                        sorting_indices[2] = idx
-                                        idx_real_one.append(idx)
-                                    elif sorting_indices[3] == -1:
-                                        sorting_indices[3] = idx
-                                        idx_real_one.append(idx)
-
-                    if len(idx_real_one) == 2:
-                        sorting_indices = [-1, -1, -1, -1, -1, -1]
-                        sorting_indices[2] = idx_real_one[0]
-                        sorting_indices[3] = idx_real_one[1]
-                        print('minimum angle = ' + str(
-                            min(abs(np.angle(eigenvalue[list(set(range(6)) - set(idx_real_one))], deg=True)))))
-                        print('maximum angle = ' + str(
-                            max(abs(np.angle(eigenvalue[list(set(range(6)) - set(idx_real_one))], deg=True)))))
-                        # Assume two times real one and two conjugate pairs
-                        for idx, l in enumerate(eigenvalue):
-                            print(idx)
-                            print(abs(np.angle(l, deg=True)))
-                            # min(abs(np.angle(eigenvalue[list(set(range(6)) - set(idx_real_one))], deg=True)))
-                            # if abs(np.angle(l, deg=True))%180 == min(abs(np.angle(eigenvalue[list(set(range(6)) - set(idx_real_one))], deg=True)) %180):
-                            if l.real == eigenvalue[list(set(range(6)) - set(idx_real_one))].real.max():
-                                if l.imag > 0:
-                                    sorting_indices[0] = idx
-                                elif l.imag < 0:
-                                    sorting_indices[5] = idx
-                            # if abs(np.angle(l, deg=True))%180 == max(abs(np.angle(eigenvalue[list(set(range(6)) - set(idx_real_one))], deg=True)) %180):
-                            if l.real == eigenvalue[list(set(range(6)) - set(idx_real_one))].real.min():
-                                if l.imag > 0:
-                                    sorting_indices[1] = idx
-                                elif l.imag < 0:
-                                    sorting_indices[4] = idx
-                            print(sorting_indices)
-
-                if len(sorting_indices) > len(set(sorting_indices)):
-                    print('\nWARNING: SORTING INDEX IS STILL NOT UNIQUE')
-                    # Sorting eigenvalues from largest to smallest norm, excluding real one
-
-                    # Sorting based on previous phase
-                    if len(idx_real_one) == 2:
-                        sorting_indices = [-1, -1, -1, -1, -1, -1]
-                        sorting_indices[2] = idx_real_one[0]
-                        sorting_indices[3] = idx_real_one[1]
-
-                        # Assume two times real one and two conjugate pairs
-                        for idx, l in enumerate(eigenvalue[list(set(range(6)) - set(idx_real_one))]):
-                            print(idx)
-                            if abs(l.real - self.lambda1[-1].real) == min(
-                                    abs(eigenvalue.real - self.lambda1[-1].real)) and abs(
-                                l.imag - self.lambda1[-1].imag) == min(
-                                abs(eigenvalue.imag - self.lambda1[-1].imag)):
-                                sorting_indices[0] = idx
-                            if abs(l.real - self.lambda2[-1].real) == min(
-                                    abs(eigenvalue.real - self.lambda2[-1].real)) and abs(
-                                l.imag - self.lambda2[-1].imag) == min(
-                                abs(eigenvalue.imag - self.lambda2[-1].imag)):
-                                sorting_indices[1] = idx
-                            if abs(l.real - self.lambda5[-1].real) == min(
-                                    abs(eigenvalue.real - self.lambda5[-1].real)) and abs(
-                                l.imag - self.lambda5[-1].imag) == min(
-                                abs(eigenvalue.imag - self.lambda5[-1].imag)):
-                                sorting_indices[4] = idx
-                            if abs(l.real - self.lambda6[-1].real) == min(
-                                    abs(eigenvalue.real - self.lambda6[-1].real)) and abs(
-                                l.imag - self.lambda6[-1].imag) == min(
-                                abs(eigenvalue.imag - self.lambda6[-1].imag)):
-                                sorting_indices[5] = idx
-                            print(sorting_indices)
-
-                    pass
-                if (sorting_indices[1] and sorting_indices[4]) == -1:
-                    # Fill two missing values
-                    two_missing_indices = list(set(list(range(-1, 6))) - set(sorting_indices))
-                    if abs(eigenvalue[two_missing_indices[0]].real) > abs(eigenvalue[two_missing_indices[1]].real):
-                        sorting_indices[1] = two_missing_indices[0]
-                        sorting_indices[4] = two_missing_indices[1]
-                    else:
-                        sorting_indices[1] = two_missing_indices[1]
-                        sorting_indices[4] = two_missing_indices[0]
-                    print(sorting_indices)
-                if (sorting_indices[0] and sorting_indices[5]) == -1:
-                    # Fill two missing values
-                    two_missing_indices = list(set(list(range(-1, 6))) - set(sorting_indices))
-                    if abs(eigenvalue[two_missing_indices[0]].real) > abs(eigenvalue[two_missing_indices[1]].real):
-                        sorting_indices[0] = two_missing_indices[0]
-                        sorting_indices[5] = two_missing_indices[1]
-                    else:
-                        sorting_indices[0] = two_missing_indices[1]
-                        sorting_indices[5] = two_missing_indices[0]
-                    print(sorting_indices)
-
-                if len(sorting_indices) > len(set(sorting_indices)):
-                    print('\nWARNING: SORTING INDEX IS STILL STILL NOT UNIQUE')
-                    # Sorting eigenvalues from largest to smallest norm, excluding real one
-                    sorting_indices = abs(eigenvalue).argsort()[::-1]
-                print(eigenvalue[sorting_indices])
-                self.eigenvalues.append(eigenvalue[sorting_indices])
-                self.lambda1.append(eigenvalue[sorting_indices[0]])
-                self.lambda2.append(eigenvalue[sorting_indices[1]])
-                self.lambda3.append(eigenvalue[sorting_indices[2]])
-                self.lambda4.append(eigenvalue[sorting_indices[3]])
-                self.lambda5.append(eigenvalue[sorting_indices[4]])
-                self.lambda6.append(eigenvalue[sorting_indices[5]])
-
-                # Determine order of linear instability
-                reduction = 0
-                for i in range(6):
-                    if (abs(eigenvalue[i]) - 1.0) < 1e-2:
-                        reduction += 1
-
-                if len(self.orderOfLinearInstability) > 0:
-                    # Check for a bifurcation, when the order of linear instability changes
-                    if (6 - reduction) != self.orderOfLinearInstability[-1]:
-                        self.orbitIdBifurcations.append(row[0])
-
-                self.orderOfLinearInstability.append(6 - reduction)
-                self.v1.append(abs(eigenvalue[sorting_indices[0]] + eigenvalue[sorting_indices[5]]) / 2)
-                self.v2.append(abs(eigenvalue[sorting_indices[1]] + eigenvalue[sorting_indices[4]]) / 2)
-                self.v3.append(abs(eigenvalue[sorting_indices[2]] + eigenvalue[sorting_indices[3]]) / 2)
-                self.D.append(np.linalg.det(M))
-            print('Index for bifurcations: ')
-            print(self.orbitIdBifurcations)
-
-            # Determine heatmap for level of C
-            for i in range(0, len(self.C)):
-                df = load_orbit(
-                    '../../data/raw/orbits/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_n_' + str(i) + '.txt')
-                self.delta_r.append(np.sqrt((df.head(1)['x'].values - df.tail(1)['x'].values) ** 2 +
-                                            (df.head(1)['y'].values - df.tail(1)['y'].values) ** 2 +
-                                            (df.head(1)['z'].values - df.tail(1)['z'].values) ** 2))
-
-                self.delta_v.append(np.sqrt((df.head(1)['xdot'].values - df.tail(1)['xdot'].values) ** 2 +
-                                            (df.head(1)['ydot'].values - df.tail(1)['ydot'].values) ** 2 +
-                                            (df.head(1)['zdot'].values - df.tail(1)['zdot'].values) ** 2))
-
-                self.delta_x.append(abs(df.head(1)['x'].values - df.tail(1)['x'].values))
-                self.delta_y.append(abs(df.head(1)['y'].values - df.tail(1)['y'].values))
-                self.delta_z.append(abs(df.head(1)['z'].values - df.tail(1)['z'].values))
-                self.delta_x_dot.append(abs(df.head(1)['xdot'].values - df.tail(1)['xdot'].values))
-                self.delta_y_dot.append(abs(df.head(1)['ydot'].values - df.tail(1)['ydot'].values))
-                self.delta_z_dot.append(abs(df.head(1)['zdot'].values - df.tail(1)['zdot'].values))
-
-
-        initial_conditions_file_path = '../../data/raw/orbits/L' + str(lagrange_point_nr) + '_' + orbit_type + '_initial_conditions.txt'
+        initial_conditions_file_path = '../../data/raw/orbits/extended/L' + str(lagrange_point_nr) + '_' \
+                                       + orbit_type + '_initial_conditions.txt'
         initial_conditions_incl_m_df = load_initial_conditions_incl_M(initial_conditions_file_path)
 
-        differential_correction_file_path = '../../data/raw/orbits/L' + str(lagrange_point_nr) + '_' + orbit_type + '_differential_correction.txt'
+        differential_correction_file_path = '../../data/raw/orbits/extended/L' + str(lagrange_point_nr) + '_' \
+                                            + orbit_type + '_differential_correction.txt'
         differential_correction_df = load_differential_corrections(differential_correction_file_path)
         # Fix for extended v-l
         self.indexNanEntries = pd.isnull(initial_conditions_incl_m_df).any(1).nonzero()[0]
         print(self.indexNanEntries)
+
         initial_conditions_incl_m_df.dropna(axis=0, how='any', inplace=True)
+        differential_correction_df.drop(differential_correction_df.index[self.indexNanEntries], inplace=True)
 
         for row in differential_correction_df.iterrows():
             self.numberOfIterations.append(row[1][0])
@@ -436,6 +219,7 @@ class DisplayPeriodicityValidation:
             if (sorting_indices[0] and sorting_indices[5]) == -1:
                 # Fill two missing values
                 two_missing_indices = list(set(list(range(-1, 6))) - set(sorting_indices))
+                print(eigenvalue)
                 print(sorting_indices)
                 print(two_missing_indices)
                 # TODO quick fix for extended v-l
@@ -445,6 +229,7 @@ class DisplayPeriodicityValidation:
                 #         sorting_indices[0] = two_missing_indices[0]
                 #     else:
                 #         sorting_indices[5] = two_missing_indices[0]
+                # sorting_indices = abs(eigenvalue).argsort()[::-1]
                 if abs(eigenvalue[two_missing_indices[0]].real) > abs(eigenvalue[two_missing_indices[1]].real):
                     sorting_indices[0] = two_missing_indices[0]
                     sorting_indices[5] = two_missing_indices[1]
@@ -452,15 +237,6 @@ class DisplayPeriodicityValidation:
                     sorting_indices[0] = two_missing_indices[1]
                     sorting_indices[5] = two_missing_indices[0]
                 print(sorting_indices)
-
-            # TODO quick fix Halo L1
-            if orbit_type == 'halo' and lagrange_point_nr == 1 and row[0]>2316:
-                temp = sorting_indices[0]
-                sorting_indices[0] = sorting_indices[1]
-                sorting_indices[1] = temp
-                temp = sorting_indices[4]
-                sorting_indices[4] = sorting_indices[5]
-                sorting_indices[5] = temp
 
             if len(sorting_indices) > len(set(sorting_indices)):
                 print('\nWARNING: SORTING INDEX IS STILL STILL NOT UNIQUE')
@@ -501,7 +277,7 @@ class DisplayPeriodicityValidation:
             self.plotColorIndexBasedOnC.append(int(np.round((jacobi_energy - min(self.C)) / (max(self.C) - min(self.C)) * (self.numberOfPlotColorIndices-1))))
 
         for i in range(0, len(initial_conditions_incl_m_df)):
-            df = load_orbit('../../data/raw/orbits/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(i) + '.txt')
+            df = load_orbit('../../data/raw/orbits/extended/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(i) + '.txt')
             self.delta_r.append(np.sqrt((df.head(1)['x'].values - df.tail(1)['x'].values) ** 2 +
                                         (df.head(1)['y'].values - df.tail(1)['y'].values) ** 2 +
                                         (df.head(1)['z'].values - df.tail(1)['z'].values) ** 2))
@@ -519,8 +295,6 @@ class DisplayPeriodicityValidation:
 
         # self.figSize = (20, 20)
         self.figSize = (7*(1+np.sqrt(5))/2, 7)
-        blues = sns.color_palette('Blues', 100)
-        greens = sns.color_palette('BuGn', 100)
         n_colors = 3
         n_colors_l = 6
         self.plottingColors = {'lambda1': sns.color_palette("viridis", n_colors_l)[0],
@@ -529,15 +303,6 @@ class DisplayPeriodicityValidation:
                                'lambda4': sns.color_palette("viridis", n_colors_l)[5],
                                'lambda5': sns.color_palette("viridis", n_colors_l)[3],
                                'lambda6': sns.color_palette("viridis", n_colors_l)[1],
-                               # 'lambda1': blues[40],
-                               # 'lambda2': greens[50],
-                               # 'lambda3': blues[90],
-                               # 'lambda4': blues[90],
-                               # 'lambda5': greens[70],
-                               # 'lambda6': blues[60],
-                               # 'singleLine': blues[80],
-                               # 'doubleLine': [greens[50], blues[80]],
-                               # 'tripleLine': [blues[40], greens[50], blues[80]],
                                'singleLine': sns.color_palette("viridis", n_colors)[0],
                                'doubleLine': [sns.color_palette("viridis", n_colors)[n_colors-1], sns.color_palette("viridis", n_colors)[0]],
                                'tripleLine': [sns.color_palette("viridis", n_colors)[n_colors-1], sns.color_palette("viridis", n_colors)[int((n_colors-1)/2)], sns.color_palette("viridis", n_colors)[0]],
@@ -545,6 +310,7 @@ class DisplayPeriodicityValidation:
 
         self.suptitleSize = 20
         self.xlim = [min(self.x), max(self.x)]
+
         pass
 
     def plot_family(self):
@@ -604,38 +370,19 @@ class DisplayPeriodicityValidation:
         plot_alpha = 1
         line_width = 0.5
 
-        if self.orbitType == 'halo':
-            orbitIdsPlot = list(range(0, self.numberOfHaloExtensionOrbits - 1, 100))
-            if orbitIdsPlot[-1] != self.numberOfHaloExtensionOrbits - 1:
-                orbitIdsPlot.append(self.numberOfHaloExtensionOrbits - 1)
-                # Plot orbits
-                for i in orbitIdsPlot:
-                    # plot_color = colorOrderOfLinearInstability[self.orderOfLinearInstability[i]]
-                    plot_color = colors[self.plotColorIndexBasedOnC[i]]
-                    df = load_orbit(
-                        '../../data/raw/orbits/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_n_' + str(
-                            i) + '.txt')
-                    ax1.plot(df['x'], df['y'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
-                    ax2.plot(df['x'], df['y'], df['z'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
-                    ax5.plot(df['x'], df['y'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
-                    if self.orbitType != 'horizontal':
-                        ax3.plot(df['x'], df['z'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
-                        ax4.plot(df['y'], df['z'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
-
         # Plot every 100th member, including the ultimate member of the family
-        if self.orbitType=='vertical' or self.orbitType=='halo':
-            spacing_factor = 100
-        else:
-            spacing_factor = 50
-        orbitIdsPlot = list(range(0, len(self.C)-self.numberOfHaloExtensionOrbits-1, spacing_factor))
-        if orbitIdsPlot[-1] != len(self.C)-self.numberOfHaloExtensionOrbits-1:
-            orbitIdsPlot.append(len(self.C)-self.numberOfHaloExtensionOrbits-1)
+        spacing_factor = 100
+
+        orbitIdsPlot = list(range(0, len(self.C)-1, spacing_factor))
+        if orbitIdsPlot[-1] != len(self.C)-1:
+            orbitIdsPlot.append(len(self.C)-1)
 
         # Plot orbits
         for i in orbitIdsPlot:
             # plot_color = colorOrderOfLinearInstability[self.orderOfLinearInstability[i]]
-            plot_color = colors[self.plotColorIndexBasedOnC[self.numberOfHaloExtensionOrbits+i]]
-            df = load_orbit('../../data/raw/orbits/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(i) + '.txt')
+            nan_correction = sum([1 for nan in self.indexNanEntries if nan < i])
+            plot_color = colors[self.plotColorIndexBasedOnC[i - nan_correction]]
+            df = load_orbit('../../data/raw/orbits/extended/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(i) + '.txt')
             ax1.plot(df['x'], df['y'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
             ax2.plot(df['x'], df['y'], df['z'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
             ax5.plot(df['x'], df['y'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
@@ -643,17 +390,18 @@ class DisplayPeriodicityValidation:
                 ax3.plot(df['x'], df['z'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
                 ax4.plot(df['y'], df['z'], color=plot_color, alpha=plot_alpha, linewidth=line_width)
 
-        # Plot the bifurcations
-        for i in self.orbitIdBifurcations:
-            # plot_color = 'b'
-            plot_color = colors[self.plotColorIndexBasedOnC[i]]
-            df = load_orbit('../../data/raw/orbits/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(i) + '.txt')
-            ax1.plot(df['x'], df['y'], color=plot_color, linewidth=3)
-            ax2.plot(df['x'], df['y'], df['z'], color=plot_color, linewidth=3)
-            ax5.plot(df['x'], df['y'], color=plot_color, linewidth=3)
-            if self.orbitType != 'horizontal':
-                ax3.plot(df['x'], df['z'], color=plot_color, linewidth=3)
-                ax4.plot(df['y'], df['z'], color=plot_color, linewidth=3)
+        # # Plot the bifurcations
+        # for i in self.orbitIdBifurcations:
+        #     # plot_color = 'b'
+        #     nan_correction = sum([1 for nan in self.indexNanEntries if nan < i])
+        #     plot_color = colors[self.plotColorIndexBasedOnC[i - nan_correction]]
+        #     df = load_orbit('../../data/raw/orbits/extended/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(i) + '.txt')
+        #     ax1.plot(df['x'], df['y'], color=plot_color, linewidth=3)
+        #     ax2.plot(df['x'], df['y'], df['z'], color=plot_color, linewidth=3)
+        #     ax5.plot(df['x'], df['y'], color=plot_color, linewidth=3)
+        #     if self.orbitType != 'horizontal':
+        #         ax3.plot(df['x'], df['z'], color=plot_color, linewidth=3)
+        #         ax4.plot(df['y'], df['z'], color=plot_color, linewidth=3)
 
         ax1.set_xlabel('x [-]')
         ax1.set_ylabel('y [-]')
@@ -662,19 +410,19 @@ class DisplayPeriodicityValidation:
         ax2.set_xlabel('x [-]')
         ax2.set_ylabel('y [-]')
         ax2.set_zlabel('z [-]')
-        ax2.set_zlim([-0.4, 0.4])
+        ax2.set_zlim([-1.2, 1.2])
         ax2.grid(True, which='both', ls=':')
         ax2.view_init(30, -120)
 
         if self.orbitType != 'horizontal':
             ax3.set_xlabel('x [-]')
             ax3.set_ylabel('z [-]')
-            ax3.set_ylim([-0.4, 0.4])
+            ax3.set_ylim([-1.2, 1.2])
             ax3.grid(True, which='both', ls=':')
 
             ax4.set_xlabel('y [-]')
             ax4.set_ylabel('z [-]')
-            ax4.set_ylim([-0.4, 0.4])
+            ax4.set_ylim([-1.2, 1.2])
             ax4.grid(True, which='both', ls=':')
 
         ax5.set_xlabel('x [-]')
@@ -698,12 +446,8 @@ class DisplayPeriodicityValidation:
 
         fig1.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ': family', size=self.suptitleSize)
 
-        if self.lowDPI:
-            fig2.savefig('../../data/figures/orbits/L' + str(
-                self.lagrangePointNr) + '_' + self.orbitType + '_family_subplots.png', transparent=True, dpi=self.dpi)
-        else:
-            fig2.savefig('../../data/figures/orbits/L' + str(
-                self.lagrangePointNr) + '_' + self.orbitType + '_family_subplots.pdf', transparent=True)
+        fig2.savefig('../../data/figures/orbits/extended/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_family_subplots.pdf',
+                     transparent=True)
         plt.close(fig2)
 
         plt.close()
@@ -734,12 +478,8 @@ class DisplayPeriodicityValidation:
         plt.tight_layout()
         plt.subplots_adjust(top=0.8)
         plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' - Orbital energy and period', size=self.suptitleSize)
-        if self.lowDPI:
-            plt.savefig('../../data/figures/orbits/L' + str(
-                self.lagrangePointNr) + '_' + self.orbitType + '_orbital_energy.png', transparent=True, dpi=self.dpi)
-        else:
-            plt.savefig('../../data/figures/orbits/L' + str(
-                self.lagrangePointNr) + '_' + self.orbitType + '_orbital_energy.pdf', transparent=True)
+        plt.savefig('../../data/figures/orbits/extended/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_orbital_energy.pdf',
+                    transparent=True)
         # plt.show()
         plt.close()
         pass
@@ -794,12 +534,8 @@ class DisplayPeriodicityValidation:
             for j in range(2):
                 arr[i, j].grid(True, which='both', ls=':')
         plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' - Monodromy matrix eigensystem validation', size=self.suptitleSize)
-        if self.lowDPI:
-            plt.savefig('../../data/figures/orbits/L' + str(
-                self.lagrangePointNr) + '_' + self.orbitType + '_monodromy_analysis.png', transparent=True, dpi=self.dpi)
-        else:
-            plt.savefig('../../data/figures/orbits/L' + str(
-                self.lagrangePointNr) + '_' + self.orbitType + '_monodromy_analysis.pdf', transparent=True)
+        plt.savefig('../../data/figures/orbits/extended/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_monodromy_analysis.pdf',
+                    transparent=True)
         # plt.show()
         plt.close()
         pass
@@ -882,12 +618,8 @@ class DisplayPeriodicityValidation:
         plt.tight_layout()
         plt.subplots_adjust(top=0.9)
         plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' - Eigenvalues $\lambda_i$ \& stability indices $v_i$', size=self.suptitleSize)
-        if self.lowDPI:
-            plt.savefig('../../data/figures/orbits/L' + str(
-                self.lagrangePointNr) + '_' + self.orbitType + '_stability.png', transparent=True, dpi=self.dpi)
-        else:
-            plt.savefig('../../data/figures/orbits/L' + str(
-                self.lagrangePointNr) + '_' + self.orbitType + '_stability.pdf', transparent=True)
+        plt.savefig('../../data/figures/orbits/extended/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_stability.pdf',
+                    transparent=True)
         # plt.show()
         plt.close()
         pass
@@ -975,26 +707,20 @@ class DisplayPeriodicityValidation:
         plt.subplots_adjust(top=0.9)
 
         plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' - Periodicity constraints verification', size=self.suptitleSize)
-        if self.lowDPI:
-            plt.savefig('../../data/figures/orbits/L' + str(
-                self.lagrangePointNr) + '_' + self.orbitType + '_periodicity.png', transparent=True, dpi=self.dpi)
-        else:
-            plt.savefig('../../data/figures/orbits/L' + str(
-                self.lagrangePointNr) + '_' + self.orbitType + '_periodicity.pdf', transparent=True)
+        plt.savefig('../../data/figures/orbits/extended/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_periodicity.pdf',
+                    transparent=True)
         # plt.show()
         plt.close()
         pass
 
 
 if __name__ == '__main__':
-    orbit_types = ['horizontal', 'vertical', 'halo', 'axial']
-    # orbit_types = ['vertical']
+    orbit_types = ['vertical']
     lagrange_points = [1, 2]
-    low_dpi = True
 
     for orbit_type in orbit_types:
         for lagrange_point in lagrange_points:
-            display_periodicity_validation = DisplayPeriodicityValidation(orbit_type, lagrange_point, low_dpi=low_dpi)
+            display_periodicity_validation = DisplayPeriodicityValidation(orbit_type, lagrange_point)
             display_periodicity_validation.plot_family()
             display_periodicity_validation.plot_orbital_energy()
             display_periodicity_validation.plot_monodromy_analysis()
