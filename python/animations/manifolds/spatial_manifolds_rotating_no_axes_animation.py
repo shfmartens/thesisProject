@@ -8,7 +8,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import seaborn as sns
 import multiprocessing as mp
 sys.path.append('../../util')
-from load_data import load_orbit, load_manifold, load_bodies_location, load_lagrange_points_location, cr3bp_velocity
+from load_data import load_orbit, load_manifold_refactored, load_bodies_location, load_lagrange_points_location, cr3bp_velocity
 sns.set_style("whitegrid")
 params = {'text.latex.preamble': [r"\usepackage{lmodern}"],
           'text.usetex': True,
@@ -100,14 +100,14 @@ class SpatialManifoldsRotatingNoAxesAnimation:
         return self.lines
 
     def animate(self):
-        self.W_S_plus = [load_manifold('../../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(self.orbitIds[0]) + '_W_S_plus.txt'),
-                         load_manifold('../../../data/raw/manifolds/refined_for_c/L' + str(2) + '_' + self.orbitType + '_' + str(self.orbitIds[1]) + '_W_S_plus.txt')]
-        self.W_S_min = [load_manifold('../../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(self.orbitIds[0]) + '_W_S_min.txt'),
-                        load_manifold('../../../data/raw/manifolds/refined_for_c/L' + str(2) + '_' + self.orbitType + '_' + str(self.orbitIds[1]) + '_W_S_min.txt')]
-        self.W_U_plus = [load_manifold('../../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(self.orbitIds[0]) + '_W_U_plus.txt'),
-                         load_manifold('../../../data/raw/manifolds/refined_for_c/L' + str(2) + '_' + self.orbitType + '_' + str(self.orbitIds[1]) + '_W_U_plus.txt')]
-        self.W_U_min = [load_manifold('../../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(self.orbitIds[0]) + '_W_U_min.txt'),
-                        load_manifold('../../../data/raw/manifolds/refined_for_c/L' + str(2) + '_' + self.orbitType + '_' + str(self.orbitIds[1]) + '_W_U_min.txt')]
+        self.W_S_plus = [load_manifold_refactored('../../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(self.orbitIds[0]) + '_W_S_plus.txt'),
+                         load_manifold_refactored('../../../data/raw/manifolds/refined_for_c/L' + str(2) + '_' + self.orbitType + '_' + str(self.orbitIds[1]) + '_W_S_plus.txt')]
+        self.W_S_min = [load_manifold_refactored('../../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(self.orbitIds[0]) + '_W_S_min.txt'),
+                        load_manifold_refactored('../../../data/raw/manifolds/refined_for_c/L' + str(2) + '_' + self.orbitType + '_' + str(self.orbitIds[1]) + '_W_S_min.txt')]
+        self.W_U_plus = [load_manifold_refactored('../../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(self.orbitIds[0]) + '_W_U_plus.txt'),
+                         load_manifold_refactored('../../../data/raw/manifolds/refined_for_c/L' + str(2) + '_' + self.orbitType + '_' + str(self.orbitIds[1]) + '_W_U_plus.txt')]
+        self.W_U_min = [load_manifold_refactored('../../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(self.orbitIds[0]) + '_W_U_min.txt'),
+                        load_manifold_refactored('../../../data/raw/manifolds/refined_for_c/L' + str(2) + '_' + self.orbitType + '_' + str(self.orbitIds[1]) + '_W_U_min.txt')]
 
         self.numberOfOrbitsPerManifold = len(set(self.W_S_plus[0].index.get_level_values(0)))
         color_palette_green = sns.dark_palette('green', n_colors=self.numberOfOrbitsPerManifold)
@@ -184,8 +184,8 @@ class SpatialManifoldsRotatingNoAxesAnimation:
         t_max = 0
         for lagrange_point_idx in [0, 1]:
             for index in range(self.numberOfOrbitsPerManifold):
-                t_max = max(t_max, abs(self.W_S_plus[lagrange_point_idx].xs(index).tail(1).index.values[0]))
-                t_max = max(t_max, abs(self.W_S_min[lagrange_point_idx].xs(index).tail(1).index.values[0]))
+                t_max = max(t_max, abs(self.W_S_plus[lagrange_point_idx].xs(index).head(1).index.values[0]))
+                t_max = max(t_max, abs(self.W_S_min[lagrange_point_idx].xs(index).head(1).index.values[0]))
                 t_max = max(t_max, abs(self.W_U_plus[lagrange_point_idx].xs(index).tail(1).index.values[0]))
                 t_max = max(t_max, abs(self.W_U_min[lagrange_point_idx].xs(index).tail(1).index.values[0]))
         print('Maximum value for t = ' + str(t_max) + ', animation t: = ')
