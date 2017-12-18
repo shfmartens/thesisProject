@@ -66,7 +66,8 @@ Eigen::VectorXd applyDifferentialCorrection(const int librationPointNr, const st
 
         // If the maximum number of iterations has been reached, return a zero vector to stop the numerical continuation
         if ( numberOfIterations > maxNumberOfIterations and deviationFromPeriodicOrbitRelaxed == false )
-        {   //TODO change to obtain full l2 v-l family
+        {
+            // Relax the periodicity constraints after exceeding the maximum number of iterations instead of termination
             maxPositionDeviationFromPeriodicOrbit = 10.0 * maxPositionDeviationFromPeriodicOrbit;
             maxVelocityDeviationFromPeriodicOrbit = 10.0 * maxVelocityDeviationFromPeriodicOrbit;
             deviationFromPeriodicOrbitRelaxed = true;

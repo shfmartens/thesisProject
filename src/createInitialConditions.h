@@ -48,7 +48,7 @@ void createInitialConditions( const int librationPointNr, const std::string& orb
                               const double maxPositionDeviationFromPeriodicOrbit = 1.0e-12, const double maxVelocityDeviationFromPeriodicOrbit = 1.0e-12,
                               const double maxEigenvalueDeviation = 1.0e-3,
                               const boost::function< double( const Eigen::Vector6d& ) > pseudoArcLengthFunction =
-        boost::bind( &getDefaultArcLength, 5.0E-4, _1 ) );
+        boost::bind( &getDefaultArcLength, 1.0E-4, _1 ) );
 
-// TODO increased pseudo-arc length to reduce number of members
+
 #endif  // TUDATBUNDLE_CREATEINITIALCONDITIONS_H

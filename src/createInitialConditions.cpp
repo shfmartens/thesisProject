@@ -274,7 +274,6 @@ bool checkTermination( const std::vector< Eigen::VectorXd >& differentialCorrect
                        const double maxEigenvalueDeviation )
 {
     // Check termination conditions
-    // TODO check does not function
     bool continueNumericalContinuation = true;
     if ( differentialCorrections.at( differentialCorrections.size( ) - 1 ).segment(0, 6) == Eigen::VectorXd::Zero(6) )
     {
@@ -371,11 +370,6 @@ void createInitialConditions( const int librationPointNr, const std::string& orb
         continueNumericalContinuation = checkTermination(differentialCorrections, stateVectorInclSTM, orbitType, librationPointNr, maxEigenvalueDeviation );
 
         numberOfInitialConditions += 1;
-
-        // Alteration for compelete computation of the V-L family
-        if (initialStateVector(2) < 0.0){
-            continueNumericalContinuation = false;
-        }
     }
 
     writeFinalResultsToFiles( librationPointNr, orbitType, initialConditions, differentialCorrections );
