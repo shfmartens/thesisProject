@@ -52,7 +52,7 @@ class VerifyManifoldsBySymmetry:
         self.W_U_plus = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus.txt')
         self.W_U_min = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_min.txt')
 
-        self.orbitDf = load_orbit('../../data/raw/orbits/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '.txt')
+        self.orbitDf = load_orbit('../../data/raw/orbits/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_100.txt')
 
         self.numberOfOrbitsPerManifold = len(set(self.W_S_plus.index.get_level_values(0)))
         self.figSize = (7 * (1 + np.sqrt(5)) / 2, 7)
@@ -708,7 +708,7 @@ class VerifyManifoldsBySymmetry:
 
 
 if __name__ == '__main__':
-    low_dpi = True
+    low_dpi = False
     orbit_ids = {'horizontal': {1: {3.05: 808, 3.10: 577, 3.15: 330}, 2: {3.05: 1066, 3.10: 760, 3.15: 373}},
                  'vertical': {1: {3.05: 1664, 3.10: 1159, 3.15: 600}, 2: {3.05: 1878, 3.10: 1275, 3.15: 513}},
                  'halo': {1: {3.05: 1235, 3.10: 836, 3.15: 358}, 2: {3.05: 1093, 3.10: 651, 3.15: 0}}}
@@ -716,7 +716,7 @@ if __name__ == '__main__':
     c_levels = [3.05, 3.1, 3.15]
     lagrange_points = [1, 2]
     orbit_types = ['horizontal', 'vertical', 'halo']
-    # orbit_types = ['horizontal']
+
     c_levels = [3.15]
 
     for orbit_type in orbit_types:
@@ -729,8 +729,8 @@ if __name__ == '__main__':
                                                                          orbit_ids[orbit_type][lagrange_point][c_level],
                                                                          c_level, low_dpi=low_dpi)
                 verify_manifolds_by_symmetry.plot_manifolds()
-                # verify_manifolds_by_symmetry.plot_eigenvectors()
+                verify_manifolds_by_symmetry.plot_eigenvectors()
                 # verify_manifolds_by_symmetry.plot_eigenvectors_zoom()
                 # verify_manifolds_by_symmetry.show_phase_difference()
-                # verify_manifolds_by_symmetry.show_phase_difference_refactored()
+                verify_manifolds_by_symmetry.show_phase_difference_refactored()
                 # plt.show()

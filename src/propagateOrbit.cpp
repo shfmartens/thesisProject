@@ -101,7 +101,7 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitToFinalCondition(
     // Perform first integration step
     std::pair< Eigen::MatrixXd, double > previousState;
     std::pair< Eigen::MatrixXd, double > currentState;
-    currentState = propagateOrbit( fullInitialState, massParameter, initialTime, direction );
+    currentState = propagateOrbit( fullInitialState, massParameter, initialTime, direction, 1.0E-5, 1.0E-5 );
     double currentTime = currentState.second;
 
     int stepCounter = 1;
@@ -110,7 +110,7 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitToFinalCondition(
     {
 
         double initialStepSize = pow(10,(static_cast<float>(-i)));
-        double maximumStepSize = pow(10,(static_cast<float>(-i) + 1.0));
+        double maximumStepSize = initialStepSize;
 
         while (currentTime <= finalTime )
         {
@@ -156,7 +156,7 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitWithStateTransitionMatrixToF
     // Perform first integration step
     std::pair< Eigen::MatrixXd, double > previousState;
     std::pair< Eigen::MatrixXd, double > currentState;
-    currentState = propagateOrbit( fullInitialState, massParameter, initialTime, direction );
+    currentState = propagateOrbit( fullInitialState, massParameter, initialTime, direction, 1.0E-5, 1.0E-5 );
     double currentTime = currentState.second;
 
     int stepCounter = 1;

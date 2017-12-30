@@ -1470,14 +1470,14 @@ class DisplayPeriodicityValidation:
 
 
 if __name__ == '__main__':
-    low_dpi = True
+    low_dpi = False
     lagrange_points = [1, 2]
     orbit_types = ['horizontal', 'vertical', 'halo']
     c_levels = [3.05, 3.1, 3.15]
 
     # lagrange_points = [2]
     # orbit_types = ['vertical']
-    # c_levels = [3.15]
+    c_levels = [3.15]
 
     orbit_ids = {'horizontal':  {1: {3.05: 808, 3.1: 577, 3.15: 330}, 2: {3.05: 1066, 3.1: 760, 3.15: 373}},
                  'halo':  {1: {3.05: 1235, 3.1: 836, 3.15: 358}, 2: {3.05: 1093, 3.1: 651, 3.15: 0}},

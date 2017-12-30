@@ -148,7 +148,7 @@ class OverviewUnwindTime:
 
 
 if __name__ == '__main__':
-    low_dpi = True
+    low_dpi = False
     lagrange_points = [1, 2]
     orbit_types = ['horizontal', 'vertical', 'halo']
     c_levels = [3.05, 3.1, 3.15]

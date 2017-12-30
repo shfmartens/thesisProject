@@ -404,7 +404,6 @@ class ManifoldComparisonForVaryingC:
         ax11.grid(True, which='both', ls=':')
         ax12.grid(True, which='both', ls=':')
 
-
         # Plot zero velocity surface
         x_range = np.arange(-6.0, 4.0, 0.001)
         y_range = np.arange(-3.0, 3.0, 0.001)
@@ -479,7 +478,7 @@ class ManifoldComparisonForVaryingC:
 
 
 if __name__ == '__main__':
-    low_dpi = True
+    low_dpi = False
     lagrange_points = [1, 2]
     orbit_types = ['horizontal', 'vertical', 'halo']
     # lagrange_points = [2]

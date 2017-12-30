@@ -135,9 +135,6 @@ int main (){
         textFileAssembledResults.close();
     }
 
-
-
-
     // ================================
     // == Compute manifolds ==
     // ================================
@@ -256,7 +253,7 @@ int main (){
             std::map< double, Eigen::Vector6d > stateHistory;
             std::pair< Eigen::MatrixXd, double > endState = propagateOrbitToFinalCondition( fullInitialState, massParameter, orbitalPeriod, 1, stateHistory, 100, 0.0 );
 
-            writeStateHistoryToFile( stateHistory, orbitIdOne, orbitType, librationPointNr, 100, false );
+            writeStateHistoryToFile( stateHistory, orbitIdOne, orbitType, librationPointNr, 1000, false );
 
             // ===============================================================
             // == Compute manifolds based on precomputed initial conditions ==

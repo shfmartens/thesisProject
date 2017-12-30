@@ -33,9 +33,13 @@ class SaddleType:
         self.suptitleSize = 20
         self.figSize = (7 * (1 + np.sqrt(5)) / 2, 7)
         # self.xlim = [-self.massParameter, 1.5]
-        self.xlim = [0.6, 1-self.massParameter]
-        self.ylim = [-0.25, 0.25]
-        self.zlim = [-0.25, 0.25]
+        # self.xlim = [0.6, 1 - self.massParameter]
+        self.xlim = [0.6, 1.2]
+        self.ylim = [-0.4, 0.4]
+        # self.ylim = [-0.3, 0.3]
+        self.zlim = [-0.2, 0.2]
+
+        self.crange = [-1.5, 1.5]
         self.cLevel = c_level
         self.lines = []
         self.timeText = ''  # Will become a plt.text-object
@@ -64,11 +68,13 @@ class SaddleType:
         # elev=25
         # print(ax.azim)
         # ax.view_init(elev=elev, azim=azim)
-        # ax.view_init(elev=elev)
+        ax.view_init(elev=25, azim=17)
 
         # Plot zero velocity surface
-        x_range = np.arange(self.xlim[0], self.xlim[1], 0.01)
-        y_range = np.arange(self.ylim[0], self.ylim[1], 0.01)
+        # x_range = np.arange(self.xlim[0], self.xlim[1], 0.01)
+        # y_range = np.arange(self.ylim[0], self.ylim[1], 0.01)
+        x_range = np.arange(self.crange[0], self.crange[1], 0.01)
+        y_range = np.arange(self.crange[0], self.crange[1], 0.01)
         x_mesh, y_mesh = np.meshgrid(x_range, y_range)
         z_mesh = cr3bp_velocity(x_mesh, y_mesh, self.cLevel)
         self.zlim = [-0.5, -min([min(i) for i in z_mesh])]
@@ -85,9 +91,10 @@ class SaddleType:
             # plt.contour(x_mesh, y_mesh, z_mesh, [z_mesh.min(), 0], colors='black', alpha=0.3)
             # ax.contour(x_mesh, y_mesh, z_mesh, list(np.linspace(z_mesh.min(), 0, 10)), cmap='gist_gray_r',
             #                 alpha=0.5)
-            ax.plot_surface(x_mesh, y_mesh, -z_mesh, alpha=0.75, linewidth=0, cmap='viridis', zorder=-1,
-                            vmin=self.zlim[0], vmax=self.zlim[1])
-            # ax.plot_wireframe(x_mesh, y_mesh, -z_mesh, alpha=1, linewidth=0.5, color='black', rstride=50, cstride=50)
+            ax.plot_surface(x_mesh, y_mesh, -z_mesh, alpha=1, linewidth=0, cmap='viridis', zorder=-1,
+                            vmin=self.zlim[0], vmax=self.zlim[1], rstride=1, cstride=1)
+            # ax.plot_wireframe(x_mesh, y_mesh, -z_mesh, alpha=1, linewidth=0.05, color='black', rstride=1, cstride=1)
+            pass
 
         # Lagrange points and bodies
         lagrange_points_df = load_lagrange_points_location()
@@ -104,6 +111,8 @@ class SaddleType:
             y = bodies_df[body]['r'] * np.outer(np.sin(u), np.sin(v))
             z = bodies_df[body]['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
             ax.plot_surface(x, y, z, color='black', zorder=2+idx)
+
+        ax.plot([-self.massParameter, 1-self.massParameter], [0, 0], color='black')
 
         ax.set_xlim(self.xlim)
         ax.set_ylim(self.ylim)
