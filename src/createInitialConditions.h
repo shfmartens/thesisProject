@@ -10,6 +10,8 @@
 
 #include "Tudat/Basics/basicTypedefs.h"
 
+#include <boost/function.hpp>
+
 void appendResultsVector(
         const double jacobiEnergy, const double orbitalPeriod, const Eigen::VectorXd& initialStateVector,
         const Eigen::MatrixXd& stateVectorInclSTM, std::vector< Eigen::VectorXd >& initialConditions );

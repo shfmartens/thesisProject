@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iomanip>
+#include<iostream>
 
 #include <Eigen/Core>
 #include <Eigen/Eigenvalues>
