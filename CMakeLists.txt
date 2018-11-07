@@ -233,6 +233,9 @@ list(APPEND TUDAT_APPLICATION_PROPAGATION_LIBRARIES tudat_simulation_setup tudat
  setup_executable_target(main "${SRCROOT}")
  target_link_libraries(main tudat_cr3bp tudat_gravitation tudat_basic_astrodynamics tudat_numerical_integrators ${TUDAT_CORE_LIBRARIES} ${Eigen_LIBRARIES} ${Boost_LIBRARIES})
 
+ add_executable(mainExplore "${SRCROOT}/src/mainExplore.cpp")
+ setup_executable_target(mainExplore "${SRCROOT}")
+ target_link_libraries(mainExplore tudat_cr3bp tudat_gravitation tudat_basic_astrodynamics tudat_numerical_integrators ${TUDAT_CORE_LIBRARIES} ${Eigen_LIBRARIES} ${Boost_LIBRARIES})
 
  #add_executable(main "${SRCROOT}/src/main.cpp")
 #setup_executable_target(main "${SRCROOT}")
