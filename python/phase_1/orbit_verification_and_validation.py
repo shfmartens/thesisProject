@@ -987,18 +987,19 @@ class DisplayPeriodicityValidation:
 
 
 if __name__ == '__main__':
-    orbit_types = ['horizontal', 'vertical', 'halo', 'axial']
-    # orbit_types = ['vertical']
-    lagrange_points = [1, 2]
+    # orbit_types = ['horizontal', 'vertical', 'halo', 'axial']
+    orbit_types = ['horizontal']
+    #lagrange_points = [1, 2]
+    lagrange_points = [1]
     low_dpi = True
 
     for orbit_type in orbit_types:
         for lagrange_point in lagrange_points:
             display_periodicity_validation = DisplayPeriodicityValidation(orbit_type, lagrange_point, low_dpi=low_dpi)
             display_periodicity_validation.plot_family()
-            display_periodicity_validation.plot_orbital_energy()
-            display_periodicity_validation.plot_monodromy_analysis()
-            display_periodicity_validation.plot_stability()
-            display_periodicity_validation.plot_periodicity_validation()
+            #display_periodicity_validation.plot_orbital_energy()
+            #display_periodicity_validation.plot_monodromy_analysis()
+            #display_periodicity_validation.plot_stability()
+            #display_periodicity_validation.plot_periodicity_validation()
             # plt.show()
             del display_periodicity_validation

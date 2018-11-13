@@ -716,7 +716,7 @@ class DisplayPeriodicityValidation:
 
 if __name__ == '__main__':
     orbit_types = ['vertical']
-    lagrange_points = [1, 2]
+    lagrange_points = [1,2]
 
     for orbit_type in orbit_types:
         for lagrange_point in lagrange_points:
@@ -726,5 +726,5 @@ if __name__ == '__main__':
             display_periodicity_validation.plot_monodromy_analysis()
             display_periodicity_validation.plot_stability()
             display_periodicity_validation.plot_periodicity_validation()
-            # plt.show()
+            #plt.show()
             del display_periodicity_validation
