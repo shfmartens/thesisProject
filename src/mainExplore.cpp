@@ -126,7 +126,7 @@ int main (){
             // ===============================================================
             // == Compute manifolds based on precomputed initial conditions ==
             // ===============================================================
-            computeManifolds(initialStateVector, orbitalPeriod, orbitIdOne, librationPointNr, orbitType);
+            // computeManifolds(initialStateVector, orbitalPeriod, orbitIdOne, librationPointNr, orbitType);
 
 
 
