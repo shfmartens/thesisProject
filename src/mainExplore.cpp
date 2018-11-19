@@ -66,47 +66,77 @@ int main (){
     // ================================
     // == Compute manifolds ==
     // ================================
-    #pragma omp parallel num_threads(6)
+    #pragma omp parallel num_threads(12)
     {
         #pragma omp for
-        for (unsigned int i=0; i<6; i++) {
+        for (unsigned int i=6; i<18; i++) {
 
             std::string orbitType;
             int librationPointNr;
             int orbitIdOne;
             double desiredJacobiEnergy;
 
-            if (i == 0){
-                orbitType = "horizontal";
+            if (i == 6){
+                orbitType = "halo";
                 librationPointNr = 1;
-                orbitIdOne = 808;
+                orbitIdOne = 1235;
                 desiredJacobiEnergy = 3.05;
-            } if (i == 1){
-                orbitType = "horizontal";
+            } if (i == 7){
+                 orbitType = "halo";
+                 librationPointNr = 1;
+                 orbitIdOne = 836;
+                 desiredJacobiEnergy = 3.1;
+            } if (i == 8){
+                orbitType = "halo";
                 librationPointNr = 1;
-                orbitIdOne = 577;
-                desiredJacobiEnergy = 3.1;
-            } if (i == 2){
-                orbitType = "horizontal";
-                librationPointNr = 1;
-                orbitIdOne = 330;
+                orbitIdOne = 358;
                 desiredJacobiEnergy = 3.15;
-            } if (i == 3){
-                orbitType = "horizontal";
+            } if (i == 9){
+                orbitType = "halo";
                 librationPointNr = 2;
-                orbitIdOne = 1066;
+                orbitIdOne = 1093;
                 desiredJacobiEnergy = 3.05;
-            } if (i == 4){
-                orbitType = "horizontal";
+            } if (i == 10){
+                orbitType = "halo";
                 librationPointNr = 2;
-                orbitIdOne = 760;
+                orbitIdOne = 651;
                 desiredJacobiEnergy = 3.1;
-            } if (i == 5){
-                orbitType = "horizontal";
-                librationPointNr = 2;
-                orbitIdOne = 373;
-                desiredJacobiEnergy = 3.15;
-            }
+            } if (i == 11){
+              orbitType = "halo";
+              librationPointNr = 2;
+              orbitIdOne = 0;
+              desiredJacobiEnergy = 3.15;
+            } if (i == 12){
+              orbitType = "vertical";
+              librationPointNr = 1;
+              orbitIdOne = 1664;
+              desiredJacobiEnergy = 3.05;
+             } if (i == 13){
+               orbitType = "vertical";
+               librationPointNr = 1;
+               orbitIdOne = 1159;
+               desiredJacobiEnergy = 3.1;
+             } if (i == 14){
+               orbitType = "vertical";
+               librationPointNr = 1;
+               orbitIdOne = 600;
+               desiredJacobiEnergy = 3.15;
+             } if (i == 15){
+               orbitType = "vertical";
+               librationPointNr = 2;
+               orbitIdOne = 1878;
+               desiredJacobiEnergy = 3.05;
+             } if (i == 16){
+               orbitType = "vertical";
+               librationPointNr = 2;
+               orbitIdOne = 1275;
+               desiredJacobiEnergy = 3.1;
+             } if (i == 17){
+               orbitType = "vertical";
+               librationPointNr = 2;
+               orbitIdOne = 513;
+               desiredJacobiEnergy = 3.15;
+             }
 
             std::cout << "Start refinement Jacobi energy of orbit " << orbitIdOne << std::endl;
 
