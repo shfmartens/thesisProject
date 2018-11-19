@@ -66,10 +66,10 @@ int main (){
     // ================================
     // == Compute manifolds ==
     // ================================
-    #pragma omp parallel num_threads(6)
+    #pragma omp parallel num_threads(1)
     {
         #pragma omp for
-        for (unsigned int i=0; i<6; i++) {
+        for (unsigned int i=0; i<1; i++) {
 
             std::string orbitType;
             int librationPointNr;
@@ -108,6 +108,8 @@ int main (){
                 desiredJacobiEnergy = 3.15;
             }
 
+            std::cout << "Start refinement Jacobi energy of " << orbitIdOne << std::endl;
+
             Eigen::VectorXd selectedInitialConditions = readInitialConditionsFromFile(librationPointNr, orbitType, orbitIdOne, orbitIdOne + 1, massParameter);
             Eigen::VectorXd refinedJacobiEnergyResult = refineOrbitJacobiEnergy(librationPointNr, orbitType, desiredJacobiEnergy,
                                                                                 selectedInitialConditions.segment(1, 6),
@@ -117,16 +119,30 @@ int main (){
             Eigen::VectorXd initialStateVector = refinedJacobiEnergyResult.segment(0, 6);
             double orbitalPeriod               = refinedJacobiEnergyResult(6);
 
+            std::cout << "Jaocbi Energy refined of the following orbit number " << orbitIdOne << std::endl;
+
             Eigen::MatrixXd fullInitialState = getFullInitialState( initialStateVector );
             std::map< double, Eigen::Vector6d > stateHistory;
+
+            std::cout << "Start propagation to Final condition, following orbit " << orbitIdOne << std::endl;
+
             std::pair< Eigen::MatrixXd, double > endState = propagateOrbitToFinalCondition( fullInitialState, massParameter, orbitalPeriod, 1, stateHistory, 100, 0.0 );
 
+            std::cout << "Propagation to Final condition completed: orbit number: " << orbitIdOne << std::endl;
+
             writeStateHistoryToFile( stateHistory, orbitIdOne, orbitType, librationPointNr, 1000, false );
+
+            std::cout << "State history of the orbits written to file in raw/orbits, orbit number: " << orbitIdOne << std::endl;
 
             // ===============================================================
             // == Compute manifolds based on precomputed initial conditions ==
             // ===============================================================
+
+            std::cout << "start computation of manifolds of orbit number: " << orbitIdOne << std::endl;
+
             computeManifolds(initialStateVector, orbitalPeriod, orbitIdOne, librationPointNr, orbitType);
+
+            std::cout << "FINISHED MANIFOLDS COMPUTATION: " <<  std::endl;
         }
     }
 

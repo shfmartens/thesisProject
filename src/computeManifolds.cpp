@@ -236,6 +236,7 @@ void computeManifolds( const Eigen::Vector6d initialStateVector, const double or
                        const double maximumIntegrationTimeManifoldTrajectories, const double maxEigenvalueDeviation )
 {
     // Set output maximum precision
+
     std::cout.precision(std::numeric_limits<double>::digits10);
 
     double jacobiEnergyOnOrbit = tudat::gravitation::computeJacobiEnergy(massParameter, initialStateVector);
@@ -261,7 +262,7 @@ void computeManifolds( const Eigen::Vector6d initialStateVector, const double or
     catch( const std::exception& ) {
         return;
     }
-
+    std::cout << "EIGEN VECTORS COMPUTED: " <<  std::endl;
     // The sign of the x-component of the eigenvector is determined, which is used to determine the eigenvector offset direction (interior/exterior manifold)
     double stableEigenvectorSign   = determineEigenvectorSign( stableEigenvector );
     double unstableEigenvectorSign = determineEigenvectorSign( unstableEigenvector );
@@ -280,6 +281,8 @@ void computeManifolds( const Eigen::Vector6d initialStateVector, const double or
     std::pair< Eigen::MatrixXd, double >                                            previousStateVectorInclSTMAndTime;
     std::map< int, std::map< int, std::map< double, Eigen::Vector6d > > >           manifoldStateHistory;  // 1. per manifold 2. per trajectory 3. per time-step
     std::map< int, std::map< int, std::pair< Eigen::Vector6d, Eigen::Vector6d > > > eigenvectorStateHistory;  // 1. per manifold 2. per trajectory 3. direction and location
+
+    std::cout << "START MANIFOLD INITIAL CONDITION AND INTEGRATION COMPUTATION: " <<  std::endl;
 
     for ( int manifoldNumber = 0; manifoldNumber < 4; manifoldNumber++ ) {
 
@@ -313,6 +316,8 @@ void computeManifolds( const Eigen::Vector6d initialStateVector, const double or
                 }
                 indexCount += 1;
             }
+
+            std::cout << "APPLY DISPLACEMENTS: " <<  std::endl;
 
             // Apply displacement epsilon from the periodic orbit at <numberOfTrajectoriesPerManifold> locations on the final orbit.
             localNormalizedEigenvector = (stateTransitionMatrix * monodromyMatrixEigenvector).normalized();
@@ -379,12 +384,15 @@ void computeManifolds( const Eigen::Vector6d initialStateVector, const double or
                 }
 
                 // Write every nth integration step to file.
+
                 if ( saveFrequency > 0 && ((stepCounter % saveFrequency == 0 || fullManifoldComputed) && !jacobiEnergyOutsideBounds ) ) {
+                    std::cout << "MANIFOLD STATE IS BEING COMPUTED: " <<  std::endl;
                     manifoldStateHistory[ manifoldNumber ][ trajectoryOnManifoldNumber ][ currentTime ] = stateVectorInclSTM.block( 0, 0, 6, 1 );
                 }
 
                 if ( !fullManifoldComputed ){
-                    // Propagate to next time step.
+                    // Propagate to next time step
+                    std::cout << "PROPAGATE TO NEXT TIME STEP: " <<  std::endl;
                     previousStateVectorInclSTMAndTime = stateVectorInclSTMAndTime;
                     stateVectorInclSTMAndTime         = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, integrationDirection);
                     stateVectorInclSTM                = stateVectorInclSTMAndTime.first;
@@ -398,7 +406,7 @@ void computeManifolds( const Eigen::Vector6d initialStateVector, const double or
         }
 
     }
-
+    std::cout << "The saveFrequency value is: " << saveFrequency  << std::endl;
     if( saveFrequency >= 0 ) {
         writeManifoldStateHistoryToFile( manifoldStateHistory, orbitNumber, librationPointNr, orbitType );
     }
