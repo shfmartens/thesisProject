@@ -66,10 +66,10 @@ int main (){
     // ================================
     // == Compute manifolds ==
     // ================================
-    #pragma omp parallel num_threads(1)
+    #pragma omp parallel num_threads(6)
     {
         #pragma omp for
-        for (unsigned int i=0; i<1; i++) {
+        for (unsigned int i=0; i<6; i++) {
 
             std::string orbitType;
             int librationPointNr;
@@ -108,7 +108,7 @@ int main (){
                 desiredJacobiEnergy = 3.15;
             }
 
-            std::cout << "Start refinement Jacobi energy of " << orbitIdOne << std::endl;
+            std::cout << "Start refinement Jacobi energy of orbit " << orbitIdOne << std::endl;
 
             Eigen::VectorXd selectedInitialConditions = readInitialConditionsFromFile(librationPointNr, orbitType, orbitIdOne, orbitIdOne + 1, massParameter);
             Eigen::VectorXd refinedJacobiEnergyResult = refineOrbitJacobiEnergy(librationPointNr, orbitType, desiredJacobiEnergy,

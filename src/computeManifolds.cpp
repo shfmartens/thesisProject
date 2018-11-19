@@ -386,13 +386,11 @@ void computeManifolds( const Eigen::Vector6d initialStateVector, const double or
                 // Write every nth integration step to file.
 
                 if ( saveFrequency > 0 && ((stepCounter % saveFrequency == 0 || fullManifoldComputed) && !jacobiEnergyOutsideBounds ) ) {
-                    std::cout << "MANIFOLD STATE IS BEING COMPUTED: " <<  std::endl;
                     manifoldStateHistory[ manifoldNumber ][ trajectoryOnManifoldNumber ][ currentTime ] = stateVectorInclSTM.block( 0, 0, 6, 1 );
                 }
 
                 if ( !fullManifoldComputed ){
                     // Propagate to next time step
-                    std::cout << "PROPAGATE TO NEXT TIME STEP: " <<  std::endl;
                     previousStateVectorInclSTMAndTime = stateVectorInclSTMAndTime;
                     stateVectorInclSTMAndTime         = propagateOrbit(stateVectorInclSTM, massParameter, currentTime, integrationDirection);
                     stateVectorInclSTM                = stateVectorInclSTMAndTime.first;
@@ -406,8 +404,8 @@ void computeManifolds( const Eigen::Vector6d initialStateVector, const double or
         }
 
     }
-    std::cout << "The saveFrequency value is: " << saveFrequency  << std::endl;
     if( saveFrequency >= 0 ) {
+        std::cout << "manifold state is being saved: " << saveFrequency  << std::endl;
         writeManifoldStateHistoryToFile( manifoldStateHistory, orbitNumber, librationPointNr, orbitType );
     }
     if ( saveEigenvectors ) {
