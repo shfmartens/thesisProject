@@ -1472,12 +1472,12 @@ class DisplayPeriodicityValidation:
 if __name__ == '__main__':
     low_dpi = False
     lagrange_points = [1, 2]
-    orbit_types = ['horizontal', 'vertical', 'halo']
+    orbit_types = ['horizontal']
     c_levels = [3.05, 3.1, 3.15]
 
     # lagrange_points = [2]
     # orbit_types = ['vertical']
-    c_levels = [3.15]
+    #c_levels = [3.15]
 
     orbit_ids = {'horizontal':  {1: {3.05: 808, 3.1: 577, 3.15: 330}, 2: {3.05: 1066, 3.1: 760, 3.15: 373}},
                  'halo':  {1: {3.05: 1235, 3.1: 836, 3.15: 358}, 2: {3.05: 1093, 3.1: 651, 3.15: 0}},
@@ -1489,19 +1489,19 @@ if __name__ == '__main__':
                 display_periodicity_validation = DisplayPeriodicityValidation(orbit_type, lagrange_point,
                                                                               orbit_ids[orbit_type][lagrange_point][c_level],
                                                                               low_dpi=low_dpi)
-                # display_periodicity_validation.plot_manifolds()
-                # display_periodicity_validation.plot_manifold_zoom()
-                # display_periodicity_validation.plot_manifold_total()
-                # display_periodicity_validation.plot_manifold_total_zoom()
-                # display_periodicity_validation.plot_manifold_total_zoom_2()
-                # display_periodicity_validation.plot_manifold_total_zoom_3()
+                 display_periodicity_validation.plot_manifolds()
+                 display_periodicity_validation.plot_manifold_zoom()
+                 display_periodicity_validation.plot_manifold_total()
+                 display_periodicity_validation.plot_manifold_total_zoom()
+                 display_periodicity_validation.plot_manifold_total_zoom_2()
+                 display_periodicity_validation.plot_manifold_total_zoom_3()
 
-                # display_periodicity_validation.plot_eigenvectors()
+                 display_periodicity_validation.plot_eigenvectors()
                 # display_periodicity_validation.plot_stm_analysis()
                 # display_periodicity_validation.plot_stability()
 
                 # display_periodicity_validation.plot_periodicity_validation()
-                display_periodicity_validation.plot_jacobi_validation()
+                # display_periodicity_validation.plot_jacobi_validation()
                 # display_periodicity_validation.plot_orbit_offsets()
                 # plt.show()
                 del display_periodicity_validation
