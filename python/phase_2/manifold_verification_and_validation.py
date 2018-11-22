@@ -66,20 +66,20 @@ class DisplayPeriodicityValidation:
         # initial_conditions_incl_m_df = load_initial_conditions_incl_M(initial_conditions_file_path)
         # self.C = initial_conditions_incl_m_df.iloc[orbit_id][0]
 
-        self.orbitDf = load_orbit('../../data/raw/orbits/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '.txt')
+        self.orbitDf = load_orbit('../../data/raw/orbits/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '.txt')
         self.C = computeJacobiEnergy(self.orbitDf.iloc[0]['x'], self.orbitDf.iloc[0]['y'],
                                      self.orbitDf.iloc[0]['z'], self.orbitDf.iloc[0]['xdot'],
                                      self.orbitDf.iloc[0]['ydot'], self.orbitDf.iloc[0]['zdot'])
 
-        self.eigenvectorDf_S = pd.read_table('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_plus_eigenvector.txt', delim_whitespace=True, header=None).filter(list(range(6)))
-        self.eigenvectorDf_U = pd.read_table('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus_eigenvector.txt', delim_whitespace=True, header=None).filter(list(range(6)))
-        self.eigenvectorLocationDf_S = pd.read_table('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_plus_eigenvector_location.txt', delim_whitespace=True, header=None).filter(list(range(6)))
-        self.eigenvectorLocationDf_U = pd.read_table('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus_eigenvector_location.txt', delim_whitespace=True, header=None).filter(list(range(6)))
+        self.eigenvectorDf_S = pd.read_table('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_plus_eigenvector.txt', delim_whitespace=True, header=None).filter(list(range(6)))
+        self.eigenvectorDf_U = pd.read_table('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus_eigenvector.txt', delim_whitespace=True, header=None).filter(list(range(6)))
+        self.eigenvectorLocationDf_S = pd.read_table('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_plus_eigenvector_location.txt', delim_whitespace=True, header=None).filter(list(range(6)))
+        self.eigenvectorLocationDf_U = pd.read_table('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus_eigenvector_location.txt', delim_whitespace=True, header=None).filter(list(range(6)))
 
-        self.W_S_plus = load_manifold_refactored('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_plus.txt')
-        self.W_S_min = load_manifold_refactored('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_min.txt')
-        self.W_U_plus = load_manifold_refactored('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus.txt')
-        self.W_U_min = load_manifold_refactored('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_min.txt')
+        self.W_S_plus = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_plus.txt')
+        self.W_S_min = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_min.txt')
+        self.W_U_plus = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus.txt')
+        self.W_U_min = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_min.txt')
 
         self.numberOfOrbitsPerManifold = len(set(self.W_S_plus.index.get_level_values(0)))
         self.phase = []
@@ -472,10 +472,10 @@ class DisplayPeriodicityValidation:
         # Determine color for plot
         plot_alpha = 1
         line_width = 0.5
-        W_S_plus_L1 = load_manifold_refactored('../../data/raw/manifolds/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_S_plus.txt')
-        W_S_min_L1 = load_manifold_refactored('../../data/raw/manifolds/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_S_min.txt')
-        W_U_plus_L1 = load_manifold_refactored('../../data/raw/manifolds/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_U_plus.txt')
-        W_U_min_L1 = load_manifold_refactored('../../data/raw/manifolds/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_U_min.txt')
+        W_S_plus_L1 = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_S_plus.txt')
+        W_S_min_L1 = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_S_min.txt')
+        W_U_plus_L1 = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_U_plus.txt')
+        W_U_min_L1 = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_U_min.txt')
 
         for manifold_orbit_number in range(self.numberOfOrbitsPerManifold):
             ax.plot(self.W_S_plus.xs(manifold_orbit_number)['x'], self.W_S_plus.xs(manifold_orbit_number)['y'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
@@ -494,7 +494,7 @@ class DisplayPeriodicityValidation:
 
         plot_alpha = 1
         line_width = 2
-        orbitDf_L1 = load_orbit('../../data/raw/orbits/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '.txt')
+        orbitDf_L1 = load_orbit('../../data/raw/orbits/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '.txt')
         ax.plot(self.orbitDf['x'], self.orbitDf['y'], color=self.plottingColors['orbit'], alpha=plot_alpha, linewidth=line_width)
         ax.plot(orbitDf_L1['x'], orbitDf_L1['y'], color=self.plottingColors['orbit'], alpha=plot_alpha,
                 linewidth=line_width)
@@ -548,7 +548,7 @@ class DisplayPeriodicityValidation:
         ax.set_ylim([-3, 3])
 
         # plt.show()
-        fig.savefig('../../data/figures/manifolds/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots_total.pdf',
+        fig.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots_total.pdf',
                     transparent=True)
         # fig.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots.png')
         plt.close()
@@ -562,10 +562,10 @@ class DisplayPeriodicityValidation:
         # Determine color for plot
         plot_alpha = 1
         line_width = 0.5
-        W_S_plus_L1 = load_manifold_refactored('../../data/raw/manifolds/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_S_plus.txt')
-        W_S_min_L1 = load_manifold_refactored('../../data/raw/manifolds/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_S_min.txt')
-        W_U_plus_L1 = load_manifold_refactored('../../data/raw/manifolds/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_U_plus.txt')
-        W_U_min_L1 = load_manifold_refactored('../../data/raw/manifolds/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_U_min.txt')
+        W_S_plus_L1 = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_S_plus.txt')
+        W_S_min_L1 = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_S_min.txt')
+        W_U_plus_L1 = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_U_plus.txt')
+        W_U_min_L1 = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_U_min.txt')
 
         for manifold_orbit_number in range(self.numberOfOrbitsPerManifold):
             ax.plot(self.W_S_plus.xs(manifold_orbit_number)['x'], self.W_S_plus.xs(manifold_orbit_number)['y'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
@@ -584,7 +584,7 @@ class DisplayPeriodicityValidation:
 
         plot_alpha = 1
         line_width = 2
-        orbitDf_L1 = load_orbit('../../data/raw/orbits/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '.txt')
+        orbitDf_L1 = load_orbit('../../data/raw/orbits/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '.txt')
         ax.plot(self.orbitDf['x'], self.orbitDf['y'], color=self.plottingColors['orbit'], alpha=plot_alpha, linewidth=line_width)
         ax.plot(orbitDf_L1['x'], orbitDf_L1['y'], color=self.plottingColors['orbit'], alpha=plot_alpha,
                 linewidth=line_width)
@@ -638,7 +638,7 @@ class DisplayPeriodicityValidation:
         ax.set_ylim([-0.2, 0.2])
 
         # plt.show()
-        fig.savefig('../../data/figures/manifolds/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots_total_zoom.pdf',
+        fig.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots_total_zoom.pdf',
                     transparent=True)
         # fig.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots.png')
         plt.close()
@@ -652,10 +652,10 @@ class DisplayPeriodicityValidation:
         # Determine color for plot
         plot_alpha = 1
         line_width = 0.5
-        W_S_plus_L1 = load_manifold_refactored('../../data/raw/manifolds/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_S_plus.txt')
-        W_S_min_L1 = load_manifold_refactored('../../data/raw/manifolds/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_S_min.txt')
-        W_U_plus_L1 = load_manifold_refactored('../../data/raw/manifolds/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_U_plus.txt')
-        W_U_min_L1 = load_manifold_refactored('../../data/raw/manifolds/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_U_min.txt')
+        W_S_plus_L1 = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_S_plus.txt')
+        W_S_min_L1 = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_S_min.txt')
+        W_U_plus_L1 = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_U_plus.txt')
+        W_U_min_L1 = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(1) + '_' + self.orbitType + '_' + str(330) + '_W_U_min.txt')
 
         for manifold_orbit_number in range(self.numberOfOrbitsPerManifold):
             # ax.plot(self.W_S_plus.xs(manifold_orbit_number)['x'], self.W_S_plus.xs(manifold_orbit_number)['y'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
@@ -728,7 +728,7 @@ class DisplayPeriodicityValidation:
         # ax.text(1.005, -0.115, "$\mathbf{U_2}$", ha="center", va="center", size=size)
 
         # plt.show()
-        fig.savefig('../../data/figures/manifolds/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots_total_zoom_2.pdf',
+        fig.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots_total_zoom_2.pdf',
                     transparent=True)
         # fig.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots.png')
         plt.close()
@@ -817,7 +817,7 @@ class DisplayPeriodicityValidation:
         ax.set_ylim([-1.0, 1.0])
 
         # plt.show()
-        fig.savefig('../../data/figures/manifolds/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots_total_zoom_3.pdf',
+        fig.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots_total_zoom_3.pdf',
                     transparent=True)
         # fig.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots.png')
         plt.close()
@@ -902,7 +902,7 @@ class DisplayPeriodicityValidation:
         fig.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathbf{X_i} \pm \epsilon \\frac{\mathbf{v}^S_i}{|\mathbf{v}^S_i|}, \mathbf{X_i} \pm \epsilon \\frac{\mathbf{v}^U_i}{|\mathbf{v}^U_i|} \}$ - Spatial overview  at C = ' + str(np.round(self.C, 3)),
                      size=self.suptitleSize)
 
-        fig.savefig('../../data/figures/manifolds/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_eigenvector_subplots.pdf',
+        fig.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_eigenvector_subplots.pdf',
                     transparent=True)
 #        fig.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_eigenvector_subplots.png')
         plt.close()
@@ -960,7 +960,7 @@ class DisplayPeriodicityValidation:
             '$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' - Eigensystem analysis STM  $(\\tau = 0 \in \mathcal{W}^{S+})$',
             size=self.suptitleSize)
 
-        plt.savefig('../../data/figures/manifolds/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_stm_analysis.pdf',
+        plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_stm_analysis.pdf',
                     transparent=True)
         # plt.close()
         pass
@@ -1042,7 +1042,7 @@ class DisplayPeriodicityValidation:
         plt.suptitle('$L_' + str(
             self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' - Eigenvalues $\lambda_i$ \& stability index $v_i$ $(\\tau = 0 \in \mathcal{W}^{S+})$',
                      size=self.suptitleSize)
-        plt.savefig('../../data/figures/manifolds/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_stability.pdf',
+        plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_stability.pdf',
                     transparent=True)
         plt.close()
         pass
@@ -1115,7 +1115,7 @@ class DisplayPeriodicityValidation:
             '$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Validation at C = ' + str(np.round(self.C, 3)),
             size=self.suptitleSize)
 
-        plt.savefig('../../data/figures/manifolds/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_periodicity.pdf',
+        plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_periodicity.pdf',
                     transparent=True)
         # plt.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_periodicity.png')
         plt.close()
@@ -1355,12 +1355,12 @@ class DisplayPeriodicityValidation:
             size=self.suptitleSize)
         # plt.show()
         if self.lowDPI:
-            plt.savefig('../../data/figures/manifolds/L' + str(
+            plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(
                 self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
                 self.orbitId) + '_manifold_jacobi_validation.png',
                         transparent=True, dpi=self.dpi)
         else:
-            plt.savefig('../../data/figures/manifolds/L' + str(
+            plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(
                 self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
                 self.orbitId) + '_manifold_jacobi_validation.pdf',
                         transparent=True)
@@ -1463,7 +1463,7 @@ class DisplayPeriodicityValidation:
             '$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Validation at C = ' + str(np.round(self.C, 3)),
             size=self.suptitleSize)
         plt.show()
-        plt.savefig('../../data/figures/manifolds/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_orbit_offsets.pdf',
+        plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_orbit_offsets.pdf',
                     transparent=True)
         plt.close()
         pass
