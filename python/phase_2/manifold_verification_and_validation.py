@@ -27,9 +27,9 @@ class DisplayPeriodicityValidation:
     def __init__(self, orbit_type, lagrange_point_nr, orbit_id, low_dpi=False):
         self.lowDPI = low_dpi
         self.dpi = 150
-        print('=======================')
+        print('========================')
         print(str(orbit_type) + ' in L' + str(lagrange_point_nr))
-        print('=======================')
+        print('========================')
         self.orbitType = orbit_type
         self.orbitId = orbit_id
         self.orbitTypeForTitle = orbit_type.capitalize()
