@@ -380,7 +380,7 @@ class DisplayPeriodicityValidation:
         plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial overview at C = ' + str(np.round(self.C, 3)),
                      size=self.suptitleSize)
 
-        fig.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots.pdf',
+        fig.savefig('../../data/figures/manifolds/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots.pdf',
                     transparent=True)
         # fig.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots.png')
         plt.close()
@@ -458,7 +458,7 @@ class DisplayPeriodicityValidation:
                     arrowprops=dict(arrowstyle="->", color=self.plottingColors['W_S_min'], linewidth=2))
 
         # plt.show()
-        fig.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots_zoom.pdf',
+        fig.savefig('../../data/figures/manifolds/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots_zoom.pdf',
                     transparent=True)
         # fig.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots.png')
         plt.close()
