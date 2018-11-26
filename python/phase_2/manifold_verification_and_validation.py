@@ -1490,9 +1490,9 @@ if __name__ == '__main__':
                 display_periodicity_validation = DisplayPeriodicityValidation(orbit_type, lagrange_point,
                                                                               orbit_ids[orbit_type][lagrange_point][c_level],
                                                                               low_dpi=low_dpi)
-                display_periodicity_validation.plot_manifolds()
+                # display_periodicity_validation.plot_manifolds()
                 # display_periodicity_validation.plot_manifold_zoom()
-                # display_periodicity_validation.plot_manifold_total()
+                display_periodicity_validation.plot_manifold_total()
                 # display_periodicity_validation.plot_manifold_total_zoom()
                 # display_periodicity_validation.plot_manifold_total_zoom_2()
                 # display_periodicity_validation.plot_manifold_total_zoom_3()
