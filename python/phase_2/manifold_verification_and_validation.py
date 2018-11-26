@@ -1470,6 +1470,7 @@ class DisplayPeriodicityValidation:
 
 
 if __name__ == '__main__':
+    help()
     low_dpi = False
     lagrange_points = [1, 2]
     orbit_types = ['horizontal', 'vertical', 'halo']
@@ -1489,7 +1490,7 @@ if __name__ == '__main__':
                 display_periodicity_validation = DisplayPeriodicityValidation(orbit_type, lagrange_point,
                                                                               orbit_ids[orbit_type][lagrange_point][c_level],
                                                                               low_dpi=low_dpi)
-                # display_periodicity_validation.plot_manifolds()
+                display_periodicity_validation.plot_manifolds()
                 # display_periodicity_validation.plot_manifold_zoom()
                 # display_periodicity_validation.plot_manifold_total()
                 # display_periodicity_validation.plot_manifold_total_zoom()
