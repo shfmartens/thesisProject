@@ -9,6 +9,8 @@
 #include <Eigen/Core>
 
 #include "Tudat/Basics/basicTypedefs.h"
+#include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
+#include "Tudat/Astrodynamics/BasicAstrodynamics/celestialBodyConstants.h"
 
 void determineStableUnstableEigenvectors( Eigen::MatrixXd& monodromyMatrix, Eigen::Vector6d& stableEigenvector,
                                           Eigen::Vector6d& unstableEigenvector,
@@ -30,7 +32,7 @@ void reduceOvershootAtPoincareSectionU2U3( std::pair< Eigen::MatrixXd, double >&
                                            Eigen::MatrixXd& stateVectorInclSTM, double& currentTime, double& xDiffSign,
                                            int& integrationDirection, const double& massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter(tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER, tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER ) );
 
-void writeManifoldStateHistoryToFile( std::map< int, std::map< int, std::map< double, Eigen::Vector6d > > >& manifoldStateHistory,
+void writeAugmentedManifoldStateHistoryToFile( std::map< int, std::map< int, std::map< double, Eigen::Vector6d > > >& manifoldStateHistory,
                                       const int& orbitNumber, const int& librationPointNr, const std::string& orbitType );
 
 void writeEigenvectorStateHistoryToFile( std::map< int, std::map< int, std::pair< Eigen::Vector6d, Eigen::Vector6d > > >& eigenvectorStateHistory,

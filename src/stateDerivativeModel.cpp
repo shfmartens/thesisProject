@@ -2,7 +2,7 @@
 #include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
 
 #include "stateDerivativeModel.h"
-
+#include <iostream>
 
 
 Eigen::MatrixXd computeStateDerivative( const double time, const Eigen::MatrixXd& cartesianState )
@@ -10,7 +10,7 @@ Eigen::MatrixXd computeStateDerivative( const double time, const Eigen::MatrixXd
     // Time is not directly used in the function.
     TUDAT_UNUSED_PARAMETER( time );
 
-    // Declare mass parameter.
+    // Declare mass parameter
     extern double massParameter;
 
     // Declare state derivative vector with same length as the state.

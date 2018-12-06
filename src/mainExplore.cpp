@@ -18,6 +18,7 @@
 #include "computeManifolds.h"
 #include "computeManifoldsAugmented.h"
 #include "propagateOrbit.h"
+#include "propagateOrbitAugmented.h"
 //#include "completeInitialConditionsHaloFamily.h"
 //#include "createInitialConditionsAxialFamily.h"
 #include "connectManifoldsAtTheta.h"
@@ -25,6 +26,8 @@
 
 
 double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER, tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER );
+std::string spacecraftName = "deepSpace";
+std::string thrustPointing = "left";
 
 int main (){
 
@@ -67,22 +70,31 @@ int main (){
     // ================================
     // == Compute manifolds ==
     // ================================
-    #pragma omp parallel num_threads(1)
-    {
-        #pragma omp for
-        for (unsigned int i=0; i<1; i++) {
+
 
             std::string orbitType;
             int librationPointNr;
             int orbitIdOne;
             double desiredJacobiEnergy;
 
-            if (i == 0){
-                orbitType = "halo";
-                librationPointNr = 1;
-                orbitIdOne = 1235;
-                desiredJacobiEnergy = 3.05;
-            }
+            double eigenvectorDisplacementFromOrbit;
+            int saveFrequency;
+            int numberOfTrajectoriesPerManifold;
+            bool saveEigenvectors;
+            double maximumIntegrationTimeManifoldTrajectories;
+            double maxEigenvalueDeviation;
+
+            orbitType = "horizontal";
+            librationPointNr = 1;
+            orbitIdOne = 808;
+            desiredJacobiEnergy = 3.05;
+
+            eigenvectorDisplacementFromOrbit = 1.0E-6;
+            numberOfTrajectoriesPerManifold = 100;
+            saveFrequency = 10;
+            saveEigenvectors = true;
+            maximumIntegrationTimeManifoldTrajectories = 10.0;
+            maxEigenvalueDeviation = 1.0E-3;
 
             std::cout << "Start refinement Jacobi energy of orbit " << orbitIdOne << std::endl;
 
@@ -116,11 +128,7 @@ int main (){
 
             std::cout << "start computation of manifolds of orbit number: " << orbitIdOne << std::endl;
 
-            computeManifoldsAugmented(initialStateVector, orbitalPeriod, orbitIdOne, librationPointNr, orbitType);
-
-            std::cout << "FINISHED MANIFOLDS COMPUTATION: " <<  std::endl;
-        }
-    }
+            computeManifoldsAugmented(initialStateVector, orbitalPeriod, orbitIdOne, librationPointNr, orbitType, spacecraftName, thrustPointing,  massParameter, eigenvectorDisplacementFromOrbit, numberOfTrajectoriesPerManifold, saveFrequency, saveEigenvectors ,maximumIntegrationTimeManifoldTrajectories, numberOfTrajectoriesPerManifold);
 
     return 0;
 }
