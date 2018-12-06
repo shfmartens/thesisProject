@@ -9,6 +9,7 @@
 #include "propagateOrbitAugmented.h"
 #include "stateDerivativeModelAugmented.h"
 
+
 Eigen::MatrixXd getFullAugmentedInitialState( const Eigen::Vector6d& initialState, const Eigen::Vector1d& initialMass )
 {
     Eigen::MatrixXd fullInitialState = Eigen::MatrixXd::Zero( 5, 6 );

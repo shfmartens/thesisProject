@@ -13,6 +13,7 @@
 
 #include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
 #include "Tudat/Astrodynamics/BasicAstrodynamics/celestialBodyConstants.h"
+#include "Tudat/Astrodynamics/Gravitation/jacobiEnergy.h"
 
 #include "createInitialConditions.h"
 #include "computeManifolds.h"
@@ -111,6 +112,8 @@ int main (){
 
             Eigen::MatrixXd fullInitialState = getFullInitialState( initialStateVector );
             std::map< double, Eigen::Vector6d > stateHistory;
+            double refinedEnergy = tudat::gravitation::computeJacobiEnergy(massParameter, fullInitialState);
+            std::cout << "REFINED JACOBI ENERGY: " << refinedEnergy << std::endl;
 
             std::cout << "Start propagation to Final condition, following orbit " << orbitIdOne << std::endl;
 
