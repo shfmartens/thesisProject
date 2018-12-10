@@ -104,6 +104,11 @@ Eigen::MatrixXd computeStateDerivativeAugmented( const double time, const Eigen:
         // Differentiate the STM.
         stateDerivative.block( 0, 1, 5, 5 ) = stmDerivativeFunction * cartesianState.block( 0, 1, 5, 5 );
 
+        // Calculate angle between the low thrust acceleration and velocity
+        double innerProd = -2.0 * ( xTermRelatedToThrust * cartesianState(2) + yTermRelatedToThrust * cartesianState(3) ) ;
+        std::cout << "THE TIME DERIVATIVE OF THE IOM IS:  " << innerProd << std::endl;
+
+
         return stateDerivative;
 
     } else {
@@ -137,10 +142,6 @@ Eigen::MatrixXd computeStateDerivativeAugmented( const double time, const Eigen:
     double yTermRelatedToThrust = (thrustMagnitude / cartesianState(4)) * sin( alpha * 2.0 * tudat::mathematical_constants::PI / 180.0 );
     stateDerivative( 2, 0 ) = -termRelatedToPrimaryBody*(massParameter+cartesianState(0)) + termRelatedToSecondaryBody*(1.0-massParameter-cartesianState(0)) + cartesianState(0) + 2.0*cartesianState(4) + xTermRelatedToThrust;
     stateDerivative( 3, 0 ) = -termRelatedToPrimaryBody*cartesianState(1)                 - termRelatedToSecondaryBody*cartesianState(1)                     + cartesianState(1) - 2.0*cartesianState(3) + yTermRelatedToThrust;
-
-    // Calculate angle between the low thrust acceleration and velocity
-    double innerProd = -2.0 * ( xTermRelatedToThrust * cartesianState(2) + yTermRelatedToThrust * cartesianState(3) ) ;
-    std::cout << "THE TIME DERIVATIVE OF THE IOM IS:  " << innerProd << std::endl;
 
     //Set the derivate of the mass to the mass flow rate.
     stateDerivative( 4, 0 ) = 0.0;
