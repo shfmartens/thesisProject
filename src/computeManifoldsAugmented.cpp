@@ -108,6 +108,8 @@ bool checkIoMOnManifoldAugmentedOutsideBounds( Eigen::VectorXd currentStateVecto
         if (std::abs(currentIoM - referenceIoM) < maxIoMDeviation)
         {
             IoMDeviationOutsideBounds = false;
+            std::cout << "Jacobi energy deviation on manifold WITHIN bounds" << std::endl;
+            std::cout << "The current time is: " << currentTime << std::endl;
         } else
         {
             IoMDeviationOutsideBounds = true;
