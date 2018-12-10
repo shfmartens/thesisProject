@@ -78,7 +78,7 @@ double computePlanarIoM ( const Eigen::VectorXd currentStateVector, const std::s
 
     // Fill vector with x,y position and velocity components of currentStateVector and z position and velocity components with initialStateVector
     spatialStateVector.block(0,0,2,1) = currentStateVector.block(0,0,2,1);
-    spatialStateVector.block(3,0,2,1) = currentStateVector.block(2,0,2,1);
+    spatialStateVector.block(3,0,2,1) = currentStateVector.block(3,0,2,1);
 
     double planarJacobiEnergy = tudat::gravitation::computeJacobiEnergy(massParameter, spatialStateVector);
 
