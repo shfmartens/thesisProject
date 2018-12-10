@@ -61,11 +61,18 @@ Eigen::MatrixXd computeStateDerivativeAugmented( const double time, const Eigen:
         // Set the derivative of the velocities to the accelerations.
         double termRelatedToPrimaryBody   = (1.0-massParameter)/distanceToPrimaryCubed;
         double termRelatedToSecondaryBody = massParameter      /distanceToSecondaryCubed;
-        double velocityMagnitude = sqrt( cartesianState(2) * cartesianState(2) + cartesianState(3) * cartesianState(3) );
-        double xTermRelatedToThrust = (thrustMagnitude / cartesianState(4)) * (pointingSign * -1.0 * cartesianState(3) ) / velocityMagnitude;
-        double yTermRelatedToThrust = (thrustMagnitude / cartesianState(4)) * (pointingSign * cartesianState(2) ) / velocityMagnitude;
-        stateDerivative( 2, 0 ) = -termRelatedToPrimaryBody*(massParameter+cartesianState(0)) + termRelatedToSecondaryBody*(1.0-massParameter-cartesianState(0)) + cartesianState(0) + 2.0*cartesianState(4) + xTermRelatedToThrust;
-        stateDerivative( 3, 0 ) = -termRelatedToPrimaryBody*cartesianState(1)                 - termRelatedToSecondaryBody*cartesianState(1)                     + cartesianState(1) - 2.0*cartesianState(3) + yTermRelatedToThrust;
+
+        double xVelocitySquared = cartesianState(2) * cartesianState(2);
+        double yVelocitySquared = cartesianState(3) * cartesianState(3);
+        double velocityMagnitude = sqrt( xVelocitySquared + yVelocitySquared );
+        double velocityMagnitudeCubed = velocityMagnitude * velocityMagnitude * velocityMagnitude;
+        double termRelatedtoThrustMagnitude = thrustMagnitude / cartesianState(4);
+
+        double xTermRelatedToThrust = termRelatedtoThrustMagnitude * (pointingSign * -1.0 * cartesianState(3) ) / velocityMagnitude;
+        double yTermRelatedToThrust = termRelatedtoThrustMagnitude * (pointingSign *  1.0 * cartesianState(2) ) / velocityMagnitude;
+
+        stateDerivative( 2, 0 ) = -termRelatedToPrimaryBody*(massParameter+cartesianState(0)) + termRelatedToSecondaryBody*(1.0-massParameter-cartesianState(0)) + cartesianState(0) + 2.0*cartesianState(3) + xTermRelatedToThrust;
+        stateDerivative( 3, 0 ) = -termRelatedToPrimaryBody*cartesianState(1)                 - termRelatedToSecondaryBody*cartesianState(1)                     + cartesianState(1) - 2.0*cartesianState(2) + yTermRelatedToThrust;
 
         //Set the derivate of the mass to the mass flow rate.
         stateDerivative( 4, 0 ) = massRate;
@@ -77,13 +84,14 @@ Eigen::MatrixXd computeStateDerivativeAugmented( const double time, const Eigen:
         double Uyy = (3.0*(1.0-massParameter)*yPositionScaledSquared                         )/distanceToPrimaryToFifthPower+ (3.0*massParameter*yPositionScaledSquared                             )/distanceToSecondaryToFifthPower - (1.0-massParameter)/distanceToPrimaryCubed - massParameter/distanceToSecondaryCubed + 1.0 ;
 
         //Compute the acceleration derivatives with respect to the velocities and mass
-        double partialXaccXvel =  (thrustMagnitude / cartesianState(4)) * ((pointingSign * cartesianState(3) * cartesianState(2) ) / (velocityMagnitude * sqrt( velocityMagnitude ) ) ) ;
-        double partialXaccYvel =  2.0 +  (thrustMagnitude / cartesianState(4)) * ((-1.0 * pointingSign / velocityMagnitude) + (pointingSign * cartesianState(3) * cartesianState(3) / (velocityMagnitude * sqrt(velocityMagnitude) ) ) );
-        double partialYaccXvel =  -2.0 + (thrustMagnitude / cartesianState(4)) * (( 1.0 * pointingSign / velocityMagnitude) + ( -1.0 * pointingSign * cartesianState(2) * cartesianState(2) / (velocityMagnitude * sqrt(velocityMagnitude) ) ) ) ;
-        double partialYaccYvel =  (thrustMagnitude / cartesianState(4)) * ((pointingSign * -1.0 * cartesianState(2) * cartesianState(3) ) / (velocityMagnitude * sqrt( velocityMagnitude ) ) ) ;
+        double partialXaccXvel =  termRelatedtoThrustMagnitude * -1.0 * ( ( pointingSign * -1.0 * cartesianState(3) * cartesianState(2) ) / velocityMagnitudeCubed );
+        double partialXaccYvel =  ( (pointingSign * -1.0 ) / ( velocityMagnitude ) ) - ( ( pointingSign * -1.0 * yVelocitySquared ) / velocityMagnitudeCubed );
+        double partialYaccXvel =  ( (pointingSign *  1.0 ) / ( velocityMagnitude ) ) - ( ( pointingSign *  1.0 * xVelocitySquared ) / velocityMagnitudeCubed );
+        double partialYaccYvel =  termRelatedtoThrustMagnitude * -1.0 * (  (pointingSign *  1.0 * cartesianState(2) * cartesianState(3) ) / velocityMagnitudeCubed );
 
-        double partialXaccMass =  (-thrustMagnitude / (cartesianState(4) * cartesianState(4))) * xTermRelatedToThrust;
-        double partialYaccMass =  (-thrustMagnitude / (cartesianState(4) * cartesianState(4))) * yTermRelatedToThrust;
+        double partialXaccMass =  -1.0 * (termRelatedtoThrustMagnitude / cartesianState(4) ) * xTermRelatedToThrust;
+        double partialYaccMass =  -1.0 * (termRelatedtoThrustMagnitude / cartesianState(4) ) * yTermRelatedToThrust;
+
         // Create the STM-derivative matrix
         Eigen::MatrixXd stmDerivativeFunction (5,5);
         stmDerivativeFunction << 0.0, 0.0, 1.0,             0.0,             0.0,
@@ -94,15 +102,6 @@ Eigen::MatrixXd computeStateDerivativeAugmented( const double time, const Eigen:
 
         // Differentiate the STM.
         stateDerivative.block( 0, 1, 5, 5 ) = stmDerivativeFunction * cartesianState.block( 0, 1, 5, 5 );
-
-        std::cout << "======================================================" << std::endl;
-        std::cout << "Spacecraft Name : " << spacecraftName     << std::endl;
-        std::cout << "Thrust Pointing : " << thrustPointing     << std::endl;
-        std::cout << "Pointing Sign   : " << pointingSign       << std::endl;
-        std::cout << "thrust Magnitude: " << thrustMagnitude    << std::endl;
-        std::cout << "Mass rate       : " << massRate           << std::endl;
-        std::cout << "State Derivative: " << stateDerivative    << std::endl;
-        std::cout << "======================================================" << std::endl;
 
         return stateDerivative;
 
