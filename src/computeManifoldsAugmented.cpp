@@ -225,9 +225,11 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
 
     std::cout.precision(std::numeric_limits<double>::digits10);
 
-    double jacobiEnergyOnOrbit = computePlanarIoM(initialStateVector,spacecraftName, thrustPointing,  massParameter, 0.0);
+    double jacobiEnergyOnOrbit = computePlanarIoM(initialStateVector ,spacecraftName , thrustPointing,  massParameter, 0.0);
+    double jacobiEnergyOnOrbitVV = tudat::gravitation::computeJacobiEnergy(massParameter, initialStateVector);
     std::cout << "\nInitial state vector:" << std::endl << initialStateVector       << std::endl
-              << "\nwith C: " << jacobiEnergyOnOrbit    << ", T: " << orbitalPeriod << std::endl;;
+              << "\nwith C VV: " << jacobiEnergyOnOrbitVV    << ", T: " << orbitalPeriod << std::endl
+              << "\nwith C: " << jacobiEnergyOnOrbit    << ", T: " << orbitalPeriod << std::endl;
 
     // Propagate the initialStateVector for a full period and write output to file.
     std::map< double, Eigen::MatrixXd > stateTransitionMatrixHistory;
