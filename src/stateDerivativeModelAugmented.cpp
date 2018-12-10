@@ -95,6 +95,15 @@ Eigen::MatrixXd computeStateDerivativeAugmented( const double time, const Eigen:
         // Differentiate the STM.
         stateDerivative.block( 0, 1, 5, 5 ) = stmDerivativeFunction * cartesianState.block( 0, 1, 5, 5 );
 
+        std::cout << "======================================================" << std::endl;
+        std::cout << "Spacecraft Name : " << spacecraftName     << std::endl;
+        std::cout << "Thrust Pointing : " << thrustPointing     << std::endl;
+        std::cout << "Pointing Sign   : " << pointingSign       << std::endl;
+        std::cout << "thrust Magnitude: " << thrustMagnitude    << std::endl;
+        std::cout << "Mass rate       : " << massRate           << std::endl;
+        std::cout << "State Derivative: " << stateDerivative    << std::endl;
+        std::cout << "======================================================" << std::endl;
+
         return stateDerivative;
 
     } else {

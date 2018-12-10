@@ -318,9 +318,6 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
             Eigen::MatrixXd satelliteCharacteristic  = retrieveSpacecraftProperties(spacecraftName);
             auto initialMass = static_cast<Eigen::Vector1d>( satelliteCharacteristic(1) );
             manifoldAugmentedStartingState = getFullAugmentedInitialState(manifoldStartingState, initialMass );
-            std::cout << "Augmented Starting State " << manifoldAugmentedStartingState << std::endl;
-            std::cout << "Natural Starting State " << manifoldStartingState << std::endl;
-            std::cout << "Displacements "<< offsetSign * eigenvectorDisplacementFromOrbit * localNormalizedEigenvector << std::endl;
 
             if ( saveEigenvectors ) {
                 eigenvectorStateHistory[ manifoldNumber ][ trajectoryOnManifoldNumber ] = std::make_pair(localNormalizedEigenvector, localStateVector);
