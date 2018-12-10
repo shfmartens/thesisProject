@@ -84,6 +84,9 @@ double computePlanarIoM ( const Eigen::VectorXd currentStateVector, const std::s
 
     if (thrustPointing == "left" || thrustPointing == "right") {
     planarIoM = planarJacobiEnergy;
+    std::cout << "Input State Vector: "<< currentStateVector << std::endl;
+    std::cout << "Modified State Vector: "<< spatialStateVector << std::endl;
+
     } else
     {
     // calculate the accelerations
