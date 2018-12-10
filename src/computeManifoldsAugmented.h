@@ -18,7 +18,7 @@ Eigen::MatrixXd retrieveSpacecraftProperties( const std::string spacecraftName);
 double computePlanarIoM (const Eigen::VectorXd currentStateVector, const std::string spacecraftName, const std::string thrustPointing, const double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter(tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER, tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER ), const double currentTime = 0.0);
 
 bool checkIoMOnManifoldAugmentedOutsideBounds( Eigen::VectorXd currentStateVector, const double referenceIoM,
-                                         const double massParameter, const std::string spacecraftName, const std::string thrustPointing, const double maxIoMDeviation = 1.0E-11, const double currentTime = 0.0 );
+                                         const double massParameter, const std::string spacecraftName, const std::string thrustPointing, const double currentTime = 0.0, const double maxIoMDeviation = 1.0E-11 );
 
 void reduceOvershootAtPoincareSectionU1U4Augmented( std::pair< Eigen::MatrixXd, double >& stateVectorInclSTMAndTime,
                                            std::pair< Eigen::MatrixXd, double >& previousStateVectorInclSTMAndTime,

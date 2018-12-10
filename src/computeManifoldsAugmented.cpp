@@ -96,7 +96,7 @@ double computePlanarIoM ( const Eigen::VectorXd currentStateVector, const std::s
 }
 
 bool checkIoMOnManifoldAugmentedOutsideBounds( Eigen::VectorXd currentStateVector, const double referenceIoM,
-                                         const double massParameter, const std::string spacecraftName, const std::string thrustPointing, const double maxIoMDeviation, const double currentTime )
+                                         const double massParameter, const std::string spacecraftName, const std::string thrustPointing, const double currentTime, const double maxIoMDeviation )
 
 {
 
