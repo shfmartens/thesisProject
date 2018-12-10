@@ -84,8 +84,6 @@ double computePlanarIoM ( const Eigen::VectorXd currentStateVector, const std::s
 
     if (thrustPointing == "left" || thrustPointing == "right") {
     planarIoM = planarJacobiEnergy;
-    std::cout << "Input State Vector: "<< currentStateVector << std::endl;
-    std::cout << "Modified State Vector: "<< spatialStateVector << std::endl;
 
     } else
     {
@@ -229,9 +227,7 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
     std::cout.precision(std::numeric_limits<double>::digits10);
 
     double jacobiEnergyOnOrbit = computePlanarIoM(initialStateVector ,spacecraftName , thrustPointing,  massParameter, 0.0);
-    double jacobiEnergyOnOrbitVV = tudat::gravitation::computeJacobiEnergy(massParameter, initialStateVector);
     std::cout << "\nInitial state vector:" << std::endl << initialStateVector       << std::endl
-              << "\nwith C VV: " << jacobiEnergyOnOrbitVV    << ", T: " << orbitalPeriod << std::endl
               << "\nwith C: " << jacobiEnergyOnOrbit    << ", T: " << orbitalPeriod << std::endl;
 
     // Propagate the initialStateVector for a full period and write output to file.
@@ -283,7 +279,7 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
     for ( int manifoldNumber = 0; manifoldNumber < 4; manifoldNumber++ ) {
 
         bool fullManifoldComputed       = false;
-        bool IoMOutsideBounds  = false;
+        bool IoMOutsideBounds           = false;
         bool ySignSet                   = false;
         bool xDiffSignSet               = false;
         double ySign                    = 0.0;
@@ -322,7 +318,9 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
             Eigen::MatrixXd satelliteCharacteristic  = retrieveSpacecraftProperties(spacecraftName);
             auto initialMass = static_cast<Eigen::Vector1d>( satelliteCharacteristic(1) );
             manifoldAugmentedStartingState = getFullAugmentedInitialState(manifoldStartingState, initialMass );
-            std::cout << manifoldAugmentedStartingState << std::endl;
+            std::cout << "Augmented Starting State " << manifoldAugmentedStartingState << std::endl;
+            std::cout << "Natural Starting State " << manifoldStartingState << std::endl;
+            std::cout << "Displacements "<< offsetSign * eigenvectorDisplacementFromOrbit * localNormalizedEigenvector << std::endl;
 
             if ( saveEigenvectors ) {
                 eigenvectorStateHistory[ manifoldNumber ][ trajectoryOnManifoldNumber ] = std::make_pair(localNormalizedEigenvector, localStateVector);
