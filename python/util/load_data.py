@@ -60,6 +60,42 @@ def load_manifold_refactored(file_path):
     output_data = pd.concat(output_data).reset_index(drop=True).set_index(['orbitNumber', 'time'])
     return output_data
 
+def load_manifold_augmented(file_path)
+    pd.options.mode.chained_assignment = None  # Turn off SettingWithCopyWarning
+
+    input_data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(6)))
+    input_data.columns = ['time', 'x', 'y', 'xdot', 'ydot', 'mass']
+    split_on_index = list(input_data[input_data['time'] == 0].index)
+
+    output_data = []
+
+    if input_data['time'].mean() > 0:
+        # For stable manifolds
+        for idx, start_index in enumerate(split_on_index):
+
+            if idx != len(split_on_index) - 1:
+                data_per_orbit = input_data[start_index:split_on_index[idx + 1]]
+            else:
+                data_per_orbit = input_data[start_index:]
+
+            data_per_orbit['orbitNumber'] = idx
+            output_data.append(data_per_orbit)
+    else:
+        # For unstable manifolds
+        for idx, end_index in enumerate(split_on_index):
+
+            if idx != 0:
+                data_per_orbit = input_data[split_on_index[idx - 1] + 1:end_index + 1]
+            else:
+                data_per_orbit = input_data[:end_index + 1]
+
+            data_per_orbit['orbitNumber'] = idx
+            output_data.append(data_per_orbit)
+
+    output_data = pd.concat(output_data).reset_index(drop=True).set_index(['orbitNumber', 'time'])
+    return output_data
+
+
 
 def load_manifold_incl_stm(file_path):
     pd.options.mode.chained_assignment = None  # Turn off SettingWithCopyWarning

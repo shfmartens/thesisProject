@@ -23,7 +23,7 @@ from load_data import load_orbit, load_bodies_location, load_lagrange_points_loc
     load_initial_conditions_incl_M, load_manifold, computeJacobiEnergy, load_manifold_incl_stm, load_manifold_refactored, cr3bp_velocity
 
 class DisplayPeriodicityValidation:
-    def __init__(self, orbit_type, lagrange_point_nr, orbit_id, low_dpi=False):
+    def __init__(self, orbit_type, lagrange_point_nr, orbit_id, thrust_restriction, spacecraft_name, low_dpi=False):
         self.lowDPI = low_dpi
         self.dpi = 150
         print('========================')
@@ -37,6 +37,9 @@ class DisplayPeriodicityValidation:
             self.orbitTypeForTitle += ' Lyapunov'
 
         self.lagrangePointNr = lagrange_point_nr
+
+        self.thrustRestriction = thrust_restriction
+        self.spacecraftName = spacecraft_name
 
         self.eigenvalues = []
         self.D = []
@@ -71,14 +74,14 @@ class DisplayPeriodicityValidation:
                                      self.orbitDf.iloc[0]['ydot'], self.orbitDf.iloc[0]['zdot'])
 
         self.eigenvectorDf_S = pd.read_table('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_plus_eigenvector.txt', delim_whitespace=True, header=None).filter(list(range(6)))
-        self.eigenvectorDf_U = pd.read_table( '../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus_eigenvector.txt', delim_whitespace=True, header=None).filter(list(range(6)))
-        self.eigenvectorLocationDf_S = pd.read_table('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_plus_eigenvector_location.txt', delim_whitespace=True, header=None).filter(list(range(6)))
-        self.eigenvectorLocationDf_U = pd.read_table('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus_eigenvector_location.txt', delim_whitespace=True, header=None).filter(list(range(6)))
+        self.eigenvectorDf_U = pd.read_table('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus_eigenvector.txt', delim_whitespace=True, header=None).filter(list(range(6)))
+        self.eigenvectorLocationDf_S = pd.read_table('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_plus_eigenvector_location.txt', delim_whitespace=True, header=None).filter(list(range(6)))
+        self.eigenvectorLocationDf_U = pd.read_table('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus_eigenvector_location.txt', delim_whitespace=True, header=None).filter(list(range(6)))
 
-        self.W_S_plus = load_manifold_refactored('../../data/raw/manifolds/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_plus.txt')
-        self.W_S_min = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_S_min.txt')
-        self.W_U_plus = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_plus.txt')
-        self.W_U_min = load_manifold_refactored('../../data/raw/manifolds/refined_for_c/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_W_U_min.txt')
+        self.W_S_plus = load_manifold_augmented('../../data/raw/manifolds/augmented/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_' + spacecraft_name + '_' + thrust_restriction + '_W_S_plus.txt')
+        self.W_S_min = load_manifold_augmented('../../data/raw/manifolds/augmented/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_' + spacecraft_name + '_' + thrust_restriction + '_W_S_min.txt')
+        self.W_U_plus = load_manifold_augmented('../../data/raw/manifolds/augmented/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_' + spacecraft_name + '_' + thrust_restriction + '_W_U_plus.txt')
+        self.W_U_min = load_manifold_augmented('../../data/raw/manifolds/augmented/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '_' + spacecraft_name + '_' + thrust_restriction + '_W_U_min.txt')
 
         self.numberOfOrbitsPerManifold = len(set(self.W_S_plus.index.get_level_values(0)))
         self.phase = []
@@ -234,15 +237,19 @@ if __name__ == '__main__':
     lagrange_points = [1, 2]
     orbit_types = ['horizontal']
     c_levels = [3.05, 3.1, 3.15]
+    thrust_restrictions = ['left', 'right']
+    spacecraft_names = ['deepSpace']
 
     orbit_ids = {'horizontal':  {1: {3.05: 808, 3.1: 577, 3.15: 330}, 2: {3.05: 1066, 3.1: 760, 3.15: 373}}}
 
     for orbit_type in orbit_types:
         for lagrange_point in lagrange_points:
             for c_level in c_levels:
-                display_augmented_validation = DisplayAugmentedValidation(orbit_type, lagrange_point,
+                for thrust_restriction in thrust_restrictions:
+                    for spacecraft_name in spacecraft_names:
+                        display_augmented_validation = DisplayAugmentedValidation(orbit_type, lagrange_point,
                                                                               orbit_ids[orbit_type][lagrange_point][
-                                                                                  c_level],
+                                                                                  c_level], thrust_restriction, spacecraft_name,
                                                                               low_dpi=low_dpi)
 
-                del display_augmented_validation
+                        del display_augmented_validation

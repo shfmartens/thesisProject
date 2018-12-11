@@ -209,7 +209,7 @@ void writeAugmentedManifoldStateHistoryToFile( std::map< int, std::map< int, std
                 textFileStateVectors << std::left    << std::scientific << std::setw(25) << ent3.first
                                      << std::setw(25) << ent3.second(0) << std::setw(25) << ent3.second(1)
                                      << std::setw(25) << ent3.second(2) << std::setw(25) << ent3.second(3)
-                                     << std::setw(25) << ent3.second(4) << std::setw(25) << ent3.second(5) << std::endl;
+                                     << std::setw(25) << ent3.second(4) << std::endl;
             }
         }
         textFileStateVectors.close();
