@@ -105,7 +105,7 @@ Eigen::MatrixXd computeStateDerivativeAugmented( const double time, const Eigen:
         stateDerivative.block( 0, 1, 5, 5 ) = stmDerivativeFunction * cartesianState.block( 0, 1, 5, 5 );
 
         // Calculate angle between the low thrust acceleration and velocity
-        double innerProd = -2.0 * ( xTermRelatedToThrust * cartesianState(2) + yTermRelatedToThrust * cartesianState(3) ) ;
+        //double innerProd = -2.0 * ( xTermRelatedToThrust * cartesianState(2) + yTermRelatedToThrust * cartesianState(3) ) ;
         //std::cout << "THE TIME DERIVATIVE OF THE IOM IS:  " << innerProd << std::endl;
 
 
