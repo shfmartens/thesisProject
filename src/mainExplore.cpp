@@ -71,31 +71,47 @@ int main (){
     // ================================
     // == Compute manifolds ==
     // ================================
+#pragma omp parallel num_threads(18)
+{
+    #pragma omp for
+    for (unsigned int i=0; i<18; i++) {
 
+        std::string orbitType;
+        int librationPointNr;
+        int orbitIdOne;
+        double desiredJacobiEnergy;
 
-            std::string orbitType;
-            int librationPointNr;
-            int orbitIdOne;
-            double desiredJacobiEnergy;
-
-            double eigenvectorDisplacementFromOrbit;
-            int saveFrequency;
-            int numberOfTrajectoriesPerManifold;
-            bool saveEigenvectors;
-            double maximumIntegrationTimeManifoldTrajectories;
-            double maxEigenvalueDeviation;
-
+        if (i == 0){
             orbitType = "horizontal";
             librationPointNr = 1;
             orbitIdOne = 808;
             desiredJacobiEnergy = 3.05;
-
-            eigenvectorDisplacementFromOrbit = 1.0E-6;
-            numberOfTrajectoriesPerManifold = 100;
-            saveFrequency = 10;
-            saveEigenvectors = true;
-            maximumIntegrationTimeManifoldTrajectories = 10.0;
-            maxEigenvalueDeviation = 1.0E-3;
+        } if (i == 1){
+            orbitType = "horizontal";
+            librationPointNr = 1;
+            orbitIdOne = 577;
+            desiredJacobiEnergy = 3.1;
+        } if (i == 2){
+            orbitType = "horizontal";
+            librationPointNr = 1;
+            orbitIdOne = 330;
+            desiredJacobiEnergy = 3.15;
+        } if (i == 3){
+            orbitType = "horizontal";
+            librationPointNr = 2;
+            orbitIdOne = 1066;
+            desiredJacobiEnergy = 3.05;
+        } if (i == 4){
+            orbitType = "horizontal";
+            librationPointNr = 2;
+            orbitIdOne = 760;
+            desiredJacobiEnergy = 3.1;
+        } if (i == 5){
+            orbitType = "horizontal";
+            librationPointNr = 2;
+            orbitIdOne = 373;
+            desiredJacobiEnergy = 3.15;
+        }
 
             std::cout << "Start refinement Jacobi energy of orbit " << orbitIdOne << std::endl;
 
@@ -131,7 +147,11 @@ int main (){
 
             std::cout << "start computation of manifolds of orbit number: " << orbitIdOne << std::endl;
 
-            computeManifoldsAugmented(initialStateVector, orbitalPeriod, orbitIdOne, librationPointNr, orbitType, spacecraftName, thrustPointing,  massParameter, eigenvectorDisplacementFromOrbit, numberOfTrajectoriesPerManifold, saveFrequency, saveEigenvectors ,maximumIntegrationTimeManifoldTrajectories, numberOfTrajectoriesPerManifold);
+            computeManifoldsAugmented(initialStateVector, orbitalPeriod, orbitIdOne, librationPointNr, orbitType, spacecraftName, thrustPointing,  massParameter);
+
+    }
+
+}
 
     return 0;
 }
