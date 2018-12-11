@@ -108,8 +108,8 @@ bool checkIoMOnManifoldAugmentedOutsideBounds( Eigen::VectorXd currentStateVecto
         if (std::abs(currentIoM - referenceIoM) < maxIoMDeviation)
         {
             IoMDeviationOutsideBounds = false;
-            std::cout << "Jacobi energy deviation on manifold WITHIN bounds" << std::endl;
-            std::cout << "The current time is: " << currentTime << std::endl;
+            //std::cout << "Jacobi energy deviation on manifold WITHIN bounds" << std::endl;
+            //std::cout << "The current time is: " << currentTime << std::endl;
         } else
         {
             IoMDeviationOutsideBounds = true;
@@ -320,8 +320,8 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
             Eigen::MatrixXd satelliteCharacteristic  = retrieveSpacecraftProperties(spacecraftName);
             auto initialMass = static_cast<Eigen::Vector1d>( satelliteCharacteristic(1) );
             manifoldAugmentedStartingState = getFullAugmentedInitialState(manifoldStartingState, initialMass );
-            double iomManifoldStart = computePlanarIoM( manifoldAugmentedStartingState, spacecraftName, thrustPointing, massParameter, 0.0 );
-            std::cout << "THE IOM AFTER DISPLACEMENTS IS: " << iomManifoldStart << std::endl;
+            //double iomManifoldStart = computePlanarIoM( manifoldAugmentedStartingState, spacecraftName, thrustPointing, massParameter, 0.0 );
+            //std::cout << "THE IOM AFTER DISPLACEMENTS IS: " << iomManifoldStart << std::endl;
 
             if ( saveEigenvectors ) {
                 eigenvectorStateHistory[ manifoldNumber ][ trajectoryOnManifoldNumber ] = std::make_pair(localNormalizedEigenvector, localStateVector);
