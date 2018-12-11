@@ -78,7 +78,7 @@ double computePlanarIoM ( const Eigen::VectorXd currentStateVector, const std::s
 
     // Fill vector with x,y position and velocity components of currentStateVector and z position and velocity components with initialStateVector
     spatialStateVector.block(0,0,2,1) = currentStateVector.block(0,0,2,1);
-    spatialStateVector.block(3,0,2,1) = currentStateVector.block(3,0,2,1);
+    spatialStateVector.block(3,0,2,1) = currentStateVector.block(2,0,2,1);
 
     double planarJacobiEnergy = tudat::gravitation::computeJacobiEnergy(massParameter, spatialStateVector);
 
@@ -228,7 +228,7 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
 
     std::cout.precision(std::numeric_limits<double>::digits10);
 
-    double jacobiEnergyOnOrbit = computePlanarIoM(initialStateVector ,spacecraftName , thrustPointing,  massParameter, 0.0);
+    double jacobiEnergyOnOrbit = tudat::gravitation::computeJacobiEnergy( massParameter, initialStateVector);
     std::cout << "\nInitial state vector:" << std::endl << initialStateVector       << std::endl
               << "\nwith C: " << jacobiEnergyOnOrbit    << ", T: " << orbitalPeriod << std::endl;
 
