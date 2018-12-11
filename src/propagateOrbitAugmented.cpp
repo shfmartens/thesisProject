@@ -18,8 +18,8 @@ Eigen::MatrixXd getFullAugmentedInitialState( const Eigen::Vector6d& initialStat
     fullInitialState.block( 4, 0, 1, 1)  = initialMass;
     fullInitialState.block( 0, 1, 5, 5 ).setIdentity( );
 
-    std::cout << "THE BALLISTIC INITIAL STATE IS: " << initialState << std::endl;
-    std::cout << "THE AUGMENTED INITIAL STATE IS: " << fullInitialState << std::endl;
+    //std::cout << "THE BALLISTIC INITIAL STATE IS: " << initialState << std::endl;
+    //std::cout << "THE AUGMENTED INITIAL STATE IS: " << fullInitialState << std::endl;
 
     return fullInitialState;
 }
