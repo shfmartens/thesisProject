@@ -189,17 +189,17 @@ void writeAugmentedManifoldStateHistoryToFile( std::map< int, std::map< int, std
                                       const int& orbitNumber, const int& librationPointNr, const std::string& orbitType, const std::string spacecraftName, const std::string thrustPointing ) {
     std::string fileNameStateVector;
     std::ofstream textFileStateVectors;
-    std::vector<std::string> fileNamesStateVectors = {"L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitNumber) + "_" + spacecraftName + "_" + thrustPointing + "_" + "_W_S_plus.txt",
-                                                      "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitNumber) + "_" + spacecraftName + "_" + thrustPointing + "_" + "_W_S_min.txt",
-                                                      "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitNumber) + "_" + spacecraftName + "_" + thrustPointing + "_" + "_W_U_plus.txt",
-                                                      "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitNumber) + "_" + spacecraftName + "_" + thrustPointing + "_" + "_W_U_min.txt"};
+    std::vector<std::string> fileNamesStateVectors = {"L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitNumber) + "_" + spacecraftName + "_" + thrustPointing + "_W_S_plus.txt",
+                                                      "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitNumber) + "_" + spacecraftName + "_" + thrustPointing + "_W_S_min.txt",
+                                                      "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitNumber) + "_" + spacecraftName + "_" + thrustPointing + "_W_U_plus.txt",
+                                                      "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitNumber) + "_" + spacecraftName + "_" + thrustPointing + "_W_U_min.txt"};
 
     // For all four manifolds
     for( auto const &ent1 : manifoldAugmentedStateHistory ) {
         fileNameStateVector = fileNamesStateVectors.at(ent1.first);
 
-        remove(("../data/raw/manifolds/augmented" + fileNameStateVector).c_str());
-        textFileStateVectors.open(("../data/raw/manifolds/augmented" + fileNameStateVector));
+        remove(("../data/raw/manifolds/augmented/" + fileNameStateVector).c_str());
+        textFileStateVectors.open(("../data/raw/manifolds/augmented/" + fileNameStateVector));
         textFileStateVectors.precision(14);
 
         // For all numberOfTrajectoriesPerManifold
