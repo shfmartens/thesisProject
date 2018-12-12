@@ -20,7 +20,8 @@ plt.rcParams.update(params)
 import sys
 sys.path.append('../util')
 from load_data import load_orbit, load_bodies_location, load_lagrange_points_location, load_differential_corrections, \
-    load_initial_conditions_incl_M, load_manifold, computeJacobiEnergy, load_manifold_incl_stm, load_manifold_refactored, cr3bp_velocity
+    load_initial_conditions_incl_M, load_manifold, computeJacobiEnergy, load_manifold_incl_stm, load_manifold_refactored, \
+    load_manifolds_augmented, cr3bp_velocity
 
 class DisplayPeriodicityValidation:
     def __init__(self, orbit_type, lagrange_point_nr, orbit_id, thrust_restriction, spacecraft_name, low_dpi=False):
@@ -237,7 +238,7 @@ if __name__ == '__main__':
     lagrange_points = [1, 2]
     orbit_types = ['horizontal']
     c_levels = [3.05, 3.1, 3.15]
-    thrust_restrictions = ['left', 'right']
+    thrust_restrictions = ['right']
     spacecraft_names = ['deepSpace']
 
     orbit_ids = {'horizontal':  {1: {3.05: 808, 3.1: 577, 3.15: 330}, 2: {3.05: 1066, 3.1: 760, 3.15: 373}}}
@@ -251,5 +252,6 @@ if __name__ == '__main__':
                                                                               orbit_ids[orbit_type][lagrange_point][
                                                                                   c_level], thrust_restriction, spacecraft_name,
                                                                               low_dpi=low_dpi)
+                        print(display_augmented_validation.self.W_S_plus);
 
                         del display_augmented_validation
