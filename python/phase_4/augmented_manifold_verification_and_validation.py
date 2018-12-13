@@ -348,6 +348,199 @@ class DisplayAugmentedValidation:
         plt.close()
         pass
 
+    def plot_manifold_zoom(self):
+        # Plot: subplots
+        fig = plt.figure(figsize=self.figSize)
+        ax = fig.gca()
+
+        # Determine color for plot
+        plot_alpha = 1
+        line_width = 0.5
+        for manifold_orbit_number in range(self.numberOfOrbitsPerManifold):
+            ax.plot(self.W_S_plus.xs(manifold_orbit_number)['x'], self.W_S_plus.xs(manifold_orbit_number)['y'],
+                    color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax.plot(self.W_S_min.xs(manifold_orbit_number)['x'], self.W_S_min.xs(manifold_orbit_number)['y'],
+                    color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax.plot(self.W_U_plus.xs(manifold_orbit_number)['x'], self.W_U_plus.xs(manifold_orbit_number)['y'],
+                    color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax.plot(self.W_U_min.xs(manifold_orbit_number)['x'], self.W_U_min.xs(manifold_orbit_number)['y'],
+                    color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+
+        plot_alpha = 1
+        line_width = 2
+        ax.plot(self.orbitDf['x'], self.orbitDf['y'], color=self.plottingColors['orbit'], alpha=plot_alpha,
+                linewidth=line_width)
+
+        ax.set_xlabel('x [-]')
+        ax.set_ylabel('y [-]')
+        ax.grid(True, which='both', ls=':')
+
+        fig.tight_layout()
+        fig.subplots_adjust(top=0.9)
+
+        if self.lagrangePointNr == 2:
+            if self.orbitType == 'horizontal':
+                ax.set_xlim([1 - self.massParameter, 1.45])
+                ax.set_ylim(-0.15, 0.15)
+            else:
+                ax.set_xlim([1 - self.massParameter, 1.25])
+                ax.set_ylim(-0.05, 0.05)
+
+        lagrange_points_df = load_lagrange_points_location()
+        lagrange_point_nrs = ['L2']
+
+        # Lagrange points and bodies
+        for lagrange_point_nr in lagrange_point_nrs:
+            ax.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                       color='black', marker='x')
+
+        u = np.linspace(0, 2 * np.pi, 100)
+        v = np.linspace(0, np.pi, 100)
+        bodies_df = load_bodies_location()
+        for body in bodies_df:
+            x = bodies_df[body]['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df[body]['x']
+            y = bodies_df[body]['r'] * np.outer(np.sin(u), np.sin(v))
+            z = bodies_df[body]['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
+            ax.contourf(x, y, z, colors='black', label='Moon')
+
+        if (thrust_restriction == "left" or "right"):
+            plt.suptitle('$L_' + str(
+                self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + self.spacecraftNameForTitle + ' ' + self.thrustRestrictionForTitle + ' ' + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial overview at C = ' + str(np.round(self.C, 3)),size=self.suptitleSize)
+        else:
+            plt.suptitle('$L_' + str(
+                self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + self.spacecraftNameForTitle + ' ' + self.thrustRestrictionForTitle + ' ' + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial overview at H$_{\text{lt}}$ = ' + str(np.round(self.C, 3)),size=self.suptitleSize)
+
+
+        ax.annotate('\\textbf{Unstable exterior} $\\mathbf{ \mathcal{W}^{U+}}$',
+                    xy=(1.44, -0.1), xycoords='data',
+                    xytext=(-100, 50), textcoords='offset points',
+                    arrowprops=dict(arrowstyle="->", color=self.plottingColors['W_U_plus'], linewidth=2))
+
+        ax.annotate('\\textbf{Stable exterior} $\\mathbf{ \mathcal{W}^{S+}}$',
+                    xy=(1.37, 0.025), xycoords='data',
+                    xytext=(20, 50), textcoords='offset points',
+                    arrowprops=dict(arrowstyle="->", color=self.plottingColors['W_S_plus'], linewidth=2))
+
+        ax.annotate('\\textbf{Unstable interior} $\\mathbf{ \mathcal{W}^{U-}}$',
+                    xy=(1.01, 0.11), xycoords='data',
+                    xytext=(50, 10), textcoords='offset points',
+                    arrowprops=dict(arrowstyle="->", color=self.plottingColors['W_U_min'], linewidth=2))
+        ax.annotate('\\textbf{Stable interior} $\\mathbf{ \mathcal{W}^{S-}}$',
+                    xy=(1.1, -0.11), xycoords='data',
+                    xytext=(-150, -10), textcoords='offset points',
+                    arrowprops=dict(arrowstyle="->", color=self.plottingColors['W_S_min'], linewidth=2))
+
+        # plt.show()
+        fig.savefig('../../data/figures/manifolds/augmented/L' + str(
+            self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + ' ' + str(self.spacecraftName) + ' ' + str(self.thrustRestriction) + '_manifold_subplots_zoom.pdf',
+                    transparent=True)
+        # fig.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots.png')
+        plt.close()
+        pass
+
+    def plot_manifold_total(self):
+        # Plot: subplots
+        fig = plt.figure(figsize=self.figSize)
+        ax = fig.gca()
+
+        # Determine color for plot
+        plot_alpha = 1
+        line_width = 0.5
+
+        if self.lagrangePointNr ==1:
+            W_S_plus_Lother = load_manifold_augmented('../../data/raw/manifolds/augmented/L' + str(2) + '_' + self.orbitType + '_' + str(self.orbitId) + '_' + spacecraft_name + '_' + thrust_restriction + '_W_S_plus.txt')
+            W_S_min_Lother = load_manifold_augmented('../../data/raw/manifolds/augmented/L' + str(2) + '_' + self.orbitType + '_' + str(self.orbitId) + '_' + spacecraft_name + '_' + thrust_restriction + '_W_S_min.txt')
+            W_U_plus_Lother = load_manifold_augmented('../../data/raw/manifolds/augmented/L' + str(2) + '_' + self.orbitType + '_' + str(self.orbitId) + '_' + spacecraft_name + '_' + thrust_restriction + '_W_U_plus.txt')
+            W_U_min_Lother = load_manifold_augmented('../../data/raw/manifolds/augmented/L' + str(2) + '_' + self.orbitType + '_' + str(self.orbitId) + '_' + spacecraft_name + '_' + thrust_restriction + '_W_U_min.txt')
+        else:
+            W_S_plus_Lother = load_manifold_augmented('../../data/raw/manifolds/augmented/L' + str(1) + '_' + self.orbitType + '_' + str(self.orbitId) + '_' + spacecraft_name + '_' + thrust_restriction + '_W_S_plus.txt')
+            W_S_min_Lother = load_manifold_augmented('../../data/raw/manifolds/augmented/L' + str(1) + '_' + self.orbitType + '_' + str(self.orbitId) + '_' + spacecraft_name + '_' + thrust_restriction + '_W_S_min.txt')
+            W_U_plus_Lother = load_manifold_augmented('../../data/raw/manifolds/augmented/L' + str(1) + '_' + self.orbitType + '_' + str(self.orbitId) + '_' + spacecraft_name + '_' + thrust_restriction + '_W_U_plus.txt')
+            W_U_min_Lother = load_manifold_augmented('../../data/raw/manifolds/augmented/L' + str(1) + '_' + self.orbitType + '_' + str(self.orbitId) + '_' + spacecraft_name + '_' + thrust_restriction + '_W_U_min.txt')
+
+        for manifold_orbit_number in range(self.numberOfOrbitsPerManifold):
+            ax.plot(self.W_S_plus.xs(manifold_orbit_number)['x'], self.W_S_plus.xs(manifold_orbit_number)['y'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax.plot(self.W_S_min.xs(manifold_orbit_number)['x'], self.W_S_min.xs(manifold_orbit_number)['y'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax.plot(self.W_U_plus.xs(manifold_orbit_number)['x'], self.W_U_plus.xs(manifold_orbit_number)['y'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax.plot(self.W_U_min.xs(manifold_orbit_number)['x'], self.W_U_min.xs(manifold_orbit_number)['y'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+
+            ax.plot(W_S_plus_Lother.xs(manifold_orbit_number)['x'], W_S_plus_Lother.xs(manifold_orbit_number)['y'],
+                    color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax.plot(W_S_min_Lother.xs(manifold_orbit_number)['x'], W_S_min_Lother.xs(manifold_orbit_number)['y'],
+                    color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax.plot(W_U_plus_Lother.xs(manifold_orbit_number)['x'], W_U_plus_Lother.xs(manifold_orbit_number)['y'],
+                    color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax.plot(W_U_min_Lother.xs(manifold_orbit_number)['x'], W_U_min_Lother.xs(manifold_orbit_number)['y'],
+                    color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+
+        plot_alpha = 1
+        line_width = 2
+
+        if self.lagrangePointNr == 1:
+            orbitDf_Lother = load_orbit('../../data/raw/orbits/augmented/L' + str(2) + '_' + self.orbitType + '_' + str(self.orbitId) + '.txt')
+        else:
+            orbitDf_Lother = load_orbit('../../data/raw/orbits/augmented/L' + str(1) + '_' + self.orbitType + '_' + str(self.orbitId) + '.txt')
+
+        ax.plot(self.orbitDf['x'], self.orbitDf['y'], color=self.plottingColors['orbit'], alpha=plot_alpha, linewidth=line_width)
+        ax.plot(orbitDf_Lother['x'], orbitDf_Lother['y'], color=self.plottingColors['orbit'], alpha=plot_alpha,
+                linewidth=line_width)
+
+        ax.set_xlabel('x [-]')
+        ax.set_ylabel('y [-]')
+        ax.grid(True, which='both', ls=':')
+
+        fig.tight_layout()
+        fig.subplots_adjust(top=0.9)
+
+        lagrange_points_df = load_lagrange_points_location()
+        lagrange_point_nrs = ['L1', 'L2']
+
+        # Plot zero velocity surface
+        x_range = np.arange(ax.get_xlim()[0], ax.get_xlim()[1], 0.001)
+        y_range = np.arange(ax.get_ylim()[0], ax.get_ylim()[1], 0.001)
+        x_mesh, y_mesh = np.meshgrid(x_range, y_range)
+        z_mesh = cr3bp_velocity(x_mesh, y_mesh, 3.15)
+        if z_mesh.min() < 0:
+            plt.contourf(x_mesh, y_mesh, z_mesh, list(np.linspace(z_mesh.min(), 0, 10)), cmap='gist_gray_r', alpha=0.5)
+
+        # Lagrange points and bodies
+        for lagrange_point_nr in lagrange_point_nrs:
+            ax.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'], color='black', marker='x')
+
+        u = np.linspace(0, 2 * np.pi, 100)
+        v = np.linspace(0, np.pi, 100)
+        bodies_df = load_bodies_location()
+        for body in bodies_df:
+            x = bodies_df[body]['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df[body]['x']
+            y = bodies_df[body]['r'] * np.outer(np.sin(u), np.sin(v))
+            z = bodies_df[body]['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
+            ax.contourf(x, y, z, colors='black', label='Moon')
+
+        plt.suptitle('$L_1, L_2$ ' + self.orbitTypeForTitle + ' ' + self.spacecraftNameForTitle + ' ' + self.thrustRestrictionForTitle + ' ' +  ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial overview at C = ' + str(np.round(self.C, 3)),
+                     size=self.suptitleSize)
+        line_width = 2
+        plt.plot([-2.3, -3.8], [0, 0], 'k-', lw=line_width)
+        plt.plot([-0.78, -0.25], [0, 0], 'k-', lw=line_width)
+        plt.plot([1 - self.massParameter, 1 - self.massParameter], [0.0, 0.11], 'k-', lw=line_width)
+        plt.plot([1 - self.massParameter, 1 - self.massParameter], [0.0, -0.11], 'k-', lw=line_width)
+
+        size = 15
+        ax.text(-2.1, 0, "$\mathbf{U_4}$", ha="center", va="center", size=size)
+        ax.text(-1.0, 0, "$\mathbf{U_1}$", ha="center", va="center", size=size)
+        ax.text(1.0 - self.massParameter, 0.25, "$\mathbf{U_3}$", ha="center", va="center", size=size)
+        ax.text(1.0 - self.massParameter, -0.3, "$\mathbf{U_2}$", ha="center", va="center", size=size)
+
+        ax.set_xlim([-6, 4])
+        ax.set_ylim([-3, 3])
+
+        # plt.show()
+        fig.savefig('../../data/figures/manifolds/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + ' ' + str(self.spacecraftName) + ' ' + str(self.thrustRestriction) + '_manifold_subplots_total.pdf',
+                    transparent=True)
+        # fig.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots.png')
+        plt.close()
+        pass
+
+
 if __name__ == '__main__':
     #help()
     low_dpi = False
@@ -370,4 +563,5 @@ if __name__ == '__main__':
                                                                               low_dpi=low_dpi)
 
                         display_augmented_validation.plot_manifolds()
+                        display_augmented_validation.plot_manifold_zoom()
                         del display_augmented_validation
