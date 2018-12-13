@@ -563,5 +563,5 @@ if __name__ == '__main__':
                                                                               low_dpi=low_dpi)
 
                         display_augmented_validation.plot_manifolds()
-                        display_augmented_validation.plot_manifold_zoom()
+                        #display_augmented_validation.plot_manifold_zoom()
                         del display_augmented_validation

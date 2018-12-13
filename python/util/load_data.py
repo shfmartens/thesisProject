@@ -253,6 +253,8 @@ if __name__ == '__main__':
     # differential_correction_df = load_differential_corrections(differential_correction_file_path)
     # print(differential_correction_df)
 
+    load_manifold_augmented()
+
     import math
     t_scale = 27.3217/(2*math.pi)
     x_scale = 0.3844e6
