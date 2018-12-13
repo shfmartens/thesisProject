@@ -63,8 +63,8 @@ def load_manifold_refactored(file_path):
 def load_manifold_augmented(file_path):
     pd.options.mode.chained_assignment = None  # Turn off SettingWithCopyWarning
 
-    input_data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(6)))
-    input_data.columns = ['time', 'x', 'y', 'xdot', 'ydot', 'mass']
+    input_data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(8)))
+    input_data.columns = ['time', 'x', 'y', 'z', 'xdot', 'ydot', 'zdot', 'mass']
     split_on_index = list(input_data[input_data['time'] == 0].index)
 
     output_data = []
@@ -204,24 +204,24 @@ def computeJacobiEnergy(x, y, z, xdot, ydot, zdot):
     c = x**2 + y**2 + 2*(1-mass_parameter)/r_1 + 2*mass_parameter/r_2 - v**2
     return c
 
-def computePlanarIoM(x, y, xdot, ydot, mass, thrust, thrust_restriction):
+def computeIntegralOfMotion(x, y, z, xdot, ydot, zdot, mass, thrust, thrust_restriction):
     EARTH_GRAVITATIONAL_PARAMETER = 3.986004418E14
     SUN_GRAVITATIONAL_PARAMETER = 1.32712440018e20
     MOON_GRAVITATIONAL_PARAMETER = SUN_GRAVITATIONAL_PARAMETER / (328900.56 * (1.0 + 81.30059))
     mass_parameter = MOON_GRAVITATIONAL_PARAMETER / (MOON_GRAVITATIONAL_PARAMETER + EARTH_GRAVITATIONAL_PARAMETER)
-    r_1 = np.sqrt((mass_parameter + x) ** 2 + y ** 2 )
-    r_2 = np.sqrt((1 - mass_parameter - x) ** 2 + y ** 2 )
-    v = np.sqrt(xdot ** 2 + ydot ** 2 )
+    r_1 = np.sqrt((mass_parameter + x) ** 2 + y ** 2 + z ** 2)
+    r_2 = np.sqrt((1 - mass_parameter - x) ** 2 + y ** 2 + z ** 2)
+    v = np.sqrt(xdot ** 2 + ydot ** 2 + zdot ** 2)
     c = x ** 2 + y ** 2 + 2 * (1 - mass_parameter) / r_1 + 2 * mass_parameter / r_2 - v ** 2
     if (thrust_restriction == "left" or thrust_restriction == "right"):
-        planar_iom = c
+        integral_of_motion = c
     else:
         alpha = float(thrust_restriction) * (2 * math.pi / 180.0)
         xddot_lt =  ( thrust / mass ) * np.cos(alpha)
         yddot_lt = (thrust / mass) * np.sin(alpha)
         inner_prod = x * xddot_lt + y * yddot_lt
-        planar_iom = -0.5 * c - inner_prod
-    return planar_iom
+        integral_of_motion = -0.5 * c - inner_prod
+    return integral_of_motion
 
 
 if __name__ == '__main__':

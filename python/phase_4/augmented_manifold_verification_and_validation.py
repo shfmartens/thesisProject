@@ -21,7 +21,7 @@ import sys
 sys.path.append('../util')
 from load_data import load_orbit, load_bodies_location, load_lagrange_points_location, load_differential_corrections, \
     load_initial_conditions_incl_M, load_manifold, computeJacobiEnergy, load_manifold_incl_stm, load_manifold_refactored, \
-    load_manifold_augmented, cr3bp_velocity, computePlanarIoM, load_spacecraft_properties
+    load_manifold_augmented, cr3bp_velocity, computeIntegralOfMotion, load_spacecraft_properties
 
 class DisplayAugmentedValidation:
     def __init__(self, orbit_type, lagrange_point_nr, orbit_id, thrust_restriction, spacecraft_name, low_dpi=False):
@@ -113,35 +113,35 @@ class DisplayAugmentedValidation:
 
         first_state_on_manifold = self.W_S_plus.xs(0).tail(1).values[0]
         thrustMagnitude = load_spacecraft_properties(spacecraft_name)[0]
-        first_iom_on_manifold = computePlanarIoM(first_state_on_manifold[0], first_state_on_manifold[1],first_state_on_manifold[2], first_state_on_manifold[3],first_state_on_manifold[4], thrustMagnitude, thrust_restriction)
+        first_iom_on_manifold = computeIntegralOfMotion(first_state_on_manifold[0], first_state_on_manifold[1],first_state_on_manifold[2], first_state_on_manifold[3],first_state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrustMagnitude, thrust_restriction)
         for row in self.W_S_plus.xs(0).iloc[::-1].iterrows():
              self.T_along_0_W_S_plus.append(abs(row[0]))
              state_on_manifold = row[1].values
-             iom_on_manifold = computePlanarIoM(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], thrustMagnitude, thrust_restriction)
+             iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrustMagnitude, thrust_restriction)
              self.C_along_0_W_S_plus.append(abs(iom_on_manifold-first_iom_on_manifold))
 
         first_state_on_manifold = self.W_S_min.xs(0).tail(1).values[0]
-        first_iom_on_manifold = computePlanarIoM(first_state_on_manifold[0], first_state_on_manifold[1],first_state_on_manifold[2], first_state_on_manifold[3],first_state_on_manifold[4], thrustMagnitude, thrust_restriction)
+        first_iom_on_manifold = computeIntegralOfMotion(first_state_on_manifold[0], first_state_on_manifold[1],first_state_on_manifold[2], first_state_on_manifold[3],first_state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrustMagnitude, thrust_restriction)
         for row in self.W_S_min.xs(0).iloc[::-1].iterrows():
               self.T_along_0_W_S_min.append(abs(row[0]))
               state_on_manifold = row[1].values
-              iom_on_manifold = computePlanarIoM(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], thrustMagnitude, thrust_restriction)
+              iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrustMagnitude, thrust_restriction)
               self.C_along_0_W_S_min.append(abs(iom_on_manifold-first_iom_on_manifold))
 
         first_state_on_manifold = self.W_U_plus.xs(0).head(1).values[0]
-        first_iom_on_manifold = computePlanarIoM(first_state_on_manifold[0], first_state_on_manifold[1], first_state_on_manifold[2], first_state_on_manifold[3], first_state_on_manifold[4], thrustMagnitude, thrust_restriction)
+        first_iom_on_manifold = computeIntegralOfMotion(first_state_on_manifold[0], first_state_on_manifold[1], first_state_on_manifold[2], first_state_on_manifold[3], first_state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrustMagnitude, thrust_restriction)
         for row in self.W_U_plus.xs(0).iterrows():
              self.T_along_0_W_U_plus.append(abs(row[0]))
              state_on_manifold = row[1].values
-             iom_on_manifold = computePlanarIoM(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2], state_on_manifold[3], state_on_manifold[4], thrustMagnitude, thrust_restriction)
+             iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2], state_on_manifold[3], state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrustMagnitude, thrust_restriction)
              self.C_along_0_W_U_plus.append(abs(iom_on_manifold - first_iom_on_manifold))
 
         first_state_on_manifold = self.W_U_min.xs(0).head(1).values[0]
-        first_iom_on_manifold = computePlanarIoM(first_state_on_manifold[0], first_state_on_manifold[1], first_state_on_manifold[2], first_state_on_manifold[3], first_state_on_manifold[4], thrustMagnitude, thrust_restriction)
+        first_iom_on_manifold = computeIntegralOfMotion(first_state_on_manifold[0], first_state_on_manifold[1], first_state_on_manifold[2], first_state_on_manifold[3], first_state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrustMagnitude, thrust_restriction)
         for row in self.W_U_min.xs(0).iterrows():
              self.T_along_0_W_U_min.append(abs(row[0]))
              state_on_manifold = row[1].values
-             iom_on_manifold = computePlanarIoM(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2], state_on_manifold[3], state_on_manifold[4], thrustMagnitude, thrust_restriction)
+             iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2], state_on_manifold[3], state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrustMagnitude, thrust_restriction)
              self.C_along_0_W_U_min.append(abs(iom_on_manifold-first_iom_on_manifold))
 
              for i in range(self.numberOfOrbitsPerManifold):
@@ -149,11 +149,11 @@ class DisplayAugmentedValidation:
 
                  # On orbit
                  state_on_orbit = self.eigenvectorLocationDf_S.xs(i).values
-                 iom_on_orbit = computePlanarIoM(state_on_orbit[0], state_on_orbit[1], state_on_orbit[2],state_on_orbit[3], state_on_orbit[4], thrustMagnitude, thrust_restriction)
+                 iom_on_orbit = computeIntegralOfMotion(state_on_orbit[0], state_on_orbit[1], state_on_orbit[2],state_on_orbit[3], state_on_orbit[4], first_state_on_manifold[5], first_state_on_manifold[6], thrustMagnitude, thrust_restriction)
 
                  # W_S_plus
                  state_on_manifold = self.W_S_plus.xs(i).tail(1).values[0]
-                 iom_on_manifold = computePlanarIoM(state_on_manifold[0], state_on_manifold[1],state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], thrustMagnitude, thrust_restriction)
+                 iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1],state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrustMagnitude, thrust_restriction)
                  self.C_diff_start_W_S_plus.append(abs(iom_on_manifold - iom_on_orbit))
                  state_on_manifold = self.W_S_plus.xs(i).head(1).values[0]
                  # either very close to 1-mu or dy
@@ -166,7 +166,7 @@ class DisplayAugmentedValidation:
 
                  # W_S_min
                  state_on_manifold = self.W_S_min.xs(i).tail(1).values[0]
-                 iom_on_manifold = computePlanarIoM(state_on_manifold[0], state_on_manifold[1],state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], thrustMagnitude, thrust_restriction)
+                 iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1],state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrustMagnitude, thrust_restriction)
                  self.C_diff_start_W_S_min.append(abs(iom_on_manifold - iom_on_orbit))
                  state_on_manifold = self.W_S_min.xs(i).head(1).values[0]
                  # either very close to 1-mu or dy
@@ -179,7 +179,7 @@ class DisplayAugmentedValidation:
 
                  # W_U_plus
                  state_on_manifold = self.W_U_plus.xs(i).head(1).values[0]
-                 iom_on_manifold = computePlanarIoM(state_on_manifold[0], state_on_manifold[1],state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], thrustMagnitude, thrust_restriction)
+                 iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1],state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrustMagnitude, thrust_restriction)
                  self.C_diff_start_W_U_plus.append(abs(iom_on_manifold - iom_on_orbit))
                  state_on_manifold = self.W_U_plus.xs(i).tail(1).values[0]
                  # either very close to 1-mu or dy
@@ -192,7 +192,7 @@ class DisplayAugmentedValidation:
 
                  # W_U_min
                  state_on_manifold = self.W_U_min.xs(i).head(1).values[0]
-                 iom_on_manifold = computePlanarIoM(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2], state_on_manifold[3], state_on_manifold[4], thrustMagnitude, thrust_restriction)
+                 iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2], state_on_manifold[3], state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrustMagnitude, thrust_restriction)
                  self.C_diff_start_W_U_min.append(abs(iom_on_manifold - iom_on_orbit))
                  state_on_manifold = self.W_U_min.xs(i).tail(1).values[0]
                  # either very close to 1-mu or dy
@@ -277,29 +277,29 @@ class DisplayAugmentedValidation:
         plot_alpha = 1
         line_width = 0.5
         for manifold_orbit_number in range(self.numberOfOrbitsPerManifold):
-            ax0.plot(self.W_S_plus.xs(manifold_orbit_number)['x'], self.W_S_plus.xs(manifold_orbit_number)['y'], pd.DataFrame(np.zeros((len(self.W_S_plus.xs(manifold_orbit_number)['x']), 1)))['0'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax0.plot(self.W_S_plus.xs(manifold_orbit_number)['x'], self.W_S_plus.xs(manifold_orbit_number)['y'], self.W_S_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
             ax3.plot(self.W_S_plus.xs(manifold_orbit_number)['x'], self.W_S_plus.xs(manifold_orbit_number)['y'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
             if self.orbitType != 'horizontal':
-                ax1.plot(self.W_S_plus.xs(manifold_orbit_number)['x'], pd.DataFrame(np.zeros((len(self.W_S_plus.xs(manifold_orbit_number)['x']), 1)))['0'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-                ax2.plot(self.W_S_plus.xs(manifold_orbit_number)['y'], pd.DataFrame(np.zeros((len(self.W_S_plus.xs(manifold_orbit_number)['x']), 1)))['0'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax1.plot(self.W_S_plus.xs(manifold_orbit_number)['x'], self.W_S_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax2.plot(self.W_S_plus.xs(manifold_orbit_number)['y'], self.W_S_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
 
-            ax0.plot(self.W_S_min.xs(manifold_orbit_number)['x'], self.W_S_min.xs(manifold_orbit_number)['y'], pd.DataFrame(np.zeros((len(self.W_S_min.xs(manifold_orbit_number)['x']), 1)))['0'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax0.plot(self.W_S_min.xs(manifold_orbit_number)['x'], self.W_S_min.xs(manifold_orbit_number)['y'], self.W_S_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
             ax3.plot(self.W_S_min.xs(manifold_orbit_number)['x'], self.W_S_min.xs(manifold_orbit_number)['y'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
             if self.orbitType != 'horizontal':
-                ax1.plot(self.W_S_min.xs(manifold_orbit_number)['x'], pd.DataFrame(np.zeros((len(self.W_S_min.xs(manifold_orbit_number)['x']), 1)))['0'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-                ax2.plot(self.W_S_min.xs(manifold_orbit_number)['y'], pd.DataFrame(np.zeros((len(self.W_S_min.xs(manifold_orbit_number)['x']), 1)))['0'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax1.plot(self.W_S_min.xs(manifold_orbit_number)['x'], self.W_S_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax2.plot(self.W_S_min.xs(manifold_orbit_number)['y'], self.W_S_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
 
-            ax0.plot(self.W_U_plus.xs(manifold_orbit_number)['x'], self.W_U_plus.xs(manifold_orbit_number)['y'], pd.DataFrame(np.zeros((len(self.W_U_plus.xs(1)['x']), 1)))['0'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax0.plot(self.W_U_plus.xs(manifold_orbit_number)['x'], self.W_U_plus.xs(manifold_orbit_number)['y'], self.W_S_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
             ax3.plot(self.W_U_plus.xs(manifold_orbit_number)['x'], self.W_U_plus.xs(manifold_orbit_number)['y'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
             if self.orbitType != 'horizontal':
-                ax1.plot(self.W_U_plus.xs(manifold_orbit_number)['x'], pd.DataFrame(np.zeros((len(self.W_U_plus.xs(manifold_orbit_number)['x']), 1)))['0'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-                ax2.plot(self.W_U_plus.xs(manifold_orbit_number)['y'], pd.DataFrame(np.zeros((len(self.W_U_plus.xs(manifold_orbit_number)['x']), 1)))['0'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax1.plot(self.W_U_plus.xs(manifold_orbit_number)['x'], self.W_S_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax2.plot(self.W_U_plus.xs(manifold_orbit_number)['y'], self.W_S_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
 
-            ax0.plot(self.W_U_min.xs(manifold_orbit_number)['x'], self.W_U_min.xs(manifold_orbit_number)['y'], pd.DataFrame(np.zeros((len(self.W_U_min.xs(manifold_orbit_number)['x']), 1)))['0'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax0.plot(self.W_U_min.xs(manifold_orbit_number)['x'], self.W_U_min.xs(manifold_orbit_number)['y'], self.W_S_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
             ax3.plot(self.W_U_min.xs(manifold_orbit_number)['x'], self.W_U_min.xs(manifold_orbit_number)['y'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
             if self.orbitType != 'horizontal':
-                ax1.plot(self.W_U_min.xs(manifold_orbit_number)['x'], pd.DataFrame(np.zeros((len(self.W_U_min.xs(manifold_orbit_number)['x']), 1)))['0'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-                ax2.plot(self.W_U_min.xs(manifold_orbit_number)['y'], pd.DataFrame(np.zeros((len(self.W_U_min.xs(manifold_orbit_number)['x']), 1)))['0'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax1.plot(self.W_U_min.xs(manifold_orbit_number)['x'], self.W_S_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+                ax2.plot(self.W_U_min.xs(manifold_orbit_number)['y'], self.W_S_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
         plot_alpha = 1
         line_width = 2
         ax0.plot(self.orbitDf['x'], self.orbitDf['y'], self.orbitDf['z'], color=self.plottingColors['orbit'], alpha=plot_alpha, linewidth=line_width)
@@ -338,13 +338,13 @@ class DisplayAugmentedValidation:
 
         if (thrust_restriction == "left" or "right"):
             plt.suptitle('$L_' + str(
-                self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + self.spacecraftNameForTitle + '$ ' + self.thrustRestrictionForTitle + '' + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial overview at C = ' + str(np.round(self.C, 3)),size=self.suptitleSize)
+                self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + self.spacecraftNameForTitle + ' ' + self.thrustRestrictionForTitle + ' ' + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial overview at C = ' + str(np.round(self.C, 3)),size=self.suptitleSize)
         else:
             plt.suptitle('$L_' + str(
-                self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + self.spacecraftNameForTitle + '$ ' + self.thrustRestrictionForTitle + '' + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial overview at H$_{\text{lt}}$ = ' + str(np.round(self.C, 3)),size=self.suptitleSize)
+                self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + self.spacecraftNameForTitle + ' ' + self.thrustRestrictionForTitle + ' ' + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial overview at H$_{\text{lt}}$ = ' + str(np.round(self.C, 3)),size=self.suptitleSize)
 
 
-        fig.savefig('../../data/figures/manifolds/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots.pdf',
+        fig.savefig('../../data/figures/manifolds/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + ' ' + str(self.spacecraftName) + ' ' + str(self.thrustRestriction) + '_manifold_subplots.pdf',
                     transparent=True)
         # fig.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots.png')
         plt.close()
