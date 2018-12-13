@@ -271,8 +271,6 @@ class DisplayAugmentedValidation:
                 ax1.contourf(x, z, y, colors='black')
                 ax2.contourf(y, z, x, colors='black')
 
-        print(self.W_S_plus.xs(1)['x'])
-        print(pd.DataFrame(np.zeros((len(self.W_S_plus.xs(1)['x']), 1)))['0'])
         #Determine color for plot
         plot_alpha = 1
         line_width = 0.5
