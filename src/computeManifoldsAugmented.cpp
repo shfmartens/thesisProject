@@ -381,6 +381,7 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
                                                          previousStateVectorInclSTMAndTime,
                                                          stateVectorInclSTM, currentTime, xDiffSign,
                                                          integrationDirection, massParameter, spacecraftName, thrustPointing);
+                    std::cout << "PROPAGATION STOPPED AT U2 U3" << std::endl;
                     fullManifoldComputed = true;
                 }
 
