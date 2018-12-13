@@ -107,7 +107,7 @@ class DisplayPeriodicityValidation:
         self.W_U_min_dy = []
 
         first_state_on_manifold = self.W_S_plus.xs(0).tail(1).values[0]
-        first_jacobi_on_manifold = computePlanarIoM(first_state_on_manifold[0], first_state_on_manifold[1], first_state_on_manifold[2], first_state_on_manifold[3], first_state_on_manifold[4], first_state_on_manifold[5])
+        first_jacobi_on_manifold = computeJacobiEnergy(first_state_on_manifold[0], first_state_on_manifold[1], first_state_on_manifold[2], first_state_on_manifold[3], first_state_on_manifold[4], first_state_on_manifold[5])
         for row in self.W_S_plus.xs(0).iloc[::-1].iterrows():
             self.T_along_0_W_S_plus.append(abs(row[0]))
             state_on_manifold = row[1].values
