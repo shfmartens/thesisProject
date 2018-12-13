@@ -72,27 +72,27 @@ Eigen::MatrixXd retrieveSpacecraftProperties( const std::string spacecraftName)
     return spacecraftProperties;
 }
 
-double computePlanarIoM ( const Eigen::VectorXd currentStateVector, const std::string spacecraftName, const std::string thrustPointing ,const double massParameter, const double currentTime) {
-    double planarIoM;
+double computeIntegralOfMotion ( const Eigen::VectorXd currentStateVector, const std::string spacecraftName, const std::string thrustPointing ,const double massParameter, const double currentTime) {
+
     Eigen::MatrixXd spatialStateVector = Eigen::MatrixXd::Zero(6,1);
+    double integralOfMotion;
 
     // Fill vector with x,y position and velocity components of currentStateVector and z position and velocity components with initialStateVector
-    spatialStateVector.block(0,0,2,1) = currentStateVector.block(0,0,2,1);
-    spatialStateVector.block(3,0,2,1) = currentStateVector.block(2,0,2,1);
+    spatialStateVector.block(0,0,6,1) = currentStateVector.block(0,0,6,1);
 
-    double planarJacobiEnergy = tudat::gravitation::computeJacobiEnergy(massParameter, spatialStateVector);
+    double JacobiEnergy = tudat::gravitation::computeJacobiEnergy(massParameter, spatialStateVector);
 
     if (thrustPointing == "left" || thrustPointing == "right") {
-    planarIoM = planarJacobiEnergy;
+    integralOfMotion = JacobiEnergy;
 
     } else
     {
     // calculate the accelerations
     Eigen::MatrixXd stateDerivative = computeStateDerivativeAugmented(currentTime, currentStateVector);
-    double innerProduct = spatialStateVector.coeff(0,0) * stateDerivative.coeff(2,0)  + spatialStateVector.coeff(1,0) * stateDerivative.coeff(3,0);
-    planarIoM = planarJacobiEnergy / 2.0 - innerProduct;
+    double innerProduct = spatialStateVector.coeff(0,0) * stateDerivative.coeff(3,0)  + spatialStateVector.coeff(1,0) * stateDerivative.coeff(4,0) + spatialStateVector(2,0) * stateDerivative.coeff(5,0);
+    integralOfMotion = JacobiEnergy / -2.0 - innerProduct;
     }
-    return planarIoM;
+    return integralOfMotion;
 }
 
 bool checkIoMOnManifoldAugmentedOutsideBounds( Eigen::VectorXd currentStateVector, const double referenceIoM,
@@ -103,17 +103,17 @@ bool checkIoMOnManifoldAugmentedOutsideBounds( Eigen::VectorXd currentStateVecto
     //Declare function specific variables
     bool IoMDeviationOutsideBounds;
 
-    double currentIoM = computePlanarIoM(currentStateVector, spacecraftName, thrustPointing, massParameter, currentTime);
+    double currentIoM = computeIntegralOfMotion(currentStateVector, spacecraftName, thrustPointing, massParameter, currentTime);
 
         if (std::abs(currentIoM - referenceIoM) < maxIoMDeviation)
         {
             IoMDeviationOutsideBounds = false;
-            //std::cout << "Jacobi energy deviation on manifold WITHIN bounds" << std::endl;
+            //std::cout << "Integral of motion deviation on manifold WITHIN bounds" << std::endl;
             //std::cout << "The current time is: " << currentTime << std::endl;
         } else
         {
             IoMDeviationOutsideBounds = true;
-            std::cout << "Jacobi energy deviation on manifold exceeded bounds" << std::endl;
+            std::cout << "Integral of motion deviation on manifold exceeded bounds" << std::endl;
         }
 
     return IoMDeviationOutsideBounds;
@@ -185,7 +185,7 @@ void reduceOvershootAtPoincareSectionU2U3Augmented( std::pair< Eigen::MatrixXd, 
               << ", at end of iterative procedure" << std::endl;
 }
 
-void writeAugmentedManifoldStateHistoryToFile( std::map< int, std::map< int, std::map< double, Eigen::Vector5d > > >& manifoldAugmentedStateHistory,
+void writeAugmentedManifoldStateHistoryToFile( std::map< int, std::map< int, std::map< double, Eigen::Vector7d > > >& manifoldAugmentedStateHistory,
                                       const int& orbitNumber, const int& librationPointNr, const std::string& orbitType, const std::string spacecraftName, const std::string thrustPointing ) {
     std::string fileNameStateVector;
     std::ofstream textFileStateVectors;
@@ -209,7 +209,8 @@ void writeAugmentedManifoldStateHistoryToFile( std::map< int, std::map< int, std
                 textFileStateVectors << std::left    << std::scientific << std::setw(25) << ent3.first
                                      << std::setw(25) << ent3.second(0) << std::setw(25) << ent3.second(1)
                                      << std::setw(25) << ent3.second(2) << std::setw(25) << ent3.second(3)
-                                     << std::setw(25) << ent3.second(4) << std::endl;
+                                     << std::setw(25) << ent3.second(4) << std::setw(25) << ent3.second(5)
+                                     << std::setw(25) << ent3.second(6) << std::endl;
             }
         }
         textFileStateVectors.close();
@@ -228,9 +229,9 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
 
     std::cout.precision(std::numeric_limits<double>::digits10);
 
-    double jacobiEnergyOnOrbit = tudat::gravitation::computeJacobiEnergy( massParameter, initialStateVector);
+    double integralOfMotionOnOrbit = computeIntegralOfMotion( initialStateVector, spacecraftName, thrustPointing, massParameter, 0.0 );
     std::cout << "\nInitial state vector:" << std::endl << initialStateVector       << std::endl
-              << "\nwith C: " << jacobiEnergyOnOrbit    << ", T: " << orbitalPeriod << std::endl;
+              << "\nwith IOM: " << integralOfMotionOnOrbit   << ", T: " << orbitalPeriod << std::endl;
 
     // Propagate the initialStateVector for a full period and write output to file.
     std::map< double, Eigen::MatrixXd > stateTransitionMatrixHistory;
@@ -266,14 +267,14 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
     Eigen::Vector6d localNormalizedEigenvector = Eigen::Vector6d::Zero(6);
     Eigen::MatrixXd manifoldStartingState      = Eigen::MatrixXd::Zero(6, 7);
 
-    Eigen::MatrixXd manifoldAugmentedStartingState  = Eigen::MatrixXd::Zero(5, 6);
+    Eigen::MatrixXd manifoldAugmentedStartingState  = Eigen::MatrixXd::Zero(7, 8);
 
     std::vector<double> offsetSigns            = {1.0 * stableEigenvectorSign, -1.0 * stableEigenvectorSign, 1.0 * unstableEigenvectorSign, -1.0 * unstableEigenvectorSign};
     std::vector<Eigen::VectorXd> eigenVectors  = {stableEigenvector, stableEigenvector, unstableEigenvector, unstableEigenvector};
     std::vector<int> integrationDirections     = {-1, -1, 1, 1};
     std::pair< Eigen::MatrixXd, double >                                            stateVectorInclSTMAndTime;
     std::pair< Eigen::MatrixXd, double >                                            previousStateVectorInclSTMAndTime;
-    std::map< int, std::map< int, std::map< double, Eigen::Vector5d > > >           manifoldAugmentedStateHistory;  // 1. per manifold 2. per trajectory 3. per time-step
+    std::map< int, std::map< int, std::map< double, Eigen::Vector7d > > >           manifoldAugmentedStateHistory;  // 1. per manifold 2. per trajectory 3. per time-step
     std::map< int, std::map< int, std::pair< Eigen::Vector6d, Eigen::Vector6d > > > eigenvectorStateHistory;  // 1. per manifold 2. per trajectory 3. direction and location
 
     std::cout << "START MANIFOLD INITIAL CONDITION AND INTEGRATION COMPUTATION: " <<  std::endl;
@@ -320,7 +321,7 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
             Eigen::MatrixXd satelliteCharacteristic  = retrieveSpacecraftProperties(spacecraftName);
             auto initialMass = static_cast<Eigen::Vector1d>( satelliteCharacteristic(1) );
             manifoldAugmentedStartingState = getFullAugmentedInitialState(manifoldStartingState, initialMass );
-            //double iomManifoldStart = computePlanarIoM( manifoldAugmentedStartingState, spacecraftName, thrustPointing, massParameter, 0.0 );
+            //double iomManifoldStart = computeIntegralOfMotion( manifoldAugmentedStartingState, spacecraftName, thrustPointing, massParameter, 0.0 );
             //std::cout << "THE IOM AFTER DISPLACEMENTS IS: " << iomManifoldStart << std::endl;
 
             if ( saveEigenvectors ) {
@@ -339,7 +340,7 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
             while ( (std::abs( currentTime ) <= maximumIntegrationTimeManifoldTrajectories) && !fullManifoldComputed ) {
 
                 // Check whether trajectory still belongs to the same energy level
-                IoMOutsideBounds = checkIoMOnManifoldAugmentedOutsideBounds(stateVectorInclSTM, jacobiEnergyOnOrbit, massParameter, spacecraftName, thrustPointing, currentTime);
+                IoMOutsideBounds = checkIoMOnManifoldAugmentedOutsideBounds(stateVectorInclSTM, integralOfMotionOnOrbit, massParameter, spacecraftName, thrustPointing, currentTime);
                 fullManifoldComputed      = IoMOutsideBounds;
 
                 // Determine sign of y when crossing x = 0  (U1, U4)
@@ -420,8 +421,8 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
               << "Mass parameter: "             << massParameter                                << std::endl
               << "Spacecraft: "                 << spacecraftName                               << std::endl
               << "Thrust restriction: "         << thrustPointing                               << std::endl
-              << "IoM at initial conditions: "    << jacobiEnergyOnOrbit                          << std::endl
-              << "IoM at end of manifold orbit: " << computePlanarIoM(stateVectorInclSTM.block(0,0,5,1), spacecraftName, thrustPointing, massParameter) << std::endl
+              << "IoM at initial conditions: "    << integralOfMotionOnOrbit                          << std::endl
+              << "IoM at end of manifold orbit: " << computeIntegralOfMotion(stateVectorInclSTM.block(0,0,5,1), spacecraftName, thrustPointing, massParameter) << std::endl
               << "T: " << orbitalPeriod                                                         << std::endl
               << "================================================"                             << std::endl;
 

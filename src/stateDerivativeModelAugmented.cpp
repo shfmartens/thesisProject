@@ -40,18 +40,19 @@ Eigen::MatrixXd computeStateDerivativeAugmented( const double time, const Eigen:
     if (thrustPointing == "left" || thrustPointing == "right"){
 
         // Declare state derivative vector with same length as the state.
-        Eigen::MatrixXd stateDerivative = Eigen::MatrixXd::Zero( 5, 6 );
+        Eigen::MatrixXd stateDerivative = Eigen::MatrixXd::Zero( 7, 8 );
 
         // Set the derivative of the position equal to the velocities.
-        stateDerivative.block( 0, 0, 2, 1 ) = cartesianState.block( 2, 0, 2, 1 );
+        stateDerivative.block( 0, 0, 3, 1 ) = cartesianState.block( 3, 0, 3, 1 );
 
         double xPositionScaledSquared = (cartesianState(0)+massParameter) * (cartesianState(0)+massParameter);
         double xPositionScaledSquared2 = (1.0-massParameter-cartesianState(0)) * (1.0-massParameter-cartesianState(0));
         double yPositionScaledSquared = (cartesianState(1) * cartesianState(1) );
+        double zPositionScaledSquared = (cartesianState(2) * cartesianState(2) );
 
         // Compute distances to primaries.
-        double distanceToPrimaryBody   = sqrt(xPositionScaledSquared     + yPositionScaledSquared);
-        double distanceToSecondaryBody = sqrt(xPositionScaledSquared2 + yPositionScaledSquared);
+        double distanceToPrimaryBody   = sqrt(xPositionScaledSquared     + yPositionScaledSquared + zPositionScaledSquared);
+        double distanceToSecondaryBody = sqrt(xPositionScaledSquared2 + yPositionScaledSquared + zPositionScaledSquared);
 
         double distanceToPrimaryCubed = distanceToPrimaryBody * distanceToPrimaryBody * distanceToPrimaryBody;
         double distanceToSecondaryCubed = distanceToSecondaryBody * distanceToSecondaryBody * distanceToSecondaryBody;
@@ -63,46 +64,53 @@ Eigen::MatrixXd computeStateDerivativeAugmented( const double time, const Eigen:
         double termRelatedToPrimaryBody   = (1.0-massParameter)/distanceToPrimaryCubed;
         double termRelatedToSecondaryBody = massParameter      /distanceToSecondaryCubed;
 
-        double xVelocitySquared = cartesianState(2) * cartesianState(2);
-        double yVelocitySquared = cartesianState(3) * cartesianState(3);
+        double xVelocitySquared = cartesianState(3) * cartesianState(3);
+        double yVelocitySquared = cartesianState(4) * cartesianState(4);
         double velocityMagnitude = sqrt( xVelocitySquared + yVelocitySquared );
         double velocityMagnitudeCubed = velocityMagnitude * velocityMagnitude * velocityMagnitude;
-        double termRelatedtoThrustMagnitude = thrustMagnitude / cartesianState(4);
+        double termRelatedtoThrustMagnitude = thrustMagnitude / cartesianState(6);
 
-        double xTermRelatedToThrust = termRelatedtoThrustMagnitude * (pointingSign * -1.0 * cartesianState(3) ) / velocityMagnitude;
-        double yTermRelatedToThrust = termRelatedtoThrustMagnitude * (pointingSign *  1.0 * cartesianState(2) ) / velocityMagnitude;
+        double xTermRelatedToThrust = termRelatedtoThrustMagnitude * (pointingSign * -1.0 * cartesianState(4) ) / velocityMagnitude;
+        double yTermRelatedToThrust = termRelatedtoThrustMagnitude * (pointingSign *  1.0 * cartesianState(3) ) / velocityMagnitude;
 
-        stateDerivative( 2, 0 ) = -termRelatedToPrimaryBody*(massParameter+cartesianState(0)) + termRelatedToSecondaryBody*(1.0-massParameter-cartesianState(0)) + cartesianState(0) + 2.0*cartesianState(3) + xTermRelatedToThrust;
-        stateDerivative( 3, 0 ) = -termRelatedToPrimaryBody*cartesianState(1)                 - termRelatedToSecondaryBody*cartesianState(1)                     + cartesianState(1) - 2.0*cartesianState(2) + yTermRelatedToThrust;
-
+        stateDerivative( 3, 0 ) = -termRelatedToPrimaryBody*(massParameter+cartesianState(0)) + termRelatedToSecondaryBody*(1.0-massParameter-cartesianState(0)) + cartesianState(0) + 2.0*cartesianState(4) + xTermRelatedToThrust;
+        stateDerivative( 4, 0 ) = -termRelatedToPrimaryBody*cartesianState(1)                 - termRelatedToSecondaryBody*cartesianState(1)                     + cartesianState(1) - 2.0*cartesianState(3) + yTermRelatedToThrust;
+        stateDerivative( 5, 0 ) = -termRelatedToPrimaryBody*cartesianState(2)                 - termRelatedToSecondaryBody*cartesianState(2);
         //Set the derivate of the mass to the mass flow rate.
-        stateDerivative( 4, 0 ) = massRate;
+        stateDerivative( 6, 0 ) = massRate;
 
         // Compute partial derivatives of the potential.
         double Uxx = (3.0*(1.0-massParameter)*xPositionScaledSquared          )/distanceToPrimaryToFifthPower+ (3.0*massParameter*xPositionScaledSquared2           )/distanceToSecondaryToFifthPower - (1.0-massParameter)/distanceToPrimaryCubed - massParameter/distanceToSecondaryCubed + 1.0;
         double Uxy = (3.0*(1.0-massParameter)*(cartesianState(0)+massParameter)*cartesianState(1))/distanceToPrimaryToFifthPower- (3.0*massParameter*(1.0-massParameter-cartesianState(0))*cartesianState(1))/distanceToSecondaryToFifthPower;
+        double Uxz = (3.0*(1.0-massParameter)*(cartesianState(0)+massParameter)*cartesianState(2))/distanceToPrimaryToFifthPower- (3.0*massParameter*(1.0-massParameter-cartesianState(0))*cartesianState(2))/distanceToSecondaryToFifthPower;
         double Uyx = Uxy;
         double Uyy = (3.0*(1.0-massParameter)*yPositionScaledSquared                         )/distanceToPrimaryToFifthPower+ (3.0*massParameter*yPositionScaledSquared                             )/distanceToSecondaryToFifthPower - (1.0-massParameter)/distanceToPrimaryCubed - massParameter/distanceToSecondaryCubed + 1.0 ;
+        double Uyz = (3.0*(1.0-massParameter)*cartesianState(1)*cartesianState(2)                )/distanceToPrimaryToFifthPower+ (3.0*massParameter*cartesianState(1)*cartesianState(2)                    )/distanceToSecondaryToFifthPower;
+        double Uzx = Uxz;
+        double Uzy = Uyz;
+        double Uzz = (3.0*(1.0-massParameter)*zPositionScaledSquared                         )/distanceToPrimaryToFifthPower+ (3.0*massParameter*zPositionScaledSquared                             )/distanceToSecondaryToFifthPower - (1.0-massParameter)/distanceToPrimaryCubed - massParameter/distanceToSecondaryCubed ;
 
         //Compute the acceleration derivatives with respect to the velocities and mass
-        double partialXaccXvel =  termRelatedtoThrustMagnitude * -1.0 * ( ( pointingSign * -1.0 * cartesianState(3) * cartesianState(2) ) / velocityMagnitudeCubed );
+        double partialXaccXvel =  termRelatedtoThrustMagnitude * -1.0 * ( ( pointingSign * -1.0 * cartesianState(4) * cartesianState(3) ) / velocityMagnitudeCubed );
         double partialXaccYvel =  ( (pointingSign * -1.0 ) / ( velocityMagnitude ) ) - ( ( pointingSign * -1.0 * yVelocitySquared ) / velocityMagnitudeCubed );
         double partialYaccXvel =  ( (pointingSign *  1.0 ) / ( velocityMagnitude ) ) - ( ( pointingSign *  1.0 * xVelocitySquared ) / velocityMagnitudeCubed );
-        double partialYaccYvel =  termRelatedtoThrustMagnitude * -1.0 * (  (pointingSign *  1.0 * cartesianState(2) * cartesianState(3) ) / velocityMagnitudeCubed );
+        double partialYaccYvel =  termRelatedtoThrustMagnitude * -1.0 * (  (pointingSign *  1.0 * cartesianState(3) * cartesianState(4) ) / velocityMagnitudeCubed );
 
         double partialXaccMass =  -1.0 * (termRelatedtoThrustMagnitude / cartesianState(4) ) * xTermRelatedToThrust;
         double partialYaccMass =  -1.0 * (termRelatedtoThrustMagnitude / cartesianState(4) ) * yTermRelatedToThrust;
 
         // Create the STM-derivative matrix
-        Eigen::MatrixXd stmDerivativeFunction (5,5);
-        stmDerivativeFunction << 0.0, 0.0, 1.0,             0.0,             0.0,
-                                 0.0, 0.0, 0.0,             1.0,             0.0,
-                                 Uxx, Uxy, partialXaccXvel, partialXaccYvel, partialXaccMass,
-                                 Uyx, Uyy, partialYaccXvel, partialYaccYvel, partialYaccMass,
-                                 0.0, 0.0, 0.0,             0.0,             0.0;
+        Eigen::MatrixXd stmDerivativeFunction (7,7);
+        stmDerivativeFunction << 0.0, 0.0,  0.0,    1.0,             0.0,             0.0,   0.0,
+                                 0.0, 0.0,  0.0,    0.0,             1.0,             0.0,   0.0,
+                                 0.0, 0.0,  0.0,    0.0,             0.0,             1.0,   0.0,
+                                 Uxx, Uxy,  Uxz,    partialXaccXvel, partialXaccYvel, 0.0,   partialXaccMass,
+                                 Uyx, Uyy,  Uyz,    partialYaccXvel, partialYaccYvel, 0.0,   partialYaccMass,
+                                 Uzx, Uzy,  Uzz,    0.0,             0.0,             0.0,   0.0,
+                                 0.0, 0.0,          0.0,             0.0,             0.0,   0.0;
 
         // Differentiate the STM.
-        stateDerivative.block( 0, 1, 5, 5 ) = stmDerivativeFunction * cartesianState.block( 0, 1, 5, 5 );
+        stateDerivative.block( 0, 1, 7, 7 ) = stmDerivativeFunction * cartesianState.block( 0, 1, 7, 7 );
 
         // Calculate angle between the low thrust acceleration and velocity
         //double innerProd = -2.0 * ( xTermRelatedToThrust * cartesianState(2) + yTermRelatedToThrust * cartesianState(3) ) ;

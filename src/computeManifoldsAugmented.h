@@ -15,7 +15,7 @@
 
 Eigen::MatrixXd retrieveSpacecraftProperties( const std::string spacecraftName);
 
-double computePlanarIoM (const Eigen::VectorXd currentStateVector, const std::string spacecraftName, const std::string thrustPointing, const double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter(tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER, tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER ), const double currentTime = 0.0);
+double computeIntegralOfMotion (const Eigen::VectorXd currentStateVector, const std::string spacecraftName, const std::string thrustPointing, const double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter(tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER, tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER ), const double currentTime = 0.0);
 
 bool checkIoMOnManifoldAugmentedOutsideBounds( Eigen::VectorXd currentStateVector, const double referenceIoM,
                                          const double massParameter, const std::string spacecraftName, const std::string thrustPointing, const double currentTime = 0.0, const double maxIoMDeviation = 1.0E-11 );
@@ -30,7 +30,7 @@ void reduceOvershootAtPoincareSectionU2U3Augmented( std::pair< Eigen::MatrixXd, 
                                            Eigen::MatrixXd& stateVectorInclSTM, double& currentTime, double& xDiffSign,
                                            int& integrationDirection, const double& massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter(tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER, tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER ), std::string spacecraftName = "deepSpace", std::string thrustPointing = "left" );
 
-void writeAugmentedManifoldStateHistoryToFile( std::map< int, std::map< int, std::map< double, Eigen::Vector6d > > >& manifoldStateHistory,
+void writeAugmentedManifoldStateHistoryToFile( std::map< int, std::map< int, std::map< double, Eigen::Vector7d > > >& manifoldStateHistory,
                                       const int& orbitNumber, const int& librationPointNr, const std::string& orbitType, const std::string spacecraftName, const std::string thrustPointing );
 
 void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const double orbitalPeriod, const int orbitNumber,

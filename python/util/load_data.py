@@ -60,7 +60,7 @@ def load_manifold_refactored(file_path):
     output_data = pd.concat(output_data).reset_index(drop=True).set_index(['orbitNumber', 'time'])
     return output_data
 
-def load_manifold_augmented(file_path)
+def load_manifold_augmented(file_path):
     pd.options.mode.chained_assignment = None  # Turn off SettingWithCopyWarning
 
     input_data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(6)))
@@ -170,6 +170,16 @@ def load_bodies_location():
     location_bodies.index = ['x', 'y', 'z', 'r']
     return location_bodies
 
+def load_spacecraft_properties(spacecraft_name):
+    spacecraft_properties = {'DeepSpace': [0.092, 486.0, 3200],
+                       'Hayabasu': [0.024, 510, 3000],
+                       'Dawn': [0.097, 1218.0, 3200],
+                       'LunarIceCub': [0.001, 14.0, 2500.0]}
+    spacecraft_properties = pd.DataFrame.from_dict(spacecraft_properties)
+    spacecraft_properties.index = ['f','M0','Isp']
+    target = spacecraft_properties.loc[:,spacecraft_name]
+    return target
+
 
 def cr3bp_velocity(x_loc, y_loc, c):
     EARTH_GRAVITATIONAL_PARAMETER = 3.986004418E14
@@ -194,6 +204,25 @@ def computeJacobiEnergy(x, y, z, xdot, ydot, zdot):
     c = x**2 + y**2 + 2*(1-mass_parameter)/r_1 + 2*mass_parameter/r_2 - v**2
     return c
 
+def computePlanarIoM(x, y, xdot, ydot, mass, thrust, thrust_restriction):
+    EARTH_GRAVITATIONAL_PARAMETER = 3.986004418E14
+    SUN_GRAVITATIONAL_PARAMETER = 1.32712440018e20
+    MOON_GRAVITATIONAL_PARAMETER = SUN_GRAVITATIONAL_PARAMETER / (328900.56 * (1.0 + 81.30059))
+    mass_parameter = MOON_GRAVITATIONAL_PARAMETER / (MOON_GRAVITATIONAL_PARAMETER + EARTH_GRAVITATIONAL_PARAMETER)
+    r_1 = np.sqrt((mass_parameter + x) ** 2 + y ** 2 )
+    r_2 = np.sqrt((1 - mass_parameter - x) ** 2 + y ** 2 )
+    v = np.sqrt(xdot ** 2 + ydot ** 2 )
+    c = x ** 2 + y ** 2 + 2 * (1 - mass_parameter) / r_1 + 2 * mass_parameter / r_2 - v ** 2
+    if (thrust_restriction == "left" or thrust_restriction == "right"):
+        planar_iom = c
+    else:
+        alpha = float(thrust_restriction) * (2 * math.pi / 180.0)
+        xddot_lt =  ( thrust / mass ) * np.cos(alpha)
+        yddot_lt = (thrust / mass) * np.sin(alpha)
+        inner_prod = x * xddot_lt + y * yddot_lt
+        planar_iom = -0.5 * c - inner_prod
+    return planar_iom
+
 
 if __name__ == '__main__':
     # manifold_file_path = '../data/near_vertical_1_W_S_min.txt'
@@ -203,7 +232,10 @@ if __name__ == '__main__':
     # orbit_file_path = '../data/near_vertical_1_final_orbit.txt'
     # orbit_df = load_orbit(orbit_file_path)
     # print(orbit_df)
-
+    test = load_spacecraft_properties("DeepSpace")
+    test2 = test[0]
+    print(test)
+    print(load_spacecraft_properties("DeepSpace")[0])
     # initial_conditions_file_path = '../data/raw/horizontal_L2_initial_conditions.txt'
     # initial_conditions_df = load_initial_conditions(initial_conditions_file_path)
     # print(initial_conditions_df)
