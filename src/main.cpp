@@ -31,117 +31,117 @@ int main (){
     // == Compute initial conditions ==
     // ================================
 
-    #pragma omp parallel num_threads(6)
-    {
-        #pragma omp for
-        for (unsigned int i=1; i<=6; i++) {
-            if (i ==1)
-            {
-                createInitialConditions(1, "horizontal");
-            }
-            if (i ==2)
-            {
-                createInitialConditions(2, "horizontal");
-            }
-            if (i ==3)
-            {
-                createInitialConditions(1, "halo");
-            }
-            if (i ==4)
-            {
-                createInitialConditions(2, "halo");
-            }
-            if (i ==5)
-            {
-                createInitialConditions(1, "vertical");
-            }
-            if (i ==6)
-            {
-                createInitialConditions(2, "vertical");
-            }
-        }
-    }
+//    #pragma omp parallel num_threads(6)
+//    {
+//        #pragma omp for
+//        for (unsigned int i=1; i<=6; i++) {
+//            if (i ==1)
+//            {
+//                createInitialConditions(1, "horizontal");
+//            }
+//            if (i ==2)
+//            {
+//                createInitialConditions(2, "horizontal");
+//            }
+//            if (i ==3)
+//            {
+//                createInitialConditions(1, "halo");
+//            }
+//            if (i ==4)
+//            {
+//                createInitialConditions(2, "halo");
+//            }
+//            if (i ==5)
+//            {
+//                createInitialConditions(1, "vertical");
+//            }
+//            if (i ==6)
+//            {
+//                createInitialConditions(2, "vertical");
+//            }
+//        }
+//    }
 
     // ======================================
     // == Compute manifolds at theta (III) ==
     // ======================================
 
-    double desiredJacobiEnergy = 3.1;
-    int thetaStoppingAngleMin = -180;
-    int thetaStoppingAngleMax = 0;
-    int numberOfTrajectoriesPerManifold = 5000;
+//    double desiredJacobiEnergy = 3.1;
+//    int thetaStoppingAngleMin = -180;
+//    int thetaStoppingAngleMax = 0;
+//    int numberOfTrajectoriesPerManifold = 5000;
 
-    for (int orbitTypeNumber = 0; orbitTypeNumber <= 0; orbitTypeNumber++) {
+//    for (int orbitTypeNumber = 0; orbitTypeNumber <= 0; orbitTypeNumber++) {
 
-        std::string orbitType;
-        if (orbitTypeNumber == 0) {
-            orbitType = "vertical";
-        } if (orbitTypeNumber == 1) {
-            orbitType = "horizontal";
-        } if (orbitTypeNumber == 2) {
-            orbitType = "halo";
-        }
+//        std::string orbitType;
+//        if (orbitTypeNumber == 0) {
+//            orbitType = "vertical";
+//        } if (orbitTypeNumber == 1) {
+//            orbitType = "horizontal";
+//        } if (orbitTypeNumber == 2) {
+//            orbitType = "halo";
+//        }
 
-        std::vector<std::pair<double, Eigen::MatrixXd> > assembledResults;
+//        std::vector<std::pair<double, Eigen::MatrixXd> > assembledResults;
 
-        #pragma omp parallel num_threads(20)
-        {
-            #pragma omp for
-            for (int i = thetaStoppingAngleMin; i <= thetaStoppingAngleMax; i++) {
-                double thetaStoppingAngle = static_cast<double>(i);
-                Eigen::MatrixXd minimumImpulseStateVectorsAtPoincare = connectManifoldsAtTheta(orbitType,
-                                                                                               thetaStoppingAngle,
-                                                                                               numberOfTrajectoriesPerManifold,
-                                                                                               desiredJacobiEnergy);
-                assembledResults.push_back(std::make_pair(thetaStoppingAngle, minimumImpulseStateVectorsAtPoincare));
-            }
-        }
+//        #pragma omp parallel num_threads(20)
+//        {
+//            #pragma omp for
+//            for (int i = thetaStoppingAngleMin; i <= thetaStoppingAngleMax; i++) {
+//                double thetaStoppingAngle = static_cast<double>(i);
+//                Eigen::MatrixXd minimumImpulseStateVectorsAtPoincare = connectManifoldsAtTheta(orbitType,
+//                                                                                               thetaStoppingAngle,
+//                                                                                               numberOfTrajectoriesPerManifold,
+//                                                                                               desiredJacobiEnergy);
+//                assembledResults.push_back(std::make_pair(thetaStoppingAngle, minimumImpulseStateVectorsAtPoincare));
+//            }
+//        }
 
-        std::ostringstream desiredJacobiEnergyStr;
-        std::string fileNameString;
-        desiredJacobiEnergyStr << std::setprecision(4) << desiredJacobiEnergy;
-        fileNameString = ("../data/raw/poincare_sections/" + orbitType + "_" + desiredJacobiEnergyStr.str() + "_minimum_impulse_connections.txt");
-        remove(fileNameString.c_str());
-        std::ofstream textFileAssembledResults(fileNameString.c_str());
+//        std::ostringstream desiredJacobiEnergyStr;
+//        std::string fileNameString;
+//        desiredJacobiEnergyStr << std::setprecision(4) << desiredJacobiEnergy;
+//        fileNameString = ("../data/raw/poincare_sections/" + orbitType + "_" + desiredJacobiEnergyStr.str() + "_minimum_impulse_connections.txt");
+//        remove(fileNameString.c_str());
+//        std::ofstream textFileAssembledResults(fileNameString.c_str());
 
-        textFileAssembledResults.precision(std::numeric_limits<double>::digits10);
+//        textFileAssembledResults.precision(std::numeric_limits<double>::digits10);
 
-        for (int i = thetaStoppingAngleMin; i <= thetaStoppingAngleMax; i++) {
-            double thetaStoppingAngle = static_cast<double>(i);
+//        for (int i = thetaStoppingAngleMin; i <= thetaStoppingAngleMax; i++) {
+//            double thetaStoppingAngle = static_cast<double>(i);
 
-            for (unsigned int idx = 0; idx < assembledResults.size(); idx++) {
-                if (assembledResults.at(idx).first == thetaStoppingAngle) {
-                    textFileAssembledResults << std::left << std::scientific << std::setw(30) << thetaStoppingAngle
-                                             << std::setw(30)
-                                             << assembledResults.at(idx).second(0, 0) << std::setw(30)
-                                             << assembledResults.at(idx).second(0, 1) << std::setw(30)
-                                             << assembledResults.at(idx).second(0, 2) << std::setw(30)
-                                             << assembledResults.at(idx).second(0, 3) << std::setw(30)
-                                             << assembledResults.at(idx).second(0, 4) << std::setw(30)
-                                             << assembledResults.at(idx).second(0, 5) << std::setw(30)
-                                             << assembledResults.at(idx).second(0, 6) << std::setw(30)
-                                             << assembledResults.at(idx).second(0, 7) << std::setw(30)
-                                             << assembledResults.at(idx).second(1, 0) << std::setw(30)
-                                             << assembledResults.at(idx).second(1, 1) << std::setw(30)
-                                             << assembledResults.at(idx).second(1, 2) << std::setw(30)
-                                             << assembledResults.at(idx).second(1, 3) << std::setw(30)
-                                             << assembledResults.at(idx).second(1, 4) << std::setw(30)
-                                             << assembledResults.at(idx).second(1, 5) << std::setw(30)
-                                             << assembledResults.at(idx).second(1, 6) << std::setw(30)
-                                             << assembledResults.at(idx).second(1, 7) << std::endl;
-                }
-            }
-        }
-        textFileAssembledResults.close();
-    }
+//            for (unsigned int idx = 0; idx < assembledResults.size(); idx++) {
+//                if (assembledResults.at(idx).first == thetaStoppingAngle) {
+//                    textFileAssembledResults << std::left << std::scientific << std::setw(30) << thetaStoppingAngle
+//                                             << std::setw(30)
+//                                             << assembledResults.at(idx).second(0, 0) << std::setw(30)
+//                                             << assembledResults.at(idx).second(0, 1) << std::setw(30)
+//                                             << assembledResults.at(idx).second(0, 2) << std::setw(30)
+//                                             << assembledResults.at(idx).second(0, 3) << std::setw(30)
+//                                             << assembledResults.at(idx).second(0, 4) << std::setw(30)
+//                                             << assembledResults.at(idx).second(0, 5) << std::setw(30)
+//                                             << assembledResults.at(idx).second(0, 6) << std::setw(30)
+//                                             << assembledResults.at(idx).second(0, 7) << std::setw(30)
+//                                             << assembledResults.at(idx).second(1, 0) << std::setw(30)
+//                                             << assembledResults.at(idx).second(1, 1) << std::setw(30)
+//                                             << assembledResults.at(idx).second(1, 2) << std::setw(30)
+//                                             << assembledResults.at(idx).second(1, 3) << std::setw(30)
+//                                             << assembledResults.at(idx).second(1, 4) << std::setw(30)
+//                                             << assembledResults.at(idx).second(1, 5) << std::setw(30)
+//                                             << assembledResults.at(idx).second(1, 6) << std::setw(30)
+//                                             << assembledResults.at(idx).second(1, 7) << std::endl;
+//                }
+//            }
+//        }
+//        textFileAssembledResults.close();
+//    }
 
     // ================================
     // == Compute manifolds ==
     // ================================
-    #pragma omp parallel num_threads(18)
+    #pragma omp parallel num_threads(1)
     {
         #pragma omp for
-        for (unsigned int i=0; i<18; i++) {
+        for (unsigned int i=0; i<1; i++) {
 
             std::string orbitType;
             int librationPointNr;
