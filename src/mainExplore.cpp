@@ -71,10 +71,10 @@ int main (){
     // ================================
     // == Compute manifolds ==
     // ================================
-#pragma omp parallel num_threads(1)
+#pragma omp parallel num_threads(6)
 {
     #pragma omp for
-    for (unsigned int i=0; i<1; i++) {
+    for (unsigned int i=6; i<1; i++) {
 
         std::string orbitType;
         int librationPointNr;
