@@ -595,60 +595,37 @@ class DisplayAugmentedValidation:
     # Determine color for plot
     plot_alpha = 1
     line_width = 0.5
-    # Determine color for plot
-    plot_alpha = 1
-    line_width = 0.5
     for manifold_orbit_number in range(self.numberOfOrbitsPerManifold):
         ax0.plot(self.W_S_plus.xs(manifold_orbit_number)['x'], self.W_S_plus.xs(manifold_orbit_number)['y'], color=self.colorPaletteStable[manifold_orbit_number],alpha=plot_alpha, linewidth=line_width)
+        ax3.plot(self.W_S_min.xs(manifold_orbit_number)['x'], self.W_S_min.xs(manifold_orbit_number)['y'], color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+        ax6.plot(self.W_U_plus.xs(manifold_orbit_number)['x'], self.W_U_plus.xs(manifold_orbit_number)['y'],color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+        ax9.plot(self.W_U_min.xs(manifold_orbit_number)['x'], self.W_U_plus.xs(manifold_orbit_number)['y'],color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
         if self.orbitType != 'horizontal':
-            ax1.plot(self.W_S_plus.xs(manifold_orbit_number)['x'], self.W_S_plus.xs(manifold_orbit_number)['z'],
-                     color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-            ax2.plot(self.W_S_plus.xs(manifold_orbit_number)['y'], self.W_S_plus.xs(manifold_orbit_number)['z'],
-                     color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax1.plot(self.W_S_plus.xs(manifold_orbit_number)['x'], self.W_S_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteStable[manifold_orbit_number],alpha=plot_alpha, linewidth=line_width)
+            ax2.plot(self.W_S_plus.xs(manifold_orbit_number)['y'], self.W_S_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteStable[manifold_orbit_number],alpha=plot_alpha, linewidth=line_width)
+            ax4.plot(self.W_S_min.xs(manifold_orbit_number)['x'], self.W_S_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteStable[manifold_orbit_number],alpha=plot_alpha, linewidth=line_width)
+            ax5.plot(self.W_S_min.xs(manifold_orbit_number)['y'], self.W_S_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteStable[manifold_orbit_number],alpha=plot_alpha, linewidth=line_width)
+            ax7.plot(self.W_U_plus.xs(manifold_orbit_number)['x'], self.W_S_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteUnstable[manifold_orbit_number],alpha=plot_alpha, linewidth=line_width)
+            ax8.plot(self.W_U_plus.xs(manifold_orbit_number)['y'], self.W_S_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteUnstable[manifold_orbit_number],alpha=plot_alpha, linewidth=line_width)
+            ax10.plot(self.W_U_min.xs(manifold_orbit_number)['x'], self.W_S_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteUnstable[manifold_orbit_number],alpha=plot_alpha, linewidth=line_width)
+            ax11.plot(self.W_U_min.xs(manifold_orbit_number)['y'], self.W_S_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteUnstable[manifold_orbit_number],alpha=plot_alpha, linewidth=line_width)
 
-        ax0.plot(self.W_S_min.xs(manifold_orbit_number)['x'], self.W_S_min.xs(manifold_orbit_number)['y'],
-                 self.W_S_min.xs(manifold_orbit_number)['z'], color=self.colorPaletteStable[manifold_orbit_number],
-                 alpha=plot_alpha, linewidth=line_width)
-        ax3.plot(self.W_S_min.xs(manifold_orbit_number)['x'], self.W_S_min.xs(manifold_orbit_number)['y'],
-                 color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-        if self.orbitType != 'horizontal':
-            ax1.plot(self.W_S_min.xs(manifold_orbit_number)['x'], self.W_S_min.xs(manifold_orbit_number)['z'],
-                     color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-            ax2.plot(self.W_S_min.xs(manifold_orbit_number)['y'], self.W_S_min.xs(manifold_orbit_number)['z'],
-                     color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-
-        ax0.plot(self.W_U_plus.xs(manifold_orbit_number)['x'], self.W_U_plus.xs(manifold_orbit_number)['y'],
-                 self.W_U_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteUnstable[manifold_orbit_number],
-                 alpha=plot_alpha, linewidth=line_width)
-        ax3.plot(self.W_U_plus.xs(manifold_orbit_number)['x'], self.W_U_plus.xs(manifold_orbit_number)['y'],
-                 color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-        if self.orbitType != 'horizontal':
-            ax1.plot(self.W_U_plus.xs(manifold_orbit_number)['x'], self.W_U_plus.xs(manifold_orbit_number)['z'],
-                     color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-            ax2.plot(self.W_U_plus.xs(manifold_orbit_number)['y'], self.W_U_plus.xs(manifold_orbit_number)['z'],
-                     color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-
-        ax0.plot(self.W_U_min.xs(manifold_orbit_number)['x'], self.W_U_min.xs(manifold_orbit_number)['y'],
-                 self.W_U_min.xs(manifold_orbit_number)['z'], color=self.colorPaletteUnstable[manifold_orbit_number],
-                 alpha=plot_alpha, linewidth=line_width)
-        ax3.plot(self.W_U_min.xs(manifold_orbit_number)['x'], self.W_U_min.xs(manifold_orbit_number)['y'],
-                 color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-        if self.orbitType != 'horizontal':
-            ax1.plot(self.W_U_min.xs(manifold_orbit_number)['x'], self.W_U_min.xs(manifold_orbit_number)['z'],
-                     color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
-            ax2.plot(self.W_U_min.xs(manifold_orbit_number)['y'], self.W_U_min.xs(manifold_orbit_number)['z'],
-                     color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
     plot_alpha = 1
     line_width = 2
-    ax0.plot(self.orbitDf['x'], self.orbitDf['y'], self.orbitDf['z'], color=self.plottingColors['orbit'],
-             alpha=plot_alpha, linewidth=line_width)
-    ax3.plot(self.orbitDf['x'], self.orbitDf['y'], color=self.plottingColors['orbit'], alpha=plot_alpha,
-             linewidth=line_width)
+    ax0.plot(self.orbitDf['x'], self.orbitDf['y'], color=self.plottingColors['orbit'],alpha=plot_alpha, linewidth=line_width)
+    ax3.plot(self.orbitDf['x'], self.orbitDf['y'], color=self.plottingColors['orbit'], alpha=plot_alpha,linewidth=line_width)
+    ax6.plot(self.orbitDf['x'], self.orbitDf['y'], color=self.plottingColors['orbit'], alpha=plot_alpha,linewidth=line_width)
+    ax9.plot(self.orbitDf['x'], self.orbitDf['y'], color=self.plottingColors['orbit'], alpha=plot_alpha,linewidth=line_width)
     if self.orbitType != 'horizontal':
-        ax1.plot(self.orbitDf['x'], self.orbitDf['z'], color=self.plottingColors['orbit'], alpha=plot_alpha,
-                 linewidth=line_width)
-        ax2.plot(self.orbitDf['y'], self.orbitDf['z'], color=self.plottingColors['orbit'], alpha=plot_alpha,
-                 linewidth=line_width)
+        ax1.plot(self.orbitDf['x'], self.orbitDf['z'], color=self.plottingColors['orbit'], alpha=plot_alpha,linewidth=line_width)
+        ax2.plot(self.orbitDf['y'], self.orbitDf['z'], color=self.plottingColors['orbit'], alpha=plot_alpha,linewidth=line_width)
+        ax4.plot(self.orbitDf['x'], self.orbitDf['z'], color=self.plottingColors['orbit'], alpha=plot_alpha,linewidth=line_width)
+        ax5.plot(self.orbitDf['y'], self.orbitDf['z'], color=self.plottingColors['orbit'], alpha=plot_alpha,linewidth=line_width)
+        ax7.plot(self.orbitDf['x'], self.orbitDf['z'], color=self.plottingColors['orbit'], alpha=plot_alpha,linewidth=line_width)
+        ax8.plot(self.orbitDf['y'], self.orbitDf['z'], color=self.plottingColors['orbit'], alpha=plot_alpha,linewidth=line_width)
+        ax10.plot(self.orbitDf['x'], self.orbitDf['z'], color=self.plottingColors['orbit'], alpha=plot_alpha,linewidth=line_width)
+        ax11.plot(self.orbitDf['y'], self.orbitDf['z'], color=self.plottingColors['orbit'], alpha=plot_alpha,linewidth=line_width)
+
 
 
 if __name__ == '__main__':

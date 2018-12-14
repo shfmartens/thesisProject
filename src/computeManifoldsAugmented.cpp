@@ -68,7 +68,7 @@ Eigen::MatrixXd retrieveSpacecraftProperties( const std::string spacecraftName)
     spacecraftProperties( 0 ) = ( thrustMagnitude * time_asterix * time_asterix ) / ( 1000 * length_asterix * initialMass) ;
     spacecraftProperties( 1 ) = initialMass / initialMass;
     spacecraftProperties( 2 ) = ( -thrustMagnitude * time_asterix * time_asterix ) / ( 1000 * length_asterix * specificImpulse * gravNul * initialMass );
-    spacecraftProperties( 3 ) = 0.85; //TODO,CHANGE INTO INPUT PARAMETER
+    spacecraftProperties( 3 ) = 0.99; //TODO,CHANGE INTO INPUT PARAMETER
 
     return spacecraftProperties;
 }
@@ -424,7 +424,6 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
                                                          previousStateVectorInclSTMAndTime,
                                                          stateVectorInclSTM, currentTime, xDiffSign,
                                                          integrationDirection, massParameter, spacecraftName, thrustPointing);
-                    std::cout << "PROPAGATION STOPPED AT U2 U3" << std::endl;
                     fullManifoldComputed = true;
                 }
 
