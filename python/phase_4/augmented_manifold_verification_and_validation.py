@@ -70,8 +70,7 @@ class DisplayAugmentedValidation:
         self.maxEigenvalueDeviation = 1.0e-3
 
         self.orbitDf = load_orbit(
-            '../../data/raw/orbits/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(
-                orbit_id) + '.txt')
+            '../../data/raw/orbits/L' + str(lagrange_point_nr) + '_' + orbit_type + '_' + str(orbit_id) + '.txt')
         self.C = computeJacobiEnergy(self.orbitDf.iloc[0]['x'], self.orbitDf.iloc[0]['y'],
                                      self.orbitDf.iloc[0]['z'], self.orbitDf.iloc[0]['xdot'],
                                      self.orbitDf.iloc[0]['ydot'], self.orbitDf.iloc[0]['zdot'])
@@ -563,20 +562,25 @@ class DisplayAugmentedValidation:
             ax10 = fig.add_subplot(4, 3, 11)
             ax11 = fig.add_subplot(4, 3, 12)
 
+
     lagrange_points_df = load_lagrange_points_location()
     lagrange_point_nrs = ['L1', 'L2']
 
     # Lagrange points and bodies
     for lagrange_point_nr in lagrange_point_nrs:
-        ax0.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
-                    lagrange_points_df[lagrange_point_nr]['z'], color='black', marker='x')
-        ax3.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
-                    color='black', marker='x')
+        ax0.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'], color='black', marker='x')
+        ax3.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],color='black', marker='x')
+        ax6.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],color='black', marker='x')
+        ax9.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],color='black', marker='x')
         if self.orbitType != 'horizontal':
-            ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['z'],
-                        color='black', marker='x')
-            ax2.scatter(lagrange_points_df[lagrange_point_nr]['y'], lagrange_points_df[lagrange_point_nr]['z'],
-                        color='black', marker='x')
+            ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['z'],color='black', marker='x')
+            ax2.scatter(lagrange_points_df[lagrange_point_nr]['y'], lagrange_points_df[lagrange_point_nr]['z'],color='black', marker='x')
+            ax4.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['z'],color='black', marker='x')
+            ax5.scatter(lagrange_points_df[lagrange_point_nr]['y'], lagrange_points_df[lagrange_point_nr]['z'],color='black', marker='x')
+            ax7.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['z'],color='black', marker='x')
+            ax8.scatter(lagrange_points_df[lagrange_point_nr]['y'], lagrange_points_df[lagrange_point_nr]['z'],color='black', marker='x')
+            ax10.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['z'],color='black', marker='x')
+            ax11.scatter(lagrange_points_df[lagrange_point_nr]['y'], lagrange_points_df[lagrange_point_nr]['z'],color='black', marker='x')
 
     u = np.linspace(0, 2 * np.pi, 100)
     v = np.linspace(0, np.pi, 100)
@@ -586,11 +590,19 @@ class DisplayAugmentedValidation:
         y = bodies_df[body]['r'] * np.outer(np.sin(u), np.sin(v))
         z = bodies_df[body]['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
 
-        ax0.plot_surface(x, y, z, color='black')
+        ax0.contour(x, y, z, color='black')
         ax3.contourf(x, y, z, colors='black')
+        ax6.contourf(x, y, z, colors='black')
+        ax9.contourf(x, y, z, colors='black')
         if self.orbitType != 'horizontal':
             ax1.contourf(x, z, y, colors='black')
             ax2.contourf(y, z, x, colors='black')
+            ax4.contourf(x, z, y, colors='black')
+            ax5.contourf(y, z, x, colors='black')
+            ax7.contourf(x, z, y, colors='black')
+            ax8.contourf(y, z, x, colors='black')
+            ax10.contourf(x, z, y, colors='black')
+            ax11.contourf(y, z, x, colors='black')
 
     # Determine color for plot
     plot_alpha = 1
@@ -626,7 +638,74 @@ class DisplayAugmentedValidation:
         ax10.plot(self.orbitDf['x'], self.orbitDf['z'], color=self.plottingColors['orbit'], alpha=plot_alpha,linewidth=line_width)
         ax11.plot(self.orbitDf['y'], self.orbitDf['z'], color=self.plottingColors['orbit'], alpha=plot_alpha,linewidth=line_width)
 
+    ax0.set_xlabel('x [-]')
+    ax0.set_ylabel('z [-]')
+    # ax1.set_ylim([-0.4, 0.4])
+    ax0.grid(True, which='both', ls=':')
+    ax3.set_xlabel('x [-]')
+    ax3.set_ylabel('z [-]')
+    # ax1.set_ylim([-0.4, 0.4])
+    ax3.grid(True, which='both', ls=':')
+    ax6.set_xlabel('x [-]')
+    ax6.set_ylabel('z [-]')
+    # ax1.set_ylim([-0.4, 0.4])
+    ax6.grid(True, which='both', ls=':')
+    ax9.set_xlabel('x [-]')
+    ax9.set_ylabel('z [-]')
+    # ax1.set_ylim([-0.4, 0.4])
+    ax9.grid(True, which='both', ls=':')
 
+    if self.orbitType != 'horizontal':
+        ax1.set_xlabel('x [-]')
+        ax1.set_ylabel('z [-]')
+        # ax1.set_ylim([-0.4, 0.4])
+        ax1.grid(True, which='both', ls=':')
+        ax2.set_xlabel('x [-]')
+        ax2.set_ylabel('z [-]')
+        # ax1.set_ylim([-0.4, 0.4])
+        ax2.grid(True, which='both', ls=':')
+        ax4.set_xlabel('x [-]')
+        ax4.set_ylabel('z [-]')
+        # ax1.set_ylim([-0.4, 0.4])
+        ax4.grid(True, which='both', ls=':')
+        ax5.set_xlabel('x [-]')
+        ax5.set_ylabel('z [-]')
+        # ax1.set_ylim([-0.4, 0.4])
+        ax5.grid(True, which='both', ls=':')
+        ax7.set_xlabel('x [-]')
+        ax7.set_ylabel('z [-]')
+        # ax1.set_ylim([-0.4, 0.4])
+        ax7.grid(True, which='both', ls=':')
+        ax8.set_xlabel('x [-]')
+        ax8.set_ylabel('z [-]')
+        # ax1.set_ylim([-0.4, 0.4])
+        ax8.grid(True, which='both', ls=':')
+        ax10.set_xlabel('x [-]')
+        ax10.set_ylabel('z [-]')
+        # ax1.set_ylim([-0.4, 0.4])
+        ax10.grid(True, which='both', ls=':')
+        ax11.set_xlabel('x [-]')
+        ax11.set_ylabel('z [-]')
+        # ax1.set_ylim([-0.4, 0.4])
+        ax11.grid(True, which='both', ls=':')
+
+    fig.tight_layout()
+    if self.orbitType != 'horizontal':
+        fig.subplots_adjust(top=0.9)
+    else:
+        fig.subplots_adjust(top=0.8)
+
+    if (self.thrustRestriction == "left" or "right"):
+        plt.suptitle('$L_' + str(
+            self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + self.spacecraftNameForTitle + ' ' + self.thrustRestrictionForTitle + ' ' + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Individual view at C = ' + str(np.round(self.C, 3)), size=self.suptitleSize)
+    else:
+        plt.suptitle('$L_' + str(
+            self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + self.spacecraftNameForTitle + ' ' + self.thrustRestrictionForTitle + ' ' + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Individual view at H$_{\text{lt}}$ = ' + str(np.round(self.C, 3)), size=self.suptitleSize)
+
+    fig.savefig('../../data/figures/manifolds/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + ' ' + str(self.spacecraftName) + ' ' + str(self.thrustRestriction) + '_manifold_subplots_individual.pdf',
+        transparent=True)
+    plt.close()
+    pass
 
 if __name__ == '__main__':
     #help()
