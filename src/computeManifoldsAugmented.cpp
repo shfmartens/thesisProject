@@ -44,7 +44,7 @@ Eigen::MatrixXd retrieveSpacecraftProperties( const std::string spacecraftName)
     double initialMass;
 
     if (spacecraftName == "DeepSpace") {
-        thrustMagnitude = 92.0E-3;           // [N]
+        thrustMagnitude = 1.0E-3;           // [N]
         initialMass = 486.0;                 // [kg]
         specificImpulse = 3200.0;            // [s] from Results from Deep Space 1 Technology validation mission max 3200, min 1900
     }
@@ -68,7 +68,7 @@ Eigen::MatrixXd retrieveSpacecraftProperties( const std::string spacecraftName)
     spacecraftProperties( 0 ) = ( thrustMagnitude * time_asterix * time_asterix ) / ( 1000 * length_asterix * initialMass) ;
     spacecraftProperties( 1 ) = initialMass / initialMass;
     spacecraftProperties( 2 ) = ( -thrustMagnitude * time_asterix * time_asterix ) / ( 1000 * length_asterix * specificImpulse * gravNul * initialMass );
-    spacecraftProperties( 3 ) = 0.999; //TODO,CHANGE INTO INPUT PARAMETER
+    spacecraftProperties( 3 ) = 0.85; //TODO,CHANGE INTO INPUT PARAMETER
 
     return spacecraftProperties;
 }
