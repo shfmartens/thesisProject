@@ -68,7 +68,7 @@ Eigen::MatrixXd retrieveSpacecraftProperties( const std::string spacecraftName)
     spacecraftProperties( 0 ) = ( thrustMagnitude * time_asterix * time_asterix ) / ( 1000 * length_asterix * initialMass) ;
     spacecraftProperties( 1 ) = initialMass / initialMass;
     spacecraftProperties( 2 ) = ( -thrustMagnitude * time_asterix * time_asterix ) / ( 1000 * length_asterix * specificImpulse * gravNul * initialMass );
-    spacecraftProperties( 3 ) = 0.99; //TODO,CHANGE INTO INPUT PARAMETER
+    spacecraftProperties( 3 ) = 0.999; //TODO,CHANGE INTO INPUT PARAMETER
 
     return spacecraftProperties;
 }
