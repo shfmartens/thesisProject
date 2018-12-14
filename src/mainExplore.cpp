@@ -147,7 +147,7 @@ int main (){
 
             std::cout << "start computation of manifolds of orbit number: " << orbitIdOne << std::endl;
 
-            computeManifoldsAugmented(initialStateVector, orbitalPeriod, orbitIdOne, librationPointNr, orbitType, spacecraftName, thrustPointing,  massParameter, 1.0E-6, 100, 1000, true, 5.0, 1.0E-3);
+            computeManifoldsAugmented(initialStateVector, orbitalPeriod, orbitIdOne, librationPointNr, orbitType, spacecraftName, thrustPointing,  massParameter);
 
     }
 

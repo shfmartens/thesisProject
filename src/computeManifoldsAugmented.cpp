@@ -374,9 +374,9 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
                 }
 
                 // Determine when the manifold crosses the Poincare section near the second primary (U2, U3)
-                if ( ((stateVectorInclSTM(0, 0) - (1.0 - massParameter)) * xDiffSign < 0) &&
-                        ((librationPointNr == 1 && ( manifoldNumber == 0 || manifoldNumber == 2)) ||
-                         (librationPointNr == 2 && ( manifoldNumber == 1 || manifoldNumber == 3))) ) {
+                if ( ((stateVectorInclSTM(0, 0) - (1.0 - massParameter)) * xDiffSign < 0) ) {
+//                     && ((librationPointNr == 1 && ( manifoldNumber == 0 || manifoldNumber == 2)) ||
+//                         (librationPointNr == 2 && ( manifoldNumber == 1 || manifoldNumber == 3))) ) {
                     reduceOvershootAtPoincareSectionU2U3Augmented(stateVectorInclSTMAndTime,
                                                          previousStateVectorInclSTMAndTime,
                                                          stateVectorInclSTM, currentTime, xDiffSign,
