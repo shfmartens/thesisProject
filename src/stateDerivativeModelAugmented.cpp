@@ -96,8 +96,8 @@ Eigen::MatrixXd computeStateDerivativeAugmented( const double time, const Eigen:
         double partialYaccXvel =  ( (pointingSign *  1.0 ) / ( velocityMagnitude ) ) - ( ( pointingSign *  1.0 * xVelocitySquared ) / velocityMagnitudeCubed );
         double partialYaccYvel =  termRelatedtoThrustMagnitude * -1.0 * (  (pointingSign *  1.0 * cartesianState(3) * cartesianState(4) ) / velocityMagnitudeCubed );
 
-        double partialXaccMass =  -1.0 * (termRelatedtoThrustMagnitude / cartesianState(4) ) * xTermRelatedToThrust;
-        double partialYaccMass =  -1.0 * (termRelatedtoThrustMagnitude / cartesianState(4) ) * yTermRelatedToThrust;
+        double partialXaccMass =  -1.0 * (termRelatedtoThrustMagnitude / cartesianState(6) ) * xTermRelatedToThrust;
+        double partialYaccMass =  -1.0 * (termRelatedtoThrustMagnitude / cartesianState(6) ) * yTermRelatedToThrust;
 
         // Create the STM-derivative matrix
         Eigen::MatrixXd stmDerivativeFunction (7,7);
