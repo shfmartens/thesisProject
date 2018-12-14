@@ -26,7 +26,7 @@
 Eigen::MatrixXd retrieveSpacecraftProperties( const std::string spacecraftName)
 {
     //Declare output matrix
-    Eigen::VectorXd spacecraftProperties = Eigen::VectorXd( 3 );
+    Eigen::VectorXd spacecraftProperties = Eigen::VectorXd( 4 );
 
     // Declare and initialize Earth-Moon system properties
 
@@ -68,6 +68,7 @@ Eigen::MatrixXd retrieveSpacecraftProperties( const std::string spacecraftName)
     spacecraftProperties( 0 ) = ( thrustMagnitude * time_asterix * time_asterix ) / ( 1000 * length_asterix * initialMass) ;
     spacecraftProperties( 1 ) = initialMass / initialMass;
     spacecraftProperties( 2 ) = ( -thrustMagnitude * time_asterix * time_asterix ) / ( 1000 * length_asterix * specificImpulse * gravNul * initialMass );
+    spacecraftProperties( 3 ) = 0.85; //TODO,CHANGE INTO INPUT PARAMETER
 
     return spacecraftProperties;
 }
@@ -183,6 +184,38 @@ void reduceOvershootAtPoincareSectionU2U3Augmented( std::pair< Eigen::MatrixXd, 
     }
     std::cout << "||x - (1-mu)|| = "               << (stateVectorInclSTM(0, 0) - 1.0 + massParameter)
               << ", at end of iterative procedure" << std::endl;
+}
+
+void reduceOverShootInitialMass(std::pair< Eigen::MatrixXd, double >& stateVectorInclSTMAndTime,
+                                std::pair< Eigen::MatrixXd, double >& previousStateVectorInclSTMAndTime,
+                             Eigen::MatrixXd& stateVectorInclSTM, double& currentTime, int& integrationDirection,
+                                const double& massParameter, std::string spacecraftName, std::string thrustPointing)
+{
+    stateVectorInclSTMAndTime = previousStateVectorInclSTMAndTime;
+    stateVectorInclSTM        = stateVectorInclSTMAndTime.first;
+    currentTime               = stateVectorInclSTMAndTime.second;
+    std::cout << "m - 1.0 = "                 << (stateVectorInclSTM(6, 0) - (1.0))
+              << ", at start of iterative procedure" << std::endl;
+
+    for ( int i = 5; i <= 12; i++ ) {
+
+        double initialStepSize = pow(10,(static_cast<float>(-i)));
+        double maximumStepSize = pow(10,(static_cast<float>(-i) + 1.0));
+
+        while ( (stateVectorInclSTMAndTime.first(6, 0) - 1.0 ) > 0 ) {
+            stateVectorInclSTM                = stateVectorInclSTMAndTime.first;
+            currentTime                       = stateVectorInclSTMAndTime.second;
+            previousStateVectorInclSTMAndTime = stateVectorInclSTMAndTime;
+            stateVectorInclSTMAndTime         = propagateOrbitAugmented(stateVectorInclSTM, massParameter, currentTime,
+                                                               integrationDirection, spacecraftName, thrustPointing, initialStepSize, maximumStepSize);
+
+            if ( stateVectorInclSTMAndTime.first(6, 0) - 1.0 <= 0 ) {
+                stateVectorInclSTMAndTime = previousStateVectorInclSTMAndTime;
+                break;
+            }
+        }
+    }
+
 }
 
 void writeAugmentedManifoldStateHistoryToFile( std::map< int, std::map< int, std::map< double, Eigen::Vector7d > > >& manifoldAugmentedStateHistory,
@@ -320,7 +353,8 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
             // Obtain the CR3BP-LT State 
             Eigen::MatrixXd satelliteCharacteristic  = retrieveSpacecraftProperties(spacecraftName);
             auto initialMass = static_cast<Eigen::Vector1d>( satelliteCharacteristic(1) );
-            manifoldAugmentedStartingState = getFullAugmentedInitialState(manifoldStartingState, initialMass );
+            auto stableInitialMass = static_cast<Eigen::Vector1d>( satelliteCharacteristic(3) );
+            manifoldAugmentedStartingState = getFullAugmentedInitialState(manifoldStartingState, initialMass, stableInitialMass, integrationDirection );
             //double iomManifoldStart = computeIntegralOfMotion( manifoldAugmentedStartingState, spacecraftName, thrustPointing, massParameter, 0.0 );
             //std::cout << "THE IOM AFTER DISPLACEMENTS IS: " << iomManifoldStart << std::endl;
 
@@ -342,6 +376,15 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
                 // Check whether trajectory still belongs to the same energy level
                 IoMOutsideBounds = checkIoMOnManifoldAugmentedOutsideBounds(stateVectorInclSTM, integralOfMotionOnOrbit, massParameter, spacecraftName, thrustPointing, currentTime);
                 fullManifoldComputed      = IoMOutsideBounds;
+
+                // Check whether the spacecraft comes above its initial wet mass
+                if ( (stateVectorInclSTM(0, 6) >= 1 ) && (manifoldNumber == 0 || manifoldNumber == 1)) {
+
+                    reduceOverShootInitialMass(stateVectorInclSTMAndTime, previousStateVectorInclSTMAndTime,
+                                                 stateVectorInclSTM, currentTime, integrationDirection,
+                                                 massParameter, spacecraftName, thrustPointing);
+                    fullManifoldComputed = true;
+                }
 
                 // Determine sign of y when crossing x = 0  (U1, U4)
                 if ( (stateVectorInclSTM(0, 0) < 0) && !ySignSet ) {

@@ -10,11 +10,17 @@
 #include "stateDerivativeModelAugmented.h"
 
 
-Eigen::MatrixXd getFullAugmentedInitialState( const Eigen::Vector6d& initialState, const Eigen::Vector1d& initialMass )
+Eigen::MatrixXd getFullAugmentedInitialState( const Eigen::Vector6d& initialState, const Eigen::Vector1d& initialMass, const Eigen::Vector1d& stableInitialMass, int integrationDirection )
 {
     Eigen::MatrixXd fullInitialState = Eigen::MatrixXd::Zero( 7, 8 );
     fullInitialState.block( 0, 0, 6, 1 ) = initialState.block(0,0,6,1);
-    fullInitialState.block( 6, 0, 1, 1)  = initialMass;
+
+    if (integrationDirection == 1){
+        fullInitialState.block( 6, 0, 1, 1)  = initialMass;
+    } else {
+        fullInitialState.block(6, 0, 1, 1) = stableInitialMass;
+    }
+
     fullInitialState.block( 0, 1, 7, 7 ).setIdentity( );
 
     //std::cout << "THE BALLISTIC INITIAL STATE IS: " << initialState << std::endl;

@@ -540,6 +540,116 @@ class DisplayAugmentedValidation:
         plt.close()
         pass
 
+    def plot_manifold_individual(self):
+        # Plot: subplots
+        if self.orbitType == 'horizontal':
+            fig = plt.figure(figsize=self.figSize)
+            ax0 = fig.add_subplot(2, 2, 1)
+            ax3 = fig.add_subplot(2, 2, 4)
+            ax6 = fig.add_subplot(2, 2, 7)
+            ax9 = fig.add_subplot(2, 2, 10)
+        else:
+            fig = plt.figure(figsize=self.figSize)
+            ax0 = fig.add_subplot(4, 3, 1)
+            ax1 = fig.add_subplot(4, 3, 2)
+            ax2 = fig.add_subplot(4, 3, 3)
+            ax3 = fig.add_subplot(4, 3, 4)
+            ax4 = fig.add_subplot(4, 3, 5)
+            ax5 = fig.add_subplot(4, 3, 6)
+            ax6 = fig.add_subplot(4, 3, 7)
+            ax7 = fig.add_subplot(4, 3, 8)
+            ax8 = fig.add_subplot(4, 3, 9)
+            ax9 = fig.add_subplot(4, 3, 10)
+            ax10 = fig.add_subplot(4, 3, 11)
+            ax11 = fig.add_subplot(4, 3, 12)
+
+    lagrange_points_df = load_lagrange_points_location()
+    lagrange_point_nrs = ['L1', 'L2']
+
+    # Lagrange points and bodies
+    for lagrange_point_nr in lagrange_point_nrs:
+        ax0.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                    lagrange_points_df[lagrange_point_nr]['z'], color='black', marker='x')
+        ax3.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                    color='black', marker='x')
+        if self.orbitType != 'horizontal':
+            ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['z'],
+                        color='black', marker='x')
+            ax2.scatter(lagrange_points_df[lagrange_point_nr]['y'], lagrange_points_df[lagrange_point_nr]['z'],
+                        color='black', marker='x')
+
+    u = np.linspace(0, 2 * np.pi, 100)
+    v = np.linspace(0, np.pi, 100)
+    bodies_df = load_bodies_location()
+    for body in bodies_df:
+        x = bodies_df[body]['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df[body]['x']
+        y = bodies_df[body]['r'] * np.outer(np.sin(u), np.sin(v))
+        z = bodies_df[body]['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
+
+        ax0.plot_surface(x, y, z, color='black')
+        ax3.contourf(x, y, z, colors='black')
+        if self.orbitType != 'horizontal':
+            ax1.contourf(x, z, y, colors='black')
+            ax2.contourf(y, z, x, colors='black')
+
+    # Determine color for plot
+    plot_alpha = 1
+    line_width = 0.5
+    # Determine color for plot
+    plot_alpha = 1
+    line_width = 0.5
+    for manifold_orbit_number in range(self.numberOfOrbitsPerManifold):
+        ax0.plot(self.W_S_plus.xs(manifold_orbit_number)['x'], self.W_S_plus.xs(manifold_orbit_number)['y'], color=self.colorPaletteStable[manifold_orbit_number],alpha=plot_alpha, linewidth=line_width)
+        if self.orbitType != 'horizontal':
+            ax1.plot(self.W_S_plus.xs(manifold_orbit_number)['x'], self.W_S_plus.xs(manifold_orbit_number)['z'],
+                     color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax2.plot(self.W_S_plus.xs(manifold_orbit_number)['y'], self.W_S_plus.xs(manifold_orbit_number)['z'],
+                     color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+
+        ax0.plot(self.W_S_min.xs(manifold_orbit_number)['x'], self.W_S_min.xs(manifold_orbit_number)['y'],
+                 self.W_S_min.xs(manifold_orbit_number)['z'], color=self.colorPaletteStable[manifold_orbit_number],
+                 alpha=plot_alpha, linewidth=line_width)
+        ax3.plot(self.W_S_min.xs(manifold_orbit_number)['x'], self.W_S_min.xs(manifold_orbit_number)['y'],
+                 color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+        if self.orbitType != 'horizontal':
+            ax1.plot(self.W_S_min.xs(manifold_orbit_number)['x'], self.W_S_min.xs(manifold_orbit_number)['z'],
+                     color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax2.plot(self.W_S_min.xs(manifold_orbit_number)['y'], self.W_S_min.xs(manifold_orbit_number)['z'],
+                     color=self.colorPaletteStable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+
+        ax0.plot(self.W_U_plus.xs(manifold_orbit_number)['x'], self.W_U_plus.xs(manifold_orbit_number)['y'],
+                 self.W_U_plus.xs(manifold_orbit_number)['z'], color=self.colorPaletteUnstable[manifold_orbit_number],
+                 alpha=plot_alpha, linewidth=line_width)
+        ax3.plot(self.W_U_plus.xs(manifold_orbit_number)['x'], self.W_U_plus.xs(manifold_orbit_number)['y'],
+                 color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+        if self.orbitType != 'horizontal':
+            ax1.plot(self.W_U_plus.xs(manifold_orbit_number)['x'], self.W_U_plus.xs(manifold_orbit_number)['z'],
+                     color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax2.plot(self.W_U_plus.xs(manifold_orbit_number)['y'], self.W_U_plus.xs(manifold_orbit_number)['z'],
+                     color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+
+        ax0.plot(self.W_U_min.xs(manifold_orbit_number)['x'], self.W_U_min.xs(manifold_orbit_number)['y'],
+                 self.W_U_min.xs(manifold_orbit_number)['z'], color=self.colorPaletteUnstable[manifold_orbit_number],
+                 alpha=plot_alpha, linewidth=line_width)
+        ax3.plot(self.W_U_min.xs(manifold_orbit_number)['x'], self.W_U_min.xs(manifold_orbit_number)['y'],
+                 color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+        if self.orbitType != 'horizontal':
+            ax1.plot(self.W_U_min.xs(manifold_orbit_number)['x'], self.W_U_min.xs(manifold_orbit_number)['z'],
+                     color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+            ax2.plot(self.W_U_min.xs(manifold_orbit_number)['y'], self.W_U_min.xs(manifold_orbit_number)['z'],
+                     color=self.colorPaletteUnstable[manifold_orbit_number], alpha=plot_alpha, linewidth=line_width)
+    plot_alpha = 1
+    line_width = 2
+    ax0.plot(self.orbitDf['x'], self.orbitDf['y'], self.orbitDf['z'], color=self.plottingColors['orbit'],
+             alpha=plot_alpha, linewidth=line_width)
+    ax3.plot(self.orbitDf['x'], self.orbitDf['y'], color=self.plottingColors['orbit'], alpha=plot_alpha,
+             linewidth=line_width)
+    if self.orbitType != 'horizontal':
+        ax1.plot(self.orbitDf['x'], self.orbitDf['z'], color=self.plottingColors['orbit'], alpha=plot_alpha,
+                 linewidth=line_width)
+        ax2.plot(self.orbitDf['y'], self.orbitDf['z'], color=self.plottingColors['orbit'], alpha=plot_alpha,
+                 linewidth=line_width)
+
 
 if __name__ == '__main__':
     #help()
