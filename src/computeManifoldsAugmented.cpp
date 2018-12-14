@@ -194,7 +194,7 @@ void reduceOverShootInitialMass(std::pair< Eigen::MatrixXd, double >& stateVecto
     stateVectorInclSTMAndTime = previousStateVectorInclSTMAndTime;
     stateVectorInclSTM        = stateVectorInclSTMAndTime.first;
     currentTime               = stateVectorInclSTMAndTime.second;
-    std::cout << "m - 1.0 = "                 << (stateVectorInclSTM(6, 0) - (1.0))
+    std::cout << "||m - 1.0|| = "                 << (stateVectorInclSTM(6, 0) - (1.0))
               << ", at start of iterative procedure" << std::endl;
 
     for ( int i = 5; i <= 12; i++ ) {
@@ -215,6 +215,8 @@ void reduceOverShootInitialMass(std::pair< Eigen::MatrixXd, double >& stateVecto
             }
         }
     }
+    std::cout << "||m - 1.0|| = "               << (stateVectorInclSTM(6, 0) - 1.0 )
+              << ", at end of iterative procedure" << std::endl;
 
 }
 
