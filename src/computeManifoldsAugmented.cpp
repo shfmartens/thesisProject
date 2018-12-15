@@ -44,7 +44,7 @@ Eigen::MatrixXd retrieveSpacecraftProperties( const std::string spacecraftName)
     double initialMass;
 
     if (spacecraftName == "DeepSpace") {
-        thrustMagnitude = 1.0E-3;           // [N]
+        thrustMagnitude = 92.0E-3;           // [N]
         initialMass = 486.0;                 // [kg]
         specificImpulse = 3200.0;            // [s] from Results from Deep Space 1 Technology validation mission max 3200, min 1900
     }
@@ -224,10 +224,12 @@ void writeAugmentedManifoldStateHistoryToFile( std::map< int, std::map< int, std
                                       const int& orbitNumber, const int& librationPointNr, const std::string& orbitType, const std::string spacecraftName, const std::string thrustPointing ) {
     std::string fileNameStateVector;
     std::ofstream textFileStateVectors;
-    std::vector<std::string> fileNamesStateVectors = {"L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitNumber) + "_" + spacecraftName + "_" + thrustPointing + "_W_S_plus.txt",
-                                                      "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitNumber) + "_" + spacecraftName + "_" + thrustPointing + "_W_S_min.txt",
-                                                      "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitNumber) + "_" + spacecraftName + "_" + thrustPointing + "_W_U_plus.txt",
-                                                      "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitNumber) + "_" + spacecraftName + "_" + thrustPointing + "_W_U_min.txt"};
+    Eigen::MatrixXd characteristics = retrieveSpacecraftProperties(spacecraftName);
+
+    std::vector<std::string> fileNamesStateVectors = {"L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitNumber) + "_" + spacecraftName + "_" + characteristics(0) + "_" + thrustPointing + "_W_S_plus.txt",
+                                                      "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitNumber) + "_" + spacecraftName + "_" + + "_" + thrustPointing + "_W_S_min.txt",
+                                                      "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitNumber) + "_" + spacecraftName + "_" + + "_" + thrustPointing + "_W_U_plus.txt",
+                                                      "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(orbitNumber) + "_" + spacecraftName + "_" + + "_" + thrustPointing + "_W_U_min.txt"};
 
     // For all four manifolds
     for( auto const &ent1 : manifoldAugmentedStateHistory ) {
