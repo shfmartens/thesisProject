@@ -545,9 +545,9 @@ class DisplayAugmentedValidation:
         if self.orbitType == 'horizontal':
             fig = plt.figure(figsize=self.figSize)
             ax0 = fig.add_subplot(2, 2, 1)
-            ax3 = fig.add_subplot(2, 2, 4)
-            ax6 = fig.add_subplot(2, 2, 7)
-            ax9 = fig.add_subplot(2, 2, 10)
+            ax3 = fig.add_subplot(2, 2, 2)
+            ax6 = fig.add_subplot(2, 2, 3)
+            ax9 = fig.add_subplot(2, 2, 4)
         else:
             fig = plt.figure(figsize=self.figSize)
             ax0 = fig.add_subplot(4, 3, 1)
