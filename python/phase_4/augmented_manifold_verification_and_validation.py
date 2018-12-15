@@ -542,6 +542,21 @@ class DisplayAugmentedValidation:
 
     def plot_manifold_individual(self):
         # Plot: subplots
+        fig = plt.figure(figsize=self.figSize)
+        ax0 = fig.gca()
+        ax1 = fig.gca()
+        ax2 = fig.gca()
+        ax3 = fig.gca()
+        ax4 = fig.gca()
+        ax5 = fig.gca()
+        ax6 = fig.gca()
+        ax7 = fig.gca()
+        ax8 = fig.gca()
+        ax9 = fig.gca()
+        ax10 = fig.gca()
+        ax11 = fig.gca()
+
+
         if self.orbitType == 'horizontal':
             fig = plt.figure(figsize=self.figSize)
             ax0 = fig.add_subplot(2, 2, 1)
@@ -602,10 +617,10 @@ class DisplayAugmentedValidation:
             y = bodies_df[body]['r'] * np.outer(np.sin(u), np.sin(v))
             z = bodies_df[body]['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
 
-            ax0.contour(x, y, z, color='pink')
-            ax3.contourf(x, y, z, colors='pink')
-            ax6.contourf(x, y, z, colors='pink')
-            ax9.contourf(x, y, z, colors='pink')
+            ax0.contour(x, y, z, color='black')
+            ax3.contourf(x, y, z, colors='black')
+            ax6.contourf(x, y, z, colors='black')
+            ax9.contourf(x, y, z, colors='black')
             if self.orbitType != 'horizontal':
                 ax1.contourf(x, z, y, colors='black')
                 ax2.contourf(y, z, x, colors='black')
