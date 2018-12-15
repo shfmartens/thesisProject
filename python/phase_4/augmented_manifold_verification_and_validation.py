@@ -516,7 +516,7 @@ class DisplayAugmentedValidation:
             z = bodies_df[body]['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
             ax.contourf(x, y, z, colors='black', label='Moon')
 
-        plt.suptitle('$L_1, L_2$ ' + self.orbitTypeForTitle + ' ' + self.spacecraftNameForTitle + ' ' + str(self.ThrustMagnitudeForTitle) + self.thrustRestrictionForTitle + ' ' +  ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial overview at C = ' + str(np.round(self.C, 3)),
+        plt.suptitle('$L_1, L_2$ ' + self.orbitTypeForTitle + ' ' + self.spacecraftNameForTitle + ' ' + str(self.ThrustMagnitudeForTitle) + self.thrustRestrictionForTitle + ' ' + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial overview at C = ' + str(np.round(self.C, 3)),
                      size=self.suptitleSize)
         line_width = 2
         plt.plot([-2.3, -3.8], [0, 0], 'k-', lw=line_width)
@@ -602,10 +602,10 @@ class DisplayAugmentedValidation:
             y = bodies_df[body]['r'] * np.outer(np.sin(u), np.sin(v))
             z = bodies_df[body]['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
 
-            ax0.contour(x, y, z, color='black')
-            ax3.contourf(x, y, z, colors='black')
-            ax6.contourf(x, y, z, colors='black')
-            ax9.contourf(x, y, z, colors='black')
+            ax0.contour(x, y, z, color='pink')
+            ax3.contourf(x, y, z, colors='pink')
+            ax6.contourf(x, y, z, colors='pink')
+            ax9.contourf(x, y, z, colors='pink')
             if self.orbitType != 'horizontal':
                 ax1.contourf(x, z, y, colors='black')
                 ax2.contourf(y, z, x, colors='black')
@@ -736,12 +736,12 @@ class DisplayAugmentedValidation:
         if (self.thrustRestriction == "left" or "right"):
             plt.suptitle('$L_' + str(
                 self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + self.spacecraftNameForTitle + ' ' + str(
-                self.thrustMagnitudeForTitle) + ' ' + self.thrustRestrictionForTitle + '_' + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Individual view at C = ' + str(
+                self.thrustMagnitudeForTitle) + ' ' + self.thrustRestrictionForTitle + ' ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Individual view at C = ' + str(
                 np.round(self.C, 3)), size=self.suptitleSize)
         else:
             plt.suptitle('$L_' + str(
                 self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + self.spacecraftNameForTitle + ' ' + str(
-                self.thrustMagnitudeForTitle) + ' ' + self.thrustRestrictionForTitle + '_' + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Individual view at H$_{\text{lt}}$ = ' + str(
+                self.thrustMagnitudeForTitle) + ' ' + self.thrustRestrictionForTitle + ' ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Individual view at H$_{\text{lt}}$ = ' + str(
                 np.round(self.C, 3)), size=self.suptitleSize)
 
         fig.savefig(
