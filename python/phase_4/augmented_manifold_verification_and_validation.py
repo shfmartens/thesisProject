@@ -773,13 +773,13 @@ if __name__ == '__main__':
                 for thrust_restriction in thrust_restrictions:
                     for spacecraft_name in spacecraft_names:
                         for thrust_magnitude in thrust_magnitudes:
-                        display_augmented_validation = DisplayAugmentedValidation(orbit_type, lagrange_point,
+                            display_augmented_validation = DisplayAugmentedValidation(orbit_type, lagrange_point,
                                                                               orbit_ids[orbit_type][lagrange_point][
                                                                                   c_level], thrust_restriction, spacecraft_name,
                                                                                   thrust_magnitude, low_dpi=low_dpi)
 
-                        display_augmented_validation.plot_manifolds()
-                        display_augmented_validation.plot_manifold_zoom()
-                        display_augmented_validation.plot_manifold_individual()
-                        
-                        del display_augmented_validation
+                            display_augmented_validation.plot_manifolds()
+                            display_augmented_validation.plot_manifold_zoom()
+                            display_augmented_validation.plot_manifold_individual()
+
+                            del display_augmented_validation
