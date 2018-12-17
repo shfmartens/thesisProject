@@ -768,7 +768,7 @@ class DisplayAugmentedValidation:
 
         if self.thrustRestriction == 'left' or self.thrustRestriction == 'right':
             plt.suptitle('$L_' + str(
-            self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + '$\\bar{\\a}_{lt} \perp \\bar{V}_'+ self.thrustRestrictionForTitle + '$ ' + '$f = $' + str(
+            self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + '$\\bar{a}_{lt} \perp \\bar{V}_{'+ self.thrustRestrictionForTitle + '}$ ' + '$f = $' + str(
             self.thrustMagnitudeForTitle) + ' ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Individual view at C = ' + str(
             np.round(self.C, 3)), size=self.suptitleSize)
 
