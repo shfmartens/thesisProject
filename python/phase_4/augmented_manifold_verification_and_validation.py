@@ -768,21 +768,15 @@ class DisplayAugmentedValidation:
             fig.subplots_adjust(top=0.8)
 
         if self.thrustRestriction == 'left' or self.thrustRestriction == 'right':
-            if self.thrustRestriction == 'right':
-                plt.suptitle('$L_' + str(
-                    self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + '$\{ \overline{a}_{lt} \perp \overline{V}_{right} \}$' + ' $\{f = \}$ ' + str(
-                    self.thrustMagnitudeForTitle) + ' ' + self.thrustRestrictionForTitle + ' ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Individual view at C = ' + str(
-                    np.round(self.C, 3)), size=self.suptitleSize)
-            if self.thrustRestriction == 'left':
-                plt.suptitle('$L_' + str(
-                    self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + '$\{ \overline{a}_{lt} \perp \overline{V}_{left} \}$' + ' $\{f = \}$ ' + str(
-                    self.thrustMagnitudeForTitle) + ' ' + self.thrustRestrictionForTitle + ' ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Individual view at C = ' + str(
-                    np.round(self.C, 3)), size=self.suptitleSize)
+            plt.suptitle('$L_' + str(
+            self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + '$\\bar{\\a}_{lt} \perp \\bar{V}_'+ self.thrustRestrictionForTitle + '$ ' + '$f = $' + str(
+            self.thrustMagnitudeForTitle) + ' ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Individual view at C = ' + str(
+            np.round(self.C, 3)), size=self.suptitleSize)
 
         else:
             plt.suptitle('$L_' + str(
-                self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + '$\{\dot{\overline{a}}_= 0 \}$' + '$\{ alpha = \}$' + self.thrustRestrictionForTitle + ' $\{f = \}$ ' + str(
-                self.thrustMagnitudeForTitle) + ' ' + self.thrustRestrictionForTitle + ' ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Individual view at C = ' + str(
+                self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + '$\\dot{\\bar{\\alpha}} = 0$' '$f = $' + str(
+                self.thrustMagnitudeForTitle) + '$ \\alpha = $ ' + self.thrustRestrictionForTitle + '$^{\\circ}$' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Individual view at C = ' + str(
                 np.round(self.C, 3)), size=self.suptitleSize)
 
         fig.savefig(
