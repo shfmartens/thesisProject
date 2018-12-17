@@ -405,7 +405,7 @@ class DisplayAugmentedValidation:
             z = bodies_df[body]['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
             ax.contourf(x, y, z, colors='black', label='Moon')
 
-        if self.thrustRestriction == "left" or self.thrustRestriction == "right":
+        if self.thrustRestriction == 'left' or self.thrustRestriction == 'right':
             if self.thrustRestriction == 'right':
                 plt.suptitle('$L_' + str(
                     self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + '$\{ \overline{a}_{lt} \perp \overline{V}_{right} \}$' + ' $\{f = \}$ ' + str(
@@ -767,13 +767,13 @@ class DisplayAugmentedValidation:
         else:
             fig.subplots_adjust(top=0.8)
 
-        if self.thrustRestriction == "left" or self.thrustRestriction == "right":
-            if self.thrustRestriction == "right":
+        if self.thrustRestriction == 'left' or self.thrustRestriction == 'right':
+            if self.thrustRestriction == 'right':
                 plt.suptitle('$L_' + str(
                     self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + '$\{ \overline{a}_{lt} \perp \overline{V}_{right} \}$' + ' $\{f = \}$ ' + str(
                     self.thrustMagnitudeForTitle) + ' ' + self.thrustRestrictionForTitle + ' ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Individual view at C = ' + str(
                     np.round(self.C, 3)), size=self.suptitleSize)
-            if self.thrustRestriction == "left":
+            if self.thrustRestriction == 'left':
                 plt.suptitle('$L_' + str(
                     self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + '$\{ \overline{a}_{lt} \perp \overline{V}_{left} \}$' + ' $\{f = \}$ ' + str(
                     self.thrustMagnitudeForTitle) + ' ' + self.thrustRestrictionForTitle + ' ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Individual view at C = ' + str(
