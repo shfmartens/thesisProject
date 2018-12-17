@@ -10,8 +10,7 @@ from mpl_toolkits.axes_grid.inset_locator import inset_axes
 import seaborn as sns
 from scipy.interpolate import interp1d
 sns.set_style("whitegrid")
-plt.rcParams['text.latex.preamble'] = [r"\usepackage{lmodern}",
-                                       r"\usepackage{amsmath"]
+plt.rcParams['text.latex.preamble'] = [r"\usepackage{lmodern}"]
 
 params = {'text.usetex': True,
           'font.size': 11,
