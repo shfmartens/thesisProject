@@ -10,7 +10,9 @@ from mpl_toolkits.axes_grid.inset_locator import inset_axes
 import seaborn as sns
 from scipy.interpolate import interp1d
 sns.set_style("whitegrid")
-plt.rcParams['text.latex.preamble'] = [r"\usepackage{lmodern}"]
+plt.rcParams['text.latex.preamble'] = [r"\usepackage{lmodern}",
+                                       r"\usepackage{amsmath"]
+
 params = {'text.usetex': True,
           'font.size': 11,
           'font.family': 'lmodern',
@@ -403,12 +405,24 @@ class DisplayAugmentedValidation:
             z = bodies_df[body]['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
             ax.contourf(x, y, z, colors='black', label='Moon')
 
-        if (thrust_restriction == "left" or "right"):
-            plt.suptitle('$L_' + str(
-                self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + self.spacecraftNameForTitle + ' ' + self.thrustRestrictionForTitle + ' ' + self.thrustMagnitudeForTitle  + ' ' + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial overview at C = ' + str(np.round(self.C, 3)),size=self.suptitleSize)
+        if self.thrustRestriction == "left" or self.thrustRestriction == "right":
+            if self.thrustRestriction == 'right':
+                plt.suptitle('$L_' + str(
+                    self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + '$\{ \overline{a}_{lt} \perp \overline{V}_{right} \}$' + ' $\{f = \}$ ' + str(
+                    self.thrustMagnitudeForTitle) + ' ' + self.thrustRestrictionForTitle + ' ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Individual view at C = ' + str(
+                    np.round(self.C, 3)), size=self.suptitleSize)
+            if self.thrustRestriction == 'left':
+                plt.suptitle('$L_' + str(
+                    self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + '$\{ \overline{a}_{lt} \perp \overline{V}_{left} \}$' + ' $\{f = \}$ ' + str(
+                    self.thrustMagnitudeForTitle) + ' ' + self.thrustRestrictionForTitle + ' ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Individual view at C = ' + str(
+                    np.round(self.C, 3)), size=self.suptitleSize)
+
         else:
             plt.suptitle('$L_' + str(
-                self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + self.spacecraftNameForTitle + ' ' + self.thrustRestrictionForTitle + ' ' + self.thrustMagnitudeForTitle + ' ' + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial overview at H$_{\text{lt}}$ = ' + str(np.round(self.C, 3)),size=self.suptitleSize)
+                self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + '$\{\dot{\overline{a}}_= 0 \}$' + '$\{ alpha = \}$' + self.thrustRestrictionForTitle + ' $\{f = \}$ ' + str(
+                self.thrustMagnitudeForTitle) + ' ' + self.thrustRestrictionForTitle + ' ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Individual view at C = ' + str(
+                np.round(self.C, 3)), size=self.suptitleSize)
+
 
 
         # ax.annotate('\\textbf{Unstable exterior} $\\mathbf{ \mathcal{W}^{U+}}$',
@@ -432,8 +446,12 @@ class DisplayAugmentedValidation:
 
         # plt.show()
         fig.savefig('../../data/figures/manifolds/augmented/L' + str(
-            self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + ' ' + str(self.spacecraftName) + ' ' + self.thrustMagnitudeForTitle + ' ' + str(self.thrustRestriction) + '_manifold_subplots_zoom.pdf',
+            self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + ' ' + str(self.spacecraftName) + ' ' + self.thrustMagnitudeForTitle + ' ' + str(self.thrustRestriction) + '_manifold_zoom.pdf',
                     transparent=True)
+
+
+
+
         # fig.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots.png')
         plt.close()
         pass
@@ -749,21 +767,21 @@ class DisplayAugmentedValidation:
         else:
             fig.subplots_adjust(top=0.8)
 
-        if (self.thrustRestriction == "left" or "right"):
-            if (self.thrustRestriction == 'right'):
+        if self.thrustRestriction == "left" or self.thrustRestriction == "right":
+            if self.thrustRestriction == "right":
                 plt.suptitle('$L_' + str(
-                    self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + '$\{\bar{a}_{lt} \perp \bar{V}_{right} \}$' + ' $\{f = \}$ ' + str(
+                    self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + '$\{ \overline{a}_{lt} \perp \overline{V}_{right} \}$' + ' $\{f = \}$ ' + str(
                     self.thrustMagnitudeForTitle) + ' ' + self.thrustRestrictionForTitle + ' ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Individual view at C = ' + str(
                     np.round(self.C, 3)), size=self.suptitleSize)
-            if (self.thrustRestriction == 'left'):
+            if self.thrustRestriction == "left":
                 plt.suptitle('$L_' + str(
-                    self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + '$\{\bar{a}_{lt} \perp \bar{V}_{left} \}$' + ' $\{f = \}$ ' + str(
+                    self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + '$\{ \overline{a}_{lt} \perp \overline{V}_{left} \}$' + ' $\{f = \}$ ' + str(
                     self.thrustMagnitudeForTitle) + ' ' + self.thrustRestrictionForTitle + ' ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Individual view at C = ' + str(
                     np.round(self.C, 3)), size=self.suptitleSize)
 
         else:
             plt.suptitle('$L_' + str(
-                self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + '$\{\dot{\bar{a}}_= 0 \}$' + '$\{ \alpha = \}$' + self.thrustRestrictionForTitle + ' $\{f = \}$ ' + str(
+                self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + '$\{\dot{\overline{a}}_= 0 \}$' + '$\{ alpha = \}$' + self.thrustRestrictionForTitle + ' $\{f = \}$ ' + str(
                 self.thrustMagnitudeForTitle) + ' ' + self.thrustRestrictionForTitle + ' ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Individual view at C = ' + str(
                 np.round(self.C, 3)), size=self.suptitleSize)
 
@@ -775,6 +793,90 @@ class DisplayAugmentedValidation:
         plt.close()
         pass
 
+    def plot_eigenvectors(self):
+        # Plot: subplots
+        fig = plt.figure(figsize=(self.figSize[0], self.figSize[1]*0.5))
+        # fig = plt.figure(figsize=self.figSize)
+        ax0 = fig.add_subplot(1, 3, 1)
+        ax1 = fig.add_subplot(1, 3, 2)
+        ax2 = fig.add_subplot(1, 3, 3)
+
+        # Determine color for plot
+        plot_alpha = 1
+        line_width = 1
+        color = self.plottingColors['orbit']
+        ax0.plot(self.orbitDf['x'], self.orbitDf['y'], color=color, linewidth=line_width)
+        ax1.plot(self.orbitDf['x'], self.orbitDf['z'], color=color, linewidth=line_width)
+        ax2.plot(self.orbitDf['y'], self.orbitDf['z'], color=color, linewidth=line_width)
+
+        if self.orbitType == 'vertical':
+            eigenvector_offset = 0.004
+        else:
+            eigenvector_offset = 0.02
+
+        for idx in range(self.numberOfOrbitsPerManifold):
+            if idx%4 != 0:
+                continue
+
+            x_S = [self.eigenvectorLocationDf_S.xs(idx)[0] - eigenvector_offset * self.eigenvectorDf_S.xs(idx)[0],
+                   self.eigenvectorLocationDf_S.xs(idx)[0] + eigenvector_offset * self.eigenvectorDf_S.xs(idx)[0]]
+            y_S = [self.eigenvectorLocationDf_S.xs(idx)[1] - eigenvector_offset * self.eigenvectorDf_S.xs(idx)[1],
+                   self.eigenvectorLocationDf_S.xs(idx)[1] + eigenvector_offset * self.eigenvectorDf_S.xs(idx)[1]]
+            z_S = [self.eigenvectorLocationDf_S.xs(idx)[2] - eigenvector_offset * self.eigenvectorDf_S.xs(idx)[2],
+                   self.eigenvectorLocationDf_S.xs(idx)[2] + eigenvector_offset * self.eigenvectorDf_S.xs(idx)[2]]
+
+            x_U = [self.eigenvectorLocationDf_U.xs(idx)[0] - eigenvector_offset * self.eigenvectorDf_U.xs(idx)[0],
+                   self.eigenvectorLocationDf_U.xs(idx)[0] + eigenvector_offset * self.eigenvectorDf_U.xs(idx)[0]]
+            y_U = [self.eigenvectorLocationDf_U.xs(idx)[1] - eigenvector_offset * self.eigenvectorDf_U.xs(idx)[1],
+                   self.eigenvectorLocationDf_U.xs(idx)[1] + eigenvector_offset * self.eigenvectorDf_U.xs(idx)[1]]
+            z_U = [self.eigenvectorLocationDf_U.xs(idx)[2] - eigenvector_offset * self.eigenvectorDf_U.xs(idx)[2],
+                   self.eigenvectorLocationDf_U.xs(idx)[2] + eigenvector_offset * self.eigenvectorDf_U.xs(idx)[2]]
+
+            # ax0.plot(x_S, y_S, color=self.plottingColors['W_S_min'], linewidth=line_width)
+            ax0.annotate("", xy=(x_S[0], y_S[0]), xytext=(x_S[1], y_S[1]), arrowprops=dict(arrowstyle='<->, head_width=1e-1, head_length=2e-1', color=self.plottingColors['W_S_plus'], shrinkA=0, shrinkB=0))
+            ax1.annotate("", xy=(x_S[0], z_S[0]), xytext=(x_S[1], z_S[1]), arrowprops=dict(arrowstyle='<->, head_width=1e-1, head_length=2e-1', color=self.plottingColors['W_S_plus'], shrinkA=0, shrinkB=0))
+            ax2.annotate("", xy=(y_S[0], z_S[0]), xytext=(y_S[1], z_S[1]), arrowprops=dict(arrowstyle='<->, head_width=1e-1, head_length=2e-1', color=self.plottingColors['W_S_plus'], shrinkA=0, shrinkB=0))
+            # ax1.plot(x_S, z_S, color=self.colorPaletteStable[idx], linewidth=line_width)
+            # ax2.plot(y_S, z_S, color=self.colorPaletteStable[idx], linewidth=line_width)
+
+            # ax0.annotate("", xy=(x_U[0], y_U[0]), xytext=(x_U[1], y_U[1]), arrowprops=dict(arrowstyle="<->", shrinkA=0, shrinkB=0))
+            ax0.annotate("", xy=(x_U[0], y_U[0]), xytext=(x_U[1], y_U[1]), arrowprops=dict(arrowstyle='<->, head_width=1e-1, head_length=2e-1', color=self.plottingColors['W_U_plus'], shrinkA=0, shrinkB=0))
+            ax1.annotate("", xy=(x_U[0], z_U[0]), xytext=(x_U[1], z_U[1]), arrowprops=dict(arrowstyle='<->, head_width=1e-1, head_length=2e-1', color=self.plottingColors['W_U_plus'], shrinkA=0, shrinkB=0))
+            ax2.annotate("", xy=(y_U[0], z_U[0]), xytext=(y_U[1], z_U[1]), arrowprops=dict(arrowstyle='<->, head_width=1e-1, head_length=2e-1', color=self.plottingColors['W_U_plus'], shrinkA=0, shrinkB=0))
+            # ax1.plot(x_U, z_U, color=self.colorPaletteUnstable[idx], linewidth=line_width)
+            # ax2.plot(y_U, z_U, color=self.colorPaletteUnstable[idx], linewidth=line_width)
+            pass
+        xlim = ax0.get_xlim()
+        ax0.set_xlim(xlim[0]*0.975, xlim[1]*1.025)
+        ax0.set_xlabel('x [-]')
+        ax0.set_ylabel('y [-]')
+        ax0.grid(True, which='both', ls=':')
+
+        zlim = ax1.get_ylim()
+        ax1.set_xlim(xlim[0] * 0.975, xlim[1] * 1.025)
+        ax1.set_ylim(zlim[0] * 1.05, zlim[1] * 1.05)
+        ax1.set_xlabel('x [-]')
+        ax1.set_ylabel('z [-]')
+        ax1.grid(True, which='both', ls=':')
+
+        xlim = ax2.get_xlim()
+        ax2.set_ylim(zlim[0] * 1.05, zlim[1] * 1.05)
+        ax2.set_xlim(xlim[0] * 1.05, xlim[1] * 1.05)
+        ax2.set_xlabel('y [-]')
+        ax2.set_ylabel('z [-]')
+        ax2.grid(True, which='both', ls=':')
+
+        fig.tight_layout()
+        fig.subplots_adjust(top=0.8)
+
+        fig.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathbf{X_i} \pm \epsilon \\frac{\mathbf{v}^S_i}{|\mathbf{v}^S_i|}, \mathbf{X_i} \pm \epsilon \\frac{\mathbf{v}^U_i}{|\mathbf{v}^U_i|} \}$ - Spatial overview  at C = ' + str(np.round(self.C, 3)),
+                     size=self.suptitleSize)
+
+        fig.savefig('../../data/figures/manifolds/refined_for_c/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_eigenvector_subplots.pdf',
+                    transparent=True)
+#        fig.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_eigenvector_subplots.png')
+        plt.close()
+        pass
 
 
 
@@ -801,8 +903,9 @@ if __name__ == '__main__':
                                                                                   c_level], thrust_restriction, spacecraft_name,
                                                                                   thrust_magnitude, low_dpi=low_dpi)
 
-                            display_augmented_validation.plot_manifolds()
-                            display_augmented_validation.plot_manifold_zoom()
+                            #display_augmented_validation.plot_manifolds()
+                            #display_augmented_validation.plot_manifold_zoom()
                             display_augmented_validation.plot_manifold_individual()
+                            display_augmented_validation.plot_eigenvectors()
 
                             del display_augmented_validation
