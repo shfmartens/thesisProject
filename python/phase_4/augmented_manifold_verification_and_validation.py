@@ -518,17 +518,18 @@ class DisplayAugmentedValidation:
 
         plt.suptitle('$L_1, L_2$ ' + self.orbitTypeForTitle + ' ' + self.spacecraftNameForTitle + ' ' + str(self.ThrustMagnitudeForTitle) + self.thrustRestrictionForTitle + ' ' + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial overview at C = ' + str(np.round(self.C, 3)),
                      size=self.suptitleSize)
-        line_width = 2
-        plt.plot([-2.3, -3.8], [0, 0], 'k-', lw=line_width)
-        plt.plot([-0.78, -0.25], [0, 0], 'k-', lw=line_width)
-        plt.plot([1 - self.massParameter, 1 - self.massParameter], [0.0, 0.11], 'k-', lw=line_width)
-        plt.plot([1 - self.massParameter, 1 - self.massParameter], [0.0, -0.11], 'k-', lw=line_width)
 
-        size = 15
-        ax.text(-2.1, 0, "$\mathbf{U_4}$", ha="center", va="center", size=size)
-        ax.text(-1.0, 0, "$\mathbf{U_1}$", ha="center", va="center", size=size)
-        ax.text(1.0 - self.massParameter, 0.25, "$\mathbf{U_3}$", ha="center", va="center", size=size)
-        ax.text(1.0 - self.massParameter, -0.3, "$\mathbf{U_2}$", ha="center", va="center", size=size)
+        # line_width = 2
+        # plt.plot([-2.3, -3.8], [0, 0], 'k-', lw=line_width)
+        # plt.plot([-0.78, -0.25], [0, 0], 'k-', lw=line_width)
+        # plt.plot([1 - self.massParameter, 1 - self.massParameter], [0.0, 0.11], 'k-', lw=line_width)
+        # plt.plot([1 - self.massParameter, 1 - self.massParameter], [0.0, -0.11], 'k-', lw=line_width)
+        #
+        # size = 15
+        # ax.text(-2.1, 0, "$\mathbf{U_4}$", ha="center", va="center", size=size)
+        # ax.text(-1.0, 0, "$\mathbf{U_1}$", ha="center", va="center", size=size)
+        # ax.text(1.0 - self.massParameter, 0.25, "$\mathbf{U_3}$", ha="center", va="center", size=size)
+        # ax.text(1.0 - self.massParameter, -0.3, "$\mathbf{U_2}$", ha="center", va="center", size=size)
 
         ax.set_xlim([-6, 4])
         ax.set_ylim([-3, 3])
