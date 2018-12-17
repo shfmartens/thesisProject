@@ -42,7 +42,7 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
                        const int librationPointNr, const std::string orbitType, const std::string spacecraftName, const std::string thrustPointing,
                        const double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter(tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER, tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER ),
                        const double eigenvectorDisplacementFromOrbit = 1.0E-6,
-                       const int numberOfTrajectoriesPerManifold = 100, const int saveFrequency = 1000,
+                       const int numberOfTrajectoriesPerManifold = 50, const int saveFrequency = 1000,
                        const bool saveEigenvectors = true,
                        const double maximumIntegrationTimeManifoldTrajectories = 50.0,
                        const double maxEigenvalueDeviation = 1.0E-3 );
