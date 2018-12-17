@@ -1123,7 +1123,7 @@ if __name__ == '__main__':
     c_levels = [3.05]
     thrust_restrictions = ['right']
     spacecraft_names = ['DeepSpace']
-    thrust_magnitudes = ['0.000000', '0.000100', '0.001000', '0.010000']
+    thrust_magnitudes = ['0.001000']
 
     orbit_ids = {'horizontal':  {1: {3.05: 808, 3.1: 577, 3.15: 330}, 2: {3.05: 1066, 3.1: 760, 3.15: 373}}}
 
