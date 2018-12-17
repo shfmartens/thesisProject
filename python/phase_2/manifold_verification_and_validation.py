@@ -1489,7 +1489,7 @@ if __name__ == '__main__':
             for c_level in c_levels:
                 display_periodicity_validation = DisplayPeriodicityValidation(orbit_type, lagrange_point,
                                                                               orbit_ids[orbit_type][lagrange_point][c_level],
-                                                                              low_dpi=low_dpi)
+                                                                              low_dpi=True)
                 display_periodicity_validation.plot_manifolds()
                 display_periodicity_validation.plot_manifold_zoom()
                 # display_periodicity_validation.plot_manifold_total()
