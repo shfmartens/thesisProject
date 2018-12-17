@@ -1040,7 +1040,8 @@ class DisplayAugmentedValidation:
         arr[1, 0].fill_between(w_s_plus_df.mean(axis=1).index,y1=y1,y2=y2, where=y1 >= y2,facecolor=self.plottingColors['W_S_plus'], interpolate=True, alpha=highlight_alpha)
         l1, = arr[1, 0].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{S+} \pm 3\sigma_t^{S+} $', color=self.plottingColors['W_S_plus'], linestyle=':')
         l2, = arr[1, 0].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{S+}$', color=self.plottingColors['W_S_plus'])
-        arr[1, 0].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_S_plus'], linestyle=':')arr[1, 0].set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$ [-]')arr[1, 0].set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
+        arr[1, 0].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_S_plus'], linestyle=':')
+        arr[1, 0].set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$ [-]')arr[1, 0].set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
 
         # Plot W^S-
         arr[1, 1].fill_between(w_s_min_df.mean(axis=1).index,y1=w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1),y2=w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1),facecolor=self.plottingColors['W_S_min'], interpolate=True, alpha=highlight_alpha)
@@ -1059,22 +1060,13 @@ class DisplayAugmentedValidation:
         arr[2, 0].set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{U+}$)', loc='right')
 
         # Plot W^U-
-        arr[2, 1].fill_between(w_u_min_df.mean(axis=1).index,
-                               y1=w_u_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_min_df.std(axis=1).fillna(
-                                   method='ffill'),
-                               y2=w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna(
-                                   method='ffill'),
-                               facecolor=self.plottingColors['W_U_min'], interpolate=True, alpha=highlight_alpha)
-        l7, = arr[2, 1].plot(
-            w_u_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{U-} \pm 3\sigma_t^{U-}$', color=self.plottingColors['W_U_min'], linestyle=':')
+        arr[2, 1].fill_between(w_u_min_df.mean(axis=1).index,y1=w_u_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),y2=w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna( method='ffill'),facecolor=self.plottingColors['W_U_min'], interpolate=True, alpha=highlight_alpha)
+        l7, = arr[2, 1].plot(w_u_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{U-} \pm 3\sigma_t^{U-}$', color=self.plottingColors['W_U_min'], linestyle=':')
         l8, = arr[2, 1].plot(w_u_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{U-}$',color=self.plottingColors['W_U_min'])
         arr[2, 1].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l5, l6, l7, l8])
-        arr[2, 1].plot(
-            w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),
-            color=self.plottingColors['W_U_min'], linestyle=':')
+        arr[2, 1].plot(w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_U_min'], linestyle=':')
         arr[2, 1].set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$  [-]')
         arr[2, 1].set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{U-}$)', loc='right')
-
         arr[2, 0].set_xlabel('$|t|$ [-]')
         arr[2, 1].set_xlabel('$|t|$  [-]')
 
