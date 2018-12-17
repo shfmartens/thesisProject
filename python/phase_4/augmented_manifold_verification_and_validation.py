@@ -1041,7 +1041,8 @@ class DisplayAugmentedValidation:
         l1, = arr[1, 0].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{S+} \pm 3\sigma_t^{S+} $', color=self.plottingColors['W_S_plus'], linestyle=':')
         l2, = arr[1, 0].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{S+}$', color=self.plottingColors['W_S_plus'])
         arr[1, 0].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_S_plus'], linestyle=':')
-        arr[1, 0].set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$ [-]')arr[1, 0].set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
+        arr[1, 0].set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$ [-]')
+        arr[1, 0].set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
 
         # Plot W^S-
         arr[1, 1].fill_between(w_s_min_df.mean(axis=1).index,y1=w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1),y2=w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1),facecolor=self.plottingColors['W_S_min'], interpolate=True, alpha=highlight_alpha)
@@ -1049,7 +1050,8 @@ class DisplayAugmentedValidation:
         l4, = arr[1, 1].plot(w_s_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{S-}$',color=self.plottingColors['W_S_min'])
         arr[1, 1].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l1, l2, l3, l4])
         arr[1, 1].plot(w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_S_min'], linestyle=':')
-        arr[1, 1].set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$ [-]')arr[1, 1].set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{S-}$)', loc='right')
+        arr[1, 1].set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$ [-]')
+        arr[1, 1].set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{S-}$)', loc='right')
 
         # Plot W^U+
         arr[2, 0].fill_between(w_u_plus_df.mean(axis=1).index,y1=w_u_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_plus_df.std(axis=1),y2=w_u_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_plus_df.std(axis=1),facecolor=self.plottingColors['W_U_plus'], interpolate=True, alpha=highlight_alpha)
