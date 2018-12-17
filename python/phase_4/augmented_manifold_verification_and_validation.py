@@ -411,24 +411,24 @@ class DisplayAugmentedValidation:
                 self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + self.spacecraftNameForTitle + ' ' + self.thrustRestrictionForTitle + ' ' + self.thrustMagnitudeForTitle + ' ' + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial overview at H$_{\text{lt}}$ = ' + str(np.round(self.C, 3)),size=self.suptitleSize)
 
 
-        ax.annotate('\\textbf{Unstable exterior} $\\mathbf{ \mathcal{W}^{U+}}$',
-                    xy=(1.44, -0.1), xycoords='data',
-                    xytext=(-100, 50), textcoords='offset points',
-                    arrowprops=dict(arrowstyle="->", color=self.plottingColors['W_U_plus'], linewidth=2))
-
-        ax.annotate('\\textbf{Stable exterior} $\\mathbf{ \mathcal{W}^{S+}}$',
-                    xy=(1.37, 0.025), xycoords='data',
-                    xytext=(20, 50), textcoords='offset points',
-                    arrowprops=dict(arrowstyle="->", color=self.plottingColors['W_S_plus'], linewidth=2))
-
-        ax.annotate('\\textbf{Unstable interior} $\\mathbf{ \mathcal{W}^{U-}}$',
-                    xy=(1.01, 0.11), xycoords='data',
-                    xytext=(50, 10), textcoords='offset points',
-                    arrowprops=dict(arrowstyle="->", color=self.plottingColors['W_U_min'], linewidth=2))
-        ax.annotate('\\textbf{Stable interior} $\\mathbf{ \mathcal{W}^{S-}}$',
-                    xy=(1.1, -0.11), xycoords='data',
-                    xytext=(-150, -10), textcoords='offset points',
-                    arrowprops=dict(arrowstyle="->", color=self.plottingColors['W_S_min'], linewidth=2))
+        # ax.annotate('\\textbf{Unstable exterior} $\\mathbf{ \mathcal{W}^{U+}}$',
+        #             xy=(1.44, -0.1), xycoords='data',
+        #             xytext=(-100, 50), textcoords='offset points',
+        #             arrowprops=dict(arrowstyle="->", color=self.plottingColors['W_U_plus'], linewidth=2))
+        #
+        # ax.annotate('\\textbf{Stable exterior} $\\mathbf{ \mathcal{W}^{S+}}$',
+        #             xy=(1.37, 0.025), xycoords='data',
+        #             xytext=(20, 50), textcoords='offset points',
+        #             arrowprops=dict(arrowstyle="->", color=self.plottingColors['W_S_plus'], linewidth=2))
+        #
+        # ax.annotate('\\textbf{Unstable interior} $\\mathbf{ \mathcal{W}^{U-}}$',
+        #             xy=(1.01, 0.11), xycoords='data',
+        #             xytext=(50, 10), textcoords='offset points',
+        #             arrowprops=dict(arrowstyle="->", color=self.plottingColors['W_U_min'], linewidth=2))
+        # ax.annotate('\\textbf{Stable interior} $\\mathbf{ \mathcal{W}^{S-}}$',
+        #             xy=(1.1, -0.11), xycoords='data',
+        #             xytext=(-150, -10), textcoords='offset points',
+        #             arrowprops=dict(arrowstyle="->", color=self.plottingColors['W_S_min'], linewidth=2))
 
         # plt.show()
         fig.savefig('../../data/figures/manifolds/augmented/L' + str(
@@ -519,17 +519,17 @@ class DisplayAugmentedValidation:
         plt.suptitle('$L_1, L_2$ ' + self.orbitTypeForTitle + ' ' + self.spacecraftNameForTitle + ' ' + str(self.ThrustMagnitudeForTitle) + self.thrustRestrictionForTitle + ' ' + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial overview at C = ' + str(np.round(self.C, 3)),
                      size=self.suptitleSize)
 
-        # line_width = 2
-        # plt.plot([-2.3, -3.8], [0, 0], 'k-', lw=line_width)
-        # plt.plot([-0.78, -0.25], [0, 0], 'k-', lw=line_width)
-        # plt.plot([1 - self.massParameter, 1 - self.massParameter], [0.0, 0.11], 'k-', lw=line_width)
-        # plt.plot([1 - self.massParameter, 1 - self.massParameter], [0.0, -0.11], 'k-', lw=line_width)
-        #
-        # size = 15
-        # ax.text(-2.1, 0, "$\mathbf{U_4}$", ha="center", va="center", size=size)
-        # ax.text(-1.0, 0, "$\mathbf{U_1}$", ha="center", va="center", size=size)
-        # ax.text(1.0 - self.massParameter, 0.25, "$\mathbf{U_3}$", ha="center", va="center", size=size)
-        # ax.text(1.0 - self.massParameter, -0.3, "$\mathbf{U_2}$", ha="center", va="center", size=size)
+        line_width = 2
+        plt.plot([-2.3, -3.8], [0, 0], 'k-', lw=line_width)
+        plt.plot([-0.78, -0.25], [0, 0], 'k-', lw=line_width)
+        plt.plot([1 - self.massParameter, 1 - self.massParameter], [0.0, 0.11], 'k-', lw=line_width)
+        plt.plot([1 - self.massParameter, 1 - self.massParameter], [0.0, -0.11], 'k-', lw=line_width)
+
+        size = 15
+        ax.text(-2.1, 0, "$\mathbf{U_4}$", ha="center", va="center", size=size)
+        ax.text(-1.0, 0, "$\mathbf{U_1}$", ha="center", va="center", size=size)
+        ax.text(1.0 - self.massParameter, 0.25, "$\mathbf{U_3}$", ha="center", va="center", size=size)
+        ax.text(1.0 - self.massParameter, -0.3, "$\mathbf{U_2}$", ha="center", va="center", size=size)
 
         ax.set_xlim([-6, 4])
         ax.set_ylim([-3, 3])
@@ -750,14 +750,21 @@ class DisplayAugmentedValidation:
             fig.subplots_adjust(top=0.8)
 
         if (self.thrustRestriction == "left" or "right"):
-            plt.suptitle('$L_' + str(
-                self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + self.spacecraftNameForTitle + ' ' + str(
-                self.thrustMagnitudeForTitle) + ' ' + self.thrustRestrictionForTitle + ' ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Individual view at C = ' + str(
-                np.round(self.C, 3)), size=self.suptitleSize)
+            if (self.thrustRestriction == 'right'):
+                plt.suptitle('$L_' + str(
+                    self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + '$\{\bar{a}_{lt} \perp \bar{V}_{right} \}$' + ' $\{f = \}$ ' + str(
+                    self.thrustMagnitudeForTitle) + ' ' + self.thrustRestrictionForTitle + ' ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Individual view at C = ' + str(
+                    np.round(self.C, 3)), size=self.suptitleSize)
+            if (self.thrustRestriction == 'left'):
+                plt.suptitle('$L_' + str(
+                    self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + '$\{\bar{a}_{lt} \perp \bar{V}_{left} \}$' + ' $\{f = \}$ ' + str(
+                    self.thrustMagnitudeForTitle) + ' ' + self.thrustRestrictionForTitle + ' ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Individual view at C = ' + str(
+                    np.round(self.C, 3)), size=self.suptitleSize)
+
         else:
             plt.suptitle('$L_' + str(
-                self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + self.spacecraftNameForTitle + ' ' + str(
-                self.thrustMagnitudeForTitle) + ' ' + self.thrustRestrictionForTitle + ' ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Individual view at H$_{\text{lt}}$ = ' + str(
+                self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + '$\{\dot{\bar{a}}_= 0 \}$' + '$\{ \alpha = \}$' + self.thrustRestrictionForTitle + ' $\{f = \}$ ' + str(
+                self.thrustMagnitudeForTitle) + ' ' + self.thrustRestrictionForTitle + ' ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Individual view at C = ' + str(
                 np.round(self.C, 3)), size=self.suptitleSize)
 
         fig.savefig(
