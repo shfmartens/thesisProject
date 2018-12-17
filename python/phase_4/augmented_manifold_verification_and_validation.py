@@ -114,36 +114,35 @@ class DisplayAugmentedValidation:
         self.W_U_min_dy = []
 
         first_state_on_manifold = self.W_S_plus.xs(0).tail(1).values[0]
-        thrustMagnitude = load_spacecraft_properties(spacecraft_name)[0]
-        first_iom_on_manifold = computeIntegralOfMotion(first_state_on_manifold[0], first_state_on_manifold[1],first_state_on_manifold[2], first_state_on_manifold[3],first_state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrustMagnitude, thrust_restriction)
+        first_iom_on_manifold = computeIntegralOfMotion(first_state_on_manifold[0], first_state_on_manifold[1],first_state_on_manifold[2], first_state_on_manifold[3],first_state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrust_magnitude, thrust_restriction)
         for row in self.W_S_plus.xs(0).iloc[::-1].iterrows():
              self.T_along_0_W_S_plus.append(abs(row[0]))
              state_on_manifold = row[1].values
-             iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrustMagnitude, thrust_restriction)
+             iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrust_magnitude, thrust_restriction)
              self.C_along_0_W_S_plus.append(abs(iom_on_manifold-first_iom_on_manifold))
 
         first_state_on_manifold = self.W_S_min.xs(0).tail(1).values[0]
-        first_iom_on_manifold = computeIntegralOfMotion(first_state_on_manifold[0], first_state_on_manifold[1],first_state_on_manifold[2], first_state_on_manifold[3],first_state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrustMagnitude, thrust_restriction)
+        first_iom_on_manifold = computeIntegralOfMotion(first_state_on_manifold[0], first_state_on_manifold[1],first_state_on_manifold[2], first_state_on_manifold[3],first_state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrust_magnitude, thrust_restriction)
         for row in self.W_S_min.xs(0).iloc[::-1].iterrows():
               self.T_along_0_W_S_min.append(abs(row[0]))
               state_on_manifold = row[1].values
-              iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrustMagnitude, thrust_restriction)
+              iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrust_magnitude, thrust_restriction)
               self.C_along_0_W_S_min.append(abs(iom_on_manifold-first_iom_on_manifold))
 
         first_state_on_manifold = self.W_U_plus.xs(0).head(1).values[0]
-        first_iom_on_manifold = computeIntegralOfMotion(first_state_on_manifold[0], first_state_on_manifold[1], first_state_on_manifold[2], first_state_on_manifold[3], first_state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrustMagnitude, thrust_restriction)
+        first_iom_on_manifold = computeIntegralOfMotion(first_state_on_manifold[0], first_state_on_manifold[1], first_state_on_manifold[2], first_state_on_manifold[3], first_state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrust_magnitude, thrust_restriction)
         for row in self.W_U_plus.xs(0).iterrows():
              self.T_along_0_W_U_plus.append(abs(row[0]))
              state_on_manifold = row[1].values
-             iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2], state_on_manifold[3], state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrustMagnitude, thrust_restriction)
+             iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2], state_on_manifold[3], state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrust_magnitude, thrust_restriction)
              self.C_along_0_W_U_plus.append(abs(iom_on_manifold - first_iom_on_manifold))
 
         first_state_on_manifold = self.W_U_min.xs(0).head(1).values[0]
-        first_iom_on_manifold = computeIntegralOfMotion(first_state_on_manifold[0], first_state_on_manifold[1], first_state_on_manifold[2], first_state_on_manifold[3], first_state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrustMagnitude, thrust_restriction)
+        first_iom_on_manifold = computeIntegralOfMotion(first_state_on_manifold[0], first_state_on_manifold[1], first_state_on_manifold[2], first_state_on_manifold[3], first_state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrust_magnitude, thrust_restriction)
         for row in self.W_U_min.xs(0).iterrows():
              self.T_along_0_W_U_min.append(abs(row[0]))
              state_on_manifold = row[1].values
-             iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2], state_on_manifold[3], state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrustMagnitude, thrust_restriction)
+             iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2], state_on_manifold[3], state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrust_magnitude, thrust_restriction)
              self.C_along_0_W_U_min.append(abs(iom_on_manifold-first_iom_on_manifold))
 
              for i in range(self.numberOfOrbitsPerManifold):
@@ -151,11 +150,11 @@ class DisplayAugmentedValidation:
 
                  # On orbit
                  state_on_orbit = self.eigenvectorLocationDf_S.xs(i).values
-                 iom_on_orbit = computeIntegralOfMotion(state_on_orbit[0], state_on_orbit[1], state_on_orbit[2],state_on_orbit[3], state_on_orbit[4], first_state_on_manifold[5], first_state_on_manifold[6], thrustMagnitude, thrust_restriction)
+                 iom_on_orbit = computeIntegralOfMotion(state_on_orbit[0], state_on_orbit[1], state_on_orbit[2],state_on_orbit[3], state_on_orbit[4], first_state_on_manifold[5], first_state_on_manifold[6], thrust_magnitude, thrust_restriction)
 
                  # W_S_plus
                  state_on_manifold = self.W_S_plus.xs(i).tail(1).values[0]
-                 iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1],state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrustMagnitude, thrust_restriction)
+                 iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1],state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrust_magnitude, thrust_restriction)
                  self.C_diff_start_W_S_plus.append(abs(iom_on_manifold - iom_on_orbit))
                  state_on_manifold = self.W_S_plus.xs(i).head(1).values[0]
                  # either very close to 1-mu or dy
@@ -168,7 +167,7 @@ class DisplayAugmentedValidation:
 
                  # W_S_min
                  state_on_manifold = self.W_S_min.xs(i).tail(1).values[0]
-                 iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1],state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrustMagnitude, thrust_restriction)
+                 iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1],state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrust_magnitude, thrust_restriction)
                  self.C_diff_start_W_S_min.append(abs(iom_on_manifold - iom_on_orbit))
                  state_on_manifold = self.W_S_min.xs(i).head(1).values[0]
                  # either very close to 1-mu or dy
@@ -181,7 +180,7 @@ class DisplayAugmentedValidation:
 
                  # W_U_plus
                  state_on_manifold = self.W_U_plus.xs(i).head(1).values[0]
-                 iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1],state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrustMagnitude, thrust_restriction)
+                 iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1],state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrust_magnitude, thrust_restriction)
                  self.C_diff_start_W_U_plus.append(abs(iom_on_manifold - iom_on_orbit))
                  state_on_manifold = self.W_U_plus.xs(i).tail(1).values[0]
                  # either very close to 1-mu or dy
@@ -194,7 +193,7 @@ class DisplayAugmentedValidation:
 
                  # W_U_min
                  state_on_manifold = self.W_U_min.xs(i).head(1).values[0]
-                 iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2], state_on_manifold[3], state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrustMagnitude, thrust_restriction)
+                 iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2], state_on_manifold[3], state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrust_magnitude, thrust_restriction)
                  self.C_diff_start_W_U_min.append(abs(iom_on_manifold - iom_on_orbit))
                  state_on_manifold = self.W_U_min.xs(i).tail(1).values[0]
                  # either very close to 1-mu or dy
@@ -893,7 +892,7 @@ class DisplayAugmentedValidation:
         arr[0, 0].set_xlim([0, 1])
         arr[0, 0].set_xlabel('$\\tau$ [-]')
         arr[0, 0].set_ylim(ylim)
-        arr[0, 0].set_ylabel('$|C(\mathbf{X^i_0}) - C(\mathbf{X^p})|$ [-]')
+        arr[0, 0].set_ylabel('$|IOM(\mathbf{X^i_0}) - IOM(\mathbf{X^p})|$ [-]')
         arr[0, 0].set_title('Jacobi energy deviation between orbit and manifold')
 
         # TODO decide whether to filter out trajectories intersecting Moon
@@ -1124,7 +1123,7 @@ if __name__ == '__main__':
     c_levels = [3.05]
     thrust_restrictions = ['right']
     spacecraft_names = ['DeepSpace']
-    thrust_magnitudes = ['0.001000']
+    thrust_magnitudes = ['0.000000', '0.000100', '0.00100', '0.01000']
 
     orbit_ids = {'horizontal':  {1: {3.05: 808, 3.1: 577, 3.15: 330}, 2: {3.05: 1066, 3.1: 760, 3.15: 373}}}
 
@@ -1139,9 +1138,9 @@ if __name__ == '__main__':
                                                                                   c_level], thrust_restriction, spacecraft_name,
                                                                                   thrust_magnitude, low_dpi=low_dpi)
 
-                            #display_augmented_validation.plot_manifolds()
-                            #display_augmented_validation.plot_manifold_zoom()
-                            #display_augmented_validation.plot_manifold_individual()
+                            display_augmented_validation.plot_manifolds()
+                            display_augmented_validation.plot_manifold_zoom()
+                            display_augmented_validation.plot_manifold_individual()
                             #display_augmented_validation.plot_eigenvectors()
                             display_augmented_validation.plot_iom_validation()
                             del display_augmented_validation

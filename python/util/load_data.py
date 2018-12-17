@@ -217,8 +217,8 @@ def computeIntegralOfMotion(x, y, z, xdot, ydot, zdot, mass, thrust, thrust_rest
         integral_of_motion = c
     else:
         alpha = float(thrust_restriction) * (2 * math.pi / 180.0)
-        xddot_lt =  ( thrust / mass ) * np.cos(alpha)
-        yddot_lt = (thrust / mass) * np.sin(alpha)
+        xddot_lt = ( float(thrust) / mass ) * np.cos(alpha)
+        yddot_lt = ( float(thrust) / mass) * np.sin(alpha)
         inner_prod = x * xddot_lt + y * yddot_lt
         integral_of_motion = -0.5 * c - inner_prod
     return integral_of_motion
