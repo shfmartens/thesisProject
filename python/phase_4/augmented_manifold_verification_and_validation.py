@@ -145,95 +145,95 @@ class DisplayAugmentedValidation:
              iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2], state_on_manifold[3], state_on_manifold[4], state_on_manifold[5], state_on_manifold[6], thrust_magnitude, thrust_restriction)
              self.C_along_0_W_U_min.append(abs(iom_on_manifold-first_iom_on_manifold))
 
-             for i in range(self.numberOfOrbitsPerManifold):
-                 self.phase.append(i / self.numberOfOrbitsPerManifold)
+        for i in range(self.numberOfOrbitsPerManifold):
+            self.phase.append(i / self.numberOfOrbitsPerManifold)
 
-                 # On orbit
-                 state_on_orbit = self.eigenvectorLocationDf_S.xs(i).values
-                 iom_on_orbit = computeJacobiEnergy(state_on_orbit[0], state_on_orbit[1], state_on_orbit[2],
+            # On orbit
+            state_on_orbit = self.eigenvectorLocationDf_S.xs(i).values
+            iom_on_orbit = computeJacobiEnergy(state_on_orbit[0], state_on_orbit[1], state_on_orbit[2],
                                                        state_on_orbit[3], state_on_orbit[4], state_on_orbit[5])
 
-                 # W_S_plus
-                 state_on_manifold = self.W_S_plus.xs(i).tail(1).values[0]
-                 iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1],state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], state_on_manifold[5], state_on_manifold[6], thrust_magnitude, thrust_restriction)
-                 self.C_diff_start_W_S_plus.append(abs(iom_on_manifold - iom_on_orbit))
-                 state_on_manifold = self.W_S_plus.xs(i).head(1).values[0]
-                 # either very close to 1-mu or dy
-                 if abs(state_on_manifold[1]) < abs(state_on_manifold[0] - (1 - self.massParameter)):
-                    self.W_S_plus_dx.append(0)
-                    self.W_S_plus_dy.append(abs(state_on_manifold[1]))
-                 else:
-                    self.W_S_plus_dx.append(abs(state_on_manifold[0] - (1 - self.massParameter)))
-                    self.W_S_plus_dy.append(0)
+            # W_S_plus
+            state_on_manifold = self.W_S_plus.xs(i).tail(1).values[0]
+            iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1],state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], state_on_manifold[5], state_on_manifold[6], thrust_magnitude, thrust_restriction)
+            self.C_diff_start_W_S_plus.append(abs(iom_on_manifold - iom_on_orbit))
+            state_on_manifold = self.W_S_plus.xs(i).head(1).values[0]
+            # either very close to 1-mu or dy
+            if abs(state_on_manifold[1]) < abs(state_on_manifold[0] - (1 - self.massParameter)):
+                self.W_S_plus_dx.append(0)
+                self.W_S_plus_dy.append(abs(state_on_manifold[1]))
+            else:
+                self.W_S_plus_dx.append(abs(state_on_manifold[0] - (1 - self.massParameter)))
+                self.W_S_plus_dy.append(0)
 
-                 # W_S_min
-                 state_on_manifold = self.W_S_min.xs(i).tail(1).values[0]
-                 iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1],state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], state_on_manifold[5], state_on_manifold[6], thrust_magnitude, thrust_restriction)
-                 self.C_diff_start_W_S_min.append(abs(iom_on_manifold - iom_on_orbit))
-                 state_on_manifold = self.W_S_min.xs(i).head(1).values[0]
-                 # either very close to 1-mu or dy
-                 if abs(state_on_manifold[1]) < abs(state_on_manifold[0] - (1 - self.massParameter)):
-                    self.W_S_min_dx.append(0)
-                    self.W_S_min_dy.append(abs(state_on_manifold[1]))
-                 else:
-                    self.W_S_min_dx.append(abs(state_on_manifold[0] - (1 - self.massParameter)))
-                    self.W_S_min_dy.append(0)
+            # W_S_min
+            state_on_manifold = self.W_S_min.xs(i).tail(1).values[0]
+            iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1],state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], state_on_manifold[5], state_on_manifold[6], thrust_magnitude, thrust_restriction)
+            self.C_diff_start_W_S_min.append(abs(iom_on_manifold - iom_on_orbit))
+            state_on_manifold = self.W_S_min.xs(i).head(1).values[0]
+            # either very close to 1-mu or dy
+            if abs(state_on_manifold[1]) < abs(state_on_manifold[0] - (1 - self.massParameter)):
+                self.W_S_min_dx.append(0)
+                self.W_S_min_dy.append(abs(state_on_manifold[1]))
+            else:
+                self.W_S_min_dx.append(abs(state_on_manifold[0] - (1 - self.massParameter)))
+                self.W_S_min_dy.append(0)
 
-                 # W_U_plus
-                 state_on_manifold = self.W_U_plus.xs(i).head(1).values[0]
-                 iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1],state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], state_on_manifold[5], state_on_manifold[6], thrust_magnitude, thrust_restriction)
-                 self.C_diff_start_W_U_plus.append(abs(iom_on_manifold - iom_on_orbit))
-                 state_on_manifold = self.W_U_plus.xs(i).tail(1).values[0]
-                 # either very close to 1-mu or dy
-                 if abs(state_on_manifold[1]) < abs(state_on_manifold[0] - (1 - self.massParameter)):
-                    self.W_U_plus_dx.append(0)
-                    self.W_U_plus_dy.append(abs(state_on_manifold[1]))
-                 else:
-                    self.W_U_plus_dx.append(abs(state_on_manifold[0] - (1 - self.massParameter)))
-                    self.W_U_plus_dy.append(0)
+            # W_U_plus
+            state_on_manifold = self.W_U_plus.xs(i).head(1).values[0]
+            iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1],state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], state_on_manifold[5], state_on_manifold[6], thrust_magnitude, thrust_restriction)
+            self.C_diff_start_W_U_plus.append(abs(iom_on_manifold - iom_on_orbit))
+            state_on_manifold = self.W_U_plus.xs(i).tail(1).values[0]
+            # either very close to 1-mu or dy
+            if abs(state_on_manifold[1]) < abs(state_on_manifold[0] - (1 - self.massParameter)):
+                self.W_U_plus_dx.append(0)
+                self.W_U_plus_dy.append(abs(state_on_manifold[1]))
+            else:
+                self.W_U_plus_dx.append(abs(state_on_manifold[0] - (1 - self.massParameter)))
+                self.W_U_plus_dy.append(0)
 
-                 # W_U_min
-                 state_on_manifold = self.W_U_min.xs(i).head(1).values[0]
-                 iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2], state_on_manifold[3], state_on_manifold[4], state_on_manifold[5], state_on_manifold[6], thrust_magnitude, thrust_restriction)
-                 self.C_diff_start_W_U_min.append(abs(iom_on_manifold - iom_on_orbit))
-                 state_on_manifold = self.W_U_min.xs(i).tail(1).values[0]
-                 # either very close to 1-mu or dy
-                 if abs(state_on_manifold[1]) < abs(state_on_manifold[0] - (1 - self.massParameter)):
-                    self.W_U_min_dx.append(0)
-                    self.W_U_min_dy.append(abs(state_on_manifold[1]))
-                 else:
-                    self.W_U_min_dx.append(abs(state_on_manifold[0] - (1 - self.massParameter)))
-                    self.W_U_min_dy.append(0)
-                 pass
+            # W_U_min
+            state_on_manifold = self.W_U_min.xs(i).head(1).values[0]
+            iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2], state_on_manifold[3], state_on_manifold[4], state_on_manifold[5], state_on_manifold[6], thrust_magnitude, thrust_restriction)
+            self.C_diff_start_W_U_min.append(abs(iom_on_manifold - iom_on_orbit))
+            state_on_manifold = self.W_U_min.xs(i).tail(1).values[0]
+            # either very close to 1-mu or dy
+            if abs(state_on_manifold[1]) < abs(state_on_manifold[0] - (1 - self.massParameter)):
+                self.W_U_min_dx.append(0)
+                self.W_U_min_dy.append(abs(state_on_manifold[1]))
+            else:
+                self.W_U_min_dx.append(abs(state_on_manifold[0] - (1 - self.massParameter)))
+                self.W_U_min_dy.append(0)
+            pass
 
-             self.figSize = (7 * (1 + np.sqrt(5)) / 2, 7)
-             blues = sns.color_palette('Blues', 100)
-             greens = sns.color_palette('BuGn', 100)
-             self.colorPaletteStable = sns.dark_palette('green', n_colors=self.numberOfOrbitsPerManifold)
-             self.colorPaletteUnstable = sns.dark_palette('red', n_colors=self.numberOfOrbitsPerManifold)
+        self.figSize = (7 * (1 + np.sqrt(5)) / 2, 7)
+        blues = sns.color_palette('Blues', 100)
+        greens = sns.color_palette('BuGn', 100)
+        self.colorPaletteStable = sns.dark_palette('green', n_colors=self.numberOfOrbitsPerManifold)
+        self.colorPaletteUnstable = sns.dark_palette('red', n_colors=self.numberOfOrbitsPerManifold)
 
-             n_colors = 3
-             n_colors_l = 6
-             self.plottingColors = {'lambda1': sns.color_palette("viridis", n_colors_l)[0],
-                                   'lambda2': sns.color_palette("viridis", n_colors_l)[2],
-                                   'lambda3': sns.color_palette("viridis", n_colors_l)[4],
-                                   'lambda4': sns.color_palette("viridis", n_colors_l)[5],
-                                   'lambda5': sns.color_palette("viridis", n_colors_l)[3],
-                                   'lambda6': sns.color_palette("viridis", n_colors_l)[1],
-                                   'singleLine': sns.color_palette("viridis", n_colors)[0],
-                                   'doubleLine': [sns.color_palette("viridis", n_colors)[n_colors - 1],
-                                                  sns.color_palette("viridis", n_colors)[0]],
-                                   'tripleLine': [sns.color_palette("viridis", n_colors)[n_colors - 1],
-                                                  sns.color_palette("viridis", n_colors)[int((n_colors - 1) / 2)],
-                                                  sns.color_palette("viridis", n_colors)[0]],
-                                   'W_S_plus': self.colorPaletteStable[int(0.9 * self.numberOfOrbitsPerManifold)],
-                                   'W_S_min': self.colorPaletteStable[int(0.4 * self.numberOfOrbitsPerManifold)],
-                                   'W_U_plus': self.colorPaletteUnstable[int(0.9 * self.numberOfOrbitsPerManifold)],
-                                   'W_U_min': self.colorPaletteUnstable[int(0.4 * self.numberOfOrbitsPerManifold)],
-                                   'limit': 'black',
-                                   'orbit': 'navy'}
-             self.suptitleSize = 20
-             # self.xlim = [min(self.x), max(self.x)]
+        n_colors = 3
+        n_colors_l = 6
+        self.plottingColors = {'lambda1': sns.color_palette("viridis", n_colors_l)[0],
+                                'lambda2': sns.color_palette("viridis", n_colors_l)[2],
+                                'lambda3': sns.color_palette("viridis", n_colors_l)[4],
+                                'lambda4': sns.color_palette("viridis", n_colors_l)[5],
+                                'lambda5': sns.color_palette("viridis", n_colors_l)[3],
+                                'lambda6': sns.color_palette("viridis", n_colors_l)[1],
+                                'singleLine': sns.color_palette("viridis", n_colors)[0],
+                                'doubleLine': [sns.color_palette("viridis", n_colors)[n_colors - 1],
+                                               sns.color_palette("viridis", n_colors)[0]],
+                                'tripleLine': [sns.color_palette("viridis", n_colors)[n_colors - 1],
+                                               sns.color_palette("viridis", n_colors)[int((n_colors - 1) / 2)],
+                                               sns.color_palette("viridis", n_colors)[0]],
+                                'W_S_plus': self.colorPaletteStable[int(0.9 * self.numberOfOrbitsPerManifold)],
+                                'W_S_min': self.colorPaletteStable[int(0.4 * self.numberOfOrbitsPerManifold)],
+                                'W_U_plus': self.colorPaletteUnstable[int(0.9 * self.numberOfOrbitsPerManifold)],
+                                'W_U_min': self.colorPaletteUnstable[int(0.4 * self.numberOfOrbitsPerManifold)],
+                                'limit': 'black',
+                                'orbit': 'navy'}
+        self.suptitleSize = 20
+        # self.xlim = [min(self.x), max(self.x)]
         pass
 
     def plot_manifolds(self):
@@ -895,8 +895,6 @@ class DisplayAugmentedValidation:
         arr[0, 0].set_ylim(ylim)
         arr[0, 0].set_ylabel('$|IOM(\mathbf{X^i_0}) - IOM(\mathbf{X^p})|$ [-]')
         arr[0, 0].set_title('Jacobi energy deviation between orbit and manifold')
-
-        print(self.phase)
 
         # TODO decide whether to filter out trajectories intersecting Moon
         w_s_plus_dx = pd.DataFrame({'phase': self.phase, 'dx': self.W_S_plus_dx}).set_index('phase')
