@@ -975,22 +975,21 @@ class DisplayAugmentedValidation:
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
         arr[0, 1].set_ylabel('$|x^i_{t_f} - (1-\mu)|, \; |y^i_{t_f}|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
+        arr[1, 1].set_ylabel('$|y^i_{t_f}|; |x^i_{t_f} - (1-\mu)|, \$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
         arr[0, 1].legend(frameon=True, loc='center left',  bbox_to_anchor=(1, 0.5))
         arr[0, 1].set_xlim([0, 1])
+        arr[1, 1].set_xlim([1, 1])
         arr[0, 1].set_xlabel('$\\tau$ [-]')
-        arr[0, 1].set_ylim(ylim)
-
-        arr[0, 1].set_ylabel(
-            '$|x^i_{t_f} - (1-\mu)|, \; |y^i_{t_f}|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
-        arr[1, 1].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5))
-        arr[1, 1].set_xlim([0, 1])
         arr[1, 1].set_xlabel('$\\tau$ [-]')
+        arr[0, 1].set_ylim(ylim)
         arr[1, 1].set_ylim(ylim)
 
         if self.lagrangePointNr == 1:
             arr[0, 1].set_title('Position deviation at $U_i \;  \\forall \; i = 1, 2, 3$')
+            arr[1, 1].set_title('Position deviation at $U_i \;  \\forall \; i = 1, 2, 3$')
         else:
             arr[0, 1].set_title('Position deviation at $U_i \;  \\forall \; i = 2, 3, 4$')
+            arr[1, 1].set_title('Position deviation at $U_i \;  \\forall \; i = 2, 3, 4$')
 
             # Plot Mass State
             w_s_plus_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
