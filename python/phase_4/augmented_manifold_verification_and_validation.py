@@ -1194,7 +1194,7 @@ if __name__ == '__main__':
                             display_augmented_validation.plot_manifold_zoom()
                             display_augmented_validation.plot_manifold_individual()
                             #display_augmented_validation.plot_eigenvectors()
-                            display_augmented_validation.plot_iom_validation()
+                            #display_augmented_validation.plot_iom_validation()
                             print('TEST')
                             print(self.W_S_plus.xs(1).tail(1).values[0])
                             print('TEST')
