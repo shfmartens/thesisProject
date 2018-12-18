@@ -1191,12 +1191,12 @@ class DisplayAugmentedValidation:
 if __name__ == '__main__':
     #help()
     low_dpi = True
-    lagrange_points = [1]
+    lagrange_points = [1, 2]
     orbit_types = ['horizontal']
-    c_levels = [3.1]
-    thrust_restrictions = ['right']
+    c_levels = [3.05, 3.1, 3.15]
+    thrust_restrictions = ['right', 'left']
     spacecraft_names = ['DeepSpace']
-    thrust_magnitudes = ['0.000100']
+    thrust_magnitudes = ['0.000100', '0.001000', '0.010000']
 
     orbit_ids = {'horizontal':  {1: {3.05: 808, 3.1: 577, 3.15: 330}, 2: {3.05: 1066, 3.1: 760, 3.15: 373}}}
 
@@ -1211,10 +1211,10 @@ if __name__ == '__main__':
                                                                                   c_level], thrust_restriction, spacecraft_name,
                                                                                   thrust_magnitude, low_dpi=low_dpi)
 
-                            #display_augmented_validation.plot_manifolds()
-                            #display_augmented_validation.plot_manifold_zoom()
-                            #display_augmented_validation.plot_manifold_individual()
-                            #display_augmented_validation.plot_eigenvectors()
+                            display_augmented_validation.plot_manifolds()
+                            display_augmented_validation.plot_manifold_zoom()
+                            display_augmented_validation.plot_manifold_individual()
+                            display_augmented_validation.plot_eigenvectors()
                             display_augmented_validation.plot_iom_validation()
 
 
