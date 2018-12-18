@@ -920,41 +920,49 @@ class DisplayAugmentedValidation:
             # arr[0, 1].semilogy(w_u_min_dy[w_u_min_dy['dy'] < 1e-10], c=self.plottingColors['W_U_min'],
             #                    label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
-            arr[0, 1].semilogy(w_s_plus_dx[w_s_plus_dx['dx'] < 1e-07], c=self.plottingColors['W_S_plus'],
+            arr[0, 1].semilogy(w_s_plus_dx[w_s_plus_dx['dx'] < 1e-10], c=self.plottingColors['W_S_plus'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
-            arr[0, 1].semilogy(w_s_min_dy[w_s_min_dy['dy'] < 1e-07], c=self.plottingColors['W_S_min'],
+            arr[0, 1].semilogy(w_s_min_dy[w_s_min_dy['dy'] < 1e-10], c=self.plottingColors['W_S_min'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
-            arr[0, 1].semilogy(w_u_plus_dx[w_u_plus_dx['dx']< 1e-07], c=self.plottingColors['W_U_plus'],
+            arr[0, 1].semilogy(w_u_plus_dx[w_u_plus_dx['dx']< 1e-10], c=self.plottingColors['W_U_plus'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U+}$')
-            arr[0, 1].semilogy(w_u_min_dy[w_u_min_dy['dy'] < 1e-07], c=self.plottingColors['W_U_min'],
+            arr[0, 1].semilogy(w_u_min_dy[w_u_min_dy['dy'] < 1e-10], c=self.plottingColors['W_U_min'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
-            arr[1, 1].semilogy(self.phase, self.W_S_plus_dy, c=self.plottingColors['W_S_plus'],
-                           label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
-            arr[1, 1].semilogy(self.phase, self.W_S_min_dx, c=self.plottingColors['W_S_min'],
-                           label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
-            arr[1, 1].semilogy(self.phase, self.W_U_plus_dy, c=self.plottingColors['W_U_plus'],
-                           label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U+}$')
-            arr[1, 1].semilogy(self.phase, self.W_U_min_dx, c=self.plottingColors['W_U_min'],
-                           label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
-        if self.lagrangePointNr == 2:
-            arr[0, 1].semilogy(w_s_plus_dy[w_s_plus_dy['dy'] < 1e-10], c=self.plottingColors['W_S_plus'],
+            arr[1, 1].semilogy(w_s_plus_dx[w_s_plus_dy['dy'] < 1e-10], c=self.plottingColors['W_S_plus'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
-            arr[0, 1].semilogy(w_s_min_dx[w_s_min_dx['dx'] < 1e-10], c=self.plottingColors['W_S_min'],
+            arr[1, 1].semilogy(w_s_min_dy[w_s_min_dx['dx'] < 1e-10], c=self.plottingColors['W_S_min'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
-            arr[0, 1].semilogy(w_u_plus_dy[w_u_plus_dy['dy'] < 1e-10], c=self.plottingColors['W_U_plus'],
+            arr[1, 1].semilogy(w_u_plus_dx[w_u_plus_dy['dy'] < 1e-10], c=self.plottingColors['W_U_plus'],
+                               label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U+}$')
+            arr[1, 1].semilogy(w_u_min_dy[w_u_min_dx['dx'] < 1e-10], c=self.plottingColors['W_U_min'],
+                               label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
+        if self.lagrangePointNr == 2:
+            arr[0, 1].semilogy(w_s_plus_dy[w_s_plus_dy['dy'] < 1e-12], c=self.plottingColors['W_S_plus'],
+                               label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
+            arr[0, 1].semilogy(w_s_min_dx[w_s_min_dx['dx'] < 1e-12], c=self.plottingColors['W_S_min'],
+                               label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
+            arr[0, 1].semilogy(w_u_plus_dy[w_u_plus_dy['dy'] < 1e-12], c=self.plottingColors['W_U_plus'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U+}$')
             arr[0, 1].semilogy(w_u_min_dx[w_u_min_dx['dx'] < 1e-10], c=self.plottingColors['W_U_min'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
-            arr[1, 1].semilogy(self.phase, self.W_S_plus_dy, c=self.plottingColors['W_S_plus'],
+            arr[1, 1].semilogy(w_s_plus_dy[w_s_plus_dx['dx'] < 1e-12], c=self.plottingColors['W_S_plus'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
-            arr[1, 1].semilogy(self.phase, self.W_S_min_dx, c=self.plottingColors['W_S_min'],
+            arr[1, 1].semilogy(w_s_min_dx[w_s_min_dy['dy'] < 1e-12], c=self.plottingColors['W_S_min'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
-            arr[1, 1].semilogy(self.phase, self.W_U_plus_dy, c=self.plottingColors['W_U_plus'],
+            arr[1, 1].semilogy(w_u_plus_dy[w_u_plus_dx['dx'] < 1e-12], c=self.plottingColors['W_U_plus'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U+}$')
-            arr[1, 1].semilogy(self.phase, self.W_U_min_dx, c=self.plottingColors['W_U_min'],
+            arr[1, 1].semilogy(w_u_min_dx[w_u_min_dy['dy'] < 1e-10], c=self.plottingColors['W_U_min'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
+            # arr[1, 1].semilogy(self.phase, self.W_S_plus_dy, c=self.plottingColors['W_S_plus'],
+            #                    label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
+            # arr[1, 1].semilogy(self.phase, self.W_S_min_dx, c=self.plottingColors['W_S_min'],
+            #                    label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
+            # arr[1, 1].semilogy(self.phase, self.W_U_plus_dy, c=self.plottingColors['W_U_plus'],
+            #                    label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U+}$')
+            # arr[1, 1].semilogy(self.phase, self.W_U_min_dx, c=self.plottingColors['W_U_min'],
+            #                    label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
         arr[0, 1].set_ylabel('$|x^i_{t_f} - (1-\mu)|, \; |y^i_{t_f}|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
         arr[0, 1].legend(frameon=True, loc='center left',  bbox_to_anchor=(1, 0.5))
