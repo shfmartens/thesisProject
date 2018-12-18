@@ -153,7 +153,7 @@ class DisplayAugmentedValidation:
                  iom_on_orbit = computeJacobiEnergy(state_on_orbit[0], state_on_orbit[1], state_on_orbit[2], state_on_orbit[3], state_on_orbit[4], state_on_orbit[5])
 
                  # W_S_plus
-                 state_on_manifold = self.W_S_plus.xs(i).tail(1).values[0]x
+                 state_on_manifold = self.W_S_plus.xs(i).tail(1).values[0]
                  iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1],state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], state_on_manifold[5], state_on_manifold[6], thrust_magnitude, thrust_restriction)
                  self.C_diff_start_W_S_plus.append(abs(iom_on_manifold - iom_on_orbit))
                  state_on_manifold = self.W_S_plus.xs(i).head(1).values[0]
