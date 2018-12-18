@@ -882,13 +882,13 @@ class DisplayAugmentedValidation:
 
         arr[0, 0].semilogy(self.phase, self.C_diff_start_W_S_plus, c=self.plottingColors['W_S_plus'],
                            label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{S+}$')
-        arr[0, 0].semilogy(self.phase, self.C_diff_start_W_S_min, c=self.plottingColors['W_S_min'],
-                           label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
-        arr[0, 0].semilogy(self.phase, self.C_diff_start_W_U_plus, c=self.plottingColors['W_U_plus'],
-                           label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{U+}$')
-        arr[0, 0].semilogy(self.phase, self.C_diff_start_W_U_min, c=self.plottingColors['W_U_min'],
-                           label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
-        # arr[0, 0].legend(frameon=True, loc='upper right')
+        # arr[0, 0].semilogy(self.phase, self.C_diff_start_W_S_min, c=self.plottingColors['W_S_min'],
+        #                    label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
+        # arr[0, 0].semilogy(self.phase, self.C_diff_start_W_U_plus, c=self.plottingColors['W_U_plus'],
+        #                    label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{U+}$')
+        # arr[0, 0].semilogy(self.phase, self.C_diff_start_W_U_min, c=self.plottingColors['W_U_min'],
+        #                    label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
+        # # arr[0, 0].legend(frameon=True, loc='upper right')
 
         arr[0, 0].set_xlim([0, 1])
         arr[0, 0].set_xlabel('$\\tau$ [-]')
