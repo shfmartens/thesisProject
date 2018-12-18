@@ -880,12 +880,12 @@ class DisplayAugmentedValidation:
         t_min = 0
         step_size = 0.05
 
-        # arr[0, 0].semilogy(self.phase, self.C_diff_start_W_S_plus, c=self.plottingColors['W_S_plus'],
-        #                    label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{S+}$')
-        #arr[0, 0].semilogy(self.phase, self.C_diff_start_W_S_min, c=self.plottingColors['W_S_min'],
-        #                   label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
-        # arr[0, 0].semilogy(self.phase, self.C_diff_start_W_U_plus, c=self.plottingColors['W_U_plus'],
-        #                     label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{U+}$')
+        arr[0, 0].semilogy(self.phase, self.C_diff_start_W_S_plus, c=self.plottingColors['W_S_plus'],
+                           label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{S+}$')
+        arr[0, 0].semilogy(self.phase, self.C_diff_start_W_S_min, c=self.plottingColors['W_S_min'],
+                        label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
+        arr[0, 0].semilogy(self.phase, self.C_diff_start_W_U_plus, c=self.plottingColors['W_U_plus'],
+                            label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{U+}$')
         arr[0, 0].semilogy(self.phase, self.C_diff_start_W_U_min, c=self.plottingColors['W_U_min'],
                            label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
         # arr[0, 0].legend(frameon=True, loc='upper right')
@@ -896,6 +896,11 @@ class DisplayAugmentedValidation:
         arr[0, 0].set_ylabel('$|IOM(\mathbf{X^i_0}) - IOM(\mathbf{X^p})|$ [-]')
         arr[0, 0].set_title('Jacobi energy deviation between orbit and manifold')
 
+        print(self.C_diff_start_W_S_plus)
+        print(self.C_diff_start_W_S_min)
+        print(self.C_diff_start_W_U_plus)
+        print(self.C_diff_start_W_U_min)
+        
         # TODO decide whether to filter out trajectories intersecting Moon
         w_s_plus_dx = pd.DataFrame({'phase': self.phase, 'dx': self.W_S_plus_dx}).set_index('phase')
         w_s_plus_dy = pd.DataFrame({'phase': self.phase, 'dy': self.W_S_plus_dy}).set_index('phase')
@@ -1144,4 +1149,5 @@ if __name__ == '__main__':
                             display_augmented_validation.plot_manifold_individual()
                             #display_augmented_validation.plot_eigenvectors()
                             display_augmented_validation.plot_iom_validation()
+
                             del display_augmented_validation
