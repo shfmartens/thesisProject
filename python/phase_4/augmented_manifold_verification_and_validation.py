@@ -978,7 +978,7 @@ class DisplayAugmentedValidation:
         arr[1, 1].set_ylabel('$|y^i_{t_f}|, \; |x^i_{t_f} - (1-\mu)|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
         arr[0, 1].legend(frameon=True, loc='center left',  bbox_to_anchor=(1, 0.5))
         arr[0, 1].set_xlim([0, 1])
-        arr[1, 1].set_xlim([1, 1])
+        arr[1, 1].set_xlim([0, 1])
         arr[0, 1].set_xlabel('$\\tau$ [-]')
         arr[1, 1].set_xlabel('$\\tau$ [-]')
         arr[0, 1].set_ylim(ylim)
