@@ -160,11 +160,13 @@ class DisplayAugmentedValidation:
             state_on_manifold = self.W_S_plus.xs(i).head(1).values[0]
             # either very close to 1-mu or dy
             if abs(state_on_manifold[1]) < abs(state_on_manifold[0] - (1 - self.massParameter)):
-                self.W_S_plus_dx.append(0)
+                self.W_S_plus_dx.append(abs(state_on_manifold[0] - (1 - self.massParameter)))
+                #self.W_S_plus_dx.append(0)
                 self.W_S_plus_dy.append(abs(state_on_manifold[1]))
             else:
                 self.W_S_plus_dx.append(abs(state_on_manifold[0] - (1 - self.massParameter)))
-                self.W_S_plus_dy.append(0)
+                self.W_S_plus_dy.append(abs(state_on_manifold[1]))
+                #self.W_S_plus_dy.append(0)
 
             # W_S_min
             state_on_manifold = self.W_S_min.xs(i).tail(1).values[0]
@@ -873,7 +875,7 @@ class DisplayAugmentedValidation:
         pass
 
     def plot_iom_validation(self):
-        f, arr = plt.subplots(3, 2, figsize=self.figSize)
+        f, arr = plt.subplots(4, 2, figsize=self.figSize)
 
         highlight_alpha = 0.2
         ylim = [1e-16, 1e-9]
@@ -907,9 +909,8 @@ class DisplayAugmentedValidation:
         w_u_min_dy = pd.DataFrame({'phase': self.phase, 'dy': self.W_U_min_dy}).set_index('phase')
 
         if self.lagrangePointNr == 1:
-            arr[0, 1].semilogy(w_s_plus_dx[w_s_plus_dx['dx'] < 1e-10], c=self.plottingColors['W_S_plus'],
-                               label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
-            arr[0, 1].semilogy(w_s_plus_dx[w_s_plus_dy['dy'] < 1e-10], c=self.plottingColors['W_S_plus'])
+            # arr[0, 1].semilogy(w_s_plus_dx[w_s_plus_dx['dx'] < 1e-10], c=self.plottingColors['W_S_plus'],
+            #                    label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
             # arr[0, 1].semilogy(w_s_min_dy[w_s_min_dy['dy'] < 1e-10], c=self.plottingColors['W_S_min'],
             #                    label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
             # arr[0, 1].semilogy(w_u_plus_dx[w_u_plus_dx['dx'] < 1e-10], c=self.plottingColors['W_U_plus'],
@@ -917,14 +918,23 @@ class DisplayAugmentedValidation:
             # arr[0, 1].semilogy(w_u_min_dy[w_u_min_dy['dy'] < 1e-10], c=self.plottingColors['W_U_min'],
             #                    label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
-            # arr[0, 1].semilogy(self.phase, self.W_S_plus_dx, c=self.plottingColors['W_S_plus'],
-            #                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
-            # arr[0, 1].semilogy(self.phase, self.W_S_min_dy, c=self.plottingColors['W_S_min'],
-            #                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
-            # arr[0, 1].semilogy(self.phase, self.W_U_plus_dx, c=self.plottingColors['W_U_plus'],
-            #                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U+}$')
-            # arr[0, 1].semilogy(self.phase, self.W_U_min_dy, c=self.plottingColors['W_U_min'],
-            #                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
+            arr[0, 1].semilogy(w_s_plus_dx[w_s_plus_dx['dx']], c=self.plottingColors['W_S_plus'],
+                               label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
+            arr[0, 1].semilogy(w_s_min_dy[w_s_min_dy['dy']], c=self.plottingColors['W_S_min'],
+                               label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
+            arr[0, 1].semilogy(w_u_plus_dx[w_u_plus_dx['dx']], c=self.plottingColors['W_U_plus'],
+                               label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U+}$')
+            arr[0, 1].semilogy(w_u_min_dy[w_u_min_dy['dy']], c=self.plottingColors['W_U_min'],
+                               label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
+
+            arr[1, 1].semilogy(self.phase, self.W_S_plus_dy, c=self.plottingColors['W_S_plus'],
+                           label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
+            arr[1, 1].semilogy(self.phase, self.W_S_min_dx, c=self.plottingColors['W_S_min'],
+                           label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
+            arr[1, 1].semilogy(self.phase, self.W_U_plus_dy, c=self.plottingColors['W_U_plus'],
+                           label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U+}$')
+            arr[1, 1].semilogy(self.phase, self.W_U_min_dx, c=self.plottingColors['W_U_min'],
+                           label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
         if self.lagrangePointNr == 2:
             arr[0, 1].semilogy(w_s_plus_dy[w_s_plus_dy['dy'] < 1e-10], c=self.plottingColors['W_S_plus'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
@@ -940,6 +950,13 @@ class DisplayAugmentedValidation:
         arr[0, 1].set_xlim([0, 1])
         arr[0, 1].set_xlabel('$\\tau$ [-]')
         arr[0, 1].set_ylim(ylim)
+
+        arr[0, 1].set_ylabel(
+            '$|x^i_{t_f} - (1-\mu)|, \; |y^i_{t_f}|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
+        arr[1, 1].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5))
+        arr[1, 1].set_xlim([0, 1])
+        arr[1, 1].set_xlabel('$\\tau$ [-]')
+        arr[1, 1].set_ylim(ylim)
 
         if self.lagrangePointNr == 1:
             arr[0, 1].set_title('Position deviation at $U_i \;  \\forall \; i = 1, 2, 3$')
@@ -1046,43 +1063,52 @@ class DisplayAugmentedValidation:
         arr[1, 0].set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
 
         # Plot W^S-
-        arr[1, 1].fill_between(w_s_min_df.mean(axis=1).index,y1=w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1),y2=w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1),facecolor=self.plottingColors['W_S_min'], interpolate=True, alpha=highlight_alpha)
-        l3, = arr[1, 1].plot(w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{S-} \pm 3\sigma_t^{S-}$', color=self.plottingColors['W_S_min'], linestyle=':')
-        l4, = arr[1, 1].plot(w_s_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{S-}$',color=self.plottingColors['W_S_min'])
-        arr[1, 1].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l1, l2, l3, l4])
-        arr[1, 1].plot(w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_S_min'], linestyle=':')
-        arr[1, 1].set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$ [-]')
-        arr[1, 1].set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{S-}$)', loc='right')
+        arr[2, 0].fill_between(w_s_min_df.mean(axis=1).index,y1=w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1),y2=w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1),facecolor=self.plottingColors['W_S_min'], interpolate=True, alpha=highlight_alpha)
+        l3, = arr[2, 0].plot(w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{S-} \pm 3\sigma_t^{S-}$', color=self.plottingColors['W_S_min'], linestyle=':')
+        l4, = arr[2, 0].plot(w_s_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{S-}$',color=self.plottingColors['W_S_min'])
+        arr[2, 0].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l1, l2, l3, l4])
+        arr[2, 0].plot(w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_S_min'], linestyle=':')
+        arr[2, 0].set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$ [-]')
+        arr[2, 0].set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{S-}$)', loc='right')
 
         # Plot W^U+
-        arr[2, 0].fill_between(w_u_plus_df.mean(axis=1).index,y1=w_u_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_plus_df.std(axis=1),y2=w_u_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_plus_df.std(axis=1),facecolor=self.plottingColors['W_U_plus'], interpolate=True, alpha=highlight_alpha)
-        l5, = arr[2, 0].plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_plus_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{U+} \pm 3\sigma_t^{U+}$', color=self.plottingColors['W_U_plus'], linestyle=':')
-        l6, = arr[2, 0].plot(w_u_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{U+}$',color=self.plottingColors['W_U_plus'])
-        arr[2, 0].plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_plus_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_U_plus'], linestyle=':')
-        arr[2, 0].set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$  [-]')
-        arr[2, 0].set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{U+}$)', loc='right')
+        arr[2, 1].fill_between(w_u_plus_df.mean(axis=1).index,y1=w_u_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_plus_df.std(axis=1),y2=w_u_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_plus_df.std(axis=1),facecolor=self.plottingColors['W_U_plus'], interpolate=True, alpha=highlight_alpha)
+        l5, = arr[2, 1].plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_plus_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{U+} \pm 3\sigma_t^{U+}$', color=self.plottingColors['W_U_plus'], linestyle=':')
+        l6, = arr[2, 1].plot(w_u_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{U+}$',color=self.plottingColors['W_U_plus'])
+        arr[2, 1].plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_plus_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_U_plus'], linestyle=':')
+        arr[2, 1].set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$  [-]')
+        arr[2, 1].set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{U+}$)', loc='right')
 
         # Plot W^U-
-        arr[2, 1].fill_between(w_u_min_df.mean(axis=1).index,y1=w_u_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),y2=w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna( method='ffill'),facecolor=self.plottingColors['W_U_min'], interpolate=True, alpha=highlight_alpha)
-        l7, = arr[2, 1].plot(w_u_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{U-} \pm 3\sigma_t^{U-}$', color=self.plottingColors['W_U_min'], linestyle=':')
-        l8, = arr[2, 1].plot(w_u_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{U-}$',color=self.plottingColors['W_U_min'])
-        arr[2, 1].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l5, l6, l7, l8])
-        arr[2, 1].plot(w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_U_min'], linestyle=':')
-        arr[2, 1].set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$  [-]')
-        arr[2, 1].set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{U-}$)', loc='right')
-        arr[2, 0].set_xlabel('$|t|$ [-]')
-        arr[2, 1].set_xlabel('$|t|$  [-]')
+        arr[3, 0].fill_between(w_u_min_df.mean(axis=1).index,y1=w_u_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),y2=w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna( method='ffill'),facecolor=self.plottingColors['W_U_min'], interpolate=True, alpha=highlight_alpha)
+        l7, = arr[3, 0].plot(w_u_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{U-} \pm 3\sigma_t^{U-}$', color=self.plottingColors['W_U_min'], linestyle=':')
+        l8, = arr[3, 0].plot(w_u_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{U-}$',color=self.plottingColors['W_U_min'])
+        arr[3, 0].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l5, l6, l7, l8])
+        arr[3, 0].plot(w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_U_min'], linestyle=':')
+        arr[3, 0].set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$  [-]')
+        arr[3, 0].set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{U-}$)', loc='right')
+        arr[3, 0].set_xlabel('$|t|$ [-]')
+        arr[3, 0].set_xlabel('$|t|$  [-]')
 
-        ylim = [min(arr[1, 0].get_ylim()[0], arr[1, 1].get_ylim()[0], arr[2, 0].get_ylim()[0], arr[2, 1].get_ylim()[0]),
-                max(arr[1, 0].get_ylim()[1], arr[1, 1].get_ylim()[1], arr[2, 0].get_ylim()[1], arr[2, 1].get_ylim()[1])]
+        ylim = [min(arr[1, 0].get_ylim()[0], arr[3, 0].get_ylim()[0], arr[2, 0].get_ylim()[0], arr[2, 1].get_ylim()[0]),
+                max(arr[1, 0].get_ylim()[1], arr[3, 0].get_ylim()[1], arr[2, 0].get_ylim()[1], arr[2, 1].get_ylim()[1])]
 
-        for i in range(1, 3):
+        for i in range(1, 4):
             for j in range(2):
                 arr[i, j].set_ylim(ylim)
 
-        for i in range(3):
+        for i in range(4):
             for j in range(2):
                 arr[i, j].grid(True, which='both', ls=':')
+
+        # Plot Mass State
+
+        w_s_plus_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
+        w_s_min_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
+        w_u_plus_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
+        w_u_min_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
+
+
 
         plt.tight_layout()
         plt.subplots_adjust(top=0.9, right=0.85)
