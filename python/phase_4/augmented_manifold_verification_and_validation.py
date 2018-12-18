@@ -1139,6 +1139,8 @@ class DisplayAugmentedValidation:
                 w_s_plus_state = row[1].values
                 w_s_plus_mass_at_t = w_s_plus_state[6]
                 w_s_plus_mass.append(w_s_plus_mass_at_t)
+                print(w_s_plus_mass_at_t)
+                print(abs(row[0]))
             for row in self.W_S_min.xs(i).iterrows():
                 w_s_min_t.append(abs(row[0]))
                 w_s_min_state = row[1].values
