@@ -106,8 +106,10 @@ class DisplayAugmentedValidation:
 
         self.W_S_plus_dx = []
         self.W_S_plus_dy = []
+        self.W_S_plus_dm = []
         self.W_S_min_dx = []
         self.W_S_min_dy = []
+        self.W_S_min_dm = []
         self.W_U_plus_dx = []
         self.W_U_plus_dy = []
         self.W_U_min_dx = []
@@ -167,6 +169,8 @@ class DisplayAugmentedValidation:
                 self.W_S_plus_dx.append(abs(state_on_manifold[0] - (1 - self.massParameter)))
                 self.W_S_plus_dy.append(abs(state_on_manifold[1]))
                 #self.W_S_plus_dy.append(0)
+            final_dm = state_on_manifold[6]-1.0
+            self.W_S_plus_dm.append(final_dm)
 
             # W_S_min
             state_on_manifold = self.W_S_min.xs(i).tail(1).values[0]
@@ -180,6 +184,8 @@ class DisplayAugmentedValidation:
             else:
                 self.W_S_min_dx.append(abs(state_on_manifold[0] - (1 - self.massParameter)))
                 self.W_S_min_dy.append(0)
+            final_dm = state_on_manifold[6] - 1.0
+            self.W_S_min_dm.append(final_dm)
 
             # W_U_plus
             state_on_manifold = self.W_U_plus.xs(i).head(1).values[0]
@@ -950,6 +956,11 @@ class DisplayAugmentedValidation:
             arr[1, 1].semilogy(self.phase, self.W_U_min_dx, c=self.plottingColors['W_U_min'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
+            arr[1, 0].plot(self.phase, self.W_S_plus_dm, c=self.plottingColors['W_S_plus'],
+                               label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
+            arr[1, 0].plot(self.phase, self.W_S_min_dm, c=self.plottingColors['W_S_min'],
+                               label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
+
         if self.lagrangePointNr == 2:
             arr[0, 1].semilogy(w_s_plus_dy[w_s_plus_dy['dy'] < 1e-8], c=self.plottingColors['W_S_plus'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
@@ -968,6 +979,12 @@ class DisplayAugmentedValidation:
             #                    label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U+}$')
             # arr[1, 1].semilogy(w_u_min_dx[w_u_min_dy['dy'] < 1e-10], c=self.plottingColors['W_U_min'],
             #                    label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
+
+            arr[1, 0].plot(self.phase, self.W_S_plus_dm, c=self.plottingColors['W_S_plus'],
+                           label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
+            arr[1, 0].plot(self.phase, self.W_S_min_dm, c=self.plottingColors['W_S_min'],
+                           label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
+            
             arr[1, 1].semilogy(self.phase, self.W_S_plus_dy, c=self.plottingColors['W_S_plus'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
             arr[1, 1].semilogy(self.phase, self.W_S_min_dx, c=self.plottingColors['W_S_min'],
@@ -1195,12 +1212,8 @@ if __name__ == '__main__':
                             display_augmented_validation.plot_manifold_individual()
                             #display_augmented_validation.plot_eigenvectors()
                             #display_augmented_validation.plot_iom_validation()
-                            print('TEST')
-                            print(display_augmented_validation.W_S_plus.xs(1).head(1).values[0])
-                            print('TEST')
-                            print(display_augmented_validation.W_S_plus.xs(1).head(1))
-                            print('TEST')
-                            print(display_augmented_validation.W_S_plus.xs(1))
+
+
 
 
                             del display_augmented_validation
