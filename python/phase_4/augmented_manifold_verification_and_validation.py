@@ -1196,9 +1196,9 @@ if __name__ == '__main__':
                             #display_augmented_validation.plot_eigenvectors()
                             #display_augmented_validation.plot_iom_validation()
                             print('TEST')
-                            print(display_augmented_validation.W_S_plus.xs(1).tail(1).values[0])
+                            print(display_augmented_validation.W_S_plus.xs(1).head(1).values[0])
                             print('TEST')
-                            print(display_augmented_validation.W_S_plus.xs(1).tail(1))
+                            print(display_augmented_validation.W_S_plus.xs(1).head(1))
                             print('TEST')
                             print(display_augmented_validation.W_S_plus.xs(1))
 
