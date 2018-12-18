@@ -1015,7 +1015,7 @@ class DisplayAugmentedValidation:
             arr[0, 1].set_title('Position deviation at $U_i \;  \\forall \; i = 2, 3, 4$')
             arr[1, 1].set_title('Position deviation at $U_i \;  \\forall \; i = 2, 3, 4$')
 
-        arr[1, 0].set_title('Mass deviation at t_f')
+        arr[1, 0].set_title('Mass deviation at $t_f$')
 
         w_s_plus_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
         w_s_min_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
