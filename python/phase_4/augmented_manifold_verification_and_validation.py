@@ -908,6 +908,8 @@ class DisplayAugmentedValidation:
         w_u_min_dx = pd.DataFrame({'phase': self.phase, 'dx': self.W_U_min_dx}).set_index('phase')
         w_u_min_dy = pd.DataFrame({'phase': self.phase, 'dy': self.W_U_min_dy}).set_index('phase')
 
+
+
         if self.lagrangePointNr == 1:
             # arr[0, 1].semilogy(w_s_plus_dx[w_s_plus_dx['dx'] < 1e-10], c=self.plottingColors['W_S_plus'],
             #                    label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
@@ -971,6 +973,118 @@ class DisplayAugmentedValidation:
             arr[0, 1].set_title('Position deviation at $U_i \;  \\forall \; i = 1, 2, 3$')
         else:
             arr[0, 1].set_title('Position deviation at $U_i \;  \\forall \; i = 2, 3, 4$')
+
+            # Plot Mass State
+            w_s_plus_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
+            w_s_min_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
+            w_u_plus_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
+            w_u_min_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
+
+            for i in range(self.numberOfOrbitsPerManifold):
+                w_s_plus_t = []
+                w_s_min_t = []
+                w_u_plus_t = []
+                w_u_min_t = []
+                w_s_plus_mass = []
+                w_s_min_mass = []
+                w_u_plus_mass = []
+                w_u_min_mass = []
+                w_s_plus_first_state = self.W_S_plus.xs(0).head(1).values[0]
+                w_s_min_first_state = self.W_S_min.xs(0).head(1).values[0]
+                w_u_plus_first_state = self.W_U_plus.xs(0).head(1).values[0]
+                w_u_min_first_state = self.W_U_min.xs(0).head(1).values[0]
+                w_s_plus_first_mass = w_s_plus_first_state[6]
+                w_s_min_first_mass = w_s_min_first_state[6]
+                w_u_plus_first_mass = w_u_plus_first_state[6]
+                w_u_min_first_mass = w_u_min_first_state[6]
+
+                for row in self.W_S_plus.xs(i).iterrows():
+                    w_s_plus_t.append(abs(row[0]))
+                    w_s_plus_state = row[1].values
+                    w_s_plus_mass_at_t = w_s_plus_state[6]
+                    w_s_plus_mass.append(w_s_plus_mass_at_t)
+                for row in self.W_S_min.xs(i).iterrows():
+                    w_s_min_t.append(abs(row[0]))
+                    w_s_min_state = row[1].values
+                    w_s_min_mass_at_t = w_s_min_state[6]
+                    w_s_min_mass.append(w_s_min_mass_at_t)
+                for row in self.W_U_plus.xs(i).iterrows():
+                    w_u_plus_t.append(abs(row[0]))
+                    w_u_plus_state = row[1].values
+                    w_u_plus_mass_at_t = w_u_plus_state[6]
+                    w_u_plus_mass.append(w_u_plus_mass_at_t)
+                for row in self.W_U_min.xs(i).iterrows():
+                    w_u_min_t.append(abs(row[0]))
+                    w_u_min_state = row[1].values
+                    w_u_min_mass_at_t = w_u_min_state[6]
+                    w_u_min_mass.append(w_u_min_mass_at_t)
+
+                w_s_plus_f = interp1d(w_s_plus_t, w_s_plus_mass)
+                w_s_min_f = interp1d(w_s_min_t, w_s_min_mass)
+                w_u_plus_f = interp1d(w_u_plus_t, w_u_plus_mass)
+                w_u_min_f = interp1d(w_u_min_t, w_u_min_mass)
+
+                w_s_plus_t_max = np.floor(max(w_s_plus_t) * 1 / step_size) * step_size  # Round to nearest step-size
+                w_s_min_t_max = np.floor(max(w_s_min_t) * 1 / step_size) * step_size  # Round to nearest step-size
+                w_u_plus_t_max = np.floor(max(w_u_plus_t) * 1 / step_size) * step_size  # Round to nearest step-size
+                w_u_min_t_max = np.floor(max(w_u_min_t) * 1 / step_size) * step_size  # Round to nearest step-size
+
+                w_s_plus_t_new = np.linspace(t_min, w_s_plus_t_max, np.round((w_s_plus_t_max - t_min) / step_size) + 1)
+                w_s_min_t_new = np.linspace(t_min, w_s_min_t_max, np.round((w_s_min_t_max - t_min) / step_size) + 1)
+                w_u_plus_t_new = np.linspace(t_min, w_u_plus_t_max, np.round((w_u_plus_t_max - t_min) / step_size) + 1)
+                w_u_min_t_new = np.linspace(t_min, w_u_min_t_max, np.round((w_u_min_t_max - t_min) / step_size) + 1)
+
+                w_s_plus_df_temp = pd.DataFrame({i: w_s_plus_f(w_s_plus_t_new)}, index=w_s_plus_t_new)
+                w_s_min_df_temp = pd.DataFrame({i: w_s_min_f(w_s_min_t_new)}, index=w_s_min_t_new)
+                w_u_plus_df_temp = pd.DataFrame({i: w_u_plus_f(w_u_plus_t_new)}, index=w_u_plus_t_new)
+                w_u_min_df_temp = pd.DataFrame({i: w_u_min_f(w_u_min_t_new)}, index=w_u_min_t_new)
+
+                w_s_plus_df[i] = w_s_plus_df_temp[i]
+                w_s_min_df[i] = w_s_min_df_temp[i]
+                w_u_plus_df[i] = w_u_plus_df_temp[i]
+                w_u_min_df[i] = w_u_min_df_temp[i]
+
+                # Plot real data as check
+                # arr[0, 0].plot(w_s_plus_t, w_s_plus_delta_j, 'o')
+                w_s_plus_df = w_s_plus_df.dropna(axis=0, how='all').fillna(method='ffill')
+                w_s_min_df = w_s_min_df.dropna(axis=0, how='all').fillna(method='ffill')
+                w_u_plus_df = w_u_plus_df.dropna(axis=0, how='all').fillna(method='ffill')
+                w_u_min_df = w_u_min_df.dropna(axis=0, how='all').fillna(method='ffill')
+
+                # Plot W^S+
+                y1 = w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_plus_df.std(axis=1)
+                y2 = w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1)
+
+                arr[0, 1].fill_between(w_s_plus_df.mean(axis=1).index, y1=y1, y2=y2, where=y1 >= y2,facecolor=self.plottingColors['W_S_plus'], interpolate=True,alpha=highlight_alpha)
+                l1, = arr[3, 1].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),
+                    label='$ \\bar{m}_t^{S+} \pm 3\sigma_t^{S+} $', color=self.plottingColors['W_S_plus'],
+                    linestyle=':')
+                l2, = arr[3, 1].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill'), label='$\\bar{m}_t^{S+}$',
+                                     color=self.plottingColors['W_S_plus'])
+                arr[3, 1].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1).fillna(
+                    method='ffill'),
+                               color=self.plottingColors['W_S_plus'], linestyle=':')
+                arr[3, 1].set_ylabel('$m(\mathbf{X^i_t}) - m(\mathbf{X^p})$ [-]')
+                arr[3, 1].set_title('mass state on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
+
+                # Plot W^S-
+                # arr[2, 0].fill_between(w_s_min_df.mean(axis=1).index,
+                #                        y1=w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1),
+                #                        y2=w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1),
+                #                        facecolor=self.plottingColors['W_S_min'], interpolate=True, alpha=highlight_alpha)
+                # l3, = arr[2, 0].plot(
+                #     w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),
+                #     label='$\Delta \\bar{IOM}_t^{S-} \pm 3\sigma_t^{S-}$', color=self.plottingColors['W_S_min'],
+                #     linestyle=':')
+                # l4, = arr[2, 0].plot(w_s_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{S-}$',
+                #                      color=self.plottingColors['W_S_min'])
+                # arr[2, 0].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l1, l2, l3, l4])
+                # arr[2, 0].plot(
+                #     w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),
+                #     color=self.plottingColors['W_S_min'], linestyle=':')
+                # arr[2, 0].set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$ [-]')
+                # arr[2, 0].set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{S-}$)', loc='right')
+
 
         w_s_plus_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
         w_s_min_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
@@ -1064,164 +1178,51 @@ class DisplayAugmentedValidation:
         y1 = w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_plus_df.std(axis=1)
         y2 = w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1)
 
-        arr[1, 0].fill_between(w_s_plus_df.mean(axis=1).index,y1=y1,y2=y2, where=y1 >= y2,facecolor=self.plottingColors['W_S_plus'], interpolate=True, alpha=highlight_alpha)
-        l1, = arr[1, 0].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{S+} \pm 3\sigma_t^{S+} $', color=self.plottingColors['W_S_plus'], linestyle=':')
-        l2, = arr[1, 0].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{S+}$', color=self.plottingColors['W_S_plus'])
-        arr[1, 0].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_S_plus'], linestyle=':')
-        arr[1, 0].set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$ [-]')
-        arr[1, 0].set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
+        arr[2, 0].fill_between(w_s_plus_df.mean(axis=1).index,y1=y1,y2=y2, where=y1 >= y2,facecolor=self.plottingColors['W_S_plus'], interpolate=True, alpha=highlight_alpha)
+        l1, = arr[2, 0].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{S+} \pm 3\sigma_t^{S+} $', color=self.plottingColors['W_S_plus'], linestyle=':')
+        l2, = arr[2, 0].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{S+}$', color=self.plottingColors['W_S_plus'])
+        arr[2, 0].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_S_plus'], linestyle=':')
+        arr[2, 0].set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$ [-]')
+        arr[2, 0].set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
 
         # Plot W^S-
-        arr[2, 0].fill_between(w_s_min_df.mean(axis=1).index,y1=w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1),y2=w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1),facecolor=self.plottingColors['W_S_min'], interpolate=True, alpha=highlight_alpha)
-        l3, = arr[2, 0].plot(w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{S-} \pm 3\sigma_t^{S-}$', color=self.plottingColors['W_S_min'], linestyle=':')
-        l4, = arr[2, 0].plot(w_s_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{S-}$',color=self.plottingColors['W_S_min'])
-        arr[2, 0].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l1, l2, l3, l4])
-        arr[2, 0].plot(w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_S_min'], linestyle=':')
-        arr[2, 0].set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$ [-]')
-        arr[2, 0].set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{S-}$)', loc='right')
+        arr[2, 1].fill_between(w_s_min_df.mean(axis=1).index,y1=w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1),y2=w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1),facecolor=self.plottingColors['W_S_min'], interpolate=True, alpha=highlight_alpha)
+        l3, = arr[2, 1].plot(w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{S-} \pm 3\sigma_t^{S-}$', color=self.plottingColors['W_S_min'], linestyle=':')
+        l4, = arr[2, 1].plot(w_s_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{S-}$',color=self.plottingColors['W_S_min'])
+        arr[2, 1].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l1, l2, l3, l4])
+        arr[2, 1].plot(w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_S_min'], linestyle=':')
+        arr[2, 1].set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$ [-]')
+        arr[2, 1].set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{S-}$)', loc='right')
 
         # Plot W^U+
-        arr[2, 1].fill_between(w_u_plus_df.mean(axis=1).index,y1=w_u_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_plus_df.std(axis=1),y2=w_u_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_plus_df.std(axis=1),facecolor=self.plottingColors['W_U_plus'], interpolate=True, alpha=highlight_alpha)
-        l5, = arr[2, 1].plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_plus_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{U+} \pm 3\sigma_t^{U+}$', color=self.plottingColors['W_U_plus'], linestyle=':')
-        l6, = arr[2, 1].plot(w_u_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{U+}$',color=self.plottingColors['W_U_plus'])
-        arr[2, 1].plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_plus_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_U_plus'], linestyle=':')
-        arr[2, 1].set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$  [-]')
-        arr[2, 1].set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{U+}$)', loc='right')
+        arr[3, 0].fill_between(w_u_plus_df.mean(axis=1).index,y1=w_u_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_plus_df.std(axis=1),y2=w_u_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_plus_df.std(axis=1),facecolor=self.plottingColors['W_U_plus'], interpolate=True, alpha=highlight_alpha)
+        l5, = arr[3, 0].plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_plus_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{U+} \pm 3\sigma_t^{U+}$', color=self.plottingColors['W_U_plus'], linestyle=':')
+        l6, = arr[3, 0].plot(w_u_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{U+}$',color=self.plottingColors['W_U_plus'])
+        arr[3, 0].plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_plus_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_U_plus'], linestyle=':')
+        arr[3, 0].set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$  [-]')
+        arr[3, 0].set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{U+}$)', loc='right')
 
         # Plot W^U-
-        arr[3, 0].fill_between(w_u_min_df.mean(axis=1).index,y1=w_u_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),y2=w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna( method='ffill'),facecolor=self.plottingColors['W_U_min'], interpolate=True, alpha=highlight_alpha)
-        l7, = arr[3, 0].plot(w_u_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{U-} \pm 3\sigma_t^{U-}$', color=self.plottingColors['W_U_min'], linestyle=':')
-        l8, = arr[3, 0].plot(w_u_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{U-}$',color=self.plottingColors['W_U_min'])
-        arr[3, 0].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l5, l6, l7, l8])
-        arr[3, 0].plot(w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_U_min'], linestyle=':')
-        arr[3, 0].set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$  [-]')
-        arr[3, 0].set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{U-}$)', loc='right')
+        arr[3, 1].fill_between(w_u_min_df.mean(axis=1).index,y1=w_u_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),y2=w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna( method='ffill'),facecolor=self.plottingColors['W_U_min'], interpolate=True, alpha=highlight_alpha)
+        l7, = arr[3, 1].plot(w_u_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{U-} \pm 3\sigma_t^{U-}$', color=self.plottingColors['W_U_min'], linestyle=':')
+        l8, = arr[3, 1].plot(w_u_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{U-}$',color=self.plottingColors['W_U_min'])
+        arr[3, 1].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l5, l6, l7, l8])
+        arr[3, 1].plot(w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_U_min'], linestyle=':')
+        arr[3, 1].set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$  [-]')
+        arr[3, 1].set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{U-}$)', loc='right')
         arr[3, 0].set_xlabel('$|t|$ [-]')
-        arr[3, 0].set_xlabel('$|t|$  [-]')
+        arr[3, 1].set_xlabel('$|t|$  [-]')
 
-        ylim = [min(arr[1, 0].get_ylim()[0], arr[3, 0].get_ylim()[0], arr[2, 0].get_ylim()[0], arr[2, 1].get_ylim()[0]),
-                max(arr[1, 0].get_ylim()[1], arr[3, 0].get_ylim()[1], arr[2, 0].get_ylim()[1], arr[2, 1].get_ylim()[1])]
+        ylim = [min(arr[2, 0].get_ylim()[0], arr[3, 0].get_ylim()[0], arr[3, 1].get_ylim()[0], arr[2, 1].get_ylim()[0]),
+                max(arr[2, 0].get_ylim()[1], arr[3, 0].get_ylim()[1], arr[3, 1].get_ylim()[1], arr[2, 1].get_ylim()[1])]
 
-        for i in range(1, 4):
+        for i in range(2, 4):
             for j in range(2):
                 arr[i, j].set_ylim(ylim)
 
         for i in range(4):
             for j in range(2):
                 arr[i, j].grid(True, which='both', ls=':')
-
-        # Plot Mass State
-        w_s_plus_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
-        w_s_min_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
-        w_u_plus_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
-        w_u_min_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
-
-        for i in range(self.numberOfOrbitsPerManifold):
-            w_s_plus_t = []
-            w_s_min_t = []
-            w_u_plus_t = []
-            w_u_min_t = []
-            w_s_plus_mass = []
-            w_s_min_mass = []
-            w_u_plus_mass = []
-            w_u_min_mass = []
-            w_s_plus_first_state = self.W_S_plus.xs(0).head(1).values[0]
-            w_s_min_first_state = self.W_S_min.xs(0).head(1).values[0]
-            w_u_plus_first_state = self.W_U_plus.xs(0).head(1).values[0]
-            w_u_min_first_state = self.W_U_min.xs(0).head(1).values[0]
-            w_s_plus_first_mass = w_s_plus_first_state[6]
-            w_s_min_first_mass = w_s_min_first_state[6]
-            w_u_plus_first_mass = w_u_plus_first_state[6]
-            w_u_min_first_mass = w_u_min_first_state[6]
-
-            for row in self.W_S_plus.xs(i).iterrows():
-                w_s_plus_t.append(abs(row[0]))
-                w_s_plus_state = row[1].values
-                w_s_plus_mass_at_t = w_s_plus_state[6]
-                w_s_plus_mass.append(w_s_plus_mass_at_t)
-            for row in self.W_S_min.xs(i).iterrows():
-                w_s_min_t.append(abs(row[0]))
-                w_s_min_state = row[1].values
-                w_s_min_mass_at_t = w_s_min_state[6]
-                w_s_min_mass.append(w_s_min_mass_at_t)
-            for row in self.W_U_plus.xs(i).iterrows():
-                w_u_plus_t.append(abs(row[0]))
-                w_u_plus_state = row[1].values
-                w_u_plus_mass_at_t = w_u_plus_state[6]
-                w_u_plus_mass.append(w_u_plus_mass_at_t)
-            for row in self.W_U_min.xs(i).iterrows():
-                w_u_min_t.append(abs(row[0]))
-                w_u_min_state = row[1].values
-                w_u_min_mass_at_t = w_u_min_state[6]
-                w_u_min_mass.append(w_u_min_mass_at_t)
-
-            w_s_plus_f = interp1d(w_s_plus_t, w_s_plus_mass)
-            w_s_min_f = interp1d(w_s_min_t, w_s_min_mass)
-            w_u_plus_f = interp1d(w_u_plus_t, w_u_plus_mass)
-            w_u_min_f = interp1d(w_u_min_t, w_u_min_mass)
-
-            w_s_plus_t_max = np.floor(max(w_s_plus_t) * 1 / step_size) * step_size  # Round to nearest step-size
-            w_s_min_t_max = np.floor(max(w_s_min_t) * 1 / step_size) * step_size  # Round to nearest step-size
-            w_u_plus_t_max = np.floor(max(w_u_plus_t) * 1 / step_size) * step_size  # Round to nearest step-size
-            w_u_min_t_max = np.floor(max(w_u_min_t) * 1 / step_size) * step_size  # Round to nearest step-size
-
-            w_s_plus_t_new = np.linspace(t_min, w_s_plus_t_max, np.round((w_s_plus_t_max - t_min) / step_size) + 1)
-            w_s_min_t_new = np.linspace(t_min, w_s_min_t_max, np.round((w_s_min_t_max - t_min) / step_size) + 1)
-            w_u_plus_t_new = np.linspace(t_min, w_u_plus_t_max, np.round((w_u_plus_t_max - t_min) / step_size) + 1)
-            w_u_min_t_new = np.linspace(t_min, w_u_min_t_max, np.round((w_u_min_t_max - t_min) / step_size) + 1)
-
-            w_s_plus_df_temp = pd.DataFrame({i: w_s_plus_f(w_s_plus_t_new)}, index=w_s_plus_t_new)
-            w_s_min_df_temp = pd.DataFrame({i: w_s_min_f(w_s_min_t_new)}, index=w_s_min_t_new)
-            w_u_plus_df_temp = pd.DataFrame({i: w_u_plus_f(w_u_plus_t_new)}, index=w_u_plus_t_new)
-            w_u_min_df_temp = pd.DataFrame({i: w_u_min_f(w_u_min_t_new)}, index=w_u_min_t_new)
-
-            w_s_plus_df[i] = w_s_plus_df_temp[i]
-            w_s_min_df[i] = w_s_min_df_temp[i]
-            w_u_plus_df[i] = w_u_plus_df_temp[i]
-            w_u_min_df[i] = w_u_min_df_temp[i]
-
-            # Plot real data as check
-            # arr[0, 0].plot(w_s_plus_t, w_s_plus_delta_j, 'o')
-            w_s_plus_df = w_s_plus_df.dropna(axis=0, how='all').fillna(method='ffill')
-            w_s_min_df = w_s_min_df.dropna(axis=0, how='all').fillna(method='ffill')
-            w_u_plus_df = w_u_plus_df.dropna(axis=0, how='all').fillna(method='ffill')
-            w_u_min_df = w_u_min_df.dropna(axis=0, how='all').fillna(method='ffill')
-
-            # Plot W^S+
-            y1 = w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_plus_df.std(axis=1)
-            y2 = w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1)
-
-            arr[3, 1].fill_between(w_s_plus_df.mean(axis=1).index, y1=y1, y2=y2, where=y1 >= y2,
-                                   facecolor=self.plottingColors['W_S_plus'], interpolate=True, alpha=highlight_alpha)
-            l1, = arr[3, 1].plot(
-                w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),
-                label='$ \\bar{m}_t^{S+} \pm 3\sigma_t^{S+} $', color=self.plottingColors['W_S_plus'],
-                linestyle=':')
-            l2, = arr[3, 1].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill'), label='$\\bar{m}_t^{S+}$',
-                                 color=self.plottingColors['W_S_plus'])
-            arr[3, 1].plot(
-                w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),
-                color=self.plottingColors['W_S_plus'], linestyle=':')
-            arr[3, 1].set_ylabel('$m(\mathbf{X^i_t}) - m(\mathbf{X^p})$ [-]')
-            arr[3, 1].set_title('mass state on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
-
-            # Plot W^S-
-            # arr[2, 0].fill_between(w_s_min_df.mean(axis=1).index,
-            #                        y1=w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1),
-            #                        y2=w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1),
-            #                        facecolor=self.plottingColors['W_S_min'], interpolate=True, alpha=highlight_alpha)
-            # l3, = arr[2, 0].plot(
-            #     w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),
-            #     label='$\Delta \\bar{IOM}_t^{S-} \pm 3\sigma_t^{S-}$', color=self.plottingColors['W_S_min'],
-            #     linestyle=':')
-            # l4, = arr[2, 0].plot(w_s_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{S-}$',
-            #                      color=self.plottingColors['W_S_min'])
-            # arr[2, 0].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l1, l2, l3, l4])
-            # arr[2, 0].plot(
-            #     w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),
-            #     color=self.plottingColors['W_S_min'], linestyle=':')
-            # arr[2, 0].set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$ [-]')
-            # arr[2, 0].set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{S-}$)', loc='right')
 
         plt.tight_layout()
         plt.subplots_adjust(top=0.9, right=0.85)
