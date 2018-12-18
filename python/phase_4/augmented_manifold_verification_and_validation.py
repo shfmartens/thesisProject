@@ -896,11 +896,8 @@ class DisplayAugmentedValidation:
         arr[0, 0].set_ylabel('$|IOM(\mathbf{X^i_0}) - IOM(\mathbf{X^p})|$ [-]')
         arr[0, 0].set_title('Jacobi energy deviation between orbit and manifold')
 
-        print(self.C_diff_start_W_S_plus)
-        print(self.C_diff_start_W_S_min)
-        print(self.C_diff_start_W_U_plus)
-        print(self.C_diff_start_W_U_min)
-        
+        print(self.phase)
+
         # TODO decide whether to filter out trajectories intersecting Moon
         w_s_plus_dx = pd.DataFrame({'phase': self.phase, 'dx': self.W_S_plus_dx}).set_index('phase')
         w_s_plus_dy = pd.DataFrame({'phase': self.phase, 'dy': self.W_S_plus_dy}).set_index('phase')
