@@ -1151,6 +1151,8 @@ class DisplayAugmentedValidation:
                 w_u_min_state = row[1].values
                 w_u_min_mass = w_u_min_state[6]
 
+            print('w_s_plus_t: ' + str(len(w_s_plus_t)))
+            print('w_s_plus_mass: ' + str(len(w_s_plus_mass)))
             w_s_plus_f = interp1d(w_s_plus_t, w_s_plus_mass)
             w_s_min_f = interp1d(w_s_min_t, w_s_min_mass)
             w_u_plus_f = interp1d(w_u_plus_t, w_u_plus_mass)
