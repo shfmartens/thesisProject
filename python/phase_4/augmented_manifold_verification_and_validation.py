@@ -984,7 +984,7 @@ class DisplayAugmentedValidation:
                            label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
             arr[1, 0].plot(self.phase, self.W_S_min_dm, c=self.plottingColors['W_S_min'],
                            label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
-            
+
             arr[1, 1].semilogy(self.phase, self.W_S_plus_dy, c=self.plottingColors['W_S_plus'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
             arr[1, 1].semilogy(self.phase, self.W_S_min_dx, c=self.plottingColors['W_S_min'],
@@ -995,13 +995,17 @@ class DisplayAugmentedValidation:
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
         arr[0, 1].set_ylabel('$|x^i_{t_f} - (1-\mu)|, \; |y^i_{t_f}|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
+        arr[0, 1].set_ylabel('$|1.0 - x^i_{t_f}|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
         arr[1, 1].set_ylabel('$|y^i_{t_f}|, \; |x^i_{t_f} - (1-\mu)|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
         arr[0, 1].legend(frameon=True, loc='center left',  bbox_to_anchor=(1, 0.5))
         arr[0, 1].set_xlim([0, 1])
+        arr[0, 1].set_xlim([1, 0])
         arr[1, 1].set_xlim([0, 1])
         arr[0, 1].set_xlabel('$\\tau$ [-]')
+        arr[1, 0].set_xlabel('$\\tau$ [-]')
         arr[1, 1].set_xlabel('$\\tau$ [-]')
         arr[0, 1].set_ylim(ylim)
+        arr[1, 0].set_ylim([-1, 0.2])
         arr[1, 1].set_ylim(ylim)
 
         if self.lagrangePointNr == 1:
@@ -1207,11 +1211,11 @@ if __name__ == '__main__':
                                                                                   c_level], thrust_restriction, spacecraft_name,
                                                                                   thrust_magnitude, low_dpi=low_dpi)
 
-                            display_augmented_validation.plot_manifolds()
-                            display_augmented_validation.plot_manifold_zoom()
-                            display_augmented_validation.plot_manifold_individual()
+                            #display_augmented_validation.plot_manifolds()
+                            #display_augmented_validation.plot_manifold_zoom()
+                            #display_augmented_validation.plot_manifold_individual()
                             #display_augmented_validation.plot_eigenvectors()
-                            #display_augmented_validation.plot_iom_validation()
+                            display_augmented_validation.plot_iom_validation()
 
 
 
