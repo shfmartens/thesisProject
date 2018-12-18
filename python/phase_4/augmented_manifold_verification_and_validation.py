@@ -1139,8 +1139,6 @@ class DisplayAugmentedValidation:
                 w_s_plus_state = row[1].values
                 w_s_plus_mass_at_t = w_s_plus_state[6]
                 w_s_plus_mass.append(w_s_plus_mass_at_t)
-                print(w_s_plus_mass_at_t)
-                print(abs(row[0]))
             for row in self.W_S_min.xs(i).iterrows():
                 w_s_min_t.append(abs(row[0]))
                 w_s_min_state = row[1].values
@@ -1150,15 +1148,12 @@ class DisplayAugmentedValidation:
                 w_u_plus_t.append(abs(row[0]))
                 w_u_plus_state = row[1].values
                 w_u_plus_mass_at_t = w_u_plus_state[6]
-                w_s_plus_mass.append(w_u_plus_mass_at_t)
+                w_u_plus_mass.append(w_u_plus_mass_at_t)
             for row in self.W_U_min.xs(i).iterrows():
                 w_u_min_t.append(abs(row[0]))
                 w_u_min_state = row[1].values
                 w_u_min_mass_at_t = w_u_min_state[6]
-                w_s_min_mass.append(w_u_min_mass_at_t)
-
-            print('w_s_plus_t: ' + str(len(w_s_plus_t)))
-            print('w_s_plus_mass: ' + str(len(w_s_plus_mass)))
+                w_u_min_mass.append(w_u_min_mass_at_t)
 
             w_s_plus_f = interp1d(w_s_plus_t, w_s_plus_mass)
             w_s_min_f = interp1d(w_s_min_t, w_s_min_mass)
