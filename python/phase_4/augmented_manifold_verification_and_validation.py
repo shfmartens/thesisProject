@@ -1072,17 +1072,17 @@ class DisplayAugmentedValidation:
                 y1 = w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_plus_df.std(axis=1)
                 y2 = w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1)
 
-                arr[0, 1].fill_between(w_s_plus_df.mean(axis=1).index, y1=y1, y2=y2, where=y1 >= y2,facecolor=self.plottingColors['W_S_plus'], interpolate=True,alpha=highlight_alpha)
-                l1, = arr[3, 1].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),
+                arr[1, 0].fill_between(w_s_plus_df.mean(axis=1).index, y1=y1, y2=y2, where=y1 >= y2,facecolor=self.plottingColors['W_S_plus'], interpolate=True,alpha=highlight_alpha)
+                l1, = arr[1, 0].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),
                     label='$ \\bar{m}_t^{S+} \pm 3\sigma_t^{S+} $', color=self.plottingColors['W_S_plus'],
                     linestyle=':')
-                l2, = arr[3, 1].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill'), label='$\\bar{m}_t^{S+}$',
+                l2, = arr[1, 0].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill'), label='$\\bar{m}_t^{S+}$',
                                      color=self.plottingColors['W_S_plus'])
-                arr[3, 1].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1).fillna(
+                arr[1, 0].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1).fillna(
                     method='ffill'),
                                color=self.plottingColors['W_S_plus'], linestyle=':')
-                arr[3, 1].set_ylabel('$m(\mathbf{X^i_t}) - m(\mathbf{X^p})$ [-]')
-                arr[3, 1].set_title('mass state on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
+                arr[1, 0].set_ylabel('$m(\mathbf{X^i_t}) - m(\mathbf{X^p})$ [-]')
+                arr[1, 0].set_title('mass state on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
 
                 # Plot W^S-
                 # arr[2, 0].fill_between(w_s_min_df.mean(axis=1).index,
