@@ -909,12 +909,13 @@ class DisplayAugmentedValidation:
         if self.lagrangePointNr == 1:
             arr[0, 1].semilogy(w_s_plus_dx[w_s_plus_dx['dx'] < 1e-10], c=self.plottingColors['W_S_plus'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
-            arr[0, 1].semilogy(w_s_min_dy[w_s_min_dy['dy'] < 1e-10], c=self.plottingColors['W_S_min'],
-                               label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
-            arr[0, 1].semilogy(w_u_plus_dx[w_u_plus_dx['dx'] < 1e-10], c=self.plottingColors['W_U_plus'],
-                               label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U+}$')
-            arr[0, 1].semilogy(w_u_min_dy[w_u_min_dy['dy'] < 1e-10], c=self.plottingColors['W_U_min'],
-                               label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
+            arr[0, 1].semilogy(w_s_plus_dx[w_s_plus_dy['dy'] < 1e-10], c=self.plottingColors['W_S_plus'])
+            # arr[0, 1].semilogy(w_s_min_dy[w_s_min_dy['dy'] < 1e-10], c=self.plottingColors['W_S_min'],
+            #                    label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
+            # arr[0, 1].semilogy(w_u_plus_dx[w_u_plus_dx['dx'] < 1e-10], c=self.plottingColors['W_U_plus'],
+            #                    label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U+}$')
+            # arr[0, 1].semilogy(w_u_min_dy[w_u_min_dy['dy'] < 1e-10], c=self.plottingColors['W_U_min'],
+            #                    label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
             # arr[0, 1].semilogy(self.phase, self.W_S_plus_dx, c=self.plottingColors['W_S_plus'],
             #                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
