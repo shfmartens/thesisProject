@@ -346,17 +346,17 @@ class DisplayAugmentedValidation:
             fig.subplots_adjust(top=0.9)
         else:
             fig.subplots_adjust(top=0.8)
-
-        if (self.thrustRestriction == 'left'):
+        print(self.thrustRestriction)
+        if (self.thrustRestriction == "left"):
             plt.suptitle('$L_' + str(
                 self.lagrangePointNr) + '$ '+'$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \leftarrow }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Spatial overview at C = ' + str(np.round(self.C, 3)),size=self.suptitleSize)
-        if (self.thrustRestriction == 'right'):
+        if (self.thrustRestriction == "right"):
             plt.suptitle('$L_' + str(
                 self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \rightarrow }_{' +  self.thrustMagnitudeForPlotTitle + '}$' + ' - Spatial overview at C = ' + str(
                 np.round(self.C, 3)), size=self.suptitleSize)
         else:
             plt.suptitle('$L_' + str(
-                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \rightarrow }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Spatial overview at C = ' + str(
+                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ testttt }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Spatial overview at C = ' + str(
                 np.round(self.C, 3)), size=self.suptitleSize)
 
         fig.savefig('../../data/figures/manifolds/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_' + str(self.spacecraftName) + '_' + self.thrustMagnitudeForTitle + '_' + str(self.thrustRestriction) + '_manifold_subplots.pdf',
