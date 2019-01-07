@@ -284,6 +284,15 @@ class DisplayAugmentedValidation:
                 ax1.contourf(x, z, y, colors='black')
                 ax2.contourf(y, z, x, colors='black')
 
+        # Plot zero velocity surface
+        x_range = np.arange(ax3.get_xlim()[0], ax3.get_xlim()[1], 0.001)
+        y_range = np.arange(ax3.get_ylim()[0], ax3.get_ylim()[1], 0.001)
+        x_mesh, y_mesh = np.meshgrid(x_range, y_range)
+        z_mesh = cr3bp_velocity(x_mesh, y_mesh, self.C)
+                if z_mesh.min() < 0:
+                    ax3.contourf(x_mesh, y_mesh, z_mesh, list(np.linspace(z_mesh.min(), 0, 10)), cmap='gist_gray_r',
+                                 alpha=0.5)
+
         #Determine color for plot
         plot_alpha = 1
         line_width = 0.5
@@ -1212,7 +1221,6 @@ if __name__ == '__main__':
                                                                               orbit_ids[orbit_type][lagrange_point][
                                                                                   c_level], thrust_restriction, spacecraft_name,
                                                                                   thrust_magnitude, low_dpi=low_dpi)
-                            print(thrust_restriction)
                             display_augmented_validation.plot_manifolds()
                             # display_augmented_validation.plot_manifold_zoom()
                             # display_augmented_validation.plot_manifold_individual()
