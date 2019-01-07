@@ -1196,7 +1196,7 @@ if __name__ == '__main__':
     c_levels = [3.15]
     thrust_restrictions = ['left']
     spacecraft_names = ['DeepSpace']
-    thrust_magnitudes = ['0.000100']
+    thrust_magnitudes = [0.000100]
 
     orbit_ids = {'horizontal':  {1: {3.05: 808, 3.1: 577, 3.15: 330}, 2: {3.05: 1066, 3.1: 760, 3.15: 373}}}
 
@@ -1210,7 +1210,6 @@ if __name__ == '__main__':
                                                                               orbit_ids[orbit_type][lagrange_point][
                                                                                   c_level], thrust_restriction, spacecraft_name,
                                                                                   thrust_magnitude, low_dpi=low_dpi)
-
                             display_augmented_validation.plot_manifolds()
                             # display_augmented_validation.plot_manifold_zoom()
                             # display_augmented_validation.plot_manifold_individual()
