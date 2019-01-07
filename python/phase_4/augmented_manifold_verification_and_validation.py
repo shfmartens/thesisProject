@@ -36,7 +36,7 @@ class DisplayAugmentedValidation:
         self.orbitTypeForTitle = orbit_type.capitalize()
         self.thrustRestrictionForTitle = thrust_restriction.capitalize()
         self.spacecraftNameForTitle = spacecraft_name.capitalize()
-        self.thrustMagnitudeForTitle = str("{0:.3e}".format(thrust_magnitude))
+        self.thrustMagnitudeForTitle = np.format_float_scientific(thrust_magnitude, unique=False, precision=4, exp_digits=2)
 
         if (self.orbitTypeForTitle == 'Horizontal') or (self.orbitTypeForTitle == 'Vertical'):
             self.orbitTypeForTitle += ' Lyapunov'
