@@ -346,7 +346,7 @@ class DisplayAugmentedValidation:
 
         if (thrust_restriction == "left" or "right"):
             plt.suptitle('$L_' + str(
-                self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + self.spacecraftNameForTitle + ' ' + self.thrustMagnitudeForTitle +  ' ' + self.thrustRestrictionForTitle + ' ' +  ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial overview at C = ' + str(np.round(self.C, 3)),size=self.suptitleSize)
+                self.lagrangePointNr) + '$ '+'$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \leftarrow }_{' +str(self.thrustMagnitudeForTitle) + '}$ ' + '- Spatial overview at C = ' + str(np.round(self.C, 3)),size=self.suptitleSize)
         else:
             plt.suptitle('$L_' + str(
                 self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + self.spacecraftNameForTitle + ' ' + self.thrustMagnitudeForTitle +  ' ' + self.thrustRestrictionForTitle + ' ' + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial overview at H$_{\text{lt}}$ = ' + str(np.round(self.C, 3)),size=self.suptitleSize)
