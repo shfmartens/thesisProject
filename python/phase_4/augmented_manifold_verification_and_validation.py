@@ -345,9 +345,13 @@ class DisplayAugmentedValidation:
         else:
             fig.subplots_adjust(top=0.8)
 
-        if (thrust_restriction == "left" or "right"):
+        if (thrust_restriction == "left"):
             plt.suptitle('$L_' + str(
-                self.lagrangePointNr) + '$ '+'$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \leftarrow }_{' + self.thrustMagnitudeForTitle + '}$' + '- Spatial overview at C = ' + str(np.round(self.C, 3)),size=self.suptitleSize)
+                self.lagrangePointNr) + '$ '+'$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \leftarrow }_{' + self.thrustMagnitudeForTitle + '}$' + ' - Spatial overview at C = ' + str(np.round(self.C, 3)),size=self.suptitleSize)
+        if (thrust_restriction == "right"):
+            plt.suptitle('$L_' + str(
+                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \rightarrow }_{' + self.thrustMagnitudeForTitle + '}$' + ' - Spatial overview at C = ' + str(
+                np.round(self.C, 3)), size=self.suptitleSize)
         else:
             plt.suptitle('$L_' + str(
                 self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + self.spacecraftNameForTitle + ' ' + self.thrustMagnitudeForTitle +  ' ' + self.thrustRestrictionForTitle + ' ' + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial overview at H$_{\text{lt}}$ = ' + str(np.round(self.C, 3)),size=self.suptitleSize)
