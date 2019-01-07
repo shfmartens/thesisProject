@@ -347,10 +347,10 @@ class DisplayAugmentedValidation:
         else:
             fig.subplots_adjust(top=0.8)
 
-        if (thrust_restriction == 'left'):
+        if (self.thrustRestriction == 'left'):
             plt.suptitle('$L_' + str(
                 self.lagrangePointNr) + '$ '+'$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \leftarrow }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Spatial overview at C = ' + str(np.round(self.C, 3)),size=self.suptitleSize)
-        if (thrust_restriction == 'right'):
+        if (self.thrustRestriction == 'right'):
             plt.suptitle('$L_' + str(
                 self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \rightarrow }_{' +  self.thrustMagnitudeForPlotTitle + '}$' + ' - Spatial overview at C = ' + str(
                 np.round(self.C, 3)), size=self.suptitleSize)
