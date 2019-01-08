@@ -172,7 +172,7 @@ class DisplayAugmentedValidation:
                 self.W_S_plus_dx.append(abs(state_on_manifold[0] - (1 - self.massParameter)))
                 self.W_S_plus_dy.append(abs(state_on_manifold[1]))
                 #self.W_S_plus_dy.append(0)
-            final_dm = state_on_manifold[6]-1.0
+            final_dm = abs(state_on_manifold[6]-1.0)
             self.W_S_plus_dm.append(final_dm)
 
             # W_S_min
@@ -187,7 +187,7 @@ class DisplayAugmentedValidation:
             else:
                 self.W_S_min_dx.append(abs(state_on_manifold[0] - (1 - self.massParameter)))
                 self.W_S_min_dy.append(0)
-            final_dm = state_on_manifold[6] - 1.0
+            final_dm = abs(state_on_manifold[6] - 1.0)
             self.W_S_min_dm.append(final_dm)
 
             # W_U_plus
