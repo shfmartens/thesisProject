@@ -1270,7 +1270,7 @@ if __name__ == '__main__':
                             display_augmented_validation.plot_manifold_zoom()
                             display_augmented_validation.plot_manifold_individual()
                             display_augmented_validation.plot_eigenvectors()
-                            # display_augmented_validation.plot_iom_validation()
+                            display_augmented_validation.plot_iom_validation()
 
 
 
