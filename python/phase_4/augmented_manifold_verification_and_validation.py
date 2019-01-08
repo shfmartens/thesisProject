@@ -786,11 +786,6 @@ class DisplayAugmentedValidation:
             # ax1.set_ylim([-0.4, 0.4])
             ax11.grid(True, which='both', ls=':')
 
-        fig.tight_layout()
-        if self.orbitType != 'horizontal':
-            fig.subplots_adjust(top=1.1)
-        else:
-            fig.subplots_adjust(top=0.8)
 
         # Plot zero velocity surface
         x_range = np.arange(ax0.get_xlim()[0], ax0.get_xlim()[1], 0.001)
@@ -830,6 +825,9 @@ class DisplayAugmentedValidation:
         ax3.set_title('$\mathcal{W^{S-}}$')
         ax6.set_title('$\mathcal{W^{U+}}$')
         ax9.set_title('$\mathcal{W^{U-}}$')
+
+        fig.tight_layout()
+        fig.subplots_adjust(top=0.9)
 
         # plot main title
         if self.thrustRestriction == 'left':
