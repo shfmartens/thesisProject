@@ -1215,8 +1215,10 @@ class DisplayAugmentedValidation:
 
         ax0.set_ylabel('$|x^i_{t_f} - (1-\mu)|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
         ax1.set_ylabel('$|y^i_{t_f}|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
+        ax2.set_ylabel('$|m^i_{t_f}-1|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
         ax0.legend(frameon=True, loc='center left',  bbox_to_anchor=(1, 0.5))
         ax1.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5))
+        ax2.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5))
         # #ax0.invert_xaxis()
         ax0.set_xlim([0, 1])
         ax1.set_xlim([0, 1])
