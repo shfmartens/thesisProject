@@ -4,7 +4,7 @@ import json
 import matplotlib
 matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
 import matplotlib.pyplot as plt
-from matplotlib.gridspec as gridspec
+import matplotlib.gridspec as gridspec
 from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.axes_grid.inset_locator import inset_axes
 import seaborn as sns
