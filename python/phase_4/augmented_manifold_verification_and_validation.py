@@ -930,7 +930,7 @@ class DisplayAugmentedValidation:
         fig.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathbf{X_i} \pm \epsilon \\frac{\mathbf{v}^S_i}{|\mathbf{v}^S_i|}, \mathbf{X_i} \pm \epsilon \\frac{\mathbf{v}^U_i}{|\mathbf{v}^U_i|} \}$ - Spatial overview  at C = ' + str(np.round(self.C, 3)),
                      size=self.suptitleSize)
 
-        fig.savefig('../../data/figures/manifolds/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_eigenvector_subplots.pdf',
+        fig.savefig('../../data/figures/manifolds/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_eigenvectors.pdf',
                     transparent=True)
 #        fig.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_eigenvector_subplots.png')
         plt.close()
@@ -1269,7 +1269,7 @@ if __name__ == '__main__':
                             display_augmented_validation.plot_manifolds()
                             display_augmented_validation.plot_manifold_zoom()
                             display_augmented_validation.plot_manifold_individual()
-                            # display_augmented_validation.plot_eigenvectors()
+                            display_augmented_validation.plot_eigenvectors()
                             # display_augmented_validation.plot_iom_validation()
 
 
