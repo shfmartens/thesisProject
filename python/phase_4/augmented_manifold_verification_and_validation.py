@@ -1231,21 +1231,19 @@ class DisplayAugmentedValidation:
         plt.tight_layout()
         plt.subplots_adjust(top=0.9, right=0.85)
 
-        if self.thrustRestriction == 'left' or self.thrustRestriction == 'right':
-            plt.suptitle(
-                '$L_' + str(
-                    self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + '$\\bar{a}_{lt} \perp \\bar{V}_{'+ self.thrustRestrictionForTitle + '}$ ' + '$f = $' + str(
-            self.thrustMagnitudeForTitle) + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - IOM verification at C = ' + str(
-                    np.round(self.C, 3)),
-                size=self.suptitleSize)
+        # plot main title
+        if self.thrustRestriction == 'left':
+            plt.suptitle('$L_' + str(
+                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \longleftarrow }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Stopping conditions verification at C = ' + str(
+                np.round(self.C, 3)), size=self.suptitleSize)
+        elif self.thrustRestriction == 'right':
+            plt.suptitle('$L_' + str(
+                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \longrightarrow }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Stopping conditions verification at C = ' + str(
+                np.round(self.C, 3)), size=self.suptitleSize)
         else:
-            plt.suptitle(
-                '$L_' + str(
-                    self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + '$\\dot{\\bar{\\alpha}} = 0$' '$f = $' + str(
-                self.thrustMagnitudeForTitle) + '$ \\alpha = $ ' + self.thrustRestrictionForTitle + '$^{\\circ}$' + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - IOM verification at H = ' + str(
-                    np.round(self.C, 3)),
-                size=self.suptitleSize)
-            # plt.show()
+            plt.suptitle('$L_' + str(
+                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ const }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Stopping conditions verification at C = ' + str(
+                np.round(self.C, 3)), size=self.suptitleSize)
 
         if self.lowDPI:
             plt.savefig('../../data/figures/manifolds/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
