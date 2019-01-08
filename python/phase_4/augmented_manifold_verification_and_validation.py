@@ -247,7 +247,7 @@ class DisplayAugmentedValidation:
         # self.xlim = [min(self.x), max(self.x)]
         pass
 
-    def plot_manifolds(self):
+    def plot_manifolds(self): #ADAPT self.orbitType if statements argument to horizontal to get rid of xz and yz projections
         # Plot: subplots
         if self.orbitType == 'horizontal2':
             fig = plt.figure(figsize=(self.figSize[0], self.figSize[1]/2))
@@ -1227,9 +1227,9 @@ if __name__ == '__main__':
                                                                               orbit_ids[orbit_type][lagrange_point][
                                                                                   c_level], thrust_restriction, spacecraft_name,
                                                                                   thrust_magnitude, low_dpi=low_dpi)
-                            display_augmented_validation.plot_manifolds()
-                            display_augmented_validation.plot_manifold_zoom()
-                            # display_augmented_validation.plot_manifold_individual()
+                            # display_augmented_validation.plot_manifolds()
+                            # display_augmented_validation.plot_manifold_zoom()
+                            display_augmented_validation.plot_manifold_individual()
                             # display_augmented_validation.plot_eigenvectors()
                             # display_augmented_validation.plot_iom_validation()
 
