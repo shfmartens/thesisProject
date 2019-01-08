@@ -339,8 +339,8 @@ class DisplayAugmentedValidation:
 
         ax3.set_xlabel('x [-]')
         ax3.set_ylabel('y [-]')
-        ax3.set_xlim([-1.0, 1.25])
-        ax3.set_ylim([-1.0, 1.0])
+        ax3.set_xlim([-1.0, 1.2])
+        ax3.set_ylim([-0.8, 0.8])
         ax3.grid(True, which='both', ls=':')
 
 
