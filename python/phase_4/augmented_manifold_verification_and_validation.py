@@ -1157,16 +1157,16 @@ class DisplayAugmentedValidation:
         # TODO decide whether to filter out trajectories intersecting Moon
         w_s_plus_dx = pd.DataFrame({'phase': self.phase, 'dx': self.W_S_plus_dx}).set_index('phase')
         w_s_plus_dy = pd.DataFrame({'phase': self.phase, 'dy': self.W_S_plus_dy}).set_index('phase')
-        w_s_plus_dm = pd.DataFrame({'phase': self.phase, 'dy': self.W_S_plus_dm}).set_index('phase')
         w_s_min_dx = pd.DataFrame({'phase': self.phase, 'dx': self.W_S_min_dx}).set_index('phase')
         w_s_min_dy = pd.DataFrame({'phase': self.phase, 'dy': self.W_S_min_dy}).set_index('phase')
-        w_s_min_dm = pd.DataFrame({'phase': self.phase, 'dy': self.W_S_min_dm}).set_index('phase')
         w_u_plus_dx = pd.DataFrame({'phase': self.phase, 'dx': self.W_U_plus_dx}).set_index('phase')
         w_u_plus_dy = pd.DataFrame({'phase': self.phase, 'dy': self.W_U_plus_dy}).set_index('phase')
         w_u_min_dx = pd.DataFrame({'phase': self.phase, 'dx': self.W_U_min_dx}).set_index('phase')
         w_u_min_dy = pd.DataFrame({'phase': self.phase, 'dy': self.W_U_min_dy}).set_index('phase')
 
-
+        print(w_s_plus_dx)
+        print("TEST")
+        print(w_s_plus_dy)
 
         if self.lagrangePointNr == 1:
             # arr[0, 1].semilogy(w_s_plus_dx[w_s_plus_dx['dx'] < 1e-10], c=self.plottingColors['W_S_plus'],
