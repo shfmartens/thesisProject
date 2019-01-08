@@ -1181,7 +1181,7 @@ class DisplayAugmentedValidation:
                          label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
             ax1.semilogy(w_u_plus_dy[w_u_plus_dy['dy'] < 1e-10], c=self.plottingColors['W_U_plus'],
                          label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U+}$')
-            ax1.semilogy(w_u_min_dy[w_u_min_dy['dy'] < 1e-0], c=self.plottingColors['W_U_min'],
+            ax1.semilogy(w_u_min_dy[w_u_min_dy['dy'] < 1e-10], c=self.plottingColors['W_U_min'],
                          label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
         if self.lagrangePointNr == 2:
@@ -1214,8 +1214,8 @@ class DisplayAugmentedValidation:
         ax1.set_xlim([0, 1])
         ax0.set_xlabel('$\\tau$ [-]')
         ax1.set_xlabel('$\\tau$ [-]')
-        # ax0.set_ylim(ylim)
-        # ax1.set_ylim(ylim)
+        ax0.set_ylim(ylim)
+        ax1.set_ylim(ylim)
 
         if self.lagrangePointNr == 1:
             ax0.set_title('Position deviation at $U_i \;  \\forall \; i = 1, 2, 3$')
