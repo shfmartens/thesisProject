@@ -249,7 +249,7 @@ class DisplayAugmentedValidation:
 
     def plot_manifolds(self):
         # Plot: subplots
-        if self.orbitType == 'horizontal':
+        if self.orbitType == 'horizontal2':
             fig = plt.figure(figsize=(self.figSize[0], self.figSize[1]/2))
             ax0 = fig.add_subplot(1, 2, 1, projection='3d')
             ax3 = fig.add_subplot(1, 2, 2)
