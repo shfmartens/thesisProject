@@ -1146,7 +1146,7 @@ class DisplayAugmentedValidation:
         gs2 = gs.GridSpec(3, 1)
         ax0 = fig.add_subplot(gs2[0, 0])
         ax1 = fig.add_subplot(gs2[1, 0])
-        ax2 = fig.add_subplot(gs2[3, 0])
+        ax2 = fig.add_subplot(gs2[2, 0])
 
 
         highlight_alpha = 0.2
