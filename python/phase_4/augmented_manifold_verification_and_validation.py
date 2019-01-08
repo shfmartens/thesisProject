@@ -1239,17 +1239,17 @@ class DisplayAugmentedValidation:
             # ax1.semilogy(self.phase, self.W_U_min_dx, c=self.plottingColors['W_U_min'],
             #                    label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
-        ax0.set_ylabel('$|x^i_{t_f} - (1-\mu)|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
-        ax1.set_ylabel('$|y^i_{t_f}|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
-        ax0.legend(frameon=True, loc='center left',  bbox_to_anchor=(1, 0.5))
-        ax1.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5))
-        #ax0.invert_xaxis()
-        ax0.set_xlim([1, 0])
-        ax1.set_xlim([0, 1])
-        ax0.set_xlabel('$\\tau$ [-]')
-        ax1.set_xlabel('$\\tau$ [-]')
-        ax0.set_ylim(ylim)
-        ax1.set_ylim(ylim)
+        # ax0.set_ylabel('$|x^i_{t_f} - (1-\mu)|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
+        # ax1.set_ylabel('$|y^i_{t_f}|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
+        # ax0.legend(frameon=True, loc='center left',  bbox_to_anchor=(1, 0.5))
+        # ax1.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5))
+        # #ax0.invert_xaxis()
+        # ax0.set_xlim([1, 0])
+        # ax1.set_xlim([0, 1])
+        # ax0.set_xlabel('$\\tau$ [-]')
+        # ax1.set_xlabel('$\\tau$ [-]')
+        # ax0.set_ylim(ylim)
+        # ax1.set_ylim(ylim)
 
         if self.lagrangePointNr == 1:
             ax0.set_title('Position deviation at $U_i \;  \\forall \; i = 1, 2, 3$')
