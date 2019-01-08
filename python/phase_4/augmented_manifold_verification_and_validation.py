@@ -339,8 +339,8 @@ class DisplayAugmentedValidation:
 
         ax3.set_xlabel('x [-]')
         ax3.set_ylabel('y [-]')
-        ax3.set_xlim([-1.0, 1.2])
-        ax3.set_ylim([-0.8, 0.8])
+        #ax3.set_xlim([-1.0, 1.2])
+        #ax3.set_ylim([-0.8, 0.8])
         ax3.grid(True, which='both', ls=':')
 
 
@@ -353,19 +353,13 @@ class DisplayAugmentedValidation:
 
         # Plot zero velocity surface
         x_range = np.arange(ax3.get_xlim()[0], ax3.get_xlim()[1], 0.001)
-        print(x_range)
-        print("Test")
         y_range = np.arange(ax3.get_ylim()[0], ax3.get_ylim()[1], 0.001)
-        print(y_range)
-        print("Test")
         x_mesh, y_mesh = np.meshgrid(x_range, y_range)
         z_mesh = cr3bp_velocity(x_mesh, y_mesh, self.C)
-        print(z_mesh)
-        print("Test")
-
         if z_mesh.min() < 0:
             ax3.contourf(x_mesh, y_mesh, z_mesh, list(np.linspace(z_mesh.min(), 0, 10)), cmap='gist_gray_r',alpha=0.5)
 
+        # plot main title
         if self.thrustRestriction == 'left':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ '+ '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \leftarrow }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Spatial overview at C = ' + str(np.round(self.C, 3)),size=self.suptitleSize)
         elif self.thrustRestriction == 'right':
