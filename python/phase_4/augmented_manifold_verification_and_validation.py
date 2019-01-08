@@ -367,7 +367,7 @@ class DisplayAugmentedValidation:
         else:
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ '+ '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ const }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Orthographic projection at C = ' + str(np.round(self.C, 3)), size=self.suptitleSize)
 
-        fig.savefig('../../data/figures/manifolds/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_' + str(self.spacecraftName) + '_' + self.thrustMagnitudeForTitle + '_' + str(self.thrustRestriction) + '_manifold_subplots.pdf',
+        fig.savefig('../../data/figures/manifolds/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_' + str(self.spacecraftName) + '_' + self.thrustMagnitudeForTitle + '_' + str(self.thrustRestriction) + '_manifold_orthographic.pdf',
                     transparent=True)
         # fig.savefig('/Users/koen/Documents/Courses/AE5810 Thesis Space/Meetings/0901/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_subplots.png')
         plt.close()
@@ -846,7 +846,7 @@ class DisplayAugmentedValidation:
         fig.savefig(
             '../../data/figures/manifolds/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
                 self.orbitId) + '_' + self.spacecraftName + '_' + str(
-                self.thrustMagnitudeForTitle) + '_' + self.thrustRestriction + '_manifold_subplots_individual.pdf',
+                self.thrustMagnitudeForTitle) + '_' + self.thrustRestriction + '_manifold_individual.pdf',
             transparent=True)
         plt.close()
         pass
