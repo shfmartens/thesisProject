@@ -1234,12 +1234,12 @@ class DisplayAugmentedValidation:
         ax1.set_ylim(ylim)
 
         if self.lagrangePointNr == 1:
-            ax0.set_title('Position deviation at $U_i \;  \\forall \; i = 1, 2, 3$')
-            ax1.set_title('Position deviation at $U_i \;  \\forall \; i = 1, 2, 3$')
+            ax0.set_title('Position deviation at $U_i \;  \\forall \; i = 2, 3$')
+            ax1.set_title('Position deviation at $U_i \;  \\forall \; i = 1$')
             ax2.set_title('Mass deviation at $t_f \;  $')
         else:
-            ax0.set_title('Position deviation at $U_i \;  \\forall \; i = 2, 3, 4$')
-            ax1.set_title('Position deviation at $U_i \;  \\forall \; i = 2, 3, 4$')
+            ax0.set_title('Position deviation at $U_i \;  \\forall \; i = 2, 3$')
+            ax1.set_title('Position deviation at $U_i \;  \\forall \; i = 4$')
             ax2.set_title('Mass deviation at $t_f \;  $')
 
         plt.tight_layout()
