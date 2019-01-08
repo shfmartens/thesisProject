@@ -361,11 +361,11 @@ class DisplayAugmentedValidation:
 
         # plot main title
         if self.thrustRestriction == 'left':
-            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ '+ '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \longleftarrow }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Spatial overview at C = ' + str(np.round(self.C, 3)),size=self.suptitleSize)
+            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ '+ '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \longleftarrow }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Orthographic projection at C = ' + str(np.round(self.C, 3)),size=self.suptitleSize)
         elif self.thrustRestriction == 'right':
-            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ '+ '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \longrightarrow }_{' +  self.thrustMagnitudeForPlotTitle + '}$' + ' - Spatial overview at C = ' + str(np.round(self.C, 3)), size=self.suptitleSize)
+            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ '+ '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \longrightarrow }_{' +  self.thrustMagnitudeForPlotTitle + '}$' + ' - Orthographic projection at C = ' + str(np.round(self.C, 3)), size=self.suptitleSize)
         else:
-            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ '+ '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ const }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Spatial overview at C = ' + str(np.round(self.C, 3)), size=self.suptitleSize)
+            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ '+ '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ const }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Orthographic projection at C = ' + str(np.round(self.C, 3)), size=self.suptitleSize)
 
         fig.savefig('../../data/figures/manifolds/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_' + str(self.spacecraftName) + '_' + self.thrustMagnitudeForTitle + '_' + str(self.thrustRestriction) + '_manifold_subplots.pdf',
                     transparent=True)
@@ -428,25 +428,27 @@ class DisplayAugmentedValidation:
             z = bodies_df[body]['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
             ax.contourf(x, y, z, colors='black', label='Moon')
 
-        if self.thrustRestriction == 'left' or self.thrustRestriction == 'right':
-            if self.thrustRestriction == 'right':
-                plt.suptitle('$L_' + str(
-                    self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + '$\{ \overline{a}_{lt} \perp \overline{V}_{right} \}$' + ' $\{f = \}$ ' + str(
-                    self.thrustMagnitudeForTitle) + ' ' + self.thrustRestrictionForTitle + ' ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Individual view at C = ' + str(
-                    np.round(self.C, 3)), size=self.suptitleSize)
+        # Plot zero velocity surface
+        x_range = np.arange(ax.get_xlim()[0], ax.get_xlim()[1], 0.001)
+        y_range = np.arange(ax.get_ylim()[0], ax.get_ylim()[1], 0.001)
+        x_mesh, y_mesh = np.meshgrid(x_range, y_range)
+        z_mesh = cr3bp_velocity(x_mesh, y_mesh, self.C)
+        if z_mesh.min() < 0:
+            ax.contourf(x_mesh, y_mesh, z_mesh, list(np.linspace(z_mesh.min(), 0, 10)), cmap='gist_gray_r',alpha=0.5)
+
+            # plot main title
             if self.thrustRestriction == 'left':
                 plt.suptitle('$L_' + str(
-                    self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + '$\{ \overline{a}_{lt} \perp \overline{V}_{left} \}$' + ' $\{f = \}$ ' + str(
-                    self.thrustMagnitudeForTitle) + ' ' + self.thrustRestrictionForTitle + ' ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Individual view at C = ' + str(
+                    self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \longleftarrow }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Spatial overview at C = ' + str(
                     np.round(self.C, 3)), size=self.suptitleSize)
-
-        else:
-            plt.suptitle('$L_' + str(
-                self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ' + '$\{\dot{\overline{a}}_= 0 \}$' + '$\{ alpha = \}$' + self.thrustRestrictionForTitle + ' $\{f = \}$ ' + str(
-                self.thrustMagnitudeForTitle) + ' ' + self.thrustRestrictionForTitle + ' ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Individual view at C = ' + str(
-                np.round(self.C, 3)), size=self.suptitleSize)
-
-
+            elif self.thrustRestriction == 'right':
+                plt.suptitle('$L_' + str(
+                    self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \longrightarrow }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Spatial overview at C = ' + str(
+                    np.round(self.C, 3)), size=self.suptitleSize)
+            else:
+                plt.suptitle('$L_' + str(
+                    self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ const }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Spatial overview at C = ' + str(
+                    np.round(self.C, 3)), size=self.suptitleSize)
 
         # ax.annotate('\\textbf{Unstable exterior} $\\mathbf{ \mathcal{W}^{U+}}$',
         #             xy=(1.44, -0.1), xycoords='data',
@@ -1225,7 +1227,7 @@ if __name__ == '__main__':
                                                                               orbit_ids[orbit_type][lagrange_point][
                                                                                   c_level], thrust_restriction, spacecraft_name,
                                                                                   thrust_magnitude, low_dpi=low_dpi)
-                            # display_augmented_validation.plot_manifolds()
+                            display_augmented_validation.plot_manifolds()
                             display_augmented_validation.plot_manifold_zoom()
                             # display_augmented_validation.plot_manifold_individual()
                             # display_augmented_validation.plot_eigenvectors()
