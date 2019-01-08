@@ -1243,8 +1243,8 @@ class DisplayAugmentedValidation:
         ax1.set_ylabel('$|y^i_{t_f}|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
         ax0.legend(frameon=True, loc='center left',  bbox_to_anchor=(1, 0.5))
         ax1.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5))
-        ax0.invert_xaxis()
-        ax0.set_xlim([0, 1])
+        #ax0.invert_xaxis()
+        ax0.set_xlim([1, 0])
         ax1.set_xlim([0, 1])
         ax0.set_xlabel('$\\tau$ [-]')
         ax1.set_xlabel('$\\tau$ [-]')
