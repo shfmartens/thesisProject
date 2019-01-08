@@ -1180,11 +1180,11 @@ class DisplayAugmentedValidation:
 
             ax0.semilogy(w_s_plus_dx[w_s_plus_dx['dx'] < 1e-10], c=self.plottingColors['W_S_plus'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
-            ax0.semilogy(w_s_min_dy[w_s_min_dx['dy'] < 1e-10], c=self.plottingColors['W_S_min'],
+            ax0.semilogy(w_s_min_dy[w_s_min_dx['dx'] < 1e-10], c=self.plottingColors['W_S_min'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
             ax0.semilogy(w_u_plus_dx[w_u_plus_dx['dx']< 1e-10], c=self.plottingColors['W_U_plus'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U+}$')
-            ax0.semilogy(w_u_min_dy[w_u_min_dx['dy'] < 1e-10], c=self.plottingColors['W_U_min'],
+            ax0.semilogy(w_u_min_dy[w_u_min_dx['dx'] < 1e-10], c=self.plottingColors['W_U_min'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
 
@@ -1197,14 +1197,14 @@ class DisplayAugmentedValidation:
             # arr[1, 1].semilogy(w_u_min_dy[w_u_min_dx['dx'] < 1e-10], c=self.plottingColors['W_U_min'],
             #                    label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
-            ax1.semilogy(self.phase, self.W_S_plus_dy, c=self.plottingColors['W_S_plus'],
-                               label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
-            ax1.semilogy(self.phase, self.W_S_min_dy, c=self.plottingColors['W_S_min'],
-                               label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
-            ax1.semilogy(self.phase, self.W_U_plus_dy, c=self.plottingColors['W_U_plus'],
-                               label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U+}$')
-            ax1.semilogy(self.phase, self.W_U_min_dy, c=self.plottingColors['W_U_min'],
-                               label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
+            # ax1.semilogy(self.phase, self.W_S_plus_dy, c=self.plottingColors['W_S_plus'],
+            #                    label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
+            # ax1.semilogy(self.phase, self.W_S_min_dy, c=self.plottingColors['W_S_min'],
+            #                    label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
+            # ax1.semilogy(self.phase, self.W_U_plus_dy, c=self.plottingColors['W_U_plus'],
+            #                    label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U+}$')
+            # ax1.semilogy(self.phase, self.W_U_min_dy, c=self.plottingColors['W_U_min'],
+            #                    label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
             #arr[1, 0].plot(self.phase, self.W_S_plus_dm, c=self.plottingColors['W_S_plus'],
                                #label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
@@ -1214,11 +1214,11 @@ class DisplayAugmentedValidation:
         if self.lagrangePointNr == 2:
             ax0.semilogy(w_s_plus_dy[w_s_plus_dy['dy'] < 1e-10], c=self.plottingColors['W_S_plus'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
-            ax0.semilogy(w_s_min_dx[w_s_min_dx['dx'] < 1e-10], c=self.plottingColors['W_S_min'],
+            ax0.semilogy(w_s_min_dx[w_s_min_dy['dy'] < 1e-10], c=self.plottingColors['W_S_min'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
             ax0.semilogy(w_u_plus_dy[w_u_plus_dy['dy'] < 1e-10], c=self.plottingColors['W_U_plus'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U+}$')
-            ax0.semilogy(w_u_min_dx[w_u_min_dx['dx'] < 1e-10], c=self.plottingColors['W_U_min'],
+            ax0.semilogy(w_u_min_dx[w_u_min_dy['dy'] < 1e-10], c=self.plottingColors['W_U_min'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
             # arr[1, 1].semilogy(w_s_plus_dy[w_s_plus_dx['dx'] < 1e-12], c=self.plottingColors['W_S_plus'],
@@ -1230,14 +1230,14 @@ class DisplayAugmentedValidation:
             # arr[1, 1].semilogy(w_u_min_dx[w_u_min_dy['dy'] < 1e-10], c=self.plottingColors['W_U_min'],
             #                    label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
-            ax1.semilogy(self.phase, self.W_S_plus_dy, c=self.plottingColors['W_S_plus'],
-                               label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
-            ax1.semilogy(self.phase, self.W_S_min_dx, c=self.plottingColors['W_S_min'],
-                               label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
-            ax1.semilogy(self.phase, self.W_U_plus_dy, c=self.plottingColors['W_U_plus'],
-                               label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U+}$')
-            ax1.semilogy(self.phase, self.W_U_min_dx, c=self.plottingColors['W_U_min'],
-                               label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
+            # ax1.semilogy(self.phase, self.W_S_plus_dy, c=self.plottingColors['W_S_plus'],
+            #                    label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
+            # ax1.semilogy(self.phase, self.W_S_min_dx, c=self.plottingColors['W_S_min'],
+            #                    label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
+            # ax1.semilogy(self.phase, self.W_U_plus_dy, c=self.plottingColors['W_U_plus'],
+            #                    label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U+}$')
+            # ax1.semilogy(self.phase, self.W_U_min_dx, c=self.plottingColors['W_U_min'],
+            #                    label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
         ax0.set_ylabel('$|x^i_{t_f} - (1-\mu)|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
         ax1.set_ylabel('$|y^i_{t_f}|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
