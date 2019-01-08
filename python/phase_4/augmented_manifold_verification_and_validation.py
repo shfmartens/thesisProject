@@ -361,9 +361,9 @@ class DisplayAugmentedValidation:
 
         # plot main title
         if self.thrustRestriction == 'left':
-            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ '+ '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \leftarrow }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Spatial overview at C = ' + str(np.round(self.C, 3)),size=self.suptitleSize)
+            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ '+ '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \longleftarrow }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Spatial overview at C = ' + str(np.round(self.C, 3)),size=self.suptitleSize)
         elif self.thrustRestriction == 'right':
-            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ '+ '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \rightarrow }_{' +  self.thrustMagnitudeForPlotTitle + '}$' + ' - Spatial overview at C = ' + str(np.round(self.C, 3)), size=self.suptitleSize)
+            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ '+ '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \longrightarrow }_{' +  self.thrustMagnitudeForPlotTitle + '}$' + ' - Spatial overview at C = ' + str(np.round(self.C, 3)), size=self.suptitleSize)
         else:
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ '+ '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ const }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Spatial overview at C = ' + str(np.round(self.C, 3)), size=self.suptitleSize)
 
@@ -1209,7 +1209,7 @@ if __name__ == '__main__':
     lagrange_points = [1]
     orbit_types = ['horizontal']
     c_levels = [3.15]
-    thrust_restrictions = ['left']
+    thrust_restrictions = ['left', 'right']
     spacecraft_names = ['DeepSpace']
     thrust_magnitudes = ['0.000100']
 
