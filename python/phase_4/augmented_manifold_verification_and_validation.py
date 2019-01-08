@@ -4,7 +4,7 @@ import json
 import matplotlib
 matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
 import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
+import matplotlib.gridspec as gs
 from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.axes_grid.inset_locator import inset_axes
 import seaborn as sns
@@ -937,8 +937,8 @@ class DisplayAugmentedValidation:
         pass
 
     def plot_iom_validation(self):
-        gs = gridspec.GridSpec(3,2)
-        ax0 = plt.subplot(gs[0, :])
+        gs = gs.GridSpec(3,2)
+        ax0 = plt.subplot(gs[0, 0:2])
         ax1 = plt.subplot(gs[0, 1])
         ax2 = plt.subplot(gs[1, 0])
         ax3 = plt.subplot(gs[1, 1])
