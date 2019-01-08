@@ -1143,9 +1143,10 @@ class DisplayAugmentedValidation:
     def plot_stopping_validation(self):
         fig = plt.figure(figsize=self.figSize)
 
-        gs2 = gs.GridSpec(2, 1)
+        gs2 = gs.GridSpec(3, 1)
         ax0 = fig.add_subplot(gs2[0, 0])
         ax1 = fig.add_subplot(gs2[1, 0])
+        ax2 = fig.add_subplot(gs2[3, 0])
 
 
         highlight_alpha = 0.2
@@ -1157,8 +1158,10 @@ class DisplayAugmentedValidation:
         # TODO decide whether to filter out trajectories intersecting Moon
         w_s_plus_dx = pd.DataFrame({'phase': self.phase, 'dx': self.W_S_plus_dx}).set_index('phase')
         w_s_plus_dy = pd.DataFrame({'phase': self.phase, 'dy': self.W_S_plus_dy}).set_index('phase')
+        w_s_plus_dm = pd.DataFrame({'phase': self.phase, 'dm': self.W_S_plus_dm}).set_index('phase')
         w_s_min_dx = pd.DataFrame({'phase': self.phase, 'dx': self.W_S_min_dx}).set_index('phase')
         w_s_min_dy = pd.DataFrame({'phase': self.phase, 'dy': self.W_S_min_dy}).set_index('phase')
+        w_s_min_dm = pd.DataFrame({'phase': self.phase, 'dm': self.W_S_min_dm}).set_index('phase')
         w_u_plus_dx = pd.DataFrame({'phase': self.phase, 'dx': self.W_U_plus_dx}).set_index('phase')
         w_u_plus_dy = pd.DataFrame({'phase': self.phase, 'dy': self.W_U_plus_dy}).set_index('phase')
         w_u_min_dx = pd.DataFrame({'phase': self.phase, 'dx': self.W_U_min_dx}).set_index('phase')
@@ -1183,6 +1186,11 @@ class DisplayAugmentedValidation:
                          label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U+}$')
             ax1.semilogy(w_u_min_dy[w_u_min_dy['dy'] < 1e-10], c=self.plottingColors['W_U_min'],
                          label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
+
+            ax2.semilogy(w_s_plus_dm[w_s_plus_dm['dm'] < 1e0], c=self.plottingColors['W_S_plus'],
+                         label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
+            ax1.semilogy(w_s_min_dm[w_s_min_dm['dy'] < 1e-10], c=self.plottingColors['W_S_min'],
+                         label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
 
         if self.lagrangePointNr == 2:
 
@@ -1212,8 +1220,10 @@ class DisplayAugmentedValidation:
         # #ax0.invert_xaxis()
         ax0.set_xlim([0, 1])
         ax1.set_xlim([0, 1])
+        ax2.set_xlim([0, 1])
         ax0.set_xlabel('$\\tau$ [-]')
         ax1.set_xlabel('$\\tau$ [-]')
+        ax2.set_xlabel('$\\tau$ [-]')
         ax0.set_ylim(ylim)
         ax1.set_ylim(ylim)
 
