@@ -938,7 +938,7 @@ class DisplayAugmentedValidation:
 
     def plot_iom_validation(self):
         gs2 = gs.GridSpec(3,2)
-        ax0 = plt.subplot(gs2[0, 0:2])
+        ax0 = plt.subplot(gs2[0, 0:1])
         ax1 = plt.subplot(gs2[0, 1])
         ax2 = plt.subplot(gs2[1, 0])
         ax3 = plt.subplot(gs2[1, 1])
