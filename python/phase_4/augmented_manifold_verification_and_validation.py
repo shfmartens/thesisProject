@@ -941,11 +941,10 @@ class DisplayAugmentedValidation:
 
         gs2 = gs.GridSpec(3,2)
         ax0 = fig.add_subplot(gs2[0, 0:2])
-        ax1 = fig.add_subplot(gs2[0, 1])
-        ax2 = fig.add_subplot(gs2[1, 0])
-        ax3 = fig.add_subplot(gs2[1, 1])
-        ax4 = fig.add_subplot(gs2[2, 0])
-        ax5 = fig.add_subplot(gs2[2, 1])
+        ax1 = fig.add_subplot(gs2[1, 0])
+        ax2 = fig.add_subplot(gs2[1, 1])
+        ax3 = fig.add_subplot(gs2[2, 0])
+        ax4 = fig.add_subplot(gs2[2, 1])
 
 
 
