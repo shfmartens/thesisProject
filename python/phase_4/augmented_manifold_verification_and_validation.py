@@ -1212,6 +1212,10 @@ class DisplayAugmentedValidation:
             ax1.semilogy(w_u_min_dy[w_u_min_dy['dy'] < 1e-10], c=self.plottingColors['W_U_min'],
                          label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
+            ax2.semilogy(w_s_plus_dm[w_s_plus_dm['dm'] < 1e0], c=self.plottingColors['W_S_plus'],
+                         label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
+            ax2.semilogy(w_s_min_dm[w_s_min_dm['dm'] < 1e-0], c=self.plottingColors['W_S_min'],
+                         label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
 
         ax0.set_ylabel('$|x^i_{t_f} - (1-\mu)|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
         ax1.set_ylabel('$|y^i_{t_f}|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
@@ -1232,9 +1236,11 @@ class DisplayAugmentedValidation:
         if self.lagrangePointNr == 1:
             ax0.set_title('Position deviation at $U_i \;  \\forall \; i = 1, 2, 3$')
             ax1.set_title('Position deviation at $U_i \;  \\forall \; i = 1, 2, 3$')
+            ax2.set_title('Mass deviation at $t_f \;  $')
         else:
             ax0.set_title('Position deviation at $U_i \;  \\forall \; i = 2, 3, 4$')
             ax1.set_title('Position deviation at $U_i \;  \\forall \; i = 2, 3, 4$')
+            ax2.set_title('Mass deviation at $t_f \;  $')
 
         plt.tight_layout()
         plt.subplots_adjust(top=0.9, right=0.85)
