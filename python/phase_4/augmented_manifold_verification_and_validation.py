@@ -944,21 +944,21 @@ class DisplayAugmentedValidation:
         t_min = 0
         step_size = 0.05
 
-        arr[0, :].semilogy(self.phase, self.C_diff_start_W_S_plus, c=self.plottingColors['W_S_plus'],
+        arr[0, 0].semilogy(self.phase, self.C_diff_start_W_S_plus, c=self.plottingColors['W_S_plus'],
                            label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{S+}$')
-        arr[0, :].semilogy(self.phase, self.C_diff_start_W_S_min, c=self.plottingColors['W_S_min'],
+        arr[0, 0].semilogy(self.phase, self.C_diff_start_W_S_min, c=self.plottingColors['W_S_min'],
                         label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
-        arr[0, :].semilogy(self.phase, self.C_diff_start_W_U_plus, c=self.plottingColors['W_U_plus'],
+        arr[0, 0].semilogy(self.phase, self.C_diff_start_W_U_plus, c=self.plottingColors['W_U_plus'],
                             label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{U+}$')
-        arr[0, :].semilogy(self.phase, self.C_diff_start_W_U_min, c=self.plottingColors['W_U_min'],
+        arr[0, 0].semilogy(self.phase, self.C_diff_start_W_U_min, c=self.plottingColors['W_U_min'],
                            label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
         # arr[0, 0].legend(frameon=True, loc='upper right')
 
-        arr[0, :].set_xlim([0, 1])
-        arr[0, :].set_xlabel('$\\tau$ [-]')
-        arr[0, :].set_ylim(ylim)
-        arr[0, :].set_ylabel('$|IOM(\mathbf{X^i_0}) - IOM(\mathbf{X^p})|$ [-]')
-        arr[0, :].set_title('Jacobi energy deviation between orbit and manifold')
+        arr[0, 0].set_xlim([0, 1])
+        arr[0, 0].set_xlabel('$\\tau$ [-]')
+        arr[0, 0].set_ylim(ylim)
+        arr[0, 0].set_ylabel('$|IOM(\mathbf{X^i_0}) - IOM(\mathbf{X^p})|$ [-]')
+        arr[0, 0].set_title('Jacobi energy deviation between orbit and manifold')
 
         w_s_plus_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
         w_s_min_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
