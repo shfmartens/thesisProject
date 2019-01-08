@@ -1141,28 +1141,18 @@ class DisplayAugmentedValidation:
         pass
 
     def plot_stopping_validation(self):
-        f, arr = plt.subplots(4, 2, figsize=self.figSize)
+        fig = plt.figure(figsize=self.figSize)
+
+        gs2 = gs.GridSpec(2, 1)
+        ax0 = fig.add_subplot(gs2[0, 0])
+        ax1 = fig.add_subplot(gs2[1, 0])
+
 
         highlight_alpha = 0.2
         ylim = [1e-16, 1e-9]
         t_min = 0
         step_size = 0.05
 
-        arr[0, 0].semilogy(self.phase, self.C_diff_start_W_S_plus, c=self.plottingColors['W_S_plus'],
-                           label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{S+}$')
-        arr[0, 0].semilogy(self.phase, self.C_diff_start_W_S_min, c=self.plottingColors['W_S_min'],
-                        label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
-        arr[0, 0].semilogy(self.phase, self.C_diff_start_W_U_plus, c=self.plottingColors['W_U_plus'],
-                            label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{U+}$')
-        arr[0, 0].semilogy(self.phase, self.C_diff_start_W_U_min, c=self.plottingColors['W_U_min'],
-                           label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
-        # arr[0, 0].legend(frameon=True, loc='upper right')
-
-        arr[0, 0].set_xlim([0, 1])
-        arr[0, 0].set_xlabel('$\\tau$ [-]')
-        arr[0, 0].set_ylim(ylim)
-        arr[0, 0].set_ylabel('$|IOM(\mathbf{X^i_0}) - IOM(\mathbf{X^p})|$ [-]')
-        arr[0, 0].set_title('Jacobi energy deviation between orbit and manifold')
 
         # TODO decide whether to filter out trajectories intersecting Moon
         w_s_plus_dx = pd.DataFrame({'phase': self.phase, 'dx': self.W_S_plus_dx}).set_index('phase')
@@ -1188,13 +1178,13 @@ class DisplayAugmentedValidation:
             # arr[0, 1].semilogy(w_u_min_dy[w_u_min_dy['dy'] < 1e-10], c=self.plottingColors['W_U_min'],
             #                    label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
-            arr[0, 1].semilogy(w_s_plus_dx[w_s_plus_dx['dx'] < 1e-8], c=self.plottingColors['W_S_plus'],
+            ax0.semilogy(w_s_plus_dx[w_s_plus_dx['dx'] < 1e-10], c=self.plottingColors['W_S_plus'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
-            arr[0, 1].semilogy(w_s_min_dy[w_s_min_dy['dy'] < 1e-8], c=self.plottingColors['W_S_min'],
+            ax0.semilogy(w_s_min_dy[w_s_min_dx['dy'] < 1e-10], c=self.plottingColors['W_S_min'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
-            arr[0, 1].semilogy(w_u_plus_dx[w_u_plus_dx['dx']< 1e-8], c=self.plottingColors['W_U_plus'],
+            ax0.semilogy(w_u_plus_dx[w_u_plus_dx['dx']< 1e-10], c=self.plottingColors['W_U_plus'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U+}$')
-            arr[0, 1].semilogy(w_u_min_dy[w_u_min_dy['dy'] < 1e-8], c=self.plottingColors['W_U_min'],
+            ax0.semilogy(w_u_min_dy[w_u_min_dx['dy'] < 1e-10], c=self.plottingColors['W_U_min'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
 
@@ -1207,28 +1197,28 @@ class DisplayAugmentedValidation:
             # arr[1, 1].semilogy(w_u_min_dy[w_u_min_dx['dx'] < 1e-10], c=self.plottingColors['W_U_min'],
             #                    label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
-            arr[1, 1].semilogy(self.phase, self.W_S_plus_dy, c=self.plottingColors['W_S_plus'],
+            ax1.semilogy(self.phase, self.W_S_plus_dy, c=self.plottingColors['W_S_plus'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
-            arr[1, 1].semilogy(self.phase, self.W_S_min_dx, c=self.plottingColors['W_S_min'],
+            ax1.semilogy(self.phase, self.W_S_min_dy, c=self.plottingColors['W_S_min'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
-            arr[1, 1].semilogy(self.phase, self.W_U_plus_dy, c=self.plottingColors['W_U_plus'],
+            ax1.semilogy(self.phase, self.W_U_plus_dy, c=self.plottingColors['W_U_plus'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U+}$')
-            arr[1, 1].semilogy(self.phase, self.W_U_min_dx, c=self.plottingColors['W_U_min'],
+            ax1.semilogy(self.phase, self.W_U_min_dy, c=self.plottingColors['W_U_min'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
-            arr[1, 0].plot(self.phase, self.W_S_plus_dm, c=self.plottingColors['W_S_plus'],
-                               label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
-            arr[1, 0].plot(self.phase, self.W_S_min_dm, c=self.plottingColors['W_S_min'],
-                               label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
+            #arr[1, 0].plot(self.phase, self.W_S_plus_dm, c=self.plottingColors['W_S_plus'],
+                               #label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
+            #arr[1, 0].plot(self.phase, self.W_S_min_dm, c=self.plottingColors['W_S_min'],
+                               #label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
 
         if self.lagrangePointNr == 2:
-            arr[0, 1].semilogy(w_s_plus_dy[w_s_plus_dy['dy'] < 1e-8], c=self.plottingColors['W_S_plus'],
+            ax0.semilogy(w_s_plus_dy[w_s_plus_dy['dy'] < 1e-10], c=self.plottingColors['W_S_plus'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
-            arr[0, 1].semilogy(w_s_min_dx[w_s_min_dx['dx'] < 1e-8], c=self.plottingColors['W_S_min'],
+            ax0.semilogy(w_s_min_dx[w_s_min_dx['dx'] < 1e-10], c=self.plottingColors['W_S_min'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
-            arr[0, 1].semilogy(w_u_plus_dy[w_u_plus_dy['dy'] < 1e-8], c=self.plottingColors['W_U_plus'],
+            ax0.semilogy(w_u_plus_dy[w_u_plus_dy['dy'] < 1e-10], c=self.plottingColors['W_U_plus'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U+}$')
-            arr[0, 1].semilogy(w_u_min_dx[w_u_min_dx['dx'] < 1e-8], c=self.plottingColors['W_U_min'],
+            ax0.semilogy(w_u_min_dx[w_u_min_dx['dx'] < 1e-10], c=self.plottingColors['W_U_min'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
             # arr[1, 1].semilogy(w_s_plus_dy[w_s_plus_dx['dx'] < 1e-12], c=self.plottingColors['W_S_plus'],
@@ -1240,180 +1230,33 @@ class DisplayAugmentedValidation:
             # arr[1, 1].semilogy(w_u_min_dx[w_u_min_dy['dy'] < 1e-10], c=self.plottingColors['W_U_min'],
             #                    label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
-            arr[1, 0].plot(self.phase, self.W_S_plus_dm, c=self.plottingColors['W_S_plus'],
-                           label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
-            arr[1, 0].plot(self.phase, self.W_S_min_dm, c=self.plottingColors['W_S_min'],
-                           label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
-
-            arr[1, 1].semilogy(self.phase, self.W_S_plus_dy, c=self.plottingColors['W_S_plus'],
+            ax1.semilogy(self.phase, self.W_S_plus_dy, c=self.plottingColors['W_S_plus'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
-            arr[1, 1].semilogy(self.phase, self.W_S_min_dx, c=self.plottingColors['W_S_min'],
+            ax1.semilogy(self.phase, self.W_S_min_dx, c=self.plottingColors['W_S_min'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
-            arr[1, 1].semilogy(self.phase, self.W_U_plus_dy, c=self.plottingColors['W_U_plus'],
+            ax1.semilogy(self.phase, self.W_U_plus_dy, c=self.plottingColors['W_U_plus'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U+}$')
-            arr[1, 1].semilogy(self.phase, self.W_U_min_dx, c=self.plottingColors['W_U_min'],
+            ax1.semilogy(self.phase, self.W_U_min_dx, c=self.plottingColors['W_U_min'],
                                label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
-        arr[0, 1].set_ylabel('$|x^i_{t_f} - (1-\mu)|, \; |y^i_{t_f}|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
-        arr[1, 0].set_ylabel('$|1.0 - m^i_{t_f}|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
-        arr[1, 1].set_ylabel('$|y^i_{t_f}|, \; |x^i_{t_f} - (1-\mu)|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
-        arr[0, 1].legend(frameon=True, loc='center left',  bbox_to_anchor=(1, 0.5))
-        arr[0, 1].set_xlim([0, 1])
-        arr[0, 1].set_xlim([1, 0])
-        arr[1, 1].set_xlim([0, 1])
-        arr[0, 1].set_xlabel('$\\tau$ [-]')
-        arr[1, 0].set_xlabel('$\\tau$ [-]')
-        arr[1, 1].set_xlabel('$\\tau$ [-]')
-        arr[0, 1].set_ylim(ylim)
-        arr[1, 0].set_ylim([-1, 0.2])
-        arr[1, 1].set_ylim(ylim)
+        ax0.set_ylabel('$|x^i_{t_f} - (1-\mu)|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
+        ax1.set_ylabel('$|y^i_{t_f}|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
+        ax0.legend(frameon=True, loc='center left',  bbox_to_anchor=(1, 0.5))
+        ax1.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5))
+        ax0.invert_xaxis()
+        ax0.set_xlim([0, 1])
+        ax1.set_xlim([0, 1])
+        ax0.set_xlabel('$\\tau$ [-]')
+        ax1.set_xlabel('$\\tau$ [-]')
+        ax0.set_ylim(ylim)
+        ax1.set_ylim(ylim)
 
         if self.lagrangePointNr == 1:
-            arr[0, 1].set_title('Position deviation at $U_i \;  \\forall \; i = 1, 2, 3$')
-            arr[1, 1].set_title('Position deviation at $U_i \;  \\forall \; i = 1, 2, 3$')
+            ax0.set_title('Position deviation at $U_i \;  \\forall \; i = 1, 2, 3$')
+            ax1.set_title('Position deviation at $U_i \;  \\forall \; i = 1, 2, 3$')
         else:
-            arr[0, 1].set_title('Position deviation at $U_i \;  \\forall \; i = 2, 3, 4$')
-            arr[1, 1].set_title('Position deviation at $U_i \;  \\forall \; i = 2, 3, 4$')
-
-        arr[1, 0].set_title('Mass deviation at $t_f$')
-
-        w_s_plus_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
-        w_s_min_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
-        w_u_plus_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
-        w_u_min_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
-
-        for i in range(self.numberOfOrbitsPerManifold):
-            w_s_plus_t = []
-            w_s_min_t = []
-            w_u_plus_t = []
-            w_u_min_t = []
-            w_s_plus_delta_j = []
-            w_s_min_delta_j = []
-            w_u_plus_delta_j = []
-            w_u_min_delta_j = []
-            w_s_plus_first_state = self.W_S_plus.xs(0).head(1).values[0]
-            w_s_min_first_state = self.W_S_min.xs(0).head(1).values[0]
-            w_u_plus_first_state = self.W_U_plus.xs(0).head(1).values[0]
-            w_u_min_first_state = self.W_U_min.xs(0).head(1).values[0]
-            w_s_plus_first_iom = computeIntegralOfMotion(w_s_plus_first_state[0], w_s_plus_first_state[1],
-                                                        w_s_plus_first_state[2], w_s_plus_first_state[3],
-                                                        w_s_plus_first_state[4], w_s_plus_first_state[5], w_s_plus_first_state[6], self.thrustMagnitude, self.thrustRestriction)
-            w_s_min_first_iom = computeIntegralOfMotion(w_s_min_first_state[0], w_s_min_first_state[1],
-                                                       w_s_min_first_state[2], w_s_min_first_state[3],
-                                                       w_s_min_first_state[4], w_s_min_first_state[5], w_s_plus_first_state[6], self.thrustMagnitude, self.thrustRestriction)
-            w_u_plus_first_iom = computeIntegralOfMotion(w_u_plus_first_state[0], w_u_plus_first_state[1],
-                                                        w_u_plus_first_state[2], w_u_plus_first_state[3],
-                                                        w_u_plus_first_state[4], w_u_plus_first_state[5], w_s_plus_first_state[6], self.thrustMagnitude, self.thrustRestriction)
-            w_u_min_first_iom = computeIntegralOfMotion(w_u_min_first_state[0], w_u_min_first_state[1],
-                                                       w_u_min_first_state[2], w_u_min_first_state[3],
-                                                       w_u_min_first_state[4], w_u_min_first_state[5], w_s_plus_first_state[6], self.thrustMagnitude, self.thrustRestriction)
-
-            for row in self.W_S_plus.xs(i).iterrows():
-                w_s_plus_t.append(abs(row[0]))
-                w_s_plus_state = row[1].values
-                w_s_plus_iom = computeIntegralOfMotion(w_s_plus_state[0], w_s_plus_state[1], w_s_plus_state[2],
-                                                      w_s_plus_state[3], w_s_plus_state[4], w_s_plus_state[5], w_s_plus_state[6], self.thrustMagnitude, self.thrustRestriction)
-                w_s_plus_delta_j.append(w_s_plus_iom - w_s_plus_first_iom)
-            for row in self.W_S_min.xs(i).iterrows():
-                w_s_min_t.append(abs(row[0]))
-                w_s_min_state = row[1].values
-                w_s_min_iom = computeIntegralOfMotion(w_s_min_state[0], w_s_min_state[1], w_s_min_state[2],
-                                                     w_s_min_state[3], w_s_min_state[4], w_s_min_state[5], w_s_plus_state[6], self.thrustMagnitude, self.thrustRestriction)
-                w_s_min_delta_j.append(w_s_min_iom - w_s_min_first_iom)
-            for row in self.W_U_plus.xs(i).iterrows():
-                w_u_plus_t.append(abs(row[0]))
-                w_u_plus_state = row[1].values
-                w_u_plus_iom = computeIntegralOfMotion(w_u_plus_state[0], w_u_plus_state[1], w_u_plus_state[2],
-                                                      w_u_plus_state[3], w_u_plus_state[4], w_u_plus_state[5], w_s_plus_state[6], self.thrustMagnitude, self.thrustRestriction)
-                w_u_plus_delta_j.append(w_u_plus_iom - w_u_plus_first_iom)
-            for row in self.W_U_min.xs(i).iterrows():
-                w_u_min_t.append(abs(row[0]))
-                w_u_min_state = row[1].values
-                w_u_min_iom = computeIntegralOfMotion(w_u_min_state[0], w_u_min_state[1], w_u_min_state[2],
-                                                     w_u_min_state[3], w_u_min_state[4], w_u_min_state[5], w_s_plus_state[6], self.thrustMagnitude, self.thrustRestriction)
-                w_u_min_delta_j.append(w_u_min_iom - w_u_min_first_iom)
-
-            w_s_plus_f = interp1d(w_s_plus_t, w_s_plus_delta_j)
-            w_s_min_f = interp1d(w_s_min_t, w_s_min_delta_j)
-            w_u_plus_f = interp1d(w_u_plus_t, w_u_plus_delta_j)
-            w_u_min_f = interp1d(w_u_min_t, w_u_min_delta_j)
-
-            w_s_plus_t_max = np.floor(max(w_s_plus_t) * 1 / step_size) * step_size  # Round to nearest step-size
-            w_s_min_t_max = np.floor(max(w_s_min_t) * 1 / step_size) * step_size  # Round to nearest step-size
-            w_u_plus_t_max = np.floor(max(w_u_plus_t) * 1 / step_size) * step_size  # Round to nearest step-size
-            w_u_min_t_max = np.floor(max(w_u_min_t) * 1 / step_size) * step_size  # Round to nearest step-size
-
-            w_s_plus_t_new = np.linspace(t_min, w_s_plus_t_max, np.round((w_s_plus_t_max - t_min) / step_size) + 1)
-            w_s_min_t_new = np.linspace(t_min, w_s_min_t_max, np.round((w_s_min_t_max - t_min) / step_size) + 1)
-            w_u_plus_t_new = np.linspace(t_min, w_u_plus_t_max, np.round((w_u_plus_t_max - t_min) / step_size) + 1)
-            w_u_min_t_new = np.linspace(t_min, w_u_min_t_max, np.round((w_u_min_t_max - t_min) / step_size) + 1)
-
-            w_s_plus_df_temp = pd.DataFrame({i: w_s_plus_f(w_s_plus_t_new)}, index=w_s_plus_t_new)
-            w_s_min_df_temp = pd.DataFrame({i: w_s_min_f(w_s_min_t_new)}, index=w_s_min_t_new)
-            w_u_plus_df_temp = pd.DataFrame({i: w_u_plus_f(w_u_plus_t_new)}, index=w_u_plus_t_new)
-            w_u_min_df_temp = pd.DataFrame({i: w_u_min_f(w_u_min_t_new)}, index=w_u_min_t_new)
-
-            w_s_plus_df[i] = w_s_plus_df_temp[i]
-            w_s_min_df[i] = w_s_min_df_temp[i]
-            w_u_plus_df[i] = w_u_plus_df_temp[i]
-            w_u_min_df[i] = w_u_min_df_temp[i]
-
-            # Plot real data as check
-            # arr[0, 0].plot(w_s_plus_t, w_s_plus_delta_j, 'o')
-        w_s_plus_df = w_s_plus_df.dropna(axis=0, how='all').fillna(method='ffill')
-        w_s_min_df = w_s_min_df.dropna(axis=0, how='all').fillna(method='ffill')
-        w_u_plus_df = w_u_plus_df.dropna(axis=0, how='all').fillna(method='ffill')
-        w_u_min_df = w_u_min_df.dropna(axis=0, how='all').fillna(method='ffill')
-
-        # Plot W^S+
-        y1 = w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_plus_df.std(axis=1)
-        y2 = w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1)
-
-        arr[2, 0].fill_between(w_s_plus_df.mean(axis=1).index,y1=y1,y2=y2, where=y1 >= y2,facecolor=self.plottingColors['W_S_plus'], interpolate=True, alpha=highlight_alpha)
-        l1, = arr[2, 0].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{S+} \pm 3\sigma_t^{S+} $', color=self.plottingColors['W_S_plus'], linestyle=':')
-        l2, = arr[2, 0].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{S+}$', color=self.plottingColors['W_S_plus'])
-        arr[2, 0].plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_S_plus'], linestyle=':')
-        arr[2, 0].set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$ [-]')
-        arr[2, 0].set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
-
-        # Plot W^S-
-        arr[2, 1].fill_between(w_s_min_df.mean(axis=1).index,y1=w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1),y2=w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1),facecolor=self.plottingColors['W_S_min'], interpolate=True, alpha=highlight_alpha)
-        l3, = arr[2, 1].plot(w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{S-} \pm 3\sigma_t^{S-}$', color=self.plottingColors['W_S_min'], linestyle=':')
-        l4, = arr[2, 1].plot(w_s_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{S-}$',color=self.plottingColors['W_S_min'])
-        arr[2, 1].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l1, l2, l3, l4])
-        arr[2, 1].plot(w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_S_min'], linestyle=':')
-        arr[2, 1].set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$ [-]')
-        arr[2, 1].set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{S-}$)', loc='right')
-
-        # Plot W^U+
-        arr[3, 0].fill_between(w_u_plus_df.mean(axis=1).index,y1=w_u_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_plus_df.std(axis=1),y2=w_u_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_plus_df.std(axis=1),facecolor=self.plottingColors['W_U_plus'], interpolate=True, alpha=highlight_alpha)
-        l5, = arr[3, 0].plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_plus_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{U+} \pm 3\sigma_t^{U+}$', color=self.plottingColors['W_U_plus'], linestyle=':')
-        l6, = arr[3, 0].plot(w_u_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{U+}$',color=self.plottingColors['W_U_plus'])
-        arr[3, 0].plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_plus_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_U_plus'], linestyle=':')
-        arr[3, 0].set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$  [-]')
-        arr[3, 0].set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{U+}$)', loc='right')
-
-        # Plot W^U-
-        arr[3, 1].fill_between(w_u_min_df.mean(axis=1).index,y1=w_u_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),y2=w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna( method='ffill'),facecolor=self.plottingColors['W_U_min'], interpolate=True, alpha=highlight_alpha)
-        l7, = arr[3, 1].plot(w_u_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{U-} \pm 3\sigma_t^{U-}$', color=self.plottingColors['W_U_min'], linestyle=':')
-        l8, = arr[3, 1].plot(w_u_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{U-}$',color=self.plottingColors['W_U_min'])
-        arr[3, 1].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l5, l6, l7, l8])
-        arr[3, 1].plot(w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_U_min'], linestyle=':')
-        arr[3, 1].set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$  [-]')
-        arr[3, 1].set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{U-}$)', loc='right')
-        arr[3, 0].set_xlabel('$|t|$ [-]')
-        arr[3, 1].set_xlabel('$|t|$  [-]')
-
-        ylim = [min(arr[2, 0].get_ylim()[0], arr[3, 0].get_ylim()[0], arr[3, 1].get_ylim()[0], arr[2, 1].get_ylim()[0]),
-                max(arr[2, 0].get_ylim()[1], arr[3, 0].get_ylim()[1], arr[3, 1].get_ylim()[1], arr[2, 1].get_ylim()[1])]
-
-        for i in range(2, 4):
-            for j in range(2):
-                arr[i, j].set_ylim(ylim)
-
-        for i in range(4):
-            for j in range(2):
-                arr[i, j].grid(True, which='both', ls=':')
+            ax0.set_title('Position deviation at $U_i \;  \\forall \; i = 2, 3, 4$')
+            ax1.set_title('Position deviation at $U_i \;  \\forall \; i = 2, 3, 4$')
 
         plt.tight_layout()
         plt.subplots_adjust(top=0.9, right=0.85)
