@@ -788,7 +788,7 @@ class DisplayAugmentedValidation:
 
         fig.tight_layout()
         if self.orbitType != 'horizontal':
-            fig.subplots_adjust(top=0.9)
+            fig.subplots_adjust(top=0.4)
         else:
             fig.subplots_adjust(top=0.8)
 
