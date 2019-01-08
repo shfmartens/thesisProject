@@ -825,6 +825,12 @@ class DisplayAugmentedValidation:
             ax9.contourf(x_mesh, y_mesh, z_mesh, list(np.linspace(z_mesh.min(), 0, 10)), cmap='gist_gray_r',
                          alpha=0.5)
 
+        # Plot titles for subplot
+        ax0.set_title('$\mathcal{W^{S+}}$')
+        ax3.set_title('$\mathcal{W^{S-}}$')
+        ax6.set_title('$\mathcal{W^{U+}}$')
+        ax9.set_title('$\mathcal{W^{U-}}$')
+
         # plot main title
         if self.thrustRestriction == 'left':
             plt.suptitle('$L_' + str(
