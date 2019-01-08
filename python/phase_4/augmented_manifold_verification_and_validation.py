@@ -1437,12 +1437,12 @@ class DisplayAugmentedValidation:
         if self.lowDPI:
             plt.savefig('../../data/figures/manifolds/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
                 self.orbitId) + '_' + self.spacecraftName + '_' + str(
-                self.thrustMagnitudeForTitle) + '_' + self.thrustRestriction + '_manifold_iom_validation.png',
+                self.thrustMagnitudeForTitle) + '_' + self.thrustRestriction + '_manifold_stopping_validation.png',
                         transparent=True, dpi=self.dpi)
         else:
             plt.savefig('../../data/figures/manifolds/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
                 self.orbitId) + '_' + self.spacecraftName + '_' + str(
-                self.thrustMagnitudeForTitle) + '_' + self.thrustRestriction + '_iom_jacobi_validation.pdf',
+                self.thrustMagnitudeForTitle) + '_' + self.thrustRestriction + '_manifold_stopping_validation.pdf',
                         transparent=True)
         plt.close()
         pass
@@ -1475,8 +1475,6 @@ if __name__ == '__main__':
                             display_augmented_validation.plot_manifold_individual()
                             display_augmented_validation.plot_eigenvectors()
                             display_augmented_validation.plot_iom_validation()
-
-
-
+                            display_augmented_validation.plot_stopping_validation()
 
                             del display_augmented_validation
