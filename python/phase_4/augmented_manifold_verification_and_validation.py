@@ -1249,7 +1249,7 @@ if __name__ == '__main__':
     low_dpi = True
     lagrange_points = [1]
     orbit_types = ['horizontal']
-    c_levels = [3.15]
+    c_levels = [3.05]
     thrust_restrictions = ['left']
     spacecraft_names = ['DeepSpace']
     thrust_magnitudes = ['0.000100']
