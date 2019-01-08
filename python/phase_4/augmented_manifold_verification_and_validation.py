@@ -1189,7 +1189,7 @@ class DisplayAugmentedValidation:
 
             ax2.semilogy(w_s_plus_dm[w_s_plus_dm['dm'] < 1e0], c=self.plottingColors['W_S_plus'],
                          label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
-            ax2.semilogy(w_s_min_dm[w_s_min_dm['dy'] < 1e-0], c=self.plottingColors['W_S_min'],
+            ax2.semilogy(w_s_min_dm[w_s_min_dm['dm'] < 1e-0], c=self.plottingColors['W_S_min'],
                          label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
 
         if self.lagrangePointNr == 2:
