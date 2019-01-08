@@ -968,7 +968,7 @@ class DisplayAugmentedValidation:
         ax0.set_ylim(ylim)
         ax0.set_ylabel('$|IOM(\mathbf{X^i_0}) - IOM(\mathbf{X^p})|$ [-]')
         ax0.set_title('Jacobi energy deviation between orbit and manifold')
-        ax0.legend(frameon=True, loc='upper right')
+        ax0.legend(frameon=True, loc='center left',  bbox_to_anchor=(1, 0.5))
 
         w_s_plus_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
         w_s_min_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
