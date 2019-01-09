@@ -1614,10 +1614,10 @@ class DisplayAugmentedValidation:
 
         ax1.fill_between(w_s_plus_df.mean(axis=1).index,y1=y1,y2=y2, where=y1 >= y2,facecolor=self.plottingColors['W_S_plus'], interpolate=True, alpha=highlight_alpha)
         l1, = ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{S+} \pm 3\sigma_t^{S+} $', color=self.plottingColors['W_S_plus'], linestyle=':')
-        l2, = ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{S+}$', color=self.plottingColors['W_S_plus'])
+        l2, = ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\alpha_t^{S+}$', color=self.plottingColors['W_S_plus'])
         ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_S_plus'], linestyle=':')
-        ax1.set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$ [-]')
-        ax1.set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
+        ax1.set_ylabel('$ \\alpha (\mathbf{X^i_t}) - IOM(\\ alpha{X^p})$ [-]')
+        ax1.set_title('Thrust pointing verification on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
 
         # Plot W^S-
         ax2.fill_between(w_s_min_df.mean(axis=1).index,y1=w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1),y2=w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1),facecolor=self.plottingColors['W_S_min'], interpolate=True, alpha=highlight_alpha)
