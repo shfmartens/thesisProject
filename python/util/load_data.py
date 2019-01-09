@@ -223,6 +223,32 @@ def computeIntegralOfMotion(x, y, z, xdot, ydot, zdot, mass, thrust, thrust_rest
         integral_of_motion = -0.5 * c - inner_prod
     return integral_of_motion
 
+def computeThrustAngle(xdot, ydot, zdot, mass, thrust, thrust_restriction):
+    if thrust_restriction == 'left':
+        pointingSign = 1.0
+    elif thrust_restriction == 'right':
+        pointingSign = -1.0
+    else:
+        pointingSign = 0.0
+
+    if (thrust_restriction == 'left' or thrust_restriction == 'right'):
+        # calculate velocity magnitude
+        v = np.sqrt(xdot ** 2 + ydot ** 2)
+        accMagnitude = float(thrust)/mass
+        f_x = accMagnitude * (pointingSign * -1.0 * ydot) / v
+        f_y = accMagnitude * (pointingSign * 1.0 * xdot) / v
+        alpha = math.acos((f_x* xdot + f_y * ydot)/(accMagnitude * v))
+    else:
+
+        accMagnitude = float(thrust) / mass
+        xdotdot = float(thrust) / mass * math.acos(float(thrust_restriction) * 2 * math.pi /180.0)
+        alpha = math.atan(xdotdot, accMagnitude)
+    return alpha
+
+
+
+
+
 
 if __name__ == '__main__':
     # manifold_file_path = '../data/near_vertical_1_W_S_min.txt'

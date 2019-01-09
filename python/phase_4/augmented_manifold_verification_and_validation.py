@@ -22,7 +22,7 @@ import sys
 sys.path.append('../util')
 from load_data import load_orbit, load_bodies_location, load_lagrange_points_location, load_differential_corrections, \
     load_initial_conditions_incl_M, load_manifold, computeJacobiEnergy, load_manifold_incl_stm, load_manifold_refactored, \
-    load_manifold_augmented, cr3bp_velocity, computeIntegralOfMotion, load_spacecraft_properties
+    load_manifold_augmented, cr3bp_velocity, computeIntegralOfMotion, load_spacecraft_properties, computeThrustAngle
 
 class DisplayAugmentedValidation:
     def __init__(self, orbit_type, lagrange_point_nr, orbit_id, thrust_restriction, spacecraft_name, thrust_magnitude, low_dpi=False):
@@ -117,6 +117,11 @@ class DisplayAugmentedValidation:
         self.W_U_plus_dy = []
         self.W_U_min_dx = []
         self.W_U_min_dy = []
+
+        self.W_S_plus_thrust_angle = []
+        self.W_S_min_thrust_angle = []
+        self.W_U_plus_thrust_angle = []
+        self.W_U_min_thrust_angle = []
 
         first_state_on_manifold = self.W_S_plus.xs(0).tail(1).values[0]
         first_iom_on_manifold = computeIntegralOfMotion(first_state_on_manifold[0], first_state_on_manifold[1],first_state_on_manifold[2], first_state_on_manifold[3],first_state_on_manifold[4], first_state_on_manifold[5], first_state_on_manifold[6], thrust_magnitude, thrust_restriction)
@@ -1269,6 +1274,21 @@ class DisplayAugmentedValidation:
                 self.orbitId) + '_' + self.spacecraftName + '_' + str(
                 self.thrustMagnitudeForTitle) + '_' + self.thrustRestriction + '_manifold_stopping_validation.pdf',
                         transparent=True)
+        plt.close()
+        pass
+
+    def plot_thrust_validation(self):
+        fig = plt.figure(figsize=self.figSize)
+
+        gs2 = gs.GridSpec(3, 1)
+        ax0 = fig.add_subplot(gs2[0, 0])
+        ax1 = fig.add_subplot(gs2[1, 0])
+        ax2 = fig.add_subplot(gs2[2, 0])
+
+        highlight_alpha = 0.2
+        ylim = [1e-16, 1e-9]
+        t_min = 0
+        step_size = 0.05
         plt.close()
         pass
 
