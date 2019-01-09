@@ -1540,14 +1540,11 @@ class DisplayAugmentedValidation:
             w_u_min_first_state = self.W_U_min.xs(0).head(1).values[0]
             w_s_plus_first_iom = computeThrustAngle(w_s_plus_first_state[3],
                                                         w_s_plus_first_state[4], w_s_plus_first_state[5], w_s_plus_first_state[6], self.thrustMagnitude, self.thrustRestriction)
-            w_s_min_first_iom = computeIntegralOfMotion(w_s_min_first_state[0], w_s_min_first_state[1],
-                                                       w_s_min_first_state[2], w_s_min_first_state[3],
+            w_s_min_first_iom = computeThrustAngle(w_s_min_first_state[3],
                                                        w_s_min_first_state[4], w_s_min_first_state[5], w_s_plus_first_state[6], self.thrustMagnitude, self.thrustRestriction)
-            w_u_plus_first_iom = computeIntegralOfMotion(w_u_plus_first_state[0], w_u_plus_first_state[1],
-                                                        w_u_plus_first_state[2], w_u_plus_first_state[3],
+            w_u_plus_first_iom = computeThrustAngle(w_u_plus_first_state[3],
                                                         w_u_plus_first_state[4], w_u_plus_first_state[5], w_s_plus_first_state[6], self.thrustMagnitude, self.thrustRestriction)
-            w_u_min_first_iom = computeIntegralOfMotion(w_u_min_first_state[0], w_u_min_first_state[1],
-                                                       w_u_min_first_state[2], w_u_min_first_state[3],
+            w_u_min_first_iom = computeThrustAngle(w_u_min_first_state[3],
                                                        w_u_min_first_state[4], w_u_min_first_state[5], w_s_plus_first_state[6], self.thrustMagnitude, self.thrustRestriction)
 
             for row in self.W_S_plus.xs(i).iterrows():
@@ -1558,20 +1555,17 @@ class DisplayAugmentedValidation:
             for row in self.W_S_min.xs(i).iterrows():
                 w_s_min_t.append(abs(row[0]))
                 w_s_min_state = row[1].values
-                w_s_min_iom = computeIntegralOfMotion(w_s_min_state[0], w_s_min_state[1], w_s_min_state[2],
-                                                     w_s_min_state[3], w_s_min_state[4], w_s_min_state[5], w_s_plus_state[6], self.thrustMagnitude, self.thrustRestriction)
+                w_s_min_iom = computeThrustAngle(w_s_min_state[3], w_s_min_state[4], w_s_min_state[5], w_s_plus_state[6], self.thrustMagnitude, self.thrustRestriction)
                 w_s_min_delta_j.append(w_s_min_iom - w_s_min_first_iom)
             for row in self.W_U_plus.xs(i).iterrows():
                 w_u_plus_t.append(abs(row[0]))
                 w_u_plus_state = row[1].values
-                w_u_plus_iom = computeIntegralOfMotion(w_u_plus_state[0], w_u_plus_state[1], w_u_plus_state[2],
-                                                      w_u_plus_state[3], w_u_plus_state[4], w_u_plus_state[5], w_s_plus_state[6], self.thrustMagnitude, self.thrustRestriction)
+                w_u_plus_iom = computeThrustAngle(w_u_plus_state[3], w_u_plus_state[4], w_u_plus_state[5], w_s_plus_state[6], self.thrustMagnitude, self.thrustRestriction)
                 w_u_plus_delta_j.append(w_u_plus_iom - w_u_plus_first_iom)
             for row in self.W_U_min.xs(i).iterrows():
                 w_u_min_t.append(abs(row[0]))
                 w_u_min_state = row[1].values
-                w_u_min_iom = computeIntegralOfMotion(w_u_min_state[0], w_u_min_state[1], w_u_min_state[2],
-                                                     w_u_min_state[3], w_u_min_state[4], w_u_min_state[5], w_s_plus_state[6], self.thrustMagnitude, self.thrustRestriction)
+                w_u_min_iom = computeThrustAngle(w_u_min_state[3], w_u_min_state[4], w_u_min_state[5], w_s_plus_state[6], self.thrustMagnitude, self.thrustRestriction)
                 w_u_min_delta_j.append(w_u_min_iom - w_u_min_first_iom)
 
             w_s_plus_f = interp1d(w_s_plus_t, w_s_plus_delta_j)
