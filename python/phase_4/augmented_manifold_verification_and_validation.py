@@ -1281,10 +1281,10 @@ class DisplayAugmentedValidation:
         fig = plt.figure(figsize=self.figSize)
 
         gs2 = gs.GridSpec(2, 2)
-        ax0 = fig.add_subplot(gs2[0, 0])
-        ax1 = fig.add_subplot(gs2[0, 1])
-        ax2 = fig.add_subplot(gs2[1, 0])
-        ax3 = fig.add_subplot(gs2[1, 1])
+        ax1 = fig.add_subplot(gs2[0, 0])
+        ax2 = fig.add_subplot(gs2[0, 1])
+        ax3 = fig.add_subplot(gs2[1, 0])
+        ax4 = fig.add_subplot(gs2[1, 1])
 
         highlight_alpha = 0.2
         ylim = [1e-18, 1e-9]
@@ -1384,95 +1384,92 @@ class DisplayAugmentedValidation:
             w_s_min_df[i] = w_s_min_df_temp[i]
             w_u_plus_df[i] = w_u_plus_df_temp[i]
             w_u_min_df[i] = w_u_min_df_temp[i]
-            # Plot real data as check
-            ax0.plot(w_s_plus_t, w_s_plus_delta_alpha, 'o')
+
         w_s_plus_df = w_s_plus_df.dropna(axis=0, how='all').fillna(method='ffill')
         w_s_min_df = w_s_min_df.dropna(axis=0, how='all').fillna(method='ffill')
         w_u_plus_df = w_u_plus_df.dropna(axis=0, how='all').fillna(method='ffill')
         w_u_min_df = w_u_min_df.dropna(axis=0, how='all').fillna(method='ffill')
 
-        print(w_s_plus_df)
-        print(w_s_plus_df)
         # Plot W^S+
         y1 = w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_plus_df.std(axis=1)
         y2 = w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1)
 
-        ax0.fill_between(w_s_plus_df.mean(axis=1).index, y1=y1, y2=y2, where=y1 >= y2,
+        ax1.fill_between(w_s_plus_df.mean(axis=1).index, y1=y1, y2=y2, where=y1 >= y2,
                          facecolor=self.plottingColors['W_S_plus'], interpolate=True, alpha=highlight_alpha)
-        l1, = ax0.plot(
+        l1, = ax1.plot(
             w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),
             label='$\Delta \\alpha_t^{S+} \pm 3\sigma_t^{S+} $', color=self.plottingColors['W_S_plus'],
             linestyle=':')
-        l2, = ax0.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\alpha_t^{S+}$',
+        l2, = ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\alpha_t^{S+}$',
                        color=self.plottingColors['W_S_plus'])
-        ax0.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),
+        ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),
                  color=self.plottingColors['W_S_plus'], linestyle=':')
-        ax0.set_ylabel('$\\alpha (\mathbf{X^i_t}) - \\alpha (\mathbf{X^p})$ [-]')
-        ax0.set_title('Thrust pointing deviation on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
+        ax1.set_ylabel('$\\alpha (\mathbf{X^i_t}) - \\alpha (\mathbf{X^p})$ [-]')
+        ax1.set_title('Thrust pointing deviation on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
 
         # Plot W^S-
-        ax1.fill_between(w_s_min_df.mean(axis=1).index,
+        ax2.fill_between(w_s_min_df.mean(axis=1).index,
                          y1=w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1),
                          y2=w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1),
                          facecolor=self.plottingColors['W_S_min'], interpolate=True, alpha=highlight_alpha)
-        l3, = ax1.plot(
+        l3, = ax2.plot(
             w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),
             label='$\Delta \\alpha_t^{S-} \pm 3\sigma_t^{S-}$', color=self.plottingColors['W_S_min'], linestyle=':')
-        l4, = ax1.plot(w_s_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\alpha_t^{S-}$',
+        l4, = ax2.plot(w_s_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\alpha_t^{S-}$',
                        color=self.plottingColors['W_S_min'])
-        ax1.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l1, l2, l3, l4])
-        ax1.plot(w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),
+        ax2.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l1, l2, l3, l4])
+        ax2.plot(w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),
                  color=self.plottingColors['W_S_min'], linestyle=':')
-        ax1.set_ylabel('$\\alpha (\mathbf{X^i_t}) - \\alpha (\mathbf{X^p})$ [-]')
-        ax1.set_title('Thrust pointing deviation on manifold ($\\forall i \in \mathcal{W}^{S-}$)', loc='right')
+        ax2.set_ylabel('$\\alpha (\mathbf{X^i_t}) - \\alpha (\mathbf{X^p})$ [-]')
+        ax2.set_title('Thrust pointing deviation on manifold ($\\forall i \in \mathcal{W}^{S-}$)', loc='right')
 
         # Plot W^U+
-        ax2.fill_between(w_u_plus_df.mean(axis=1).index,
+        ax3.fill_between(w_u_plus_df.mean(axis=1).index,
                          y1=w_u_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_plus_df.std(axis=1),
                          y2=w_u_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_plus_df.std(axis=1),
                          facecolor=self.plottingColors['W_U_plus'], interpolate=True, alpha=highlight_alpha)
-        l5, = ax2.plot(
+        l5, = ax3.plot(
             w_u_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_plus_df.std(axis=1).fillna(method='ffill'),
             label='$\Delta \\alpha_t^{U+} \pm 3\sigma_t^{U+}$', color=self.plottingColors['W_U_plus'], linestyle=':')
-        l6, = ax2.plot(w_u_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\alpha_t^{U+}$',
+        l6, = ax3.plot(w_u_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\alpha_t^{U+}$',
                        color=self.plottingColors['W_U_plus'])
-        ax2.plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_plus_df.std(axis=1).fillna(method='ffill'),
+        ax3.plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_plus_df.std(axis=1).fillna(method='ffill'),
                  color=self.plottingColors['W_U_plus'], linestyle=':')
-        ax2.set_ylabel('$\\alpha (\mathbf{X^i_t}) - \\alpha (\mathbf{X^p})$  [-]')
-        ax2.set_title('Thrust angle deviation on manifold ($\\forall i \in \mathcal{W}^{U+}$)', loc='right')
-        ax2.set_xlabel('$|t|$ [-]')
+        ax3.set_ylabel('$\\alpha (\mathbf{X^i_t}) - \\alpha (\mathbf{X^p})$  [-]')
+        ax3.set_title('Thrust angle deviation on manifold ($\\forall i \in \mathcal{W}^{U+}$)', loc='right')
+        ax3.set_xlabel('$|t|$ [-]')
 
         # Plot W^U-
-        ax3.fill_between(w_u_min_df.mean(axis=1).index,
+        ax4.fill_between(w_u_min_df.mean(axis=1).index,
                          y1=w_u_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_min_df.std(axis=1).fillna(
                              method='ffill'),
                          y2=w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna(
                              method='ffill'), facecolor=self.plottingColors['W_U_min'], interpolate=True,
                          alpha=highlight_alpha)
-        l7, = ax3.plot(
+        l7, = ax4.plot(
             w_u_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),
             label='$\Delta \\alpha_t^{U-} \pm 3\sigma_t^{U-}$', color=self.plottingColors['W_U_min'], linestyle=':')
-        l8, = ax3.plot(w_u_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\alpha_t^{U-}$',
+        l8, = ax4.plot(w_u_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\alpha_t^{U-}$',
                        color=self.plottingColors['W_U_min'])
-        ax3.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l5, l6, l7, l8])
-        ax3.plot(w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),
+        ax4.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l5, l6, l7, l8])
+        ax4.plot(w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),
                  color=self.plottingColors['W_U_min'], linestyle=':')
-        ax3.set_ylabel('$\\alpha (\mathbf{X^i_t}) - \\alpha (\mathbf{X^p})$  [-]')
-        ax3.set_title('Thrust angle deviation on manifold ($\\forall i \in \mathcal{W}^{U-}$)', loc='right')
-        ax3.set_xlabel('$|t|$  [-]')
+        ax4.set_ylabel('$\\alpha (\mathbf{X^i_t}) - \\alpha (\mathbf{X^p})$  [-]')
+        ax4.set_title('Thrust angle deviation on manifold ($\\forall i \in \mathcal{W}^{U-}$)', loc='right')
+        ax4.set_xlabel('$|t|$  [-]')
 
-        ylim = [min(ax0.get_ylim()[0], ax2.get_ylim()[0], ax1.get_ylim()[0], ax3.get_ylim()[0]),
-                max(ax0.get_ylim()[1], ax2.get_ylim()[1], ax1.get_ylim()[1], ax3.get_ylim()[1])]
+        ylim = [min(ax1.get_ylim()[0], ax3.get_ylim()[0], ax2.get_ylim()[0], ax4.get_ylim()[0]),
+                max(ax1.get_ylim()[1], ax3.get_ylim()[1], ax2.get_ylim()[1], ax4.get_ylim()[1])]
 
-        ax0.set_ylim(ylim)
         ax1.set_ylim(ylim)
         ax2.set_ylim(ylim)
         ax3.set_ylim(ylim)
+        ax4.set_ylim(ylim)
 
-        ax0.grid(True, which='both', ls=':')
         ax1.grid(True, which='both', ls=':')
         ax2.grid(True, which='both', ls=':')
         ax3.grid(True, which='both', ls=':')
+        ax4.grid(True, which='both', ls=':')
 
         plt.tight_layout()
         plt.subplots_adjust(top=0.9, right=0.85)
