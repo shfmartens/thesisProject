@@ -1272,7 +1272,6 @@ class DisplayAugmentedValidation:
         plt.close()
         pass
 
-
 if __name__ == '__main__':
     #help()
     low_dpi = True

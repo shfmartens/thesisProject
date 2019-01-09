@@ -15,6 +15,11 @@ double determinePointingSign(const std::string thrustPointing) {
         double pointingSign = -1.0;
         return pointingSign;
     }
+    else {
+        double pointingSign = 0.0;
+        return pointingSign;
+    }
+
 }
 
 Eigen::MatrixXd computeStateDerivativeAugmented( const double time, const Eigen::MatrixXd& cartesianState )

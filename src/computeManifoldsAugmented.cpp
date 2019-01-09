@@ -44,7 +44,7 @@ Eigen::MatrixXd retrieveSpacecraftProperties( const std::string spacecraftName)
     double initialMass;
 
     if (spacecraftName == "DeepSpace") {
-        thrustMagnitude = 0.0;           // [N]
+        thrustMagnitude = 1.0E-4;            // [N]
         initialMass = 486.0;                 // [kg]
         specificImpulse = 3200.0;            // [s] from Results from Deep Space 1 Technology validation mission max 3200, min 1900
     }
@@ -65,9 +65,9 @@ Eigen::MatrixXd retrieveSpacecraftProperties( const std::string spacecraftName)
     }
 
 
-    spacecraftProperties( 0 ) = 0.00000;
-    spacecraftProperties( 1 ) = initialMass / initialMass;
-    spacecraftProperties( 2 ) = ( -thrustMagnitude * time_asterix * time_asterix ) / ( 1000 * length_asterix * specificImpulse * gravNul * initialMass );
+    spacecraftProperties( 0 ) = 1.0E-4;  // Nondimensional thrust magnitude
+    spacecraftProperties( 1 ) = initialMass / initialMass; //nondimensional mass
+    spacecraftProperties( 2 ) = ( -thrustMagnitude * length_asterix ) / ( specificImpulse * gravNul * time_asterix );
     spacecraftProperties( 3 ) = 0.85; //TODO,CHANGE INTO INPUT PARAMETER
 
     return spacecraftProperties;
@@ -359,8 +359,6 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
             auto initialMass = static_cast<Eigen::Vector1d>( satelliteCharacteristic(1) );
             auto stableInitialMass = static_cast<Eigen::Vector1d>( satelliteCharacteristic(3) );
             manifoldAugmentedStartingState = getFullAugmentedInitialState(manifoldStartingState, initialMass, stableInitialMass, integrationDirection );
-            //double iomManifoldStart = computeIntegralOfMotion( manifoldAugmentedStartingState, spacecraftName, thrustPointing, massParameter, 0.0 );
-            //std::cout << "THE IOM AFTER DISPLACEMENTS IS: " << iomManifoldStart << std::endl;
 
             if ( saveEigenvectors ) {
                 eigenvectorStateHistory[ manifoldNumber ][ trajectoryOnManifoldNumber ] = std::make_pair(localNormalizedEigenvector, localStateVector);
