@@ -1057,7 +1057,7 @@ class DisplayAugmentedValidation:
             w_u_min_df[i] = w_u_min_df_temp[i]
 
             # Plot real data as check
-            # arr[0, 0].plot(w_s_plus_t, w_s_plus_delta_j, 'o')
+            ax0.plot(w_s_plus_t, w_s_plus_delta_alpha, 'o')
         w_s_plus_df = w_s_plus_df.dropna(axis=0, how='all').fillna(method='ffill')
         w_s_min_df = w_s_min_df.dropna(axis=0, how='all').fillna(method='ffill')
         w_u_plus_df = w_u_plus_df.dropna(axis=0, how='all').fillna(method='ffill')
@@ -1287,7 +1287,7 @@ class DisplayAugmentedValidation:
         ax3 = fig.add_subplot(gs2[1, 1])
 
         highlight_alpha = 0.2
-        ylim = [1e-16, 1e-9]
+        ylim = [1e-18, 1e-9]
         t_min = 0
         step_size = 0.05
         plt.close()
@@ -1384,7 +1384,6 @@ class DisplayAugmentedValidation:
             w_s_min_df[i] = w_s_min_df_temp[i]
             w_u_plus_df[i] = w_u_plus_df_temp[i]
             w_u_min_df[i] = w_u_min_df_temp[i]
-            print(w_s_plus_delta_alpha)
             # Plot real data as check
             # arr[0, 0].plot(w_s_plus_t, w_s_plus_delta_j, 'o')
         w_s_plus_df = w_s_plus_df.dropna(axis=0, how='all').fillna(method='ffill')
@@ -1392,6 +1391,8 @@ class DisplayAugmentedValidation:
         w_u_plus_df = w_u_plus_df.dropna(axis=0, how='all').fillna(method='ffill')
         w_u_min_df = w_u_min_df.dropna(axis=0, how='all').fillna(method='ffill')
 
+        print(w_s_plus_df)
+        print(w_s_plus_df)
         # Plot W^S+
         y1 = w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_plus_df.std(axis=1)
         y2 = w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1)
