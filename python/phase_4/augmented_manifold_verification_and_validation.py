@@ -1503,6 +1503,192 @@ class DisplayAugmentedValidation:
         plt.close()
         pass
 
+    def plot_thrust_validation2(self):
+        fig = plt.figure(figsize=self.figSize)
+
+        gs2 = gs.GridSpec(2,2)
+        ax1 = fig.add_subplot(gs2[0, 0])
+        ax2 = fig.add_subplot(gs2[0, 1])
+        ax3 = fig.add_subplot(gs2[1, 0])
+        ax4 = fig.add_subplot(gs2[1, 1])
+
+
+
+
+        highlight_alpha = 0.2
+        ylim = [1e-16, 1e-9]
+        t_min = 0
+        step_size = 0.05
+
+        w_s_plus_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
+        w_s_min_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
+        w_u_plus_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
+        w_u_min_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
+
+        for i in range(self.numberOfOrbitsPerManifold):
+            w_s_plus_t = []
+            w_s_min_t = []
+            w_u_plus_t = []
+            w_u_min_t = []
+            w_s_plus_delta_j = []
+            w_s_min_delta_j = []
+            w_u_plus_delta_j = []
+            w_u_min_delta_j = []
+            w_s_plus_first_state = self.W_S_plus.xs(0).head(1).values[0]
+            w_s_min_first_state = self.W_S_min.xs(0).head(1).values[0]
+            w_u_plus_first_state = self.W_U_plus.xs(0).head(1).values[0]
+            w_u_min_first_state = self.W_U_min.xs(0).head(1).values[0]
+            w_s_plus_first_iom = computeIntegralOfMotion(w_s_plus_first_state[0], w_s_plus_first_state[1],
+                                                        w_s_plus_first_state[2], w_s_plus_first_state[3],
+                                                        w_s_plus_first_state[4], w_s_plus_first_state[5], w_s_plus_first_state[6], self.thrustMagnitude, self.thrustRestriction)
+            w_s_min_first_iom = computeIntegralOfMotion(w_s_min_first_state[0], w_s_min_first_state[1],
+                                                       w_s_min_first_state[2], w_s_min_first_state[3],
+                                                       w_s_min_first_state[4], w_s_min_first_state[5], w_s_plus_first_state[6], self.thrustMagnitude, self.thrustRestriction)
+            w_u_plus_first_iom = computeIntegralOfMotion(w_u_plus_first_state[0], w_u_plus_first_state[1],
+                                                        w_u_plus_first_state[2], w_u_plus_first_state[3],
+                                                        w_u_plus_first_state[4], w_u_plus_first_state[5], w_s_plus_first_state[6], self.thrustMagnitude, self.thrustRestriction)
+            w_u_min_first_iom = computeIntegralOfMotion(w_u_min_first_state[0], w_u_min_first_state[1],
+                                                       w_u_min_first_state[2], w_u_min_first_state[3],
+                                                       w_u_min_first_state[4], w_u_min_first_state[5], w_s_plus_first_state[6], self.thrustMagnitude, self.thrustRestriction)
+
+            for row in self.W_S_plus.xs(i).iterrows():
+                w_s_plus_t.append(abs(row[0]))
+                w_s_plus_state = row[1].values
+                w_s_plus_iom = computeIntegralOfMotion(w_s_plus_state[0], w_s_plus_state[1], w_s_plus_state[2],
+                                                      w_s_plus_state[3], w_s_plus_state[4], w_s_plus_state[5], w_s_plus_state[6], self.thrustMagnitude, self.thrustRestriction)
+                w_s_plus_delta_j.append(w_s_plus_iom - w_s_plus_first_iom)
+            for row in self.W_S_min.xs(i).iterrows():
+                w_s_min_t.append(abs(row[0]))
+                w_s_min_state = row[1].values
+                w_s_min_iom = computeIntegralOfMotion(w_s_min_state[0], w_s_min_state[1], w_s_min_state[2],
+                                                     w_s_min_state[3], w_s_min_state[4], w_s_min_state[5], w_s_plus_state[6], self.thrustMagnitude, self.thrustRestriction)
+                w_s_min_delta_j.append(w_s_min_iom - w_s_min_first_iom)
+            for row in self.W_U_plus.xs(i).iterrows():
+                w_u_plus_t.append(abs(row[0]))
+                w_u_plus_state = row[1].values
+                w_u_plus_iom = computeIntegralOfMotion(w_u_plus_state[0], w_u_plus_state[1], w_u_plus_state[2],
+                                                      w_u_plus_state[3], w_u_plus_state[4], w_u_plus_state[5], w_s_plus_state[6], self.thrustMagnitude, self.thrustRestriction)
+                w_u_plus_delta_j.append(w_u_plus_iom - w_u_plus_first_iom)
+            for row in self.W_U_min.xs(i).iterrows():
+                w_u_min_t.append(abs(row[0]))
+                w_u_min_state = row[1].values
+                w_u_min_iom = computeIntegralOfMotion(w_u_min_state[0], w_u_min_state[1], w_u_min_state[2],
+                                                     w_u_min_state[3], w_u_min_state[4], w_u_min_state[5], w_s_plus_state[6], self.thrustMagnitude, self.thrustRestriction)
+                w_u_min_delta_j.append(w_u_min_iom - w_u_min_first_iom)
+
+            w_s_plus_f = interp1d(w_s_plus_t, w_s_plus_delta_j)
+            w_s_min_f = interp1d(w_s_min_t, w_s_min_delta_j)
+            w_u_plus_f = interp1d(w_u_plus_t, w_u_plus_delta_j)
+            w_u_min_f = interp1d(w_u_min_t, w_u_min_delta_j)
+
+            w_s_plus_t_max = np.floor(max(w_s_plus_t) * 1 / step_size) * step_size  # Round to nearest step-size
+            w_s_min_t_max = np.floor(max(w_s_min_t) * 1 / step_size) * step_size  # Round to nearest step-size
+            w_u_plus_t_max = np.floor(max(w_u_plus_t) * 1 / step_size) * step_size  # Round to nearest step-size
+            w_u_min_t_max = np.floor(max(w_u_min_t) * 1 / step_size) * step_size  # Round to nearest step-size
+
+            w_s_plus_t_new = np.linspace(t_min, w_s_plus_t_max, np.round((w_s_plus_t_max - t_min) / step_size) + 1)
+            w_s_min_t_new = np.linspace(t_min, w_s_min_t_max, np.round((w_s_min_t_max - t_min) / step_size) + 1)
+            w_u_plus_t_new = np.linspace(t_min, w_u_plus_t_max, np.round((w_u_plus_t_max - t_min) / step_size) + 1)
+            w_u_min_t_new = np.linspace(t_min, w_u_min_t_max, np.round((w_u_min_t_max - t_min) / step_size) + 1)
+
+            w_s_plus_df_temp = pd.DataFrame({i: w_s_plus_f(w_s_plus_t_new)}, index=w_s_plus_t_new)
+            w_s_min_df_temp = pd.DataFrame({i: w_s_min_f(w_s_min_t_new)}, index=w_s_min_t_new)
+            w_u_plus_df_temp = pd.DataFrame({i: w_u_plus_f(w_u_plus_t_new)}, index=w_u_plus_t_new)
+            w_u_min_df_temp = pd.DataFrame({i: w_u_min_f(w_u_min_t_new)}, index=w_u_min_t_new)
+
+            w_s_plus_df[i] = w_s_plus_df_temp[i]
+            w_s_min_df[i] = w_s_min_df_temp[i]
+            w_u_plus_df[i] = w_u_plus_df_temp[i]
+            w_u_min_df[i] = w_u_min_df_temp[i]
+
+            # Plot real data as check
+            #ax0.plot(w_s_plus_t, w_s_plus_delta_alpha, 'o')
+        w_s_plus_df = w_s_plus_df.dropna(axis=0, how='all').fillna(method='ffill')
+        w_s_min_df = w_s_min_df.dropna(axis=0, how='all').fillna(method='ffill')
+        w_u_plus_df = w_u_plus_df.dropna(axis=0, how='all').fillna(method='ffill')
+        w_u_min_df = w_u_min_df.dropna(axis=0, how='all').fillna(method='ffill')
+
+        # Plot W^S+
+        y1 = w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_plus_df.std(axis=1)
+        y2 = w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1)
+
+        ax1.fill_between(w_s_plus_df.mean(axis=1).index,y1=y1,y2=y2, where=y1 >= y2,facecolor=self.plottingColors['W_S_plus'], interpolate=True, alpha=highlight_alpha)
+        l1, = ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{S+} \pm 3\sigma_t^{S+} $', color=self.plottingColors['W_S_plus'], linestyle=':')
+        l2, = ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{S+}$', color=self.plottingColors['W_S_plus'])
+        ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_S_plus'], linestyle=':')
+        ax1.set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$ [-]')
+        ax1.set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
+
+        # Plot W^S-
+        ax2.fill_between(w_s_min_df.mean(axis=1).index,y1=w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1),y2=w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1),facecolor=self.plottingColors['W_S_min'], interpolate=True, alpha=highlight_alpha)
+        l3, = ax2.plot(w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{S-} \pm 3\sigma_t^{S-}$', color=self.plottingColors['W_S_min'], linestyle=':')
+        l4, = ax2.plot(w_s_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{S-}$',color=self.plottingColors['W_S_min'])
+        ax2.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l1, l2, l3, l4])
+        ax2.plot(w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_S_min'], linestyle=':')
+        ax2.set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$ [-]')
+        ax2.set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{S-}$)', loc='right')
+
+        # Plot W^U+
+        ax3.fill_between(w_u_plus_df.mean(axis=1).index,y1=w_u_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_plus_df.std(axis=1),y2=w_u_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_plus_df.std(axis=1),facecolor=self.plottingColors['W_U_plus'], interpolate=True, alpha=highlight_alpha)
+        l5, = ax3.plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_plus_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{U+} \pm 3\sigma_t^{U+}$', color=self.plottingColors['W_U_plus'], linestyle=':')
+        l6, = ax3.plot(w_u_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{U+}$',color=self.plottingColors['W_U_plus'])
+        ax3.plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_plus_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_U_plus'], linestyle=':')
+        ax3.set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$  [-]')
+        ax3.set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{U+}$)', loc='right')
+        ax3.set_xlabel('$|t|$ [-]')
+
+        # Plot W^U-
+        ax4.fill_between(w_u_min_df.mean(axis=1).index,y1=w_u_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),y2=w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna( method='ffill'),facecolor=self.plottingColors['W_U_min'], interpolate=True, alpha=highlight_alpha)
+        l7, = ax4.plot(w_u_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{U-} \pm 3\sigma_t^{U-}$', color=self.plottingColors['W_U_min'], linestyle=':')
+        l8, = ax4.plot(w_u_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{U-}$',color=self.plottingColors['W_U_min'])
+        ax4.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l5, l6, l7, l8])
+        ax4.plot(w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_U_min'], linestyle=':')
+        ax4.set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$  [-]')
+        ax4.set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{U-}$)', loc='right')
+        ax4.set_xlabel('$|t|$  [-]')
+
+        ylim = [min(ax1.get_ylim()[0], ax3.get_ylim()[0], ax2.get_ylim()[0], ax4.get_ylim()[0]),
+                max(ax1.get_ylim()[1], ax3.get_ylim()[1], ax2.get_ylim()[1], ax4.get_ylim()[1])]
+
+        ax1.set_ylim(ylim)
+        ax2.set_ylim(ylim)
+        ax3.set_ylim(ylim)
+        ax4.set_ylim(ylim)
+
+        ax1.grid(True, which='both', ls=':')
+        ax2.grid(True, which='both', ls=':')
+        ax3.grid(True, which='both', ls=':')
+        ax4.grid(True, which='both', ls=':')
+
+        plt.tight_layout()
+        plt.subplots_adjust(top=0.9, right=0.85)
+
+        # plot main title
+        if self.thrustRestriction == 'left':
+            plt.suptitle('$L_' + str(
+                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \longleftarrow }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - IOM verification at C = ' + str(
+                np.round(self.C, 3)), size=self.suptitleSize)
+        elif self.thrustRestriction == 'right':
+            plt.suptitle('$L_' + str(
+                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \longrightarrow }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - IOM verification at C = ' + str(
+                np.round(self.C, 3)), size=self.suptitleSize)
+        else:
+            plt.suptitle('$L_' + str(
+                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ const }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - IOM verification at H$_{lt}$ = ' + str(
+                np.round(self.C, 3)), size=self.suptitleSize)
+
+        if self.lowDPI:
+            plt.savefig('../../data/figures/manifolds/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
+                self.orbitId) + '_' + self.spacecraftName + '_' + str(
+                self.thrustMagnitudeForTitle) + '_' + self.thrustRestriction + '_manifold_pointing_validation.png',
+                        transparent=True, dpi=self.dpi)
+        else:
+            plt.savefig('../../data/figures/manifolds/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
+                self.orbitId) + '_' + self.spacecraftName + '_' + str(
+                self.thrustMagnitudeForTitle) + '_' + self.thrustRestriction + '_manifold_pointing_validation.pdf',
+                        transparent=True)
+        plt.close()
+        pass
 
 
 if __name__ == '__main__':
@@ -1533,6 +1719,6 @@ if __name__ == '__main__':
                             display_augmented_validation.plot_eigenvectors()
                             display_augmented_validation.plot_iom_validation()
                             display_augmented_validation.plot_stopping_validation()
-                            display_augmented_validation.plot_thrust_validation()
+                            display_augmented_validation.plot_thrust_validation2()
 
                             del display_augmented_validation
