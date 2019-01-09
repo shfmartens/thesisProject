@@ -1494,7 +1494,7 @@ class DisplayAugmentedValidation:
             plt.savefig('../../data/figures/manifolds/augmented/L' + str(
                 self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
                 self.orbitId) + '_' + self.spacecraftName + '_' + str(
-                self.thrustMagnitudeForTitle) + '_' + self.thrustRestriction + '_manifold_iom_validation.png',
+                self.thrustMagnitudeForTitle) + '_' + self.thrustRestriction + '_manifold_pointing_validation.png',
                         transparent=True, dpi=self.dpi)
         else:
             plt.savefig('../../data/figures/manifolds/augmented/L' + str(

@@ -237,12 +237,13 @@ def computeThrustAngle(xdot, ydot, zdot, mass, thrust, thrust_restriction):
         accMagnitude = float(thrust)/mass
         f_x = accMagnitude * (pointingSign * -1.0 * ydot) / v
         f_y = accMagnitude * (pointingSign * 1.0 * xdot) / v
-        alpha = math.acos((f_x* xdot + f_y * ydot)/(accMagnitude * v))
+        inner_product = (f_x* xdot + f_y * ydot)/(accMagnitude * v)
+        alpha = np.arccos(inner_product)
     else:
 
         accMagnitude = float(thrust) / mass
         xdotdot = float(thrust) / mass * math.acos(float(thrust_restriction) * 2 * math.pi /180.0)
-        alpha = math.atan(xdotdot, accMagnitude)
+        alpha = np.arctan2(xdotdot, accMagnitude)
     return alpha
 
 
