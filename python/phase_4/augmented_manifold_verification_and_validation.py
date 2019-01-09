@@ -1516,7 +1516,7 @@ class DisplayAugmentedValidation:
 
 
         highlight_alpha = 0.2
-        ylim = [1e-16, 1e-9]
+        ylim = [1e-18, 1e-9]
         t_min = 0
         step_size = 0.05
 
@@ -1538,8 +1538,7 @@ class DisplayAugmentedValidation:
             w_s_min_first_state = self.W_S_min.xs(0).head(1).values[0]
             w_u_plus_first_state = self.W_U_plus.xs(0).head(1).values[0]
             w_u_min_first_state = self.W_U_min.xs(0).head(1).values[0]
-            w_s_plus_first_iom = computeIntegralOfMotion(w_s_plus_first_state[0], w_s_plus_first_state[1],
-                                                        w_s_plus_first_state[2], w_s_plus_first_state[3],
+            w_s_plus_first_iom = computeThrustAngle(w_s_plus_first_state[3],
                                                         w_s_plus_first_state[4], w_s_plus_first_state[5], w_s_plus_first_state[6], self.thrustMagnitude, self.thrustRestriction)
             w_s_min_first_iom = computeIntegralOfMotion(w_s_min_first_state[0], w_s_min_first_state[1],
                                                        w_s_min_first_state[2], w_s_min_first_state[3],
@@ -1554,8 +1553,7 @@ class DisplayAugmentedValidation:
             for row in self.W_S_plus.xs(i).iterrows():
                 w_s_plus_t.append(abs(row[0]))
                 w_s_plus_state = row[1].values
-                w_s_plus_iom = computeIntegralOfMotion(w_s_plus_state[0], w_s_plus_state[1], w_s_plus_state[2],
-                                                      w_s_plus_state[3], w_s_plus_state[4], w_s_plus_state[5], w_s_plus_state[6], self.thrustMagnitude, self.thrustRestriction)
+                w_s_plus_iom = computeThrustAngle(w_s_plus_state[3], w_s_plus_state[4], w_s_plus_state[5], w_s_plus_state[6], self.thrustMagnitude, self.thrustRestriction)
                 w_s_plus_delta_j.append(w_s_plus_iom - w_s_plus_first_iom)
             for row in self.W_S_min.xs(i).iterrows():
                 w_s_min_t.append(abs(row[0]))
