@@ -1460,8 +1460,8 @@ class DisplayAugmentedValidation:
         ax3.set_title('Thrust angle deviation on manifold ($\\forall i \in \mathcal{W}^{U-}$)', loc='right')
         ax3.set_xlabel('$|t|$  [-]')
 
-        ylim = [min(ax1.get_ylim()[0], ax3.get_ylim()[0], ax2.get_ylim()[0], ax4.get_ylim()[0]),
-                max(ax1.get_ylim()[1], ax3.get_ylim()[1], ax2.get_ylim()[1], ax4.get_ylim()[1])]
+        ylim = [min(ax0.get_ylim()[0], ax2.get_ylim()[0], ax1.get_ylim()[0], ax3.get_ylim()[0]),
+                max(ax0.get_ylim()[1], ax2.get_ylim()[1], ax1.get_ylim()[1], ax3.get_ylim()[1])]
 
         ax0.set_ylim(ylim)
         ax1.set_ylim(ylim)
