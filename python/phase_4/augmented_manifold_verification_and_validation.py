@@ -1384,7 +1384,7 @@ class DisplayAugmentedValidation:
             w_s_min_df[i] = w_s_min_df_temp[i]
             w_u_plus_df[i] = w_u_plus_df_temp[i]
             w_u_min_df[i] = w_u_min_df_temp[i]
-
+            print(w_s_plus_delta_alpha)
             # Plot real data as check
             # arr[0, 0].plot(w_s_plus_t, w_s_plus_delta_j, 'o')
         w_s_plus_df = w_s_plus_df.dropna(axis=0, how='all').fillna(method='ffill')
