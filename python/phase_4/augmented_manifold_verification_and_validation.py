@@ -1613,38 +1613,38 @@ class DisplayAugmentedValidation:
         y2 = w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1)
 
         ax1.fill_between(w_s_plus_df.mean(axis=1).index,y1=y1,y2=y2, where=y1 >= y2,facecolor=self.plottingColors['W_S_plus'], interpolate=True, alpha=highlight_alpha)
-        l1, = ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{S+} \pm 3\sigma_t^{S+} $', color=self.plottingColors['W_S_plus'], linestyle=':')
+        l1, = ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\alpha_t^{S+} \pm 3\sigma_t^{S+} $', color=self.plottingColors['W_S_plus'], linestyle=':')
         l2, = ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\alpha_t^{S+}$', color=self.plottingColors['W_S_plus'])
         ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_S_plus'], linestyle=':')
-        ax1.set_ylabel('$ \\alpha (\mathbf{X^i_t}) - IOM(\\ alpha{X^p})$ [-]')
-        ax1.set_title('Thrust pointing verification on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
+        ax1.set_ylabel('$ \\alpha (\mathbf{X^i_t}) - \\alpha (\mathbf{X^p})$ [-]')
+        ax1.set_title('$\\alpha $ deviation on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
 
         # Plot W^S-
         ax2.fill_between(w_s_min_df.mean(axis=1).index,y1=w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1),y2=w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1),facecolor=self.plottingColors['W_S_min'], interpolate=True, alpha=highlight_alpha)
-        l3, = ax2.plot(w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{S-} \pm 3\sigma_t^{S-}$', color=self.plottingColors['W_S_min'], linestyle=':')
-        l4, = ax2.plot(w_s_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{S-}$',color=self.plottingColors['W_S_min'])
+        l3, = ax2.plot(w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\alpha_t^{S-} \pm 3\sigma_t^{S-}$', color=self.plottingColors['W_S_min'], linestyle=':')
+        l4, = ax2.plot(w_s_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\alpha_t^{S-}$',color=self.plottingColors['W_S_min'])
         ax2.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l1, l2, l3, l4])
         ax2.plot(w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_S_min'], linestyle=':')
-        ax2.set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$ [-]')
-        ax2.set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{S-}$)', loc='right')
+        ax2.set_ylabel('$ \\alpha (\mathbf{X^i_t}) - \\alpha (\mathbf{X^p})$ [-]')
+        ax2.set_title('$ \\alpha $ deviation on manifold ($\\forall i \in \mathcal{W}^{S-}$)', loc='right')
 
         # Plot W^U+
         ax3.fill_between(w_u_plus_df.mean(axis=1).index,y1=w_u_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_plus_df.std(axis=1),y2=w_u_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_plus_df.std(axis=1),facecolor=self.plottingColors['W_U_plus'], interpolate=True, alpha=highlight_alpha)
-        l5, = ax3.plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_plus_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{U+} \pm 3\sigma_t^{U+}$', color=self.plottingColors['W_U_plus'], linestyle=':')
-        l6, = ax3.plot(w_u_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{U+}$',color=self.plottingColors['W_U_plus'])
+        l5, = ax3.plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_plus_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\alpha_t^{U+} \pm 3\sigma_t^{U+}$', color=self.plottingColors['W_U_plus'], linestyle=':')
+        l6, = ax3.plot(w_u_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\alpha_t^{U+}$',color=self.plottingColors['W_U_plus'])
         ax3.plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_plus_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_U_plus'], linestyle=':')
-        ax3.set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$  [-]')
-        ax3.set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{U+}$)', loc='right')
+        ax3.set_ylabel('$\\alpha (\mathbf{X^i_t}) - \\alpha (\mathbf{X^p})$  [-]')
+        ax3.set_title('$\\alpha $ deviation on manifold ($\\forall i \in \mathcal{W}^{U+}$)', loc='right')
         ax3.set_xlabel('$|t|$ [-]')
 
         # Plot W^U-
         ax4.fill_between(w_u_min_df.mean(axis=1).index,y1=w_u_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),y2=w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna( method='ffill'),facecolor=self.plottingColors['W_U_min'], interpolate=True, alpha=highlight_alpha)
-        l7, = ax4.plot(w_u_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{U-} \pm 3\sigma_t^{U-}$', color=self.plottingColors['W_U_min'], linestyle=':')
-        l8, = ax4.plot(w_u_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{U-}$',color=self.plottingColors['W_U_min'])
+        l7, = ax4.plot(w_u_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\alpha_t^{U-} \pm 3\sigma_t^{U-}$', color=self.plottingColors['W_U_min'], linestyle=':')
+        l8, = ax4.plot(w_u_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\alpha_t^{U-}$',color=self.plottingColors['W_U_min'])
         ax4.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l5, l6, l7, l8])
         ax4.plot(w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_U_min'], linestyle=':')
-        ax4.set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$  [-]')
-        ax4.set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{U-}$)', loc='right')
+        ax4.set_ylabel('$ \\alpha (\mathbf{X^i_t}) - \\alpha (\mathbf{X^p})$  [-]')
+        ax4.set_title('$\\alpha $ deviation on manifold ($\\forall i \in \mathcal{W}^{U-}$)', loc='right')
         ax4.set_xlabel('$|t|$  [-]')
 
         ylim = [min(ax1.get_ylim()[0], ax3.get_ylim()[0], ax2.get_ylim()[0], ax4.get_ylim()[0]),
@@ -1666,15 +1666,15 @@ class DisplayAugmentedValidation:
         # plot main title
         if self.thrustRestriction == 'left':
             plt.suptitle('$L_' + str(
-                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \longleftarrow }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - IOM verification at C = ' + str(
+                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \longleftarrow }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Thrust pointing verification at C = ' + str(
                 np.round(self.C, 3)), size=self.suptitleSize)
         elif self.thrustRestriction == 'right':
             plt.suptitle('$L_' + str(
-                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \longrightarrow }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - IOM verification at C = ' + str(
+                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \longrightarrow }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Thrust pointing at C = ' + str(
                 np.round(self.C, 3)), size=self.suptitleSize)
         else:
             plt.suptitle('$L_' + str(
-                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ const }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - IOM verification at H$_{lt}$ = ' + str(
+                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ const }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Thrust pointing verification at H$_{lt}$ = ' + str(
                 np.round(self.C, 3)), size=self.suptitleSize)
 
         if self.lowDPI:
