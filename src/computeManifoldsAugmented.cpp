@@ -92,8 +92,12 @@ double computeIntegralOfMotion ( const Eigen::VectorXd currentStateVector, const
             integralOfMotion = JacobiEnergy / -2.0;
         } else {
             // calculate the accelerations
-            Eigen::MatrixXd stateDerivative = computeStateDerivativeAugmented(currentTime, currentStateVector);
-            double innerProduct = spatialStateVector.coeff(0,0) * stateDerivative.coeff(3,0)  + spatialStateVector.coeff(1,0) * stateDerivative.coeff(4,0) + spatialStateVector(2,0) * stateDerivative.coeff(5,0);
+            Eigen::MatrixXd characteristics = retrieveSpacecraftProperties( spacecraftName );
+            double thrustMagnitude = characteristics(0);
+            double alpha = std::stod(thrustPointing);
+            double xTermRelatedToThrust = (thrustMagnitude / currentStateVector.coeff(6,0) ) * std::cos( alpha * 2.0 * tudat::mathematical_constants::PI / 180.0 );
+            double yTermRelatedToThrust = (thrustMagnitude / currentStateVector.coeff(6,0) ) * std::sin( alpha * 2.0 * tudat::mathematical_constants::PI / 180.0 );
+            double innerProduct = spatialStateVector.coeff(0,0) * xTermRelatedToThrust  + spatialStateVector.coeff(1,0) * yTermRelatedToThrust;
             integralOfMotion = JacobiEnergy / -2.0 - innerProduct;
         }
     }
@@ -392,14 +396,14 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
             if (thrustPointing == "left" || thrustPointing == "right") {
                 referenceIoMOnManifold = integralOfMotionOnOrbit;
             } else {
-                referenceIoMOnManifold = computeIntegralOfMotion(stateVectorInclSTM, spacecraftName, thrustPointing, massParameter, currentTime);
+                referenceIoMOnManifold = computeIntegralOfMotion(stateVectorInclSTM.block(0,0,7,1), spacecraftName, thrustPointing, massParameter, currentTime);
             }
             std::cout << "Trajectory on manifold number: " << trajectoryOnManifoldNumber << std::endl;
 
             while ( (std::abs( currentTime ) <= maximumIntegrationTimeManifoldTrajectories) && !fullManifoldComputed ) {
 
                 // Check whether trajectory still belongs to the same energy level
-                IoMOutsideBounds = checkIoMOnManifoldAugmentedOutsideBounds(stateVectorInclSTM, referenceIoMOnManifold, massParameter, spacecraftName, thrustPointing, currentTime);
+                IoMOutsideBounds = checkIoMOnManifoldAugmentedOutsideBounds(stateVectorInclSTM.block(0,0,7,1), referenceIoMOnManifold, massParameter, spacecraftName, thrustPointing, currentTime);
                 fullManifoldComputed      = IoMOutsideBounds;
 
                 // Check whether the spacecraft comes above its initial wet mass
