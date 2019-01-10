@@ -1004,7 +1004,7 @@ class DisplayAugmentedValidation:
                                                         w_u_plus_first_state[4], w_u_plus_first_state[5], w_u_plus_first_state[6], self.thrustMagnitude, self.thrustRestriction)
             w_u_min_first_iom = computeIntegralOfMotion(w_u_min_first_state[0], w_u_min_first_state[1],
                                                        w_u_min_first_state[2], w_u_min_first_state[3],
-                                                       w_u_min_first_state[4], w_u_min_first_state[5], w_u_min_state[6], self.thrustMagnitude, self.thrustRestriction)
+                                                       w_u_min_first_state[4], w_u_min_first_state[5], w_u_min_first_state[6], self.thrustMagnitude, self.thrustRestriction)
 
             for row in self.W_S_plus.xs(i).iterrows():
                 w_s_plus_t.append(abs(row[0]))
@@ -1689,5 +1689,5 @@ if __name__ == '__main__':
                             display_augmented_validation.plot_stopping_validation()
                             display_augmented_validation.plot_thrust_validation()
                             display_augmented_validation.plot_mass_validation()
-                            
+
                             del display_augmented_validation
