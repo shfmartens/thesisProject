@@ -375,6 +375,9 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
             stateVectorInclSTMAndTime = propagateOrbitAugmented(manifoldAugmentedStartingState, massParameter, 0.0, integrationDirection, spacecraftName, thrustPointing);
             stateVectorInclSTM        = stateVectorInclSTMAndTime.first;
             currentTime               = stateVectorInclSTMAndTime.second;
+                      << "================================================"                               << std::endl
+                      << "currentTime BEFORE START OF LOOP                "   << currentTime   << "    " << std::endl
+                      << "================================================"                               << std::endl;
 
             std::cout << "Trajectory on manifold number: " << trajectoryOnManifoldNumber << std::endl;
 
