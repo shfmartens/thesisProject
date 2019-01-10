@@ -1672,7 +1672,7 @@ class DisplayAugmentedValidation:
         ax4 = fig.add_subplot(gs2[1, 1])
 
         highlight_alpha = 0.2
-        ylim = [0, 0.001]
+        ylim = [0, 0.00001]
         t_min = 0
         step_size = 0.05
 
