@@ -364,7 +364,7 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
                 eigenvectorStateHistory[ manifoldNumber ][ trajectoryOnManifoldNumber ] = std::make_pair(localNormalizedEigenvector, localStateVector);
             }
             if ( saveFrequency >= 0 ) {
-                manifoldAugmentedStateHistory[ manifoldNumber ][ trajectoryOnManifoldNumber ][ 0.0 ] = manifoldAugmentedStartingState.block( 0, 0, 5, 1 );
+                manifoldAugmentedStateHistory[ manifoldNumber ][ trajectoryOnManifoldNumber ][ 0.0 ] = manifoldAugmentedStartingState.block( 0, 0, 7, 1 );
             }
 
             stateVectorInclSTMAndTime = propagateOrbitAugmented(manifoldAugmentedStartingState, massParameter, 0.0, integrationDirection, spacecraftName, thrustPointing);
