@@ -1702,22 +1702,22 @@ class DisplayAugmentedValidation:
             for row in self.W_S_plus.xs(i).iterrows():
                 w_s_plus_t.append(abs(row[0]))
                 w_s_plus_state = row[1].values
-                w_s_plus_iom =computeMassRate(self.spacecraftName, self.thrust_magnitudes)
+                w_s_plus_iom =computeMassRate(self.spacecraftName, self.thrustMagnitude)
                 w_s_plus_delta_j.append(w_s_plus_iom)
             for row in self.W_S_min.xs(i).iterrows():
                 w_s_min_t.append(abs(row[0]))
                 w_s_min_state = row[1].values
-                w_s_min_iom = computeMassRate(self.spacecraftName, self.thrust_magnitudes)
+                w_s_min_iom = computeMassRate(self.spacecraftName, self.thrustMagnitude)
                 w_s_min_delta_j.append(w_s_min_iom)
             for row in self.W_U_plus.xs(i).iterrows():
                 w_u_plus_t.append(abs(row[0]))
                 w_u_plus_state = row[1].values
-                w_u_plus_iom = computeMassRate(self.spacecraftName, self.thrust_magnitudes)
+                w_u_plus_iom = computeMassRate(self.spacecraftName, self.thrustMagnitude)
                 w_u_plus_delta_j.append(w_u_plus_iom)
             for row in self.W_U_min.xs(i).iterrows():
                 w_u_min_t.append(abs(row[0]))
                 w_u_min_state = row[1].values
-                w_u_min_iom = computeMassRate(self.spacecraftName, self.thrust_magnitudes)
+                w_u_min_iom = computeMassRate(self.spacecraftName, self.thrustMagnitude)
                 w_u_min_delta_j.append(w_u_min_iom)
 
             w_s_plus_f = interp1d(w_s_plus_t, w_s_plus_delta_j)
