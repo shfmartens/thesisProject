@@ -1894,5 +1894,6 @@ if __name__ == '__main__':
                             display_augmented_validation.plot_stopping_validation()
                             display_augmented_validation.plot_thrust_validation()
                             display_augmented_validation.plot_mass_validation()
+                            display_augmented_validation.plot_massrate_validation()
 
                             del display_augmented_validation
