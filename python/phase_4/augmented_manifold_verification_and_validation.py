@@ -1193,9 +1193,9 @@ class DisplayAugmentedValidation:
             ax1.semilogy(w_u_min_dy[w_u_min_dy['dy'] < 1e-10], c=self.plottingColors['W_U_min'],
                          label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
-            ax2.semilogy(w_s_plus_dm[w_s_plus_dm['dm'] < 1], c=self.plottingColors['W_S_plus'],
+            ax2.plot(w_s_plus_dm[w_s_plus_dm['dm'] < 1], c=self.plottingColors['W_S_plus'],
                          label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
-            ax2.semilogy(w_s_min_dm[w_s_min_dm['dm'] < 1], c=self.plottingColors['W_S_min'],
+            ax2.plot(w_s_min_dm[w_s_min_dm['dm'] < 1], c=self.plottingColors['W_S_min'],
                          label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
 
         if self.lagrangePointNr == 2:
@@ -1218,9 +1218,9 @@ class DisplayAugmentedValidation:
             ax1.semilogy(w_u_min_dy[w_u_min_dy['dy'] < 1e-10], c=self.plottingColors['W_U_min'],
                          label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
-            ax2.semilogy(w_s_plus_dm[w_s_plus_dm['dm'] < 1e0], c=self.plottingColors['W_S_plus'],
+            ax2.plot(w_s_plus_dm[w_s_plus_dm['dm'] < 1e0], c=self.plottingColors['W_S_plus'],
                          label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
-            ax2.semilogy(w_s_min_dm[w_s_min_dm['dm'] < 1e-0], c=self.plottingColors['W_S_min'],
+            ax2.plot(w_s_min_dm[w_s_min_dm['dm'] < 1e-0], c=self.plottingColors['W_S_min'],
                          label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
 
         ax0.set_ylabel('$|x^i_{t_f} - (1-\mu)|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
