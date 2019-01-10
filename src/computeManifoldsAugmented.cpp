@@ -277,6 +277,7 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
     double integralOfMotionOnOrbit = computeIntegralOfMotion( initialStateVector, spacecraftName, thrustPointing, massParameter, 0.0 );
     std::cout << "\nInitial state vector:" << std::endl << initialStateVector       << std::endl
               << "\nwith IOM: " << integralOfMotionOnOrbit   << ", T: " << orbitalPeriod << std::endl;
+    double referenceIoMOnManifold;
 
     // Propagate the initialStateVector for a full period and write output to file.
     std::map< double, Eigen::MatrixXd > stateTransitionMatrixHistory;
@@ -332,7 +333,6 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
         bool xDiffSignSet               = false;
         double ySign                    = 0.0;
         double xDiffSign                = 0.0;
-        double referenceIoMOnManifold;
 
         offsetSign                 = offsetSigns.at(manifoldNumber);
         monodromyMatrixEigenvector = eigenVectors.at(manifoldNumber);
@@ -493,7 +493,7 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
               << "Mass parameter: "             << massParameter                                << std::endl
               << "Spacecraft: "                 << spacecraftName                               << std::endl
               << "Thrust restriction: "         << thrustPointing                               << std::endl
-              << "IoM at initial conditions: "    << integralOfMotionOnOrbit                          << std::endl
+              << "IoM at initial conditions: "    << referenceIoMOnManifold                          << std::endl
               << "IoM at end of manifold orbit: " << computeIntegralOfMotion(stateVectorInclSTM.block(0,0,5,1), spacecraftName, thrustPointing, massParameter) << std::endl
               << "T: " << orbitalPeriod                                                         << std::endl
               << "================================================"                             << std::endl;
