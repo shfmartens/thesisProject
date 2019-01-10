@@ -1610,7 +1610,7 @@ class DisplayAugmentedValidation:
         ax4.plot(w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),
                  color=self.plottingColors['W_U_min'], linestyle=':')
         ax4.set_ylabel('$|1 - m^i_{t}|$ [-]')
-        ax4.set_title('$\\Mass deviation on manifold ($\\forall i \in \mathcal{W}^{U-}$)', loc='right')
+        ax4.set_title('Mass deviation on manifold ($\\forall i \in \mathcal{W}^{U-}$)', loc='right')
         ax4.set_xlabel('$|t|$  [-]')
 
         ylim = [min(ax1.get_ylim()[0], ax3.get_ylim()[0], ax2.get_ylim()[0], ax4.get_ylim()[0]),
