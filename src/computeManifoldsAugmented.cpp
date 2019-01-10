@@ -365,11 +365,11 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
             auto stableInitialMass = static_cast<Eigen::Vector1d>( satelliteCharacteristic(3) );
             manifoldAugmentedStartingState = getFullAugmentedInitialState(manifoldStartingState, initialMass, stableInitialMass, integrationDirection );
 
-//            std::cout << std::endl
-//                      << "================================================"                               << std::endl
-//                      << "Integral of Motion before offset                "   << integralOfMotionOnOrbit    << "    " << std::endl
-//                      << "Integral of Motion after offset:                 " << computeIntegralOfMotion(manifoldAugmentedStartingState, spacecraftName, thrustPointing, massParameter, currentTime)   << "    " << std::endl
-//                      << "================================================"                               << std::endl;
+            std::cout << std::endl
+                      << "================================================"                               << std::endl
+                      << "Integral of Motion before offset                "   << integralOfMotionOnOrbit    << "    " << std::endl
+                      << "Integral of Motion after offset:                 " << computeIntegralOfMotion(manifoldAugmentedStartingState, spacecraftName, thrustPointing, massParameter, currentTime)   << "    " << std::endl
+                      << "================================================"                               << std::endl;
             if ( saveEigenvectors ) {
                 eigenvectorStateHistory[ manifoldNumber ][ trajectoryOnManifoldNumber ] = std::make_pair(localNormalizedEigenvector, localStateVector);
             }
