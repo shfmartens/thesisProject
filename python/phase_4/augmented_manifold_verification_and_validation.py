@@ -1156,6 +1156,7 @@ class DisplayAugmentedValidation:
 
         highlight_alpha = 0.2
         ylim = [1e-16, 1e-9]
+        ylim2 = [-0.16 , 0]
         t_min = 0
         step_size = 0.05
 
@@ -1237,7 +1238,7 @@ class DisplayAugmentedValidation:
         ax2.set_xlabel('$\\tau$ [-]')
         ax0.set_ylim(ylim)
         ax1.set_ylim(ylim)
-        ax2.set_ylim([0, 1])
+        ax2.set_ylim(ylim2)
 
         if self.lagrangePointNr == 1:
             ax0.set_title('Position deviation at $U_i \;  \\forall \; i = 2, 3$')
@@ -1467,7 +1468,7 @@ class DisplayAugmentedValidation:
         ax4 = fig.add_subplot(gs2[1, 1])
 
         highlight_alpha = 0.2
-        ylim = [0, 10-5]
+        ylim = [0, 0.0001]
         ylim2 =[0.1499, 0.15001]
         t_min = 0
         step_size = 0.05
@@ -1615,8 +1616,8 @@ class DisplayAugmentedValidation:
         ax4.set_title('Mass deviation on manifold ($\\forall i \in \mathcal{W}^{U-}$)', loc='right')
         ax4.set_xlabel('$|t|$  [-]')
 
-        ylim = [min(ax1.get_ylim()[0], ax3.get_ylim()[0], ax2.get_ylim()[0], ax4.get_ylim()[0]),
-                max(ax1.get_ylim()[1], ax3.get_ylim()[1], ax2.get_ylim()[1], ax4.get_ylim()[1])]
+        #ylim = [min(ax1.get_ylim()[0], ax3.get_ylim()[0], ax2.get_ylim()[0], ax4.get_ylim()[0]),
+                #max(ax1.get_ylim()[1], ax3.get_ylim()[1], ax2.get_ylim()[1], ax4.get_ylim()[1])]
 
         ax1.set_ylim(ylim2)
         ax2.set_ylim(ylim2)
