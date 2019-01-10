@@ -1238,7 +1238,7 @@ class DisplayAugmentedValidation:
         ax2.set_xlabel('$\\tau$ [-]')
         ax0.set_ylim(ylim)
         ax1.set_ylim(ylim)
-        ax2.set_ylim(ylim2)
+        ax2.set_ylim(ylim)
 
         if self.lagrangePointNr == 1:
             ax0.set_title('Position deviation at $U_i \;  \\forall \; i = 2, 3$')
