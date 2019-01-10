@@ -369,12 +369,12 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
             auto stableInitialMass = static_cast<Eigen::Vector1d>( satelliteCharacteristic(3) );
             manifoldAugmentedStartingState = getFullAugmentedInitialState(manifoldStartingState, initialMass, stableInitialMass, integrationDirection );
 
-            std::cout << std::endl
-                      << "================================================"                               << std::endl
-                      << "Integral of Motion before offset                "   << integralOfMotionOnOrbit    << "    " << std::endl
-                      << "Time after offset                               "   << currentTime                << "    " << std::endl
-                      << "Integral of Motion after offset:                 " << computeIntegralOfMotion(manifoldAugmentedStartingState, spacecraftName, thrustPointing, massParameter, currentTime)   << "    " << std::endl
-                      << "================================================"                               << std::endl;
+//            std::cout << std::endl
+//                      << "================================================"                               << std::endl
+//                      << "Integral of Motion before offset                "   << integralOfMotionOnOrbit    << "    " << std::endl
+//                      << "Time after offset                               "   << currentTime                << "    " << std::endl
+//                      << "Integral of Motion after offset:                 " << computeIntegralOfMotion(manifoldAugmentedStartingState, spacecraftName, thrustPointing, massParameter, currentTime)   << "    " << std::endl
+//                      << "================================================"                               << std::endl;
             if ( saveEigenvectors ) {
                 eigenvectorStateHistory[ manifoldNumber ][ trajectoryOnManifoldNumber ] = std::make_pair(localNormalizedEigenvector, localStateVector);
             }
@@ -385,12 +385,12 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
             stateVectorInclSTMAndTime = propagateOrbitAugmented(manifoldAugmentedStartingState, massParameter, 0.0, integrationDirection, spacecraftName, thrustPointing);
             stateVectorInclSTM        = stateVectorInclSTMAndTime.first;
             currentTime               = stateVectorInclSTMAndTime.second;
-            std::cout << "================================================"                               << std::endl
-                      << "currentTime BEFORE START OF LOOP                "   << currentTime   << "    " << std::endl
-                      << "stateVectorInclSTM                              "   << stateVectorInclSTM   << "    " << std::endl
-                      << "stateVectorInclSTMBLOCK                         "   << stateVectorInclSTM.block(0,0,7,1)   << "    " << std::endl
-                      << "currentTime BEFORE START OF LOOP                "   << currentTime   << "    " << std::endl
-                      << "================================================"                               << std::endl;
+//            std::cout << "================================================"                               << std::endl
+//                      << "currentTime BEFORE START OF LOOP                "   << currentTime   << "    " << std::endl
+//                      << "stateVectorInclSTM                              "   << stateVectorInclSTM   << "    " << std::endl
+//                      << "stateVectorInclSTMBLOCK                         "   << stateVectorInclSTM.block(0,0,7,1)   << "    " << std::endl
+//                      << "currentTime BEFORE START OF LOOP                "   << currentTime   << "    " << std::endl
+//                      << "================================================"                               << std::endl;
 
             // Set the reference IOM
             if (thrustPointing == "left" || thrustPointing == "right") {
