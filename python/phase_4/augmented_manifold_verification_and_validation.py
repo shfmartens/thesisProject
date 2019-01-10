@@ -1156,7 +1156,7 @@ class DisplayAugmentedValidation:
 
         highlight_alpha = 0.2
         ylim = [1e-16, 1e-9]
-        ylim2 = [-0.16 , 0]
+        ylim2 = [-0.16, 0]
         t_min = 0
         step_size = 0.05
 
@@ -1193,9 +1193,9 @@ class DisplayAugmentedValidation:
             ax1.semilogy(w_u_min_dy[w_u_min_dy['dy'] < 1e-10], c=self.plottingColors['W_U_min'],
                          label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
-            ax2.semilogy(w_s_plus_dm[w_s_plus_dm['dm'] < 1e0], c=self.plottingColors['W_S_plus'],
+            ax2.semilogy(w_s_plus_dm[w_s_plus_dm['dm'] ], c=self.plottingColors['W_S_plus'],
                          label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
-            ax2.semilogy(w_s_min_dm[w_s_min_dm['dm'] < 1e-0], c=self.plottingColors['W_S_min'],
+            ax2.semilogy(w_s_min_dm[w_s_min_dm['dm'] < ], c=self.plottingColors['W_S_min'],
                          label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
 
         if self.lagrangePointNr == 2:
