@@ -177,7 +177,7 @@ class DisplayAugmentedValidation:
                 self.W_S_plus_dx.append(abs(state_on_manifold[0] - (1 - self.massParameter)))
                 self.W_S_plus_dy.append(abs(state_on_manifold[1]))
                 #self.W_S_plus_dy.append(0)
-            final_dm = abs(state_on_manifold[6]-1.0)
+            final_dm = abs(1.0-state_on_manifold[6])
             self.W_S_plus_dm.append(final_dm)
 
             # W_S_min
@@ -192,7 +192,7 @@ class DisplayAugmentedValidation:
             else:
                 self.W_S_min_dx.append(abs(state_on_manifold[0] - (1 - self.massParameter)))
                 self.W_S_min_dy.append(0)
-            final_dm = abs(state_on_manifold[6] - 1.0)
+            final_dm = abs(1.0-state_on_manifold[6])
             self.W_S_min_dm.append(final_dm)
 
             # W_U_plus
@@ -1156,7 +1156,7 @@ class DisplayAugmentedValidation:
 
         highlight_alpha = 0.2
         ylim = [1e-16, 1e-9]
-        ylim2 = [-0.2, 0]
+        ylim3 = [0, 0.2]
         t_min = 0
         step_size = 0.05
 
@@ -1225,7 +1225,7 @@ class DisplayAugmentedValidation:
 
         ax0.set_ylabel('$|x^i_{t_f} - (1-\mu)|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
         ax1.set_ylabel('$|y^i_{t_f}|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
-        ax2.set_ylabel('$|m^i_{t_f}-1|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
+        ax2.set_ylabel('$|1-m^i_{t_f}|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
         ax0.legend(frameon=True, loc='center left',  bbox_to_anchor=(1, 0.5))
         ax1.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5))
         ax2.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5))
@@ -1238,7 +1238,7 @@ class DisplayAugmentedValidation:
         ax2.set_xlabel('$\\tau$ [-]')
         ax0.set_ylim(ylim)
         ax1.set_ylim(ylim)
-        ax2.set_ylim(ylim)
+        ax2.set_ylim(ylim3)
 
         if self.lagrangePointNr == 1:
             ax0.set_title('Position deviation at $U_i \;  \\forall \; i = 2, 3$')
