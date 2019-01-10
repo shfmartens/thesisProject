@@ -246,9 +246,15 @@ def computeThrustAngle(xdot, ydot, zdot, mass, thrust, thrust_restriction):
         alpha = np.arctan2(xdotdot, accMagnitude)
     return alpha
 
+def computeMassRate(spacecraft_name, thrust):
+    properties = load_spacecraft_properties(spacecraft_name)
+    Isp = properties['Isp']
+    l_char = 384748
+    gnul = 9.8065E-3
+    t_char = 375700.387120613
 
-
-
+    massRate = (float(thrust)* l_char)/(Isp * gnul * t_char)
+    return massRate
 
 
 if __name__ == '__main__':
