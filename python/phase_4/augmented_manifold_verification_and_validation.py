@@ -371,7 +371,7 @@ class DisplayAugmentedValidation:
         elif self.thrustRestriction == 'right':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ '+ '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \longrightarrow }_{' +  self.thrustMagnitudeForPlotTitle + '}$' + ' - Orthographic projection at C = ' + str(np.round(self.C, 3)), size=self.suptitleSize)
         else:
-            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ '+ '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ const }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Orthographic projection at C = ' + str(np.round(self.C, 3)), size=self.suptitleSize)
+            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ '+ '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \\alpha = ' + self.thrustRestriction + '}_{' + str(np.round(self.thrustRestriction, 3)) + '}$' + ' - Orthographic projection at C = ' + str(np.round(self.C, 3)), size=self.suptitleSize)
 
         fig.savefig('../../data/figures/manifolds/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_' + str(self.spacecraftName) + '_' + self.thrustMagnitudeForTitle + '_' + str(self.thrustRestriction) + '_manifold_orthographic.pdf',
                     transparent=True)
