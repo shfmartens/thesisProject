@@ -453,7 +453,7 @@ class DisplayAugmentedValidation:
                 np.round(self.C, 3)), size=self.suptitleSize)
         else:
             plt.suptitle('$L_' + str(
-                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ const }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Spatial overview at C = ' + str(
+                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \\alpha = ' + self.thrustRestriction + '}_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Spatial overview at C = ' + str(
                 np.round(self.C, 3)), size=self.suptitleSize)
 
         # ax.annotate('\\textbf{Unstable exterior} $\\mathbf{ \mathcal{W}^{U+}}$',
