@@ -846,7 +846,7 @@ class DisplayAugmentedValidation:
                 np.round(self.C, 3)), size=self.suptitleSize)
         else:
             plt.suptitle('$L_' + str(
-                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ const }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Spatial overview at C = ' + str(
+                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \\alpha = ' + self.thrustRestriction + '}_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Spatial overview at C = ' + str(
                 np.round(self.C, 3)), size=self.suptitleSize)
 
         fig.savefig(
@@ -1130,7 +1130,7 @@ class DisplayAugmentedValidation:
                 np.round(self.C, 3)), size=self.suptitleSize)
         else:
             plt.suptitle('$L_' + str(
-                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ const }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - IOM verification at H$_{lt}$ = ' + str(
+                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \\alpha = ' + self.thrustRestriction + '}_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - IOM verification at H$_{lt}$ = ' + str(
                 np.round(self.C, 3)), size=self.suptitleSize)
 
         if self.lowDPI:
@@ -1264,7 +1264,7 @@ class DisplayAugmentedValidation:
                 np.round(self.C, 3)), size=self.suptitleSize)
         else:
             plt.suptitle('$L_' + str(
-                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ const }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Stopping conditions verification at C = ' + str(
+                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \\alpha = ' + self.thrustRestriction + '}_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Stopping conditions verification at C = ' + str(
                 np.round(self.C, 3)), size=self.suptitleSize)
 
         if self.lowDPI:
@@ -1443,7 +1443,7 @@ class DisplayAugmentedValidation:
                 np.round(self.C, 3)), size=self.suptitleSize)
         else:
             plt.suptitle('$L_' + str(
-                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ const }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Thrust pointing verification at H$_{lt}$ = ' + str(
+                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \\alpha = ' + self.thrustRestriction + '}_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Thrust pointing verification at H$_{lt}$ = ' + str(
                 np.round(self.C, 3)), size=self.suptitleSize)
 
         if self.lowDPI:
@@ -1644,7 +1644,7 @@ class DisplayAugmentedValidation:
                 np.round(self.C, 3)), size=self.suptitleSize)
         else:
             plt.suptitle('$L_' + str(
-                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ const }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Mass verification at H$_{lt}$ = ' + str(
+                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \\alpha = ' + self.thrustRestriction + '}_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Mass verification at H$_{lt}$ = ' + str(
                 np.round(self.C, 3)), size=self.suptitleSize)
 
         if self.lowDPI:
@@ -1846,7 +1846,7 @@ class DisplayAugmentedValidation:
                 np.round(self.C, 3)), size=self.suptitleSize)
         else:
             plt.suptitle('$L_' + str(
-                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ const }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Mass rate verification at H$_{lt}$ = ' + str(
+                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \\alpha = ' + self.thrustRestriction + '}_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Mass rate verification at H$_{lt}$ = ' + str(
                 np.round(self.C, 3)), size=self.suptitleSize)
 
         if self.lowDPI:
