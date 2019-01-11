@@ -216,7 +216,7 @@ def computeIntegralOfMotion(x, y, z, xdot, ydot, zdot, mass, thrust, thrust_rest
     if (thrust_restriction == "left" or thrust_restriction == "right"):
         integral_of_motion = c
     else:
-        alpha = float(thrust_restriction) * (2 * math.pi / 180.0)
+        alpha = float(thrust_restriction) * (2 * np.pi / 180.0)
         xddot_lt = ( float(thrust) / mass ) * np.cos(alpha)
         yddot_lt = ( float(thrust) / mass) * np.sin(alpha)
         inner_prod = x * xddot_lt + y * yddot_lt
@@ -242,7 +242,7 @@ def computeThrustAngle(xdot, ydot, zdot, mass, thrust, thrust_restriction):
     else:
 
         accMagnitude = float(thrust) / mass
-        xdotdot = float(thrust) / mass * math.acos(float(thrust_restriction) * 2 * math.pi /180.0)
+        xdotdot = float(thrust) / mass * math.acos(float(thrust_restriction) * 2 * np.pi /180.0)
         alpha = np.arctan2(xdotdot, accMagnitude)
     return alpha
 
