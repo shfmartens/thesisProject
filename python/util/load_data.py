@@ -243,8 +243,8 @@ def computeThrustAngle(xdot, ydot, zdot, mass, thrust, thrust_restriction):
     else:
 
         accMagnitude = float(thrust) / mass
-        xdotdot = float(thrust) / mass * math.acos(float(thrust_restriction) * 2 * np.pi /180.0)
-        alpha = np.arctan2(xdotdot, accMagnitude)
+        xdotdot = float(thrust) / mass * math.cos(float(thrust_restriction) * 2 * np.pi /180.0)
+        alpha = math.acos(xdotdot, accMagnitude)
     return alpha
 
 def computeMassRate(spacecraft_name, thrust):
