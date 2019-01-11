@@ -1,4 +1,5 @@
 import pandas as pd
+import math
 import numpy as np
 
 
@@ -242,7 +243,7 @@ def computeThrustAngle(xdot, ydot, zdot, mass, thrust, thrust_restriction):
     else:
 
         accMagnitude = float(thrust) / mass
-        xdotdot = float(thrust) / mass * np.arccos(float(thrust_restriction) * 2 * np.pi /180.0)
+        xdotdot = float(thrust) / mass * math.acos(float(thrust_restriction) * 2 * np.pi /180.0)
         alpha = np.arctan2(xdotdot, accMagnitude)
     return alpha
 
