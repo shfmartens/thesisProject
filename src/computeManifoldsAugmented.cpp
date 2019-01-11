@@ -65,7 +65,7 @@ Eigen::MatrixXd retrieveSpacecraftProperties( const std::string spacecraftName)
     }
 
 
-    spacecraftProperties( 0 ) = 1.0E-3;  // Nondimensional thrust magnitude
+    spacecraftProperties( 0 ) = 1.0E-4;  // Nondimensional thrust magnitude
     spacecraftProperties( 1 ) = initialMass / initialMass; //nondimensional mass
     spacecraftProperties( 2 ) = ( -thrustMagnitude * length_asterix ) / ( specificImpulse * gravNul * time_asterix );
     spacecraftProperties( 3 ) = 0.85; //TODO,CHANGE INTO INPUT PARAMETER
