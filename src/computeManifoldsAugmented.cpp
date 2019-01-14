@@ -44,7 +44,7 @@ Eigen::MatrixXd retrieveSpacecraftProperties( const std::string spacecraftName)
     double initialMass;
 
     if (spacecraftName == "DeepSpace") {
-        thrustMagnitude = 1.0E-2;            // [N]
+        thrustMagnitude = 1.0E-4;            // [N]
         initialMass = 486.0;                 // [kg]
         specificImpulse = 3200.0;            // [s] from Results from Deep Space 1 Technology validation mission max 3200, min 1900
     }
@@ -59,7 +59,7 @@ Eigen::MatrixXd retrieveSpacecraftProperties( const std::string spacecraftName)
         specificImpulse = 3200.0;            // [s], Hayabusa Asteroid Explorer Pow- ered by Ion Engines on the way to Earth,
     }
     if (spacecraftName == "LunarIceCube") {
-        thrustMagnitude = 1.0E-2;           // [N]
+        thrustMagnitude = 1.0E-4;           // [N]
         initialMass = 14.0;                 // [kg]
         specificImpulse = 2500.0;            // [s]
     }
