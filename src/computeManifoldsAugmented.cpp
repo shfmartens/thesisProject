@@ -232,7 +232,29 @@ void reduceOverShootInitialMass(std::pair< Eigen::MatrixXd, double >& stateVecto
 //                                   const double massParameter) {
 
 //    double yCoordinate;
+//    double contourCondition;
 
+//    // Compute positions and squared positions
+//    double xPositionScaledSquared = ( xCoordinate+massParameter) * (xCoordinate+massParameter);
+//    double xPositionScaledSquared2 = ( 1.0-massParameter-xCoordinate) * (1.0-massParameter-xCoordinate);
+//    double yPositionScaledSquared = ( yCoordinate * yCoordinate );
+
+//    // Compute distances to primaries.
+//    double distanceToPrimaryBody   = sqrt(xPositionScaledSquared     + yPositionScaledSquared);
+//    double distanceToSecondaryBody = sqrt(xPositionScaledSquared2 + yPositionScaledSquared);
+
+//    double distanceToPrimaryCubed = distanceToPrimaryBody * distanceToPrimaryBody * distanceToPrimaryBody;
+//    double distanceToSecondaryCubed = distanceToSecondaryBody * distanceToSecondaryBody * distanceToSecondaryBody;
+
+//    // Set the derivative of the velocities to the accelerations.
+//    double termRelatedToPrimaryBody   = (1.0-massParameter)/distanceToPrimaryBody;
+//    double termRelatedToSecondaryBody = massParameter      /distanceToSecondaryBody;
+//    double termRelatedToPrimaryBodyCubed   = (1.0-massParameter)/distanceToPrimaryCubed;
+//    double termRelatedToSecondaryBodyCubed = massParameter      /distanceToSecondaryCubed;
+
+//    // Specify Function and derivative
+//    //double contourFunction = 0.5 * (xCoordinate * xCoordinate + yPositionScaledSquared) + termRelatedToPrimaryBodyCubed + termRelatedToSecondaryBodyCubed - (referenceIoM / 2.0);
+//    //double contourFunctionDerivative = yCoordinate - termRelatedToPrimaryBodyCubed * yCoordinate - termRelatedToSecondaryBodyCubed * yCoordinate;
 
 //}
 void writeAugmentedManifoldStateHistoryToFile( std::map< int, std::map< int, std::map< double, Eigen::Vector7d > > >& manifoldAugmentedStateHistory,
