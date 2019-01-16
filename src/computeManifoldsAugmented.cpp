@@ -228,6 +228,13 @@ void reduceOverShootInitialMass(std::pair< Eigen::MatrixXd, double >& stateVecto
 
 }
 
+//double ycontourStoppingCondition ( const double xCoordinate, const double referenceIoM,
+//                                   const double massParameter) {
+
+//    double yCoordinate;
+
+
+//}
 void writeAugmentedManifoldStateHistoryToFile( std::map< int, std::map< int, std::map< double, Eigen::Vector7d > > >& manifoldAugmentedStateHistory,
                                       const int& orbitNumber, const int& librationPointNr, const std::string& orbitType, const std::string spacecraftName, const std::string thrustPointing ) {
     std::string fileNameStateVector;
