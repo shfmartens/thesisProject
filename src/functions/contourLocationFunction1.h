@@ -104,7 +104,7 @@ struct contourLocationFunction1 : public contourLocationFunction,
      *
      * \return Accuracy of the true location of the root.
      */
-    double getTrueRootAccuracy( ) { return 1.0e-12; }
+    double getTrueRootAccuracy( ) { return 2.0e-1; }
 
     //! Get a reasonable initial guess of the root location.
     /*!
