@@ -367,7 +367,7 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
         double xDiffSign                = 0.0;
         //double contourCondition         = ycontourStoppingCondition(integralOfMotionOnOrbit, massParameter );
 
-        std::cout << "CONTOUR STOPPING CONDITION IS" << contourCondition << std::endl;
+        //std::cout << "CONTOUR STOPPING CONDITION IS" << contourCondition << std::endl;
         offsetSign                 = offsetSigns.at(manifoldNumber);
         monodromyMatrixEigenvector = eigenVectors.at(manifoldNumber);
         integrationDirection       = integrationDirections.at(manifoldNumber);
