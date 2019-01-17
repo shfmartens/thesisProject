@@ -409,11 +409,11 @@ class DisplayAugmentedValidation:
         fig.tight_layout()
         fig.subplots_adjust(top=0.9)
 
-        if self.lagrangePointNr == 2:
-            if self.orbitType == 'horizontal':
-                ax.set_xlim([1 - self.massParameter, 1.45])
-            else:
-                ax.set_xlim([-1.0, 1 - self.massParameter])
+        # if self.lagrangePointNr == 2:
+        #     if self.orbitType == 'horizontal':
+        #         ax.set_xlim([1 - self.massParameter, 1.45])
+        #     else:
+        #         ax.set_xlim([-1.0, 1 - self.massParameter])
 
         lagrange_points_df = load_lagrange_points_location()
         lagrange_point_nrs = ['L1','L2']
