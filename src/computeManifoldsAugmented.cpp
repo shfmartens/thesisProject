@@ -247,7 +247,7 @@ double ycontourStoppingCondition ( const double referenceIoM, const double massP
     tudat::root_finders::NewtonRaphson::TerminationFunction terminationConditionFunction =
             boost::bind( &tudat::root_finders::termination_conditions::RootAbsoluteToleranceTerminationCondition< double >::checkTerminationCondition,
                          boost::make_shared< tudat::root_finders::termination_conditions::RootAbsoluteToleranceTerminationCondition< double > >(
-                                 contourLocationFunction->getTrueRootAccuracy( ) ), _1, _2, _3, _4, _5 );
+                                 contourLocationFunction->getTrueRootAccuracy( ), contourLocationFunction->getMaxIterations( ) ), _1, _2, _3, _4, _5 );
 
     // Test Newton-Raphson object.
     tudat::root_finders::NewtonRaphson newtonRaphson( terminationConditionFunction );

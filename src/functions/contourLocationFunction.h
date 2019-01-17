@@ -44,6 +44,9 @@ struct contourLocationFunction
 
     //! Get a reasonable upper boundary for the root location.
     virtual double getUpperBound( ) = 0;
+
+    //! Get a reasonable upper boundary for the root location.
+    virtual int getMaxIterations( ) = 0;
 };
 
 

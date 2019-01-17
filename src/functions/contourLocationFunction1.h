@@ -130,6 +130,8 @@ struct contourLocationFunction1 : public contourLocationFunction,
      */
     double getUpperBound( ) { return 7.0; }
 
+    int getMaxIterations( ) { return 1000; }
+
 protected:
 
     double massParameter_;
