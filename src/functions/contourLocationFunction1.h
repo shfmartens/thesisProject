@@ -95,7 +95,7 @@ struct contourLocationFunction1 : public contourLocationFunction,
      */
     double getTrueRootLocation( )
     {
-        return 0.85;
+        return 0.62;
     }
     
     //! Get the accuracy of the true location of the root.
@@ -104,7 +104,7 @@ struct contourLocationFunction1 : public contourLocationFunction,
      *
      * \return Accuracy of the true location of the root.
      */
-    double getTrueRootAccuracy( ) { return 1.0e-15; }
+    double getTrueRootAccuracy( ) { return 1.0e-12; }
 
     //! Get a reasonable initial guess of the root location.
     /*!
@@ -112,7 +112,7 @@ struct contourLocationFunction1 : public contourLocationFunction,
      *
      * \return Initial guess for the true location of the function root.
      */
-    double getInitialGuess( ) { return 0.8; }
+    double getInitialGuess( ) { return 0.62; }
 
     //! Get a reasonable lower boundary for the root location.
     /*!
@@ -120,7 +120,7 @@ struct contourLocationFunction1 : public contourLocationFunction,
      *
      * \return Lower bound for the true location of the function root.
      */
-    double getLowerBound( ) { return 0.5; }
+    double getLowerBound( ) { return 0.6; }
 
     //! Get a reasonable upper boundary for the root location.
     /*!
