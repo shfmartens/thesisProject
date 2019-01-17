@@ -381,7 +381,7 @@ class DisplayAugmentedValidation:
 
     def plot_manifold_zoom(self):
         # Plot: subplots
-        fig = plt.figure(figsize=self.figSize[0])
+        fig = plt.figure(figsize=self.figSize)
         ax = fig.gca()
 
         # Determine color for plot
@@ -412,13 +412,11 @@ class DisplayAugmentedValidation:
         if self.lagrangePointNr == 2:
             if self.orbitType == 'horizontal':
                 ax.set_xlim([1 - self.massParameter, 1.45])
-                ax.set_ylim(-0.15, 0.15)
             else:
-                ax.set_xlim([1 - self.massParameter, 1.25])
-                ax.set_ylim(-0.05, 0.05)
+                ax.set_xlim([-1.0, 1 - self.massParameter])
 
         lagrange_points_df = load_lagrange_points_location()
-        lagrange_point_nrs = ['L2']
+        lagrange_point_nrs = ['L1','L2']
 
         # Lagrange points and bodies
         for lagrange_point_nr in lagrange_point_nrs:
