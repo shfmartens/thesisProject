@@ -439,6 +439,19 @@ class DisplayAugmentedValidation:
         y_range = np.arange(ax.get_ylim()[0], ax.get_ylim()[1], 0.001)
         x_mesh, y_mesh = np.meshgrid(x_range, y_range)
         z_mesh = cr3bp_velocity(x_mesh, y_mesh, self.C)
+
+        print(x_range)
+        print('TEST')
+        print(y_range)
+        print('TEST')
+        print(x_mesh)
+        print('TEST')
+        print(y_mesh)
+        print('TEST')
+        print(z_mesh)
+        print('TEST')
+        print(np.linspace(z_mesh.min(), 0, 10))
+
         if z_mesh.min() < 0:
             ax.contourf(x_mesh, y_mesh, z_mesh, list(np.linspace(z_mesh.min(), 0, 10)), cmap='gist_gray_r',alpha=0.5)
 
@@ -1864,15 +1877,18 @@ class DisplayAugmentedValidation:
         plt.close()
         pass
 
+    def compute_surface_hill(self):
+
+
 if __name__ == '__main__':
     #help()
     low_dpi = True
-    lagrange_points = [1, 2]
+    lagrange_points = [1]
     orbit_types = ['horizontal']
-    c_levels = [3.05, 3.1, 3.15]
-    thrust_restrictions = ['left', 'right', '000.0','090.0', '180.0', '270.0']
+    c_levels = [3.15]
+    thrust_restrictions = ['left']
     spacecraft_names = ['DeepSpace']
-    thrust_magnitudes = ['0.000100', '0.001000', '0.010000']
+    thrust_magnitudes = ['0.000100']
 
     orbit_ids = {'horizontal':  {1: {3.05: 808, 3.1: 577, 3.15: 330}, 2: {3.05: 1066, 3.1: 760, 3.15: 373}}}
 
@@ -1888,7 +1904,7 @@ if __name__ == '__main__':
                                                                                   thrust_magnitude, low_dpi=low_dpi)
                             #display_augmented_validation.plot_manifolds()
                             display_augmented_validation.plot_manifold_zoom()
-                             display_augmented_validation.plot_manifold_individual()
+                            #display_augmented_validation.plot_manifold_individual()
                             #display_augmented_validation.plot_eigenvectors()
                             #display_augmented_validation.plot_iom_validation()
                             #display_augmented_validation.plot_stopping_validation()

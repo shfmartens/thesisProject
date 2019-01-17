@@ -266,10 +266,10 @@ if __name__ == '__main__':
     # orbit_file_path = '../data/near_vertical_1_final_orbit.txt'
     # orbit_df = load_orbit(orbit_file_path)
     # print(orbit_df)
-    test = load_spacecraft_properties("DeepSpace")
-    test2 = test[0]
-    print(test)
-    print(load_spacecraft_properties("DeepSpace")[0])
+    #test = load_spacecraft_properties("DeepSpace")
+    #test2 = test[0]
+    #print(test)
+    #print(load_spacecraft_properties("DeepSpace")[0])
     # initial_conditions_file_path = '../data/raw/horizontal_L2_initial_conditions.txt'
     # initial_conditions_df = load_initial_conditions(initial_conditions_file_path)
     # print(initial_conditions_df)
@@ -286,6 +286,8 @@ if __name__ == '__main__':
     # differential_correction_file_path = '../data/raw/horizontal_L1_differential_correction.txt'
     # differential_correction_df = load_differential_corrections(differential_correction_file_path)
     # print(differential_correction_df)
+
+
 
     load_manifold_augmented()
 
