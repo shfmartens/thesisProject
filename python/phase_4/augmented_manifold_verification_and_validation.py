@@ -381,7 +381,7 @@ class DisplayAugmentedValidation:
 
     def plot_manifold_zoom(self):
         # Plot: subplots
-        fig = plt.figure(figsize=self.figSize)
+        fig = plt.figure(figsize=self.figSize[0])
         ax = fig.gca()
 
         # Determine color for plot
@@ -439,18 +439,6 @@ class DisplayAugmentedValidation:
         y_range = np.arange(ax.get_ylim()[0], ax.get_ylim()[1], 0.001)
         x_mesh, y_mesh = np.meshgrid(x_range, y_range)
         z_mesh = cr3bp_velocity(x_mesh, y_mesh, self.C)
-
-        print(x_range)
-        print('TEST')
-        print(y_range)
-        print('TEST')
-        print(x_mesh)
-        print('TEST')
-        print(y_mesh)
-        print('TEST')
-        print(z_mesh)
-        print('TEST')
-        print(np.linspace(z_mesh.min(), 0, 10))
 
         if z_mesh.min() < 0:
             ax.contourf(x_mesh, y_mesh, z_mesh, list(np.linspace(z_mesh.min(), 0, 10)), cmap='gist_gray_r',alpha=0.5)
@@ -1882,10 +1870,10 @@ class DisplayAugmentedValidation:
 if __name__ == '__main__':
     #help()
     low_dpi = True
-    lagrange_points = [1]
+    lagrange_points = [1,2]
     orbit_types = ['horizontal']
-    c_levels = [3.15]
-    thrust_restrictions = ['left']
+    c_levels = [3.05, 3.1, 3.15]
+    thrust_restrictions = ['0.010000', '0.001000', '0.000100']
     spacecraft_names = ['DeepSpace']
     thrust_magnitudes = ['0.000100']
     orbit_ids = {'horizontal':  {1: {3.05: 808, 3.1: 577, 3.15: 330}, 2: {3.05: 1066, 3.1: 760, 3.15: 373}}}
