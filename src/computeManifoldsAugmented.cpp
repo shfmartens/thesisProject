@@ -23,6 +23,13 @@
 #include "computeManifoldsAugmented.h"
 #include "stateDerivativeModelAugmented.h"
 
+#include "Tudat/Mathematics/BasicMathematics/function.h"
+
+#include "Tudat/Mathematics/RootFinders/newtonRaphson.h"
+
+#include "functions/contourLocationFunction.h"
+#include "functions/contourLocationFunction1.h"
+
 Eigen::MatrixXd retrieveSpacecraftProperties( const std::string spacecraftName)
 {
     //Declare output matrix
@@ -228,35 +235,27 @@ void reduceOverShootInitialMass(std::pair< Eigen::MatrixXd, double >& stateVecto
 
 }
 
-//double ycontourStoppingCondition ( const double xCoordinate, const double referenceIoM,
-//                                   const double massParameter) {
+double ycontourStoppingCondition ( const double referenceIoM, const double massParameter) {
 
-//    double yCoordinate;
-//    double contourCondition;
+    double contourCondition;
 
-//    // Compute positions and squared positions
-//    double xPositionScaledSquared = ( xCoordinate+massParameter) * (xCoordinate+massParameter);
-//    double xPositionScaledSquared2 = ( 1.0-massParameter-xCoordinate) * (1.0-massParameter-xCoordinate);
-//    double yPositionScaledSquared = ( yCoordinate * yCoordinate );
+    // Create object containing the functions.
+    // boost::shared_ptr< LibrationPointLocationFunction1 > LibrationPointLocationFunction = boost::make_shared< LibrationPointLocationFunction1 >( 1, massParameter );
+    std::shared_ptr<contourLocationFunction1> contourLocationFunction = std::make_shared< contourLocationFunction1 > (1, massParameter, referenceIoM);
 
-//    // Compute distances to primaries.
-//    double distanceToPrimaryBody   = sqrt(xPositionScaledSquared     + yPositionScaledSquared);
-//    double distanceToSecondaryBody = sqrt(xPositionScaledSquared2 + yPositionScaledSquared);
+    // The termination condition.
+    tudat::root_finders::NewtonRaphson::TerminationFunction terminationConditionFunction =
+            boost::bind( &tudat::root_finders::termination_conditions::RootAbsoluteToleranceTerminationCondition< double >::checkTerminationCondition,
+                         boost::make_shared< tudat::root_finders::termination_conditions::RootAbsoluteToleranceTerminationCondition< double > >(
+                                 contourLocationFunction->getTrueRootAccuracy( ) ), _1, _2, _3, _4, _5 );
 
-//    double distanceToPrimaryCubed = distanceToPrimaryBody * distanceToPrimaryBody * distanceToPrimaryBody;
-//    double distanceToSecondaryCubed = distanceToSecondaryBody * distanceToSecondaryBody * distanceToSecondaryBody;
+    // Test Newton-Raphson object.
+    tudat::root_finders::NewtonRaphson newtonRaphson( terminationConditionFunction );
 
-//    // Set the derivative of the velocities to the accelerations.
-//    double termRelatedToPrimaryBody   = (1.0-massParameter)/distanceToPrimaryBody;
-//    double termRelatedToSecondaryBody = massParameter      /distanceToSecondaryBody;
-//    double termRelatedToPrimaryBodyCubed   = (1.0-massParameter)/distanceToPrimaryCubed;
-//    double termRelatedToSecondaryBodyCubed = massParameter      /distanceToSecondaryCubed;
-
-//    // Specify Function and derivative
-//    //double contourFunction = 0.5 * (xCoordinate * xCoordinate + yPositionScaledSquared) + termRelatedToPrimaryBodyCubed + termRelatedToSecondaryBodyCubed - (referenceIoM / 2.0);
-//    //double contourFunctionDerivative = yCoordinate - termRelatedToPrimaryBodyCubed * yCoordinate - termRelatedToSecondaryBodyCubed * yCoordinate;
-
-//}
+    // Let Newton-Raphson search for the root.
+    contourCondition = newtonRaphson.execute( contourLocationFunction, contourLocationFunction->getInitialGuess( ) );
+    return contourCondition;
+}
 void writeAugmentedManifoldStateHistoryToFile( std::map< int, std::map< int, std::map< double, Eigen::Vector7d > > >& manifoldAugmentedStateHistory,
                                       const int& orbitNumber, const int& librationPointNr, const std::string& orbitType, const std::string spacecraftName, const std::string thrustPointing ) {
     std::string fileNameStateVector;
@@ -362,7 +361,9 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
         bool xDiffSignSet               = false;
         double ySign                    = 0.0;
         double xDiffSign                = 0.0;
+        double contourCondition         = ycontourStoppingCondition(integralOfMotionOnOrbit, massParameter );
 
+        std::cout << "CONTOUR STOPPING CONDITION IS" << contourCondition << std::endl;
         offsetSign                 = offsetSigns.at(manifoldNumber);
         monodromyMatrixEigenvector = eigenVectors.at(manifoldNumber);
         integrationDirection       = integrationDirections.at(manifoldNumber);
