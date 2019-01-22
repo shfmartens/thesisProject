@@ -39,8 +39,7 @@ Eigen::MatrixXd retrieveSpacecraftProperties( const std::string spacecraftName)
 
     // double moonMass = 0.07346E24;               // [kg]   Obtained from NASA Earth Moon Fact Sheet [km];
     double moonMass = tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER / tudat::physical_constants::GRAVITATIONAL_CONSTANT;
-    double length_asterix   = 0.3844E6;      // [km]   Obtained from NASA Earth Moon Fact Sheet [km]
-    //double length_asterix = 384748;             // [km]   J. Charpront, Ephemeris ELP-2000 [1983] [km]
+    double length_asterix   = 0.3844E6;      // [km]   Obtained from NASA Earth Moon Fact Sheet [km] and same as Koen!
     double time_asterix     = tudat::basic_astrodynamics::computeKeplerOrbitalPeriod(length_asterix * 1000 , tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER, moonMass  ) / (2.0 * tudat::mathematical_constants::PI);  // [s]
     //double gravNul        = 9.8065E-3; // [ km/s^2 ] Obtained from Source A. Paper A. Cox, K. Howell D. Folta
     double gravNul          = tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER / pow(tudat::celestial_body_constants::EARTH_EQUATORIAL_RADIUS,2);
