@@ -1468,8 +1468,8 @@ class DisplayAugmentedValidation:
         ax4 = fig.add_subplot(gs2[1, 1])
 
         highlight_alpha = 0.2
-        ylim = [0, 0.0001]
-        ylim2 =[0.1499, 0.15001]
+        #ylim = [0, 0.0001]
+        #ylim2 =[0.1499, 0.15001]
         t_min = 0
         step_size = 0.05
 
@@ -1619,10 +1619,10 @@ class DisplayAugmentedValidation:
         #ylim = [min(ax1.get_ylim()[0], ax3.get_ylim()[0], ax2.get_ylim()[0], ax4.get_ylim()[0]),
                 #max(ax1.get_ylim()[1], ax3.get_ylim()[1], ax2.get_ylim()[1], ax4.get_ylim()[1])]
 
-        ax1.set_ylim(ylim2)
-        ax2.set_ylim(ylim2)
-        ax3.set_ylim(ylim)
-        ax4.set_ylim(ylim)
+        ax1.set_ylim()
+        ax2.set_ylim()
+        ax3.set_ylim()
+        ax4.set_ylim()
 
         ax1.grid(True, which='both', ls=':')
         ax2.grid(True, which='both', ls=':')
@@ -1871,7 +1871,7 @@ if __name__ == '__main__':
     lagrange_points = [1,2]
     orbit_types = ['horizontal']
     c_levels = [3.05, 3.1, 3.15]
-    thrust_restrictions = ['000.0']
+    thrust_restrictions = ['0.000100','0.000500','0.001000','0.005000','0.010000']
     spacecraft_names = ['DeepSpace']
     thrust_magnitudes = ['0.000000']
     orbit_ids = {'horizontal':  {1: {3.05: 808, 3.1: 577, 3.15: 330}, 2: {3.05: 1066, 3.1: 760, 3.15: 373}}}
@@ -1888,12 +1888,12 @@ if __name__ == '__main__':
                                                                                   thrust_magnitude, low_dpi=low_dpi)
                             #display_augmented_validation.plot_manifolds()
                             #display_augmented_validation.plot_manifold_zoom()
-                            display_augmented_validation.plot_manifold_individual()
+                            #display_augmented_validation.plot_manifold_individual()
                             #display_augmented_validation.plot_eigenvectors()
                             #display_augmented_validation.plot_iom_validation()
                             #display_augmented_validation.plot_stopping_validation()
                             #display_augmented_validation.plot_thrust_validation()
-                            #display_augmented_validation.plot_mass_validation()
+                            display_augmented_validation.plot_mass_validation()
                             #display_augmented_validation.plot_massrate_validation()
 
                             del display_augmented_validation
