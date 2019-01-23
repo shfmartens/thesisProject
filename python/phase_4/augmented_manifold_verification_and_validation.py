@@ -1868,7 +1868,7 @@ class DisplayAugmentedValidation:
 if __name__ == '__main__':
     #help()
     low_dpi = True
-    lagrange_points = [2]
+    lagrange_points = [1,2]
     orbit_types = ['horizontal']
     c_levels = [3.05, 3.1, 3.15]
     thrust_restrictions = ['180.0']
