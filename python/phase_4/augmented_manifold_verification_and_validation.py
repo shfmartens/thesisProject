@@ -995,7 +995,7 @@ class DisplayAugmentedValidation:
             w_u_min_first_state = self.W_U_min.xs(0).head(1).values[0]
             w_s_plus_first_iom = computeIntegralOfMotion(w_s_plus_first_state[0], w_s_plus_first_state[1],
                                                         w_s_plus_first_state[2], w_s_plus_first_state[3],
-                                                        w_s_plus_first_state[4], w_s_plus_first_state[5], w_u_plus_first_state[6], self.thrustMagnitude, self.thrustRestriction)
+                                                        w_s_plus_first_state[4], w_s_plus_first_state[5], w_s_plus_first_state[6], self.thrustMagnitude, self.thrustRestriction)
             w_s_min_first_iom = computeIntegralOfMotion(w_s_min_first_state[0], w_s_min_first_state[1],
                                                        w_s_min_first_state[2], w_s_min_first_state[3],
                                                        w_s_min_first_state[4], w_s_min_first_state[5], w_s_min_first_state[6], self.thrustMagnitude, self.thrustRestriction)
@@ -1671,7 +1671,7 @@ class DisplayAugmentedValidation:
         ax4 = fig.add_subplot(gs2[1, 1])
 
         highlight_alpha = 0.2
-        ylim = [0, 0.00001]
+        #ylim = [0, 0.00001]
         t_min = 0
         step_size = 0.05
 
@@ -1821,10 +1821,10 @@ class DisplayAugmentedValidation:
         # ylim = [min(ax1.get_ylim()[0], ax3.get_ylim()[0], ax2.get_ylim()[0], ax4.get_ylim()[0]),
         # max(ax1.get_ylim()[1], ax3.get_ylim()[1], ax2.get_ylim()[1], ax4.get_ylim()[1])]
 
-        ax1.set_ylim(ylim)
-        ax2.set_ylim(ylim)
-        ax3.set_ylim(ylim)
-        ax4.set_ylim(ylim)
+        ax1.set_ylim()
+        ax2.set_ylim()
+        ax3.set_ylim()
+        ax4.set_ylim()
 
         ax1.grid(True, which='both', ls=':')
         ax2.grid(True, which='both', ls=':')
@@ -1893,7 +1893,7 @@ if __name__ == '__main__':
                             #display_augmented_validation.plot_iom_validation()
                             #display_augmented_validation.plot_stopping_validation()
                             #display_augmented_validation.plot_thrust_validation()
-                            display_augmented_validation.plot_mass_validation()
-                            #display_augmented_validation.plot_massrate_validation()
+                            #display_augmented_validation.plot_mass_validation()
+                            display_augmented_validation.plot_massrate_validation()
 
                             del display_augmented_validation
