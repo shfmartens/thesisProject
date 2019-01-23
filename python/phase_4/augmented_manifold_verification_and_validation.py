@@ -1886,8 +1886,8 @@ if __name__ == '__main__':
                                                                               orbit_ids[orbit_type][lagrange_point][
                                                                                   c_level], thrust_restriction, spacecraft_name,
                                                                                   thrust_magnitude, low_dpi=low_dpi)
-                            display_augmented_validation.plot_manifolds()
-                            #display_augmented_validation.plot_manifold_zoom()
+                            #display_augmented_validation.plot_manifolds()
+                            display_augmented_validation.plot_manifold_zoom()
                             #display_augmented_validation.plot_manifold_individual()
                             #display_augmented_validation.plot_eigenvectors()
                             #display_augmented_validation.plot_iom_validation()
