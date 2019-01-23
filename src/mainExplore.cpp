@@ -28,7 +28,7 @@
 
 double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER, tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER );
 std::string spacecraftName = "DeepSpace";
-std::string thrustPointing = "000.0";
+std::string thrustPointing = "180.0";
 
 int main (){
 
@@ -71,10 +71,10 @@ int main (){
     // ================================
     // == Compute manifolds ==
     // ================================
-#pragma omp parallel num_threads(6)
+#pragma omp parallel num_threads(3)
 {
     #pragma omp for
-    for (unsigned int i=0; i<6; i++) {
+    for (unsigned int i=3; i<6; i++) {
 
         std::string orbitType;
         int librationPointNr;

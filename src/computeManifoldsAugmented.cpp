@@ -72,7 +72,7 @@ Eigen::MatrixXd retrieveSpacecraftProperties( const std::string spacecraftName)
     }
 
 
-    spacecraftProperties( 0 ) = 0.5E-2;  // Nondimensional thrust magnitude
+    spacecraftProperties( 0 ) = 0.001;  // Nondimensional thrust magnitude
     spacecraftProperties( 1 ) = initialMass / initialMass; //nondimensional mass
     spacecraftProperties( 2 ) = ( -thrustMagnitude * length_asterix ) / ( specificImpulse * gravNul * time_asterix );
     spacecraftProperties( 3 ) = 0.85; //TODO,CHANGE INTO INPUT PARAMETER
@@ -479,7 +479,7 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
                     fullManifoldComputed = true;
                 }
 
-                // Cancel the stopping condition if the manifold crosses the Poincare section neat the second primary outside of the Hill surface
+                // Cancel the stopping condition if the manifold crosses the Poincare section near the second primary outside of the Hill surface
                 if ( ((stateVectorInclSTM(0, 0) - (1.0 - massParameter)) * xDiffSign < 0) &&
                         ((librationPointNr == 1 && ( manifoldNumber == 0 || manifoldNumber == 2)) ||
                          (librationPointNr == 2 && ( manifoldNumber == 1 || manifoldNumber == 3))) && abs( stateVectorInclSTM(1, 0) ) > contourCondition ) {
