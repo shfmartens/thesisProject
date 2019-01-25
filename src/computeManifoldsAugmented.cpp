@@ -441,7 +441,7 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
                 fullManifoldComputed      = IoMOutsideBounds;
 
                 // Check whether the spacecraft comes above its initial wet mass
-                if ( (stateVectorInclSTM(6, 0) > 1 ) && (manifoldNumber == 0 || manifoldNumber == 1)) {
+                if ( (stateVectorInclSTM(6, 0) > 1.0 ) && (manifoldNumber == 0 || manifoldNumber == 1)) {
 
                     reduceOverShootInitialMass(stateVectorInclSTMAndTime, previousStateVectorInclSTMAndTime,
                                                  stateVectorInclSTM, currentTime, integrationDirection,
