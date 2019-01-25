@@ -176,9 +176,11 @@ Eigen::MatrixXd computeStateDerivativeAugmented( const double time, const Eigen:
         double Uzy = Uyz;
         double Uzz = (3.0*(1.0-massParameter)*zPositionScaledSquared                         )/distanceToPrimaryToFifthPower+ (3.0*massParameter*zPositionScaledSquared                             )/distanceToSecondaryToFifthPower - (1.0-massParameter)/distanceToPrimaryCubed - massParameter/distanceToSecondaryCubed ;
 
-        //Compute the acceleration derivatives with respect to the velocities and mass
-        double partialXaccMass =   ( -1.0 / cartesianState(6) ) * xTermRelatedToThrust;
-        double partialYaccMass =   ( -1.0 / cartesianState(6) ) * yTermRelatedToThrust;
+        //Compute the acceleration derivatives with respect to the velocities and mass, only defined if mass varies!
+        //double partialXaccMass =   ( -1.0 / cartesianState(6) ) * xTermRelatedToThrust;
+        //double partialYaccMass =   ( -1.0 / cartesianState(6) ) * yTermRelatedToThrust;
+        double partialXaccMass =   0.0;
+        double partialYaccMass =   0.0;
 
         // Create the STM-derivative matrix
         Eigen::MatrixXd stmDerivativeFunction (7,7);
