@@ -28,13 +28,13 @@
 
 double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER, tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER );
 std::string spacecraftName = "DeepSpace";
-std::string thrustPointing = "270.0";
+std::string thrustPointing = "000.0";
 
 int main (){
 
     std::cout << "Exploration Started" << std::endl;
 //    // ================================
-//    // == Compute initial conditions ==
+//    // === Compute initial conditions ===
 //    // ================================
 
 //    #pragma omp parallel num_threads(6)
