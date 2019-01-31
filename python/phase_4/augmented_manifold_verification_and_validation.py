@@ -365,12 +365,12 @@ class DisplayAugmentedValidation:
             fig.subplots_adjust(top=0.8)
 
         # Plot zero velocity surface
-        # x_range = np.arange(ax3.get_xlim()[0], ax3.get_xlim()[1], 0.001)
-        # y_range = np.arange(ax3.get_ylim()[0], ax3.get_ylim()[1], 0.001)
-        # x_mesh, y_mesh = np.meshgrid(x_range, y_range)
-        # z_mesh = cr3bp_velocity(x_mesh, y_mesh, self.C)
-        # if z_mesh.min() < 0:
-        #     ax3.contourf(x_mesh, y_mesh, z_mesh, list(np.linspace(z_mesh.min(), 0, 10)), cmap='gist_gray_r',alpha=0.5)
+        x_range = np.arange(ax3.get_xlim()[0], ax3.get_xlim()[1], 0.001)
+        y_range = np.arange(ax3.get_ylim()[0], ax3.get_ylim()[1], 0.001)
+        x_mesh, y_mesh = np.meshgrid(x_range, y_range)
+        z_mesh = cr3bp_velocity(x_mesh, y_mesh, self.C)
+        if z_mesh.min() < 0:
+            ax3.contourf(x_mesh, y_mesh, z_mesh, list(np.linspace(z_mesh.min(), 0, 10)), cmap='gist_gray_r',alpha=0.5)
 
         # plot main title
         if self.thrustRestriction == 'left':
