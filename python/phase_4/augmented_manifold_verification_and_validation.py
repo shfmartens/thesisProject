@@ -345,11 +345,18 @@ class DisplayAugmentedValidation:
 
         ax3.set_xlabel('x [-]')
         ax3.set_ylabel('y [-]')
-        #ax3.set_xlim([-1.0, 1.2])
-        #ax3.set_ylim([-0.8, 0.8])
+        # if self.lagrangePointNr == 1:
+        #     ax3.set_xlim([-1.0, 1.2])
+        #     ax3.set_ylim([-0.8, 0.8])
+        #     ax3.grid(True, which='both', ls=':')
+        # if self.lagrangePointNr == 2:
+        #     ax3.set_xlim([-1.0, 1.2])
+        #     ax3.set_ylim([-0.8, 0.8])
+        #     ax3.grid(True, which='both', ls=':')
+
+        ax3.set_xlim([-1.0, 1.2])
+        ax3.set_ylim([-0.8, 0.8])
         ax3.grid(True, which='both', ls=':')
-
-
 
         fig.tight_layout()
         if self.orbitType != 'horizontal2':
@@ -1886,7 +1893,7 @@ if __name__ == '__main__':
                                                                               orbit_ids[orbit_type][lagrange_point][
                                                                                   c_level], thrust_restriction, spacecraft_name,
                                                                                   thrust_magnitude, low_dpi=low_dpi)
-                            #display_augmented_validation.plot_manifolds()
+                            display_augmented_validation.plot_manifolds()
                             #display_augmented_validation.plot_manifold_zoom()
                             #display_augmented_validation.plot_manifold_individual()
                             #display_augmented_validation.plot_eigenvectors()
@@ -1894,6 +1901,6 @@ if __name__ == '__main__':
                             #display_augmented_validation.plot_stopping_validation()
                             #display_augmented_validation.plot_thrust_validation()
                             #display_augmented_validation.plot_mass_validation()
-                            display_augmented_validation.plot_massrate_validation()
+                            #display_augmented_validation.plot_massrate_validation()
 
                             del display_augmented_validation
