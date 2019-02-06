@@ -328,7 +328,14 @@ class DisplayAugmentedValidation:
         ax0.set_xlabel('x [-]')
         ax0.set_ylabel('y [-]')
         ax0.set_zlabel('z [-]')
-        ax0.set_zlim([-0.4, 0.4])
+        if self.lagrangePointNr == 1:
+            ax0.set_xlim([-1.0, 1.25])
+            ax0.set_ylim([-0.9, 0.9])
+            ax0.set_zlim([-0.4, 0.4])
+        else:
+            ax0.set_xlim([-5.0, 2.0])
+            ax0.set_ylim([-4.0, 4.0])
+            ax0.set_zlim([-0.4, 0.4])
         ax0.grid(True, which='both', ls=':')
         ax0.view_init(30, -120)
 
@@ -336,26 +343,32 @@ class DisplayAugmentedValidation:
             ax1.set_xlabel('x [-]')
             ax1.set_ylabel('z [-]')
             # ax1.set_ylim([-0.4, 0.4])
+            if self.lagrangePointNr == 1:
+                ax1.set_xlim([-1.0, 1.25])
+                ax1.set_ylim([-0.4, 0.4])
+            else:
+                ax1.set_xlim([-5.0, 2.0])
+                ax1.set_ylim([-0.4, 0.4])
             ax1.grid(True, which='both', ls=':')
 
             ax2.set_xlabel('y [-]')
             ax2.set_ylabel('z [-]')
-            # ax2.set_ylim([-0.4, 0.4])
+            if self.lagrangePointNr == 1:
+                ax2.set_xlim([-0.9, 0.9])
+                ax2.set_ylim([-0.4, 0.4])
+            else:
+                ax2.set_xlim([-4.0, 4.0])
+                ax2.set_ylim([-0.4, 0.4])
             ax2.grid(True, which='both', ls=':')
 
         ax3.set_xlabel('x [-]')
         ax3.set_ylabel('y [-]')
-        # if self.lagrangePointNr == 1:
-        #     ax3.set_xlim([-1.0, 1.2])
-        #     ax3.set_ylim([-0.8, 0.8])
-        #     ax3.grid(True, which='both', ls=':')
-        # if self.lagrangePointNr == 2:
-        #     ax3.set_xlim([-1.0, 1.2])
-        #     ax3.set_ylim([-0.8, 0.8])
-        #     ax3.grid(True, which='both', ls=':')
-
-        ax3.set_xlim([-1.0, 1.2])
-        ax3.set_ylim([-0.8, 0.8])
+        if self.lagrangePointNr == 1:
+            ax3.set_xlim([-1.0, 1.25])
+            ax3.set_ylim([-0.9, 0.9])
+        else:
+            ax3.set_xlim([-4.0, 4.0])
+            ax3.set_ylim([-5.0, 2.0])
         ax3.grid(True, which='both', ls=':')
 
         fig.tight_layout()
@@ -1893,14 +1906,14 @@ if __name__ == '__main__':
                                                                               orbit_ids[orbit_type][lagrange_point][
                                                                                   c_level], thrust_restriction, spacecraft_name,
                                                                                   thrust_magnitude, low_dpi=low_dpi)
-                            #display_augmented_validation.plot_manifolds()
+                            display_augmented_validation.plot_manifolds()
                             #display_augmented_validation.plot_manifold_zoom()
                             #display_augmented_validation.plot_manifold_individual()
                             #display_augmented_validation.plot_eigenvectors()
                             #display_augmented_validation.plot_iom_validation()
                             #display_augmented_validation.plot_stopping_validation()
-                            display_augmented_validation.plot_thrust_validation()
-                            display_augmented_validation.plot_mass_validation()
-                            display_augmented_validation.plot_massrate_validation()
+                            #display_augmented_validation.plot_thrust_validation()
+                            #display_augmented_validation.plot_mass_validation()
+                            #display_augmented_validation.plot_massrate_validation()
 
                             del display_augmented_validation
