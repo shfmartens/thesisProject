@@ -1077,10 +1077,10 @@ class DisplayAugmentedValidation:
                                                        w_u_min_first_state[2], w_u_min_first_state[3],
                                                        w_u_min_first_state[4], w_u_min_first_state[5], w_u_min_first_state[6], self.thrustMagnitude, self.thrustRestriction)
             else:
-                w_s_plus_first_state = self.W_S_plus.xs(0).head(5).tail(1).values[0]
-                w_s_min_first_state = self.W_S_min.xs(0).head(5).tail(1).values[0]
-                w_u_plus_first_state = self.W_U_plus.xs(0).head(5).tail(1).values[0]
-                w_u_min_first_state = self.W_U_min.xs(0).head(5).tail(1).values[0]
+                w_s_plus_first_state = self.W_S_plus.xs(i).head(2).tail(1).values[0]
+                w_s_min_first_state = self.W_S_min.xs(i).head(2).tail(1).values[0]
+                w_u_plus_first_state = self.W_U_plus.xs(i).head(2).tail(1).values[0]
+                w_u_min_first_state = self.W_U_min.xs(i).head(2).tail(1).values[0]
                 w_s_plus_first_iom = computeIntegralOfMotion(w_s_plus_first_state[0], w_s_plus_first_state[1],w_s_plus_first_state[2], w_s_plus_first_state[3],w_s_plus_first_state[4], w_s_plus_first_state[5],w_s_plus_first_state[6], self.thrustMagnitude,self.thrustRestriction)
                 w_s_min_first_iom = computeIntegralOfMotion(w_s_min_first_state[0], w_s_min_first_state[1],w_s_min_first_state[2], w_s_min_first_state[3],w_s_min_first_state[4], w_s_min_first_state[5],w_s_min_first_state[6], self.thrustMagnitude, self.thrustRestriction)
                 w_u_plus_first_iom = computeIntegralOfMotion(w_u_plus_first_state[0], w_u_plus_first_state[1],w_u_plus_first_state[2], w_u_plus_first_state[3],w_u_plus_first_state[4], w_u_plus_first_state[5],w_u_plus_first_state[6], self.thrustMagnitude,self.thrustRestriction)
@@ -1155,9 +1155,9 @@ class DisplayAugmentedValidation:
             ax1.set_title('Jacobi deviation on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
         else:
             ax1.fill_between(w_s_plus_df.mean(axis=1).index, y1=y1, y2=y2, where=y1 >= y2,facecolor=self.plottingColors['W_S_plus'], interpolate=True, alpha=highlight_alpha)
-            l1, = ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') + w_s_plus_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{H}_t^{S+} \pm 3\sigma_t^{S+} $', color=self.plottingColors['W_S_plus'],linestyle=':')
+            l1, = ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{H}_t^{S+} \pm 3\sigma_t^{S+} $', color=self.plottingColors['W_S_plus'],linestyle=':')
             l2, = ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{H}_t^{S+}$',color=self.plottingColors['W_S_plus'])
-            ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') - w_s_plus_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_S_plus'], linestyle=':')
+            ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_S_plus'], linestyle=':')
             ax1.set_ylabel('$H(\mathbf{X^i_t}) - H(\mathbf{X^p})$ [-]')
             ax1.set_title('Hamiltonian deviation on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
 
