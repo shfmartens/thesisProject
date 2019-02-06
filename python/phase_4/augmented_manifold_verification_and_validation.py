@@ -367,8 +367,8 @@ class DisplayAugmentedValidation:
             ax3.set_xlim([-1.0, 1.25])
             ax3.set_ylim([-0.9, 0.9])
         else:
-            ax3.set_xlim([-4.0, 4.0])
-            ax3.set_ylim([-5.0, 2.0])
+            ax3.set_xlim([-5.0, 2.0])
+            ax3.set_ylim([-4.0, 4.0])
         ax3.grid(True, which='both', ls=':')
 
         fig.tight_layout()
