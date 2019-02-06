@@ -214,7 +214,7 @@ def computeIntegralOfMotion(x, y, z, xdot, ydot, zdot, mass, thrust, thrust_rest
     r_2 = np.sqrt((1 - mass_parameter - x) ** 2 + y ** 2 + z ** 2)
     v = np.sqrt(xdot ** 2 + ydot ** 2 + zdot ** 2)
     c = x ** 2 + y ** 2 + 2 * (1 - mass_parameter) / r_1 + 2 * mass_parameter / r_2 - v ** 2
-    if (thrust_restriction == "left" or thrust_restriction == "right"):
+    if ((thrust_restriction == "left" or thrust_restriction == "right") or thrust == "0.000000"):
         integral_of_motion = c
     else:
         alpha = float(thrust_restriction) * (2 * np.pi / 180.0)

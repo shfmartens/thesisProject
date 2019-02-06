@@ -167,7 +167,10 @@ class DisplayAugmentedValidation:
             # W_S_plus
             state_on_manifold = self.W_S_plus.xs(i).tail(1).values[0]
             iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1],state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], state_on_manifold[5], state_on_manifold[6], thrust_magnitude, thrust_restriction)
-            self.C_diff_start_W_S_plus.append(abs(iom_on_manifold - iom_on_orbit))
+            if thrust_restriction == "left" or thrust_restriction == "right":
+                self.C_diff_start_W_S_plus.append(abs(iom_on_manifold - iom_on_orbit))
+            else:
+                self.C_diff_start_W_S_plus.append(abs(iom_on_manifold - (-0.5* iom_on_orbit)))
             state_on_manifold = self.W_S_plus.xs(i).head(1).values[0]
             # either very close to 1-mu or dy
             if abs(state_on_manifold[1]) < abs(state_on_manifold[0] - (1 - self.massParameter)):
@@ -184,7 +187,10 @@ class DisplayAugmentedValidation:
             # W_S_min
             state_on_manifold = self.W_S_min.xs(i).tail(1).values[0]
             iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1],state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], state_on_manifold[5], state_on_manifold[6], thrust_magnitude, thrust_restriction)
-            self.C_diff_start_W_S_min.append(abs(iom_on_manifold - iom_on_orbit))
+            if thrust_restriction == "left" or thrust_restriction == "right":
+                self.C_diff_start_W_S_min.append(abs(iom_on_manifold - iom_on_orbit))
+            else:
+                self.C_diff_start_W_S_min.append(abs(iom_on_manifold - (-0.5 * iom_on_orbit)))
             state_on_manifold = self.W_S_min.xs(i).head(1).values[0]
             # either very close to 1-mu or dy
             if abs(state_on_manifold[1]) < abs(state_on_manifold[0] - (1 - self.massParameter)):
@@ -199,7 +205,10 @@ class DisplayAugmentedValidation:
             # W_U_plus
             state_on_manifold = self.W_U_plus.xs(i).head(1).values[0]
             iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1],state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], state_on_manifold[5], state_on_manifold[6], thrust_magnitude, thrust_restriction)
-            self.C_diff_start_W_U_plus.append(abs(iom_on_manifold - iom_on_orbit))
+            if thrust_restriction == "left" or thrust_restriction == "right":
+                self.C_diff_start_W_U_plus.append(abs(iom_on_manifold - iom_on_orbit))
+            else:
+                self.C_diff_start_W_U_plus.append(abs(iom_on_manifold - (-0.5 * iom_on_orbit)))
             state_on_manifold = self.W_U_plus.xs(i).tail(1).values[0]
             # either very close to 1-mu or dy
             if abs(state_on_manifold[1]) < abs(state_on_manifold[0] - (1 - self.massParameter)):
@@ -212,7 +221,10 @@ class DisplayAugmentedValidation:
             # W_U_min
             state_on_manifold = self.W_U_min.xs(i).head(1).values[0]
             iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2], state_on_manifold[3], state_on_manifold[4], state_on_manifold[5], state_on_manifold[6], thrust_magnitude, thrust_restriction)
-            self.C_diff_start_W_U_min.append(abs(iom_on_manifold - iom_on_orbit))
+            if thrust_restriction == "left" or thrust_restriction == "right":
+                self.C_diff_start_W_U_min.append(abs(iom_on_manifold - iom_on_orbit))
+            else:
+                self.C_diff_start_W_U_min.append(abs(iom_on_manifold - (-0.5 * iom_on_orbit)))
             state_on_manifold = self.W_U_min.xs(i).tail(1).values[0]
             # either very close to 1-mu or dy
             if abs(state_on_manifold[1]) < abs(state_on_manifold[0] - (1 - self.massParameter)):
@@ -1937,7 +1949,7 @@ if __name__ == '__main__':
                                                                               orbit_ids[orbit_type][lagrange_point][
                                                                                   c_level], thrust_restriction, spacecraft_name,
                                                                                   thrust_magnitude, low_dpi=low_dpi)
-                            #display_augmented_validation.plot_manifolds()
+                            display_augmented_validation.plot_manifolds()
                             display_augmented_validation.plot_manifold_zoom()
                             display_augmented_validation.plot_manifold_individual()
                             #display_augmented_validation.plot_eigenvectors()
