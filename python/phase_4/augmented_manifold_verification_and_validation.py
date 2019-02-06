@@ -1041,8 +1041,8 @@ class DisplayAugmentedValidation:
             ax0.set_ylabel('$|C(\mathbf{X^i_0}) - C(\mathbf{X^p})|$ [-]')
             ax0.set_title('Jacobi energy deviation between orbit and manifold')
         else:
-            ax0.set_ylabel('$|H_{lt}(\mathbf{X^i_0}) - H_{lt}(\mathbf{X^p})|$ [-]')
-            ax0.set_title('Hamiltonian deviation between orbit and manifold')
+            ax0.set_ylabel('$|C_{lt}(\mathbf{X^i_0}) - C_{lt}(\mathbf{X^p})|$ [-]')
+            ax0.set_title('Jacobi energy deviation between orbit and manifold')
         ax0.legend(frameon=True, loc='center left',  bbox_to_anchor=(1, 0.5))
 
         w_s_plus_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
@@ -2005,9 +2005,9 @@ if __name__ == '__main__':
                                                                               orbit_ids[orbit_type][lagrange_point][
                                                                                   c_level], thrust_restriction, spacecraft_name,
                                                                                   thrust_magnitude, low_dpi=low_dpi)
-                            #display_augmented_validation.plot_manifolds()
-                            #display_augmented_validation.plot_manifold_zoom()
-                            #display_augmented_validation.plot_manifold_individual()
+                            display_augmented_validation.plot_manifolds()
+                            display_augmented_validation.plot_manifold_zoom()
+                            display_augmented_validation.plot_manifold_individual()
                             #display_augmented_validation.plot_eigenvectors()
                             display_augmented_validation.plot_iom_validation()
                             #display_augmented_validation.plot_stopping_validation()
