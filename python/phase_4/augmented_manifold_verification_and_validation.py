@@ -813,11 +813,11 @@ class DisplayAugmentedValidation:
         ax9.set_ylabel('z [-]')
         # ax1.set_ylim([-0.4, 0.4])
         if self.lagrangePointNr == 1:
-            ax6.set_xlim([-1.0, 1.25])
-            ax6.set_ylim([-0.9, 0.25])
+            ax9.set_xlim([-1.0, 1.25])
+            ax9.set_ylim([-0.9, 0.25])
         else:
-            ax6.set_xlim([-5.0, 2.0])
-            ax6.set_ylim([-3.5, 0.5])
+            ax9.set_xlim([-5.0, 2.0])
+            ax9.set_ylim([-3.5, 0.5])
         ax9.grid(True, which='both', ls=':')
 
         if self.orbitType != 'horizontal':

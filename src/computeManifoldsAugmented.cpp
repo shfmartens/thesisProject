@@ -366,7 +366,7 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
         double ySign                    = 0.0;
         double xDiffSign                = 0.0;
         //double contourCondition         = ycontourStoppingCondition(integralOfMotionOnOrbit, massParameter );
-        double contourCondition         = 0.5;
+        double contourCondition         = 0.3;
         //std::cout << "CONTOUR STOPPING CONDITION IS" << contourCondition << std::endl;
         offsetSign                 = offsetSigns.at(manifoldNumber);
         monodromyMatrixEigenvector = eigenVectors.at(manifoldNumber);
@@ -481,7 +481,7 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
 
                 // Cancel the stopping condition if the manifold crosses the Poincare section near the second primary outside of the Hill surface, only applicable for L2
                 if ( ((stateVectorInclSTM(0, 0) - (1.0 - massParameter)) * xDiffSign < 0) &&
-                         librationPointNr == 2 && abs( stateVectorInclSTM(1, 0) ) > contourCondition )  {
+                         librationPointNr == 2 && std::fabs( stateVectorInclSTM(1, 0) ) > contourCondition )  {
 
                     xDiffSign = -xDiffSign;
                 }
@@ -489,7 +489,7 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
                 // Determine when the manifold crosses the Poincare section near the second primary (U2, U3)
                 if ( ((stateVectorInclSTM(0, 0) - (1.0 - massParameter)) * xDiffSign < 0) &&
                         (librationPointNr == 1 ||
-                         (librationPointNr == 2 && abs( stateVectorInclSTM(1, 0) ) < contourCondition ))) {
+                         (librationPointNr == 2 && std::fabs( stateVectorInclSTM(1, 0) ) < contourCondition ))) {
                     reduceOvershootAtPoincareSectionU2U3Augmented(stateVectorInclSTMAndTime,
                                                          previousStateVectorInclSTMAndTime,
                                                          stateVectorInclSTM, currentTime, xDiffSign,
