@@ -424,6 +424,13 @@ class DisplayAugmentedValidation:
 
         ax.set_xlabel('x [-]')
         ax.set_ylabel('y [-]')
+        if self.lagrangePointNr == 1:
+            ax.set_xlim([-1.0, 1.25])
+            ax.set_ylim([-0.9, 0.9])
+        else:
+            ax.set_xlim([-5.0, 2.0])
+            ax.set_ylim([-3.5, 3.5])
+
         ax.grid(True, which='both', ls=':')
 
         fig.tight_layout()
@@ -1906,8 +1913,8 @@ if __name__ == '__main__':
                                                                               orbit_ids[orbit_type][lagrange_point][
                                                                                   c_level], thrust_restriction, spacecraft_name,
                                                                                   thrust_magnitude, low_dpi=low_dpi)
-                            display_augmented_validation.plot_manifolds()
-                            #display_augmented_validation.plot_manifold_zoom()
+                            #display_augmented_validation.plot_manifolds()
+                            display_augmented_validation.plot_manifold_zoom()
                             #display_augmented_validation.plot_manifold_individual()
                             #display_augmented_validation.plot_eigenvectors()
                             #display_augmented_validation.plot_iom_validation()
