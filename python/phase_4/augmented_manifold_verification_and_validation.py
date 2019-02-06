@@ -1021,7 +1021,7 @@ class DisplayAugmentedValidation:
         if (self.thrustRestriction == "left" or self.thrustRestriction == "right") or self.thrustMagnitude == "0.000000":
             ylim = [1e-16, 1e-9]
         else:
-            ylim = [1e-8, 1e0]
+            ylim = [1e-3, 1e1]
         t_min = 0
         step_size = 0.05
 
@@ -1059,10 +1059,10 @@ class DisplayAugmentedValidation:
             w_s_min_delta_j = []
             w_u_plus_delta_j = []
             w_u_min_delta_j = []
-            w_s_plus_first_state = self.W_S_plus.xs(8).head(1).values[0]
-            w_s_min_first_state = self.W_S_min.xs(8).head(1).values[0]
-            w_u_plus_first_state = self.W_U_plus.xs(8).head(1).values[0]
-            w_u_min_first_state = self.W_U_min.xs(8).head(1).values[0]
+            w_s_plus_first_state = self.W_S_plus.xs(0).head(1).values[0]
+            w_s_min_first_state = self.W_S_min.xs(0).head(1).values[0]
+            w_u_plus_first_state = self.W_U_plus.xs(0).head(1).values[0]
+            w_u_min_first_state = self.W_U_min.xs(0).head(1).values[0]
             w_s_plus_first_iom = computeIntegralOfMotion(w_s_plus_first_state[0], w_s_plus_first_state[1],
                                                         w_s_plus_first_state[2], w_s_plus_first_state[3],
                                                         w_s_plus_first_state[4], w_s_plus_first_state[5], w_s_plus_first_state[6], self.thrustMagnitude, self.thrustRestriction)
