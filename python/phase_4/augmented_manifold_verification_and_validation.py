@@ -769,19 +769,43 @@ class DisplayAugmentedValidation:
 
         ax0.set_xlabel('x [-]')
         ax0.set_ylabel('z [-]')
+        if self.lagrangePointNr == 1:
+            ax0.set_xlim([-1.0, 1.25])
+            ax0.set_ylim([-0.9, 0.25])
+        else:
+            ax0.set_xlim([-5.0, 2.0])
+            ax0.set_ylim([-0.5, 3.5])
         # ax1.set_ylim([-0.4, 0.4])
         ax0.grid(True, which='both', ls=':')
         ax3.set_xlabel('x [-]')
         ax3.set_ylabel('z [-]')
+        if self.lagrangePointNr == 1:
+            ax3.set_xlim([-1.0, 1.25])
+            ax3.set_ylim([-0.9, 0.25])
+        else:
+            ax3.set_xlim([-5.0, 2.0])
+            ax3.set_ylim([-0.5, 3.5])
         # ax1.set_ylim([-0.4, 0.4])
         ax3.grid(True, which='both', ls=':')
         ax6.set_xlabel('x [-]')
         ax6.set_ylabel('z [-]')
+        if self.lagrangePointNr == 1:
+            ax6.set_xlim([-1.0, 1.25])
+            ax6.set_ylim([-0.9, 0.25])
+        else:
+            ax6.set_xlim([-5.0, 2.0])
+            ax6.set_ylim([-3.5, 0.5])
         # ax1.set_ylim([-0.4, 0.4])
         ax6.grid(True, which='both', ls=':')
         ax9.set_xlabel('x [-]')
         ax9.set_ylabel('z [-]')
         # ax1.set_ylim([-0.4, 0.4])
+        if self.lagrangePointNr == 1:
+            ax6.set_xlim([-1.0, 1.25])
+            ax6.set_ylim([-0.9, 0.25])
+        else:
+            ax6.set_xlim([-5.0, 2.0])
+            ax6.set_ylim([-3.5, 0.5])
         ax9.grid(True, which='both', ls=':')
 
         if self.orbitType != 'horizontal':
@@ -1915,7 +1939,7 @@ if __name__ == '__main__':
                                                                                   thrust_magnitude, low_dpi=low_dpi)
                             #display_augmented_validation.plot_manifolds()
                             display_augmented_validation.plot_manifold_zoom()
-                            #display_augmented_validation.plot_manifold_individual()
+                            display_augmented_validation.plot_manifold_individual()
                             #display_augmented_validation.plot_eigenvectors()
                             #display_augmented_validation.plot_iom_validation()
                             #display_augmented_validation.plot_stopping_validation()
