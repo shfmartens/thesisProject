@@ -1021,7 +1021,7 @@ class DisplayAugmentedValidation:
         if (self.thrustRestriction == "left" or self.thrustRestriction == "right") or self.thrustMagnitude == "0.000000":
             ylim = [1e-16, 1e-9]
         else:
-            ylim = [1e-3, 1e1]
+            ylim = [1e-3, 1e-11]
         t_min = 0
         step_size = 0.05
 
@@ -1204,7 +1204,7 @@ class DisplayAugmentedValidation:
             l8, = ax4.plot(w_u_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{H}_t^{U-}$',color=self.plottingColors['W_U_min'])
             ax4.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l5, l6, l7, l8])
             ax4.plot(w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_U_min'], linestyle=':')
-            ax4.set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$  [-]')
+            ax4.set_ylabel('$H(\mathbf{X^i_t}) - H(\mathbf{X^p})$  [-]')
             ax4.set_title('Hamiltonian deviation on manifold ($\\forall i \in \mathcal{W}^{U-}$)', loc='right')
             ax4.set_xlabel('$|t|$  [-]')
 
