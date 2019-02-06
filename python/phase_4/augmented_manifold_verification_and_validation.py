@@ -1029,10 +1029,10 @@ class DisplayAugmentedValidation:
                            label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{S+}$')
         ax0.semilogy(self.phase, self.C_diff_start_W_S_min, c=self.plottingColors['W_S_min'],
                         label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
-        ax0.semilogy(self.phase, self.C_diff_start_W_U_plus, c=self.plottingColors['W_U_plus'],
-                            label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{U+}$')
-        ax0.semilogy(self.phase, self.C_diff_start_W_U_min, c=self.plottingColors['W_U_min'],
-                           label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
+        #ax0.semilogy(self.phase, self.C_diff_start_W_U_plus, c=self.plottingColors['W_U_plus'],
+        #                    label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{U+}$')
+        #ax0.semilogy(self.phase, self.C_diff_start_W_U_min, c=self.plottingColors['W_U_min'],
+         #                  label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
         ax0.set_xlim([0, 1])
         ax0.set_xlabel('$\\tau$ [-]')
