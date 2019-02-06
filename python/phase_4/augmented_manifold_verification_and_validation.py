@@ -164,13 +164,13 @@ class DisplayAugmentedValidation:
             iom_on_orbit = computeJacobiEnergy(state_on_orbit[0], state_on_orbit[1], state_on_orbit[2],
                                                        state_on_orbit[3], state_on_orbit[4], state_on_orbit[5])
 
-            # W_S_plus
-            state_on_manifold = self.W_S_plus.xs(i).tail(1).values[0]
-            iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1],state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], state_on_manifold[5], state_on_manifold[6], thrust_magnitude, thrust_restriction)
+            # W_S_plus ##ADAPTED
+            state_on_manifold = self.W_S_plus.xs(i).head(1).values[0]
+            iom_on_manifold = computeJacobiEnergy(state_on_manifold[0], state_on_manifold[1],state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], state_on_manifold[5])
             if thrust_restriction == "left" or thrust_restriction == "right":
                 self.C_diff_start_W_S_plus.append(abs(iom_on_manifold - iom_on_orbit))
             else:
-                self.C_diff_start_W_S_plus.append(abs(iom_on_manifold - (-0.5* iom_on_orbit)))
+                self.C_diff_start_W_S_plus.append(abs(iom_on_manifold - (iom_on_orbit)))
             state_on_manifold = self.W_S_plus.xs(i).head(1).values[0]
             # either very close to 1-mu or dy
             if abs(state_on_manifold[1]) < abs(state_on_manifold[0] - (1 - self.massParameter)):
@@ -185,12 +185,12 @@ class DisplayAugmentedValidation:
             self.W_S_plus_dm.append(final_dm)
 
             # W_S_min
-            state_on_manifold = self.W_S_min.xs(i).tail(1).values[0]
-            iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1],state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], state_on_manifold[5], state_on_manifold[6], thrust_magnitude, thrust_restriction)
+            state_on_manifold = self.W_S_min.xs(i).head(1).values[0]
+            iom_on_manifold = computeJacobiEnergy(state_on_manifold[0], state_on_manifold[1],state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], state_on_manifold[5])
             if thrust_restriction == "left" or thrust_restriction == "right":
                 self.C_diff_start_W_S_min.append(abs(iom_on_manifold - iom_on_orbit))
             else:
-                self.C_diff_start_W_S_min.append(abs(iom_on_manifold - (-0.5 * iom_on_orbit)))
+                self.C_diff_start_W_S_min.append(abs(iom_on_manifold - (iom_on_orbit)))
             state_on_manifold = self.W_S_min.xs(i).head(1).values[0]
             # either very close to 1-mu or dy
             if abs(state_on_manifold[1]) < abs(state_on_manifold[0] - (1 - self.massParameter)):
@@ -204,11 +204,11 @@ class DisplayAugmentedValidation:
 
             # W_U_plus
             state_on_manifold = self.W_U_plus.xs(i).head(1).values[0]
-            iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1],state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], state_on_manifold[5], state_on_manifold[6], thrust_magnitude, thrust_restriction)
+            iom_on_manifold = computeJacobiEnergy(state_on_manifold[0], state_on_manifold[1],state_on_manifold[2],state_on_manifold[3], state_on_manifold[4], state_on_manifold[5])
             if thrust_restriction == "left" or thrust_restriction == "right":
                 self.C_diff_start_W_U_plus.append(abs(iom_on_manifold - iom_on_orbit))
             else:
-                self.C_diff_start_W_U_plus.append(abs(iom_on_manifold - (-0.5 * iom_on_orbit)))
+                self.C_diff_start_W_U_plus.append(abs(iom_on_manifold - (iom_on_orbit)))
             state_on_manifold = self.W_U_plus.xs(i).tail(1).values[0]
             # either very close to 1-mu or dy
             if abs(state_on_manifold[1]) < abs(state_on_manifold[0] - (1 - self.massParameter)):
@@ -220,11 +220,11 @@ class DisplayAugmentedValidation:
 
             # W_U_min
             state_on_manifold = self.W_U_min.xs(i).head(1).values[0]
-            iom_on_manifold = computeIntegralOfMotion(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2], state_on_manifold[3], state_on_manifold[4], state_on_manifold[5], state_on_manifold[6], thrust_magnitude, thrust_restriction)
+            iom_on_manifold = computeJacobiEnergy(state_on_manifold[0], state_on_manifold[1], state_on_manifold[2], state_on_manifold[3], state_on_manifold[4], state_on_manifold[5])
             if thrust_restriction == "left" or thrust_restriction == "right":
                 self.C_diff_start_W_U_min.append(abs(iom_on_manifold - iom_on_orbit))
             else:
-                self.C_diff_start_W_U_min.append(abs(iom_on_manifold - (-0.5 * iom_on_orbit)))
+                self.C_diff_start_W_U_min.append(abs(iom_on_manifold - (iom_on_orbit)))
             state_on_manifold = self.W_U_min.xs(i).tail(1).values[0]
             # either very close to 1-mu or dy
             if abs(state_on_manifold[1]) < abs(state_on_manifold[0] - (1 - self.massParameter)):
