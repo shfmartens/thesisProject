@@ -1029,10 +1029,10 @@ class DisplayAugmentedValidation:
                            label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{S+}$')
         ax0.semilogy(self.phase, self.C_diff_start_W_S_min, c=self.plottingColors['W_S_min'],
                         label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{S-}$', linestyle='--')
-        #ax0.semilogy(self.phase, self.C_diff_start_W_U_plus, c=self.plottingColors['W_U_plus'],
-        #                    label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{U+}$')
-        #ax0.semilogy(self.phase, self.C_diff_start_W_U_min, c=self.plottingColors['W_U_min'],
-         #                  label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
+        ax0.semilogy(self.phase, self.C_diff_start_W_U_plus, c=self.plottingColors['W_U_plus'],
+                            label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{U+}$')
+        ax0.semilogy(self.phase, self.C_diff_start_W_U_min, c=self.plottingColors['W_U_min'],
+                           label='$\mathbf{X}^i_0 \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
         ax0.set_xlim([0, 1])
         ax0.set_xlabel('$\\tau$ [-]')
@@ -1155,9 +1155,9 @@ class DisplayAugmentedValidation:
             ax1.set_title('Jacobi deviation on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
         else:
             ax1.fill_between(w_s_plus_df.mean(axis=1).index, y1=y1, y2=y2, where=y1 >= y2,facecolor=self.plottingColors['W_S_plus'], interpolate=True, alpha=highlight_alpha)
-            l1, = ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{H}_t^{S+} \pm 3\sigma_t^{S+} $', color=self.plottingColors['W_S_plus'],linestyle=':')
+            l1, = ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') + w_s_plus_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{H}_t^{S+} \pm 3\sigma_t^{S+} $', color=self.plottingColors['W_S_plus'],linestyle=':')
             l2, = ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{H}_t^{S+}$',color=self.plottingColors['W_S_plus'])
-            ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_S_plus'], linestyle=':')
+            ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') - w_s_plus_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_S_plus'], linestyle=':')
             ax1.set_ylabel('$H(\mathbf{X^i_t}) - H(\mathbf{X^p})$ [-]')
             ax1.set_title('Hamiltonian deviation on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
 
