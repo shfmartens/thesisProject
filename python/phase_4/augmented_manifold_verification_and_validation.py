@@ -1059,23 +1059,32 @@ class DisplayAugmentedValidation:
             w_s_min_delta_j = []
             w_u_plus_delta_j = []
             w_u_min_delta_j = []
-            w_s_plus_first_state = self.W_S_plus.xs(0).head(1).values[0]
-            w_s_min_first_state = self.W_S_min.xs(0).head(1).values[0]
-            w_u_plus_first_state = self.W_U_plus.xs(0).head(1).values[0]
-            w_u_min_first_state = self.W_U_min.xs(0).head(1).values[0]
-            w_s_plus_first_iom = computeIntegralOfMotion(w_s_plus_first_state[0], w_s_plus_first_state[1],
+            if self.thrustRestriction == "left" or self.thrustRestriction == "right" or self.thrustMagnitude == "0.000000":
+                w_s_plus_first_state = self.W_S_plus.xs(0).head(1).values[0]
+                w_s_min_first_state = self.W_S_min.xs(0).head(1).values[0]
+                w_u_plus_first_state = self.W_U_plus.xs(0).head(1).values[0]
+                w_u_min_first_state = self.W_U_min.xs(0).head(1).values[0]
+                w_s_plus_first_iom = computeIntegralOfMotion(w_s_plus_first_state[0], w_s_plus_first_state[1],
                                                         w_s_plus_first_state[2], w_s_plus_first_state[3],
                                                         w_s_plus_first_state[4], w_s_plus_first_state[5], w_s_plus_first_state[6], self.thrustMagnitude, self.thrustRestriction)
-            w_s_min_first_iom = computeIntegralOfMotion(w_s_min_first_state[0], w_s_min_first_state[1],
+                w_s_min_first_iom = computeIntegralOfMotion(w_s_min_first_state[0], w_s_min_first_state[1],
                                                        w_s_min_first_state[2], w_s_min_first_state[3],
                                                        w_s_min_first_state[4], w_s_min_first_state[5], w_s_min_first_state[6], self.thrustMagnitude, self.thrustRestriction)
-            w_u_plus_first_iom = computeIntegralOfMotion(w_u_plus_first_state[0], w_u_plus_first_state[1],
+                w_u_plus_first_iom = computeIntegralOfMotion(w_u_plus_first_state[0], w_u_plus_first_state[1],
                                                         w_u_plus_first_state[2], w_u_plus_first_state[3],
                                                         w_u_plus_first_state[4], w_u_plus_first_state[5], w_u_plus_first_state[6], self.thrustMagnitude, self.thrustRestriction)
-            w_u_min_first_iom = computeIntegralOfMotion(w_u_min_first_state[0], w_u_min_first_state[1],
+                w_u_min_first_iom = computeIntegralOfMotion(w_u_min_first_state[0], w_u_min_first_state[1],
                                                        w_u_min_first_state[2], w_u_min_first_state[3],
                                                        w_u_min_first_state[4], w_u_min_first_state[5], w_u_min_first_state[6], self.thrustMagnitude, self.thrustRestriction)
-
+            else:
+                w_s_plus_first_state = self.W_S_plus.xs(0).head(1).values[0]
+                w_s_min_first_state = self.W_S_min.xs(0).head(1).values[0]
+                w_u_plus_first_state = self.W_U_plus.xs(0).head(1).values[0]
+                w_u_min_first_state = self.W_U_min.xs(0).head(1).values[0]
+                w_s_plus_first_iom = computeIntegralOfMotion(w_s_plus_first_state[0], w_s_plus_first_state[1],w_s_plus_first_state[2], w_s_plus_first_state[3],w_s_plus_first_state[4], w_s_plus_first_state[5],w_s_plus_first_state[6], self.thrustMagnitude,self.thrustRestriction)
+                w_s_min_first_iom = computeIntegralOfMotion(w_s_min_first_state[0], w_s_min_first_state[1],w_s_min_first_state[2], w_s_min_first_state[3],w_s_min_first_state[4], w_s_min_first_state[5],w_s_min_first_state[6], self.thrustMagnitude, self.thrustRestriction)
+                w_u_plus_first_iom = computeIntegralOfMotion(w_u_plus_first_state[0], w_u_plus_first_state[1],w_u_plus_first_state[2], w_u_plus_first_state[3],w_u_plus_first_state[4], w_u_plus_first_state[5],w_u_plus_first_state[6], self.thrustMagnitude,self.thrustRestriction)
+                w_u_min_first_iom = computeIntegralOfMotion(w_u_min_first_state[0], w_u_min_first_state[1],w_u_min_first_state[2], w_u_min_first_state[3],w_u_min_first_state[4], w_u_min_first_state[5],w_u_min_first_state[6], self.thrustMagnitude,self.thrustRestriction)
             for row in self.W_S_plus.xs(i).iterrows():
                 w_s_plus_t.append(abs(row[0]))
                 w_s_plus_state = row[1].values
@@ -2006,9 +2015,13 @@ if __name__ == '__main__':
                             #display_augmented_validation.plot_mass_validation()
                             #display_augmented_validation.plot_massrate_validation()
                             print('test')
-                            print(display_augmented_validation.W_U_min.xs(0))
+                            #print(display_augmented_validation.W_U_min.xs(0))
                             # print('test')
-                            # print(display_augmented_validation.W_U_min.xs(0).head(1))
+                            print(display_augmented_validation.W_U_min.xs(0).head(2))
+                            print('test')
+                            print(display_augmented_validation.W_U_min.xs(0).head(2).tail(1))
+                            print('test')
+                            print(display_augmented_validation.W_U_min.xs(0).head(2).tail(1).values[0])
                             # print('test')
                             # print(display_augmented_validation.W_U_min.xs(0).head(1).values[0])
                             print('test')
