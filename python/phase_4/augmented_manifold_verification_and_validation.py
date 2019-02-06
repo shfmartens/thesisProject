@@ -1018,7 +1018,10 @@ class DisplayAugmentedValidation:
 
 
         highlight_alpha = 0.2
-        ylim = [1e-16, 1e-9]
+        if (self.thrustRestriction == "left" or self.thrustRestriction == "right") or self.thrustMagnitude == "0.000000":
+            ylim = [1e-16, 1e-9]
+        else:
+            ylim = [1e-8, 1e0]
         t_min = 0
         step_size = 0.05
 
@@ -1034,8 +1037,12 @@ class DisplayAugmentedValidation:
         ax0.set_xlim([0, 1])
         ax0.set_xlabel('$\\tau$ [-]')
         ax0.set_ylim(ylim)
-        ax0.set_ylabel('$|IOM(\mathbf{X^i_0}) - IOM(\mathbf{X^p})|$ [-]')
-        ax0.set_title('Jacobi energy deviation between orbit and manifold')
+        if (self.thrustRestriction == "left" or self.thrustRestriction == "right") or self.thrustMagnitude == "0.000000":
+            ax0.set_ylabel('$|C(\mathbf{X^i_0}) - C(\mathbf{X^p})|$ [-]')
+            ax0.set_title('Jacobi energy deviation between orbit and manifold')
+        else:
+            ax0.set_ylabel('$|H_{lt}(\mathbf{X^i_0}) - H_{lt}(\mathbf{X^p})|$ [-]')
+            ax0.set_title('Hamiltonian deviation between orbit and manifold')
         ax0.legend(frameon=True, loc='center left',  bbox_to_anchor=(1, 0.5))
 
         w_s_plus_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
@@ -1130,40 +1137,76 @@ class DisplayAugmentedValidation:
         y1 = w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_plus_df.std(axis=1)
         y2 = w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1)
 
-        ax1.fill_between(w_s_plus_df.mean(axis=1).index,y1=y1,y2=y2, where=y1 >= y2,facecolor=self.plottingColors['W_S_plus'], interpolate=True, alpha=highlight_alpha)
-        l1, = ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{S+} \pm 3\sigma_t^{S+} $', color=self.plottingColors['W_S_plus'], linestyle=':')
-        l2, = ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{S+}$', color=self.plottingColors['W_S_plus'])
-        ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_S_plus'], linestyle=':')
-        ax1.set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$ [-]')
-        ax1.set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
+        if self.thrustRestriction == "left" or self.thrustRestriction == "right" or self.thrustMagnitude == "0.000000":
+            ax1.fill_between(w_s_plus_df.mean(axis=1).index, y1=y1, y2=y2, where=y1 >= y2,facecolor=self.plottingColors['W_S_plus'], interpolate=True, alpha=highlight_alpha)
+            l1, = ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{C}_t^{S+} \pm 3\sigma_t^{S+} $', color=self.plottingColors['W_S_plus'],linestyle=':')
+            l2, = ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{C}_t^{S+}$',color=self.plottingColors['W_S_plus'])
+            ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_S_plus'], linestyle=':')
+            ax1.set_ylabel('$C(\mathbf{X^i_t}) - C(\mathbf{X^p})$ [-]')
+            ax1.set_title('Jacobi deviation on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
+        else:
+            ax1.fill_between(w_s_plus_df.mean(axis=1).index, y1=y1, y2=y2, where=y1 >= y2,facecolor=self.plottingColors['W_S_plus'], interpolate=True, alpha=highlight_alpha)
+            l1, = ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{H}_t^{S+} \pm 3\sigma_t^{S+} $', color=self.plottingColors['W_S_plus'],linestyle=':')
+            l2, = ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{H}_t^{S+}$',color=self.plottingColors['W_S_plus'])
+            ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_S_plus'], linestyle=':')
+            ax1.set_ylabel('$H(\mathbf{X^i_t}) - H(\mathbf{X^p})$ [-]')
+            ax1.set_title('Hamiltonian deviation on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
 
         # Plot W^S-
-        ax2.fill_between(w_s_min_df.mean(axis=1).index,y1=w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1),y2=w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1),facecolor=self.plottingColors['W_S_min'], interpolate=True, alpha=highlight_alpha)
-        l3, = ax2.plot(w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{S-} \pm 3\sigma_t^{S-}$', color=self.plottingColors['W_S_min'], linestyle=':')
-        l4, = ax2.plot(w_s_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{S-}$',color=self.plottingColors['W_S_min'])
-        ax2.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l1, l2, l3, l4])
-        ax2.plot(w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_S_min'], linestyle=':')
-        ax2.set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$ [-]')
-        ax2.set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{S-}$)', loc='right')
+        if self.thrustRestriction == "left" or self.thrustRestriction == "right" or self.thrustMagnitude == "0.000000":
+            ax2.fill_between(w_s_min_df.mean(axis=1).index,y1=w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1),y2=w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1),facecolor=self.plottingColors['W_S_min'], interpolate=True, alpha=highlight_alpha)
+            l3, = ax2.plot(w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{C}_t^{S-} \pm 3\sigma_t^{S-}$', color=self.plottingColors['W_S_min'],linestyle=':')
+            l4, = ax2.plot(w_s_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{C}_t^{S-}$',color=self.plottingColors['W_S_min'])
+            ax2.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l1, l2, l3, l4])
+            ax2.plot(w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_S_min'], linestyle=':')
+            ax2.set_ylabel('$C(\mathbf{X^i_t}) - C(\mathbf{X^p})$ [-]')
+            ax2.set_title('Jacobi deviation on manifold ($\\forall i \in \mathcal{W}^{S-}$)', loc='right')
+        else:
+            ax2.fill_between(w_s_min_df.mean(axis=1).index,y1=w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1),y2=w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1),facecolor=self.plottingColors['W_S_min'], interpolate=True, alpha=highlight_alpha)
+            l3, = ax2.plot(w_s_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{H}_t^{S-} \pm 3\sigma_t^{S-}$', color=self.plottingColors['W_S_min'], linestyle=':')
+            l4, = ax2.plot(w_s_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{H}_t^{S-}$',color=self.plottingColors['W_S_min'])
+            ax2.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l1, l2, l3, l4])
+            ax2.plot(w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_S_min'], linestyle=':')
+            ax2.set_ylabel('$H(\mathbf{X^i_t}) - H_{lt}(\mathbf{X^p})$ [-]')
+            ax2.set_title('Hamiltonian deviation on manifold ($\\forall i \in \mathcal{W}^{S-}$)', loc='right')
 
         # Plot W^U+
-        ax3.fill_between(w_u_plus_df.mean(axis=1).index,y1=w_u_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_plus_df.std(axis=1),y2=w_u_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_plus_df.std(axis=1),facecolor=self.plottingColors['W_U_plus'], interpolate=True, alpha=highlight_alpha)
-        l5, = ax3.plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_plus_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{U+} \pm 3\sigma_t^{U+}$', color=self.plottingColors['W_U_plus'], linestyle=':')
-        l6, = ax3.plot(w_u_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{U+}$',color=self.plottingColors['W_U_plus'])
-        ax3.plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_plus_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_U_plus'], linestyle=':')
-        ax3.set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$  [-]')
-        ax3.set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{U+}$)', loc='right')
-        ax3.set_xlabel('$|t|$ [-]')
+        if self.thrustRestriction == "left" or self.thrustRestriction == "right" or self.thrustMagnitude == "0.000000":
+            ax3.fill_between(w_u_plus_df.mean(axis=1).index,y1=w_u_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_plus_df.std(axis=1),y2=w_u_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_plus_df.std(axis=1),facecolor=self.plottingColors['W_U_plus'], interpolate=True, alpha=highlight_alpha)
+            l5, = ax3.plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_plus_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{C}_t^{U+} \pm 3\sigma_t^{U+}$', color=self.plottingColors['W_U_plus'], linestyle=':')
+            l6, = ax3.plot(w_u_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{C}_t^{U+}$',color=self.plottingColors['W_U_plus'])
+            ax3.plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_plus_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_U_plus'], linestyle=':')
+            ax3.set_ylabel('$C(\mathbf{X^i_t}) - C(\mathbf{X^p})$  [-]')
+            ax3.set_title('Jacobi deviation on manifold ($\\forall i \in \mathcal{W}^{U+}$)', loc='right')
+            ax3.set_xlabel('$|t|$ [-]')
+        else:
+            ax3.fill_between(w_u_plus_df.mean(axis=1).index,y1=w_u_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_plus_df.std(axis=1),y2=w_u_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_plus_df.std(axis=1),facecolor=self.plottingColors['W_U_plus'], interpolate=True, alpha=highlight_alpha)
+            l5, = ax3.plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_plus_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{H}_t^{U+} \pm 3\sigma_t^{U+}$', color=self.plottingColors['W_U_plus'],linestyle=':')
+            l6, = ax3.plot(w_u_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{H}_t^{U+}$',color=self.plottingColors['W_U_plus'])
+            ax3.plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_plus_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_U_plus'], linestyle=':')
+            ax3.set_ylabel('$H(\mathbf{X^i_t}) - H(\mathbf{X^p})$  [-]')
+            ax3.set_title('Hamiltonian deviation on manifold ($\\forall i \in \mathcal{W}^{U+}$)', loc='right')
+            ax3.set_xlabel('$|t|$ [-]')
 
         # Plot W^U-
-        ax4.fill_between(w_u_min_df.mean(axis=1).index,y1=w_u_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),y2=w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna( method='ffill'),facecolor=self.plottingColors['W_U_min'], interpolate=True, alpha=highlight_alpha)
-        l7, = ax4.plot(w_u_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{IOM}_t^{U-} \pm 3\sigma_t^{U-}$', color=self.plottingColors['W_U_min'], linestyle=':')
-        l8, = ax4.plot(w_u_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{IOM}_t^{U-}$',color=self.plottingColors['W_U_min'])
-        ax4.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l5, l6, l7, l8])
-        ax4.plot(w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_U_min'], linestyle=':')
-        ax4.set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$  [-]')
-        ax4.set_title('IOM deviation on manifold ($\\forall i \in \mathcal{W}^{U-}$)', loc='right')
-        ax4.set_xlabel('$|t|$  [-]')
+        if self.thrustRestriction == "left" or self.thrustRestriction == "right" or self.thrustMagnitude == "0.000000":
+            ax4.fill_between(w_u_min_df.mean(axis=1).index,y1=w_u_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),y2=w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna( method='ffill'),facecolor=self.plottingColors['W_U_min'], interpolate=True, alpha=highlight_alpha)
+            l7, = ax4.plot(w_u_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{C}_t^{U-} \pm 3\sigma_t^{U-}$', color=self.plottingColors['W_U_min'], linestyle=':')
+            l8, = ax4.plot(w_u_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{C}_t^{U-}$',color=self.plottingColors['W_U_min'])
+            ax4.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l5, l6, l7, l8])
+            ax4.plot(w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_U_min'], linestyle=':')
+            ax4.set_ylabel('$C(\mathbf{X^i_t}) - C(\mathbf{X^p})$  [-]')
+            ax4.set_title('Jacobi deviation on manifold ($\\forall i \in \mathcal{W}^{U-}$)', loc='right')
+            ax4.set_xlabel('$|t|$  [-]')
+        else:
+            ax4.fill_between(w_u_min_df.mean(axis=1).index,y1=w_u_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),y2=w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna(method='ffill'), facecolor=self.plottingColors['W_U_min'], interpolate=True,alpha=highlight_alpha)
+            l7, = ax4.plot(w_u_min_df.mean(axis=1).fillna(method='ffill') + 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),label='$\Delta \\bar{H}_t^{U-} \pm 3\sigma_t^{U-}$', color=self.plottingColors['W_U_min'],linestyle=':')
+            l8, = ax4.plot(w_u_min_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{H}_t^{U-}$',color=self.plottingColors['W_U_min'])
+            ax4.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l5, l6, l7, l8])
+            ax4.plot(w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_U_min'], linestyle=':')
+            ax4.set_ylabel('$IOM(\mathbf{X^i_t}) - IOM(\mathbf{X^p})$  [-]')
+            ax4.set_title('Hamiltonian deviation on manifold ($\\forall i \in \mathcal{W}^{U-}$)', loc='right')
+            ax4.set_xlabel('$|t|$  [-]')
 
         ylim = [min(ax1.get_ylim()[0], ax3.get_ylim()[0], ax2.get_ylim()[0], ax4.get_ylim()[0]),
                 max(ax1.get_ylim()[1], ax3.get_ylim()[1], ax2.get_ylim()[1], ax4.get_ylim()[1])]
@@ -1189,6 +1232,10 @@ class DisplayAugmentedValidation:
         elif self.thrustRestriction == 'right':
             plt.suptitle('$L_' + str(
                 self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \longrightarrow }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - IOM verification at C = ' + str(
+                np.round(self.C, 3)), size=self.suptitleSize)
+        elif self.thrustMagnitude == '0.000000':
+            plt.suptitle('$L_' + str(
+                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{  }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - IOM verification at C = ' + str(
                 np.round(self.C, 3)), size=self.suptitleSize)
         else:
             plt.suptitle('$L_' + str(
@@ -1933,10 +1980,10 @@ if __name__ == '__main__':
     low_dpi = True
     lagrange_points = [1,2]
     orbit_types = ['horizontal']
-    c_levels = [3.05, 3.1, 3.15]
-    thrust_restrictions = ['left', 'right', '000.0', '090.0', '180.0', '270.0']
+    c_levels = [3.05]
+    thrust_restrictions = ['left','090.0']
     spacecraft_names = ['DeepSpace']
-    thrust_magnitudes = ['0.000100','0.001000','0.010000']
+    thrust_magnitudes = ['0.010000']
     orbit_ids = {'horizontal':  {1: {3.05: 808, 3.1: 577, 3.15: 330}, 2: {3.05: 1066, 3.1: 760, 3.15: 373}}}
 
     for orbit_type in orbit_types:
@@ -1949,14 +1996,22 @@ if __name__ == '__main__':
                                                                               orbit_ids[orbit_type][lagrange_point][
                                                                                   c_level], thrust_restriction, spacecraft_name,
                                                                                   thrust_magnitude, low_dpi=low_dpi)
-                            display_augmented_validation.plot_manifolds()
+                            #display_augmented_validation.plot_manifolds()
                             #display_augmented_validation.plot_manifold_zoom()
                             #display_augmented_validation.plot_manifold_individual()
                             #display_augmented_validation.plot_eigenvectors()
-                            #display_augmented_validation.plot_iom_validation()
+                            display_augmented_validation.plot_iom_validation()
                             #display_augmented_validation.plot_stopping_validation()
                             #display_augmented_validation.plot_thrust_validation()
                             #display_augmented_validation.plot_mass_validation()
                             #display_augmented_validation.plot_massrate_validation()
-
+                            print('test')
+                            print(display_augmented_validation.W_U_min)
+                            print('test')
+                            print(display_augmented_validation.W_U_min.xs(0))
+                            print('test')
+                            print(display_augmented_validation.W_U_min.xs(0).head(1))
+                            print('test')
+                            print(display_augmented_validation.W_U_min.xs(0).head(1).values[0])
+                            print('test')
                             del display_augmented_validation
