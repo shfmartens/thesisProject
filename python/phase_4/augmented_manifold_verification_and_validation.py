@@ -1021,7 +1021,7 @@ class DisplayAugmentedValidation:
         if (self.thrustRestriction == "left" or self.thrustRestriction == "right") or self.thrustMagnitude == "0.000000":
             ylim = [1e-16, 1e-9]
         else:
-            ylim = [1e-3, 1e-11]
+            ylim = [1e-3, 1e-1]
         t_min = 0
         step_size = 0.05
 
