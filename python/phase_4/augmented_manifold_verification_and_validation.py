@@ -1673,8 +1673,11 @@ class DisplayAugmentedValidation:
 
             for row in self.W_S_plus.xs(i).tail(len(self.W_S_plus.xs(i)-1)).iterrows():
                 w_s_plus_t.append(abs(row[0]))
+                print(row.index)
+                print(row[0].index)
+                print(row[1].index)
                 w_s_plus_state = row[1].values
-                w_s_plus_time  = row.index.astype(float, copy = False)
+                w_s_plus_time  = pd.to_numeric(row.index)
                 w_s_plus_iom = w_s_plus_state[6]
                 w_s_plus_time_diff = abs(w_s_plus_first_time - w_s_plus_time)
                 w_s_plus_delta_j.append(abs(mass_theoretical)-(abs(w_s_plus_first_iom-w_s_plus_iom)/w_s_plus_time_diff))
