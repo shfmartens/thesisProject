@@ -1673,7 +1673,7 @@ class DisplayAugmentedValidation:
 
             for row in self.W_S_plus.xs(i).tail(len(self.W_S_plus.xs(i)-1)).iterrows():
                 w_s_plus_t.append(abs(row[0]))
-                print(type(w_s_plus_t))
+                print(type(abs(row[0]))
                 w_s_plus_state = row[1].values
                 w_s_plus_time  = pd.to_numeric(row.index)
                 w_s_plus_iom = w_s_plus_state[6]
