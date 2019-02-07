@@ -200,11 +200,11 @@ class DisplayAugmentedValidation:
             if (abs(state_on_manifold[1]) < abs(state_on_manifold[0] - (1 - self.massParameter))) and abs(state_on_manifold[1] < (1 - state_on_manifold[6])):
                 self.W_S_min_dx.append(0)
                 self.W_S_min_dy.append(abs(state_on_manifold[1]))
-                self.W_S_min_dm.append[0]
+                self.W_S_min_dm.append(0)
             elif (abs(state_on_manifold[0] - (1 - self.massParameter)) < abs(state_on_manifold[1])) and ((abs(state_on_manifold[0] - (1 - self.massParameter)) < (1 - state_on_manifold[6]))):
                 self.W_S_min_dx.append(abs(state_on_manifold[0] - (1 - self.massParameter)))
                 self.W_S_min_dy.append(0)
-                self.W_S_min_dm.append[0]
+                self.W_S_min_dm.append(0)
             else:
                 self.W_S_min_dy.append(0)
                 self.W_S_min_dx.append(0)
