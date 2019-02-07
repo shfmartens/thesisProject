@@ -1207,7 +1207,7 @@ class DisplayAugmentedValidation:
             l2, = ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{H}_t^{S+}$',color=self.plottingColors['W_S_plus'])
             ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_S_plus'], linestyle=':')
             ax1.set_ylabel('$H(\mathbf{X^i_t}) - H(\mathbf{X^p})$ [-]')
-            ax1.set_title('Hamiltonian deviation on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
+            ax1.set_title('$H_{lt}$ deviation on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
 
         # Plot W^S-
         if self.thrustRestriction == "left" or self.thrustRestriction == "right" or self.thrustMagnitude == "0.000000":
@@ -1225,7 +1225,7 @@ class DisplayAugmentedValidation:
             ax2.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l1, l2, l3, l4])
             ax2.plot(w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_S_min'], linestyle=':')
             ax2.set_ylabel('$H(\mathbf{X^i_t}) - H_{lt}(\mathbf{X^p})$ [-]')
-            ax2.set_title('Hamiltonian deviation on manifold ($\\forall i \in \mathcal{W}^{S-}$)', loc='right')
+            ax2.set_title('$H_{lt}$ deviation on manifold ($\\forall i \in \mathcal{W}^{S-}$)', loc='right')
 
         # Plot W^U+
         if self.thrustRestriction == "left" or self.thrustRestriction == "right" or self.thrustMagnitude == "0.000000":
@@ -1242,7 +1242,7 @@ class DisplayAugmentedValidation:
             l6, = ax3.plot(w_u_plus_df.mean(axis=1).fillna(method='ffill'), label='$\Delta \\bar{H}_t^{U+}$',color=self.plottingColors['W_U_plus'])
             ax3.plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_plus_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_U_plus'], linestyle=':')
             ax3.set_ylabel('$H(\mathbf{X^i_t}) - H(\mathbf{X^p})$  [-]')
-            ax3.set_title('Hamiltonian deviation on manifold ($\\forall i \in \mathcal{W}^{U+}$)', loc='right')
+            ax3.set_title('$H_{lt}$ deviation on manifold ($\\forall i \in \mathcal{W}^{U+}$)', loc='right')
             ax3.set_xlabel('$|t|$ [-]')
 
         # Plot W^U-
@@ -1262,7 +1262,7 @@ class DisplayAugmentedValidation:
             ax4.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), handles=[l5, l6, l7, l8])
             ax4.plot(w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),color=self.plottingColors['W_U_min'], linestyle=':')
             ax4.set_ylabel('$H(\mathbf{X^i_t}) - H(\mathbf{X^p})$  [-]')
-            ax4.set_title('Hamiltonian deviation on manifold ($\\forall i \in \mathcal{W}^{U-}$)', loc='right')
+            ax4.set_title('$H_{lt}$ deviation on manifold ($\\forall i \in \mathcal{W}^{U-}$)', loc='right')
             ax4.set_xlabel('$|t|$  [-]')
 
         ylim = [min(ax1.get_ylim()[0], ax3.get_ylim()[0], ax2.get_ylim()[0], ax4.get_ylim()[0]),
