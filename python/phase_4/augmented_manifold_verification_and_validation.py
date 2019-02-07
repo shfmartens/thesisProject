@@ -1646,7 +1646,7 @@ class DisplayAugmentedValidation:
         w_u_min_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
 
         # self.numberOfOrbitsPerManifold
-        for i in range(49,50):
+        for i in range(self.numberOfOrbitsPerManifold):
             w_s_plus_t = []
             w_s_min_t = []
             w_u_plus_t = []
@@ -1664,26 +1664,30 @@ class DisplayAugmentedValidation:
             w_u_plus_first_iom = w_u_plus_first_state[6]
             w_u_min_first_iom = w_u_min_first_state[6]
 
-            for row in self.W_S_plus.xs(i).iterrows():
+            for row in self.W_S_plus.xs(i).tail(len(self.W_S_plus.xs(i)-1)).iterrows():
                 w_s_plus_t.append(abs(row[0]))
                 w_s_plus_state = row[1].values
                 w_s_plus_iom = w_s_plus_state[6]
-                w_s_plus_delta_j.append(1.0 - w_s_plus_iom)
-            for row in self.W_S_min.xs(i).iterrows():
+                w_s_plus_delta_j.append(abs(w_s_plus_first_iom-w_s_plus_iom))
+                w_s_plus_first_iom = w_s_plus_iom
+            for row in self.W_S_min.xs(i).tail(len(self.W_S_min.xs(i)-1)).iterrows():
                 w_s_min_t.append(abs(row[0]))
                 w_s_min_state = row[1].values
                 w_s_min_iom =w_s_min_state[6]
-                w_s_min_delta_j.append(1.0 - w_s_min_iom)
-            for row in self.W_U_plus.xs(i).iterrows():
+                w_s_min_delta_j.append(abs(w_s_min_first_iom-w_s_min_iom))
+                w_s_min_first_iom = w_s_min_iom
+            for row in self.W_U_plus.xs(i).tail(len(self.W_U_plus.xs(i)-1)).iterrows():
                 w_u_plus_t.append(abs(row[0]))
                 w_u_plus_state = row[1].values
                 w_u_plus_iom = w_u_plus_state[6]
-                w_u_plus_delta_j.append(1.0 - w_u_plus_iom)
-            for row in self.W_U_min.xs(i).iterrows():
+                w_u_plus_delta_j.append(abs(w_u_plus_first_iom-w_u_plus_iom))
+                w_u_plus_first_iom = w_u_plus_iom
+            for row in self.W_U_min.xs(i).tail(len(self.W_U_min.xs(i)-1)).iterrows():
                 w_u_min_t.append(abs(row[0]))
                 w_u_min_state = row[1].values
                 w_u_min_iom = w_u_min_state[6]
-                w_u_min_delta_j.append(1.0 - w_u_min_iom)
+                w_u_min_delta_j.append(abs(w_u_min_first_iom-w_u_min_iom))
+                w_u_min_first_iom = w_u_min_iom
 
             w_s_plus_f = interp1d(w_s_plus_t, w_s_plus_delta_j)
             w_s_min_f = interp1d(w_s_min_t, w_s_min_delta_j)
