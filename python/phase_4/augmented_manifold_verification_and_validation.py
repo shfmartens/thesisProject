@@ -1752,7 +1752,7 @@ class DisplayAugmentedValidation:
         ax1.plot(w_s_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_plus_df.std(axis=1).fillna(method='ffill'),
                  color=self.plottingColors['W_S_plus'], linestyle=':')
         ax1.set_ylabel('$|1 - m^i_{t}|$ [-]')
-        ax1.set_title('Mass deviation on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
+        ax1.set_title(' on manifold ($\\forall i \in \mathcal{W}^{S+}$)', loc='right')
 
         # Plot W^S-
         ax2.fill_between(w_s_min_df.mean(axis=1).index,
@@ -1768,7 +1768,7 @@ class DisplayAugmentedValidation:
         ax2.plot(w_s_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_s_min_df.std(axis=1).fillna(method='ffill'),
                  color=self.plottingColors['W_S_min'], linestyle=':')
         ax2.set_ylabel('$|1 - m^i_{t}|$ [-]')
-        ax2.set_title('Mass deviation on manifold ($\\forall i \in \mathcal{W}^{S-}$)', loc='right')
+        ax2.set_title(' on manifold ($\\forall i \in \mathcal{W}^{S-}$)', loc='right')
 
         # Plot W^U+
         ax3.fill_between(w_u_plus_df.mean(axis=1).index,
@@ -1783,7 +1783,7 @@ class DisplayAugmentedValidation:
         ax3.plot(w_u_plus_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_plus_df.std(axis=1).fillna(method='ffill'),
                  color=self.plottingColors['W_U_plus'], linestyle=':')
         ax3.set_ylabel('$|1 - m^i_{t}|$ [-]')
-        ax3.set_title('Mass deviation on manifold ($\\forall i \in \mathcal{W}^{U+}$)', loc='right')
+        ax3.set_title(' on manifold ($\\forall i \in \mathcal{W}^{U+}$)', loc='right')
         ax3.set_xlabel('$|t|$ [-]')
 
         # Plot W^U-
@@ -1802,7 +1802,7 @@ class DisplayAugmentedValidation:
         ax4.plot(w_u_min_df.mean(axis=1).fillna(method='ffill') - 3 * w_u_min_df.std(axis=1).fillna(method='ffill'),
                  color=self.plottingColors['W_U_min'], linestyle=':')
         ax4.set_ylabel('$|1 - m^i_{t}|$ [-]')
-        ax4.set_title('Mass deviation on manifold ($\\forall i \in \mathcal{W}^{U-}$)', loc='right')
+        ax4.set_title(' on manifold ($\\forall i \in \mathcal{W}^{U-}$)', loc='right')
         ax4.set_xlabel('$|t|$  [-]')
 
         ylim = [min(ax1.get_ylim()[0], ax3.get_ylim()[0], ax2.get_ylim()[0], ax4.get_ylim()[0]),
@@ -1813,10 +1813,10 @@ class DisplayAugmentedValidation:
         ax3.set_ylim(ylim)
         ax4.set_ylim(ylim)
 
-        ax1.ticklabel_format(useOffset=False)
-        ax2.ticklabel_format(useOffset=False)
-        ax3.ticklabel_format(useOffset=False)
-        ax4.ticklabel_format(useOffset=False)
+        #ax1.ticklabel_format(useOffset=False)
+        #ax2.ticklabel_format(useOffset=False)
+        #ax3.ticklabel_format(useOffset=False)
+        #ax4.ticklabel_format(useOffset=False)
 
         ax1.grid(True, which='both', ls=':')
         ax2.grid(True, which='both', ls=':')
