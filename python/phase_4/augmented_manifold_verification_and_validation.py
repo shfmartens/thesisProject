@@ -1672,7 +1672,7 @@ class DisplayAugmentedValidation:
             # /(w_s_plus_time_diff)
 
             for row in self.W_S_plus.xs(i).tail(len(self.W_S_plus.xs(i)-1)).iterrows():
-                print(row)
+                print(row[0])
                 w_s_plus_t.append(abs(row[0]))
                 w_s_plus_state = row[1].values
                 w_s_plus_time  = row[1].index
