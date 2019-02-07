@@ -1657,10 +1657,12 @@ class DisplayAugmentedValidation:
             w_u_min_delta_j = []
             w_s_plus_first_state = self.W_S_plus.xs(0).head(1).values[0]
             w_s_plus_first_time = self.W_S_plus.xs(i).head(1).index[0]
-            print(w_s_plus_first_time)
             w_s_min_first_state = self.W_S_min.xs(0).head(1).values[0]
+            w_s_min_first_time = self.W_S_min.xs(i).head(1).index[0]
             w_u_plus_first_state = self.W_U_plus.xs(0).head(1).values[0]
+            w_u_plus_first_time = self.W_U_plus.xs(i).head(1).index[0]
             w_u_min_first_state = self.W_U_min.xs(0).head(1).values[0]
+            w_u_min_first_time = self.W_U_min.xs(i).head(1).index[0]
             w_s_plus_first_iom = w_s_plus_first_state[6]
             w_s_min_first_iom = w_s_min_first_state[6]
             w_u_plus_first_iom = w_u_plus_first_state[6]
@@ -1672,28 +1674,39 @@ class DisplayAugmentedValidation:
             for row in self.W_S_plus.xs(i).tail(len(self.W_S_plus.xs(i)-1)).iterrows():
                 w_s_plus_t.append(abs(row[0]))
                 w_s_plus_state = row[1].values
+                w_s_plus_time  = row[0].index
                 w_s_plus_iom = w_s_plus_state[6]
-                w_s_plus_time_diff = abs(row[0])
-                w_s_plus_delta_j.append(abs(mass_theoretical)-(abs(w_s_plus_first_iom-w_s_plus_iom)))
+                w_s_plus_time_diff = abs(w_s_plus_first_time - w_s_plus_time)
+                w_s_plus_delta_j.append(abs(mass_theoretical)-(abs(w_s_plus_first_iom-w_s_plus_iom)/w_s_plus_time_diff))
                 w_s_plus_first_iom = w_s_plus_iom
+                w_s_plus_first_time = w_s_plus_time
             for row in self.W_S_min.xs(i).tail(len(self.W_S_min.xs(i)-1)).iterrows():
                 w_s_min_t.append(abs(row[0]))
                 w_s_min_state = row[1].values
+                w_s_min_time = row[1].index
                 w_s_min_iom =w_s_min_state[6]
-                w_s_min_delta_j.append(abs(mass_theoretical)-abs(w_s_min_first_iom-w_s_min_iom))
+                w_s_min_time_diff = abs(w_s_min_first_time - w_s_min_time)
+                w_s_min_delta_j.append(abs(mass_theoretical)-abs(w_s_min_first_iom-w_s_min_iom)/w_s_min_time_diff)
                 w_s_min_first_iom = w_s_min_iom
+                w_s_min_first_time = w_s_min_time
             for row in self.W_U_plus.xs(i).tail(len(self.W_U_plus.xs(i)-1)).iterrows():
                 w_u_plus_t.append(abs(row[0]))
                 w_u_plus_state = row[1].values
+                w_u_plus_time = row[0].index
                 w_u_plus_iom = w_u_plus_state[6]
-                w_u_plus_delta_j.append(abs(mass_theoretical)-abs(w_u_plus_first_iom-w_u_plus_iom))
+                w_u_plus_time_diff = abs(w_u_plus_first_time - w_u_plus_time)
+                w_u_plus_delta_j.append(abs(mass_theoretical)-abs(w_u_plus_first_iom-w_u_plus_iom)/w_u_plus_time_diff)
                 w_u_plus_first_iom = w_u_plus_iom
+                w_u_plus_first_time = w_u_plus_time
             for row in self.W_U_min.xs(i).tail(len(self.W_U_min.xs(i)-1)).iterrows():
                 w_u_min_t.append(abs(row[0]))
                 w_u_min_state = row[1].values
+                w_u_min_time = row[0].index
                 w_u_min_iom = w_u_min_state[6]
-                w_u_min_delta_j.append(abs(mass_theoretical)-abs(w_u_min_first_iom-w_u_min_iom))
+                w_u_min_time_diff = abs(w_u_min_first_time - w_u_min_time)
+                w_u_min_delta_j.append(abs(mass_theoretical)-abs(w_u_min_first_iom-w_u_min_iom)/w_u_min_time_diff)
                 w_u_min_first_iom = w_u_min_iom
+                w_u_min_first_time = w_u_min_time
 
             w_s_plus_f = interp1d(w_s_plus_t, w_s_plus_delta_j)
             w_s_min_f = interp1d(w_s_min_t, w_s_min_delta_j)
