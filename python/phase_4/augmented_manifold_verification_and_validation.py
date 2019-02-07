@@ -173,16 +173,20 @@ class DisplayAugmentedValidation:
                 self.C_diff_start_W_S_plus.append(abs(iom_on_manifold - iom_on_orbit))
             state_on_manifold = self.W_S_plus.xs(i).head(1).values[0]
             # either very close to 1-mu or dy
-            if abs(state_on_manifold[1]) < abs(state_on_manifold[0] - (1 - self.massParameter)):
-                self.W_S_plus_dx.append(abs(state_on_manifold[0] - (1 - self.massParameter)))
-                #self.W_S_plus_dx.append(0)
+            if (abs(state_on_manifold[1]) < abs(state_on_manifold[0] - (1 - self.massParameter))) and abs(state_on_manifold[1] < (1 - state_on_manifold[6])):
+                self.W_S_plus_dx.append(0)
                 self.W_S_plus_dy.append(abs(state_on_manifold[1]))
+                self.W_S_plus_dm.append[0]
+            elif (abs(state_on_manifold[0] - (1 - self.massParameter)) < abs(state_on_manifold[1])) and ((abs(state_on_manifold[0] - (1 - self.massParameter)) < (1 - state_on_manifold[6]))):
+                self.W_S_plus_dx.append(abs(state_on_manifold[0] - (1 - self.massParameter)))
+                self.W_S_plus_dy.append(0)
+                self.W_S_plus_dm.append[0]
             else:
-                self.W_S_plus_dx.append(abs(state_on_manifold[0] - (1 - self.massParameter)))
-                self.W_S_plus_dy.append(abs(state_on_manifold[1]))
+                self.W_S_plus_dy.append(0)
+                self.W_S_plus_dx.append(0)
                 #self.W_S_plus_dy.append(0)
-            final_dm = abs(1.0-state_on_manifold[6])
-            self.W_S_plus_dm.append(final_dm)
+                final_dm = abs(1.0 - state_on_manifold[6])
+                self.W_S_plus_dm.append(final_dm)
 
             # W_S_min
             state_on_manifold = self.W_S_min.xs(i).tail(1).values[0]
@@ -193,14 +197,20 @@ class DisplayAugmentedValidation:
                 self.C_diff_start_W_S_min.append(abs(iom_on_manifold - iom_on_orbit))
             state_on_manifold = self.W_S_min.xs(i).head(1).values[0]
             # either very close to 1-mu or dy
-            if abs(state_on_manifold[1]) < abs(state_on_manifold[0] - (1 - self.massParameter)):
+            if (abs(state_on_manifold[1]) < abs(state_on_manifold[0] - (1 - self.massParameter))) and abs(state_on_manifold[1] < (1 - state_on_manifold[6])):
                 self.W_S_min_dx.append(0)
                 self.W_S_min_dy.append(abs(state_on_manifold[1]))
-            else:
+                self.W_S_min_dm.append[0]
+            elif (abs(state_on_manifold[0] - (1 - self.massParameter)) < abs(state_on_manifold[1])) and ((abs(state_on_manifold[0] - (1 - self.massParameter)) < (1 - state_on_manifold[6]))):
                 self.W_S_min_dx.append(abs(state_on_manifold[0] - (1 - self.massParameter)))
                 self.W_S_min_dy.append(0)
-            final_dm = abs(1.0-state_on_manifold[6])
-            self.W_S_min_dm.append(final_dm)
+                self.W_S_min_dm.append[0]
+            else:
+                self.W_S_min_dy.append(0)
+                self.W_S_min_dx.append(0)
+                #self.W_S_plus_dy.append(0)
+                final_dm = abs(1.0 - state_on_manifold[6])
+                self.W_S_min_dm.append(final_dm)
 
             # W_U_plus
             state_on_manifold = self.W_U_plus.xs(i).head(1).values[0]
@@ -1008,7 +1018,8 @@ class DisplayAugmentedValidation:
         fig = plt.figure(figsize=self.figSize)
 
         gs2 = gs.GridSpec(3,2)
-        ax0 = fig.add_subplot(gs2[0, 0:2])
+        ax0 = fig.add_subplot(gs2[0, 0])
+        ax5 = gif.add_subplot(gs2[0, 1])
         ax1 = fig.add_subplot(gs2[1, 0])
         ax2 = fig.add_subplot(gs2[1, 1])
         ax3 = fig.add_subplot(gs2[2, 0])
@@ -1044,6 +1055,37 @@ class DisplayAugmentedValidation:
             ax0.set_ylabel('$|C_{lt}(\mathbf{X^i_0}) - C_{lt}(\mathbf{X^p})|$ [-]')
             ax0.set_title('Jacobi energy deviation between orbit and manifold')
         ax0.legend(frameon=True, loc='center left',  bbox_to_anchor=(1, 0.5))
+
+        ax5.semilogy(self.W_S_plus_dy[self.W_S_plus_dy['dy'] < 1e-10], c=self.plottingColors['W_S_plus'],
+                           label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
+        ax5.semilogy(self.W_S_plus_dx[self.W_S_plus_dx['dx'] < 1e-10], c=self.plottingColors['W_S_plus'],
+                     label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
+        ax5.semilogy(self.W_S_plus_dm[self.W_S_plus_dm['dm'] < 1e-10], c=self.plottingColors['W_S_plus'],
+                     label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
+        ax5.semilogy(self.W_S_min_dy[self.W_S_min_dy['dy'] < 1e-10], c=self.plottingColors['W_S_plus'],
+                     label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$', linestyle='--')
+        ax5.semilogy(self.W_S_min_dx[self.W_S_min_dx['dx'] < 1e-10], c=self.plottingColors['W_S_plus'],
+                     label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$', linestyle='--')
+        ax5.semilogy(self.W_S_min_dm[self.W_S_min_dm['dm'] < 1e-10], c=self.plottingColors['W_S_plus'],
+                     label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$', linestyle='--')
+        ax5.semilogy(self.W_U_plus_dy[self.W_U_plus_dy['dy'] < 1e-10], c=self.plottingColors['W_U_plus'],
+                           label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U+}$')
+        ax5.semilogy(self.W_U_plus_dx[self.W_U_plus_dx['dx'] < 1e-10], c=self.plottingColors['W_U_plus'],
+                     label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U+}$')
+        ax5.semilogy(self.W_U_min_dx[self.W_U_min_dx['dx'] < 1e-10], c=self.plottingColors['W_U_min'],
+                           label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
+        ax5.semilogy(self.W_U_min_dy[self.W_U_min_dy['dy'] < 1e-10], c=self.plottingColors['W_U_min'],
+                     label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
+
+        ax5.set_ylabel('$|x^i_{t_f} - (1-\mu)|, \; |y^i_{t_f}|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
+        ax5.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5))
+        ax5.set_xlim([0, 1])
+        ax5.set_xlabel('$\\tau$ [-]')
+        ax5.set_ylim(ylim)
+        if self.lagrangePointNr == 1:
+            ax5.set_title('Position deviation at $U_i \;  \\forall \; i = 1, 2, 3$')
+        else:
+            ax5.set_title('Position deviation at $U_i \;  \\forall \; i = 2, 3, 4$')
 
         w_s_plus_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
         w_s_min_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
@@ -2009,8 +2051,8 @@ if __name__ == '__main__':
                             #display_augmented_validation.plot_manifold_zoom()
                             #display_augmented_validation.plot_manifold_individual()
                             #display_augmented_validation.plot_eigenvectors()
-                            #display_augmented_validation.plot_iom_validation()
-                            display_augmented_validation.plot_stopping_validation()
+                            display_augmented_validation.plot_iom_validation()
+                            #display_augmented_validation.plot_stopping_validation()
                             #display_augmented_validation.plot_thrust_validation()
                             #display_augmented_validation.plot_mass_validation()
                             #display_augmented_validation.plot_massrate_validation()
