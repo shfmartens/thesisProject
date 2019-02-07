@@ -780,7 +780,7 @@ class DisplayAugmentedValidation:
                       linewidth=line_width)
 
         ax0.set_xlabel('x [-]')
-        ax0.set_ylabel('z [-]')
+        ax0.set_ylabel('y [-]')
         if self.lagrangePointNr == 1:
             ax0.set_xlim([-1.0, 1.25])
             ax0.set_ylim([-0.9, 0.25])
@@ -790,7 +790,7 @@ class DisplayAugmentedValidation:
         # ax1.set_ylim([-0.4, 0.4])
         ax0.grid(True, which='both', ls=':')
         ax3.set_xlabel('x [-]')
-        ax3.set_ylabel('z [-]')
+        ax3.set_ylabel('y [-]')
         if self.lagrangePointNr == 1:
             ax3.set_xlim([-1.0, 1.25])
             ax3.set_ylim([-0.9, 0.25])
@@ -800,10 +800,10 @@ class DisplayAugmentedValidation:
         # ax1.set_ylim([-0.4, 0.4])
         ax3.grid(True, which='both', ls=':')
         ax6.set_xlabel('x [-]')
-        ax6.set_ylabel('z [-]')
+        ax6.set_ylabel('y [-]')
         if self.lagrangePointNr == 1:
             ax6.set_xlim([-1.0, 1.25])
-            ax6.set_ylim([-0.9, 0.25])
+            ax6.set_ylim([-0.25, 0.9])
         else:
             ax6.set_xlim([-5.0, 2.0])
             ax6.set_ylim([-3.5, 0.5])
@@ -814,7 +814,7 @@ class DisplayAugmentedValidation:
         # ax1.set_ylim([-0.4, 0.4])
         if self.lagrangePointNr == 1:
             ax9.set_xlim([-1.0, 1.25])
-            ax9.set_ylim([-0.9, 0.25])
+            ax9.set_ylim([-0.25, 0.9])
         else:
             ax9.set_xlim([-5.0, 2.0])
             ax9.set_ylim([-3.5, 0.5])
@@ -1077,8 +1077,8 @@ class DisplayAugmentedValidation:
                                                        w_u_min_first_state[2], w_u_min_first_state[3],
                                                        w_u_min_first_state[4], w_u_min_first_state[5], w_u_min_first_state[6], self.thrustMagnitude, self.thrustRestriction)
             else:
-                w_s_plus_first_state = self.W_S_plus.xs(i).head(2).tail(1).values[0]
-                w_s_min_first_state = self.W_S_min.xs(i).head(2).tail(1).values[0]
+                w_s_plus_first_state = self.W_S_plus.xs(i).tail(2).tail(1).values[0]
+                w_s_min_first_state = self.W_S_min.xs(i).tail(2).tail(1).values[0]
                 w_u_plus_first_state = self.W_U_plus.xs(i).head(2).tail(1).values[0]
                 w_u_min_first_state = self.W_U_min.xs(i).head(2).tail(1).values[0]
                 w_s_plus_first_iom = computeIntegralOfMotion(w_s_plus_first_state[0], w_s_plus_first_state[1],w_s_plus_first_state[2], w_s_plus_first_state[3],w_s_plus_first_state[4], w_s_plus_first_state[5],w_s_plus_first_state[6], self.thrustMagnitude,self.thrustRestriction)
@@ -1989,10 +1989,10 @@ if __name__ == '__main__':
     low_dpi = True
     lagrange_points = [1,2]
     orbit_types = ['horizontal']
-    c_levels = [3.05,3.1,3.15]
-    thrust_restrictions = ['right','left','000.0','090.0','180.0','270.0']
+    c_levels = [3.05]
+    thrust_restrictions = ['left']
     spacecraft_names = ['DeepSpace']
-    thrust_magnitudes = ['0.000100','0.001000','0.010000']
+    thrust_magnitudes = ['0.010000']
     orbit_ids = {'horizontal':  {1: {3.05: 808, 3.1: 577, 3.15: 330}, 2: {3.05: 1066, 3.1: 760, 3.15: 373}}}
 
     for orbit_type in orbit_types:
@@ -2005,8 +2005,8 @@ if __name__ == '__main__':
                                                                               orbit_ids[orbit_type][lagrange_point][
                                                                                   c_level], thrust_restriction, spacecraft_name,
                                                                                   thrust_magnitude, low_dpi=low_dpi)
-                            display_augmented_validation.plot_manifolds()
-                            display_augmented_validation.plot_manifold_zoom()
+                            #display_augmented_validation.plot_manifolds()
+                            #display_augmented_validation.plot_manifold_zoom()
                             display_augmented_validation.plot_manifold_individual()
                             #display_augmented_validation.plot_eigenvectors()
                             display_augmented_validation.plot_iom_validation()
