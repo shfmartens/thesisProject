@@ -1646,7 +1646,7 @@ class DisplayAugmentedValidation:
         w_u_min_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
 
         # self.numberOfOrbitsPerManifold
-        for i in range(29,30):
+        for i in range(49,50):
             w_s_plus_t = []
             w_s_min_t = []
             w_u_plus_t = []
