@@ -1678,7 +1678,7 @@ class DisplayAugmentedValidation:
                 w_s_plus_time  = row[1].index
                 print(type(w_s_plus_time))
                 w_s_plus_iom = w_s_plus_state[6]
-                w_s_plus_time_diff = abs(float(w_s_plus_first_time) - row[0])
+                w_s_plus_time_diff = abs(w_s_plus_first_time - float(row[0]))
                 w_s_plus_delta_j.append(abs(mass_theoretical)-(abs(w_s_plus_first_iom-w_s_plus_iom)/w_s_plus_time_diff))
                 w_s_plus_first_iom = w_s_plus_iom
                 w_s_plus_first_time = w_s_plus_time
