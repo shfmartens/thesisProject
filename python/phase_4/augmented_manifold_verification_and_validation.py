@@ -1656,13 +1656,13 @@ class DisplayAugmentedValidation:
             w_u_plus_delta_j = []
             w_u_min_delta_j = []
             w_s_plus_first_state = self.W_S_plus.xs(0).head(1).values[0]
-            w_s_plus_first_time = self.W_S_plus.xs(i).head(1).index[0]
+            w_s_plus_first_time = float(self.W_S_plus.xs(i).head(1).index[0])
             w_s_min_first_state = self.W_S_min.xs(0).head(1).values[0]
-            w_s_min_first_time = self.W_S_min.xs(i).head(1).index[0]
+            w_s_min_first_time = float(self.W_S_min.xs(i).head(1).index[0])
             w_u_plus_first_state = self.W_U_plus.xs(0).head(1).values[0]
-            w_u_plus_first_time = self.W_U_plus.xs(i).head(1).index[0]
+            w_u_plus_first_time = float(self.W_U_plus.xs(i).head(1).index[0])
             w_u_min_first_state = self.W_U_min.xs(0).head(1).values[0]
-            w_u_min_first_time = self.W_U_min.xs(i).head(1).index[0]
+            w_u_min_first_time = float(self.W_U_min.xs(i).head(1).index[0])
             w_s_plus_first_iom = w_s_plus_first_state[6]
             w_s_min_first_iom = w_s_min_first_state[6]
             w_u_plus_first_iom = w_u_plus_first_state[6]
