@@ -1663,30 +1663,31 @@ class DisplayAugmentedValidation:
             w_s_min_first_iom = w_s_min_first_state[6]
             w_u_plus_first_iom = w_u_plus_first_state[6]
             w_u_min_first_iom = w_u_min_first_state[6]
+            mass_theoretical = computeMassRate(self.spacecraftName, self.thrustMagnitude)
 
             for row in self.W_S_plus.xs(i).tail(len(self.W_S_plus.xs(i)-1)).iterrows():
                 w_s_plus_t.append(abs(row[0]))
                 w_s_plus_state = row[1].values
                 w_s_plus_iom = w_s_plus_state[6]
-                w_s_plus_delta_j.append(abs(w_s_plus_first_iom-w_s_plus_iom))
+                w_s_plus_delta_j.append(abs(mass_theoretical)-abs(w_s_plus_first_iom-w_s_plus_iom))
                 w_s_plus_first_iom = w_s_plus_iom
             for row in self.W_S_min.xs(i).tail(len(self.W_S_min.xs(i)-1)).iterrows():
                 w_s_min_t.append(abs(row[0]))
                 w_s_min_state = row[1].values
                 w_s_min_iom =w_s_min_state[6]
-                w_s_min_delta_j.append(abs(w_s_min_first_iom-w_s_min_iom))
+                w_s_min_delta_j.append(abs(mass_theoretical)-abs(w_s_min_first_iom-w_s_min_iom))
                 w_s_min_first_iom = w_s_min_iom
             for row in self.W_U_plus.xs(i).head(len(self.W_U_plus.xs(i)-1)).iterrows():
                 w_u_plus_t.append(abs(row[0]))
                 w_u_plus_state = row[1].values
                 w_u_plus_iom = w_u_plus_state[6]
-                w_u_plus_delta_j.append(abs(w_u_plus_first_iom-w_u_plus_iom))
+                w_u_plus_delta_j.append(abs(mass_theoretical)-abs(w_u_plus_first_iom-w_u_plus_iom))
                 w_u_plus_first_iom = w_u_plus_iom
             for row in self.W_U_min.xs(i).head(len(self.W_U_min.xs(i)-1)).iterrows():
                 w_u_min_t.append(abs(row[0]))
                 w_u_min_state = row[1].values
                 w_u_min_iom = w_u_min_state[6]
-                w_u_min_delta_j.append(abs(w_u_min_first_iom-w_u_min_iom))
+                w_u_min_delta_j.append(abs(mass_theoretical)-abs(w_u_min_first_iom-w_u_min_iom))
                 w_u_min_first_iom = w_u_min_iom
 
             w_s_plus_f = interp1d(w_s_plus_t, w_s_plus_delta_j)
