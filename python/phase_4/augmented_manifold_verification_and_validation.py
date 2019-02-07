@@ -1656,7 +1656,7 @@ class DisplayAugmentedValidation:
             w_u_plus_delta_j = []
             w_u_min_delta_j = []
             w_s_plus_first_state = self.W_S_plus.xs(0).head(1).values[0]
-            w_s_plus_first_time = self.W_S_plus.xs(i).head(1).iloc[0]
+            w_s_plus_first_time = self.W_S_plus.xs(i).head(1).index[0]
             print(w_s_plus_first_time)
             w_s_min_first_state = self.W_S_min.xs(0).head(1).values[0]
             w_u_plus_first_state = self.W_U_plus.xs(0).head(1).values[0]
