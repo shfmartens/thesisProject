@@ -1813,6 +1813,10 @@ class DisplayAugmentedValidation:
         ax3.set_ylim(ylim)
         ax4.set_ylim(ylim)
 
+        ax1.ticklabel_format(useOffset=False)
+        ax2.ticklabel_format(useOffset=False)
+        ax3.ticklabel_format(useOffset=False)
+        ax4.ticklabel_format(useOffset=False)
 
         ax1.grid(True, which='both', ls=':')
         ax2.grid(True, which='both', ls=':')
