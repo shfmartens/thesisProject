@@ -1676,13 +1676,13 @@ class DisplayAugmentedValidation:
                 w_s_min_iom =w_s_min_state[6]
                 w_s_min_delta_j.append(abs(w_s_min_first_iom-w_s_min_iom))
                 w_s_min_first_iom = w_s_min_iom
-            for row in self.W_U_plus.xs(i).tail(len(self.W_U_plus.xs(i)-1)).iterrows():
+            for row in self.W_U_plus.xs(i).head(len(self.W_U_plus.xs(i)-1)).iterrows():
                 w_u_plus_t.append(abs(row[0]))
                 w_u_plus_state = row[1].values
                 w_u_plus_iom = w_u_plus_state[6]
                 w_u_plus_delta_j.append(abs(w_u_plus_first_iom-w_u_plus_iom))
                 w_u_plus_first_iom = w_u_plus_iom
-            for row in self.W_U_min.xs(i).tail(len(self.W_U_min.xs(i)-1)).iterrows():
+            for row in self.W_U_min.xs(i).head(len(self.W_U_min.xs(i)-1)).iterrows():
                 w_u_min_t.append(abs(row[0]))
                 w_u_min_state = row[1].values
                 w_u_min_iom = w_u_min_state[6]
