@@ -1808,10 +1808,11 @@ class DisplayAugmentedValidation:
         ylim = [min(ax1.get_ylim()[0], ax3.get_ylim()[0], ax2.get_ylim()[0], ax4.get_ylim()[0]),
                 max(ax1.get_ylim()[1], ax3.get_ylim()[1], ax2.get_ylim()[1], ax4.get_ylim()[1])]
 
-        ax1.set_ylim()
-        ax2.set_ylim()
-        ax3.set_ylim()
-        ax4.set_ylim()
+        ax1.set_ylim(ylim)
+        ax2.set_ylim(ylim)
+        ax3.set_ylim(ylim)
+        ax4.set_ylim(ylim)
+
 
         ax1.grid(True, which='both', ls=':')
         ax2.grid(True, which='both', ls=':')
