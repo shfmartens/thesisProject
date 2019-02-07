@@ -1056,25 +1056,37 @@ class DisplayAugmentedValidation:
             ax0.set_title('Jacobi energy deviation between orbit and manifold')
         ax0.legend(frameon=True, loc='center left',  bbox_to_anchor=(1, 0.5))
 
-        ax5.semilogy(self.W_S_plus_dy[self.W_S_plus_dy['dy'] < 1e-10], c=self.plottingColors['W_S_plus'],
+        # TODO decide whether to filter out trajectories intersecting Moon
+        w_s_plus_dx = pd.DataFrame({'phase': self.phase, 'dx': self.W_S_plus_dx}).set_index('phase')
+        w_s_plus_dy = pd.DataFrame({'phase': self.phase, 'dy': self.W_S_plus_dy}).set_index('phase')
+        w_s_plus_dm = pd.DataFrame({'phase': self.phase, 'dm': self.W_S_plus_dm}).set_index('phase')
+        w_s_min_dx = pd.DataFrame({'phase': self.phase, 'dx': self.W_S_min_dx}).set_index('phase')
+        w_s_min_dy = pd.DataFrame({'phase': self.phase, 'dy': self.W_S_min_dy}).set_index('phase')
+        w_s_min_dm = pd.DataFrame({'phase': self.phase, 'dm': self.W_S_min_dm}).set_index('phase')
+        w_u_plus_dx = pd.DataFrame({'phase': self.phase, 'dx': self.W_U_plus_dx}).set_index('phase')
+        w_u_plus_dy = pd.DataFrame({'phase': self.phase, 'dy': self.W_U_plus_dy}).set_index('phase')
+        w_u_min_dx = pd.DataFrame({'phase': self.phase, 'dx': self.W_U_min_dx}).set_index('phase')
+        w_u_min_dy = pd.DataFrame({'phase': self.phase, 'dy': self.W_U_min_dy}).set_index('phase')
+
+        ax5.semilogy(w_s_plus_dx[w_s_plus_dy['dy'] < 1e-10], c=self.plottingColors['W_S_plus'],
                            label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
-        ax5.semilogy(self.W_S_plus_dx[self.W_S_plus_dx['dx'] < 1e-10], c=self.plottingColors['W_S_plus'],
+        ax5.semilogy(w_s_plus_dx[w_s_plus_dx['dx'] < 1e-10], c=self.plottingColors['W_S_plus'],
                      label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
-        ax5.semilogy(self.W_S_plus_dm[self.W_S_plus_dm['dm'] < 1e-10], c=self.plottingColors['W_S_plus'],
+        ax5.semilogy(w_s_plus_dm[w_s_plus_dm['dm'] < 1e-10], c=self.plottingColors['W_S_plus'],
                      label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$')
-        ax5.semilogy(self.W_S_min_dy[self.W_S_min_dy['dy'] < 1e-10], c=self.plottingColors['W_S_plus'],
+        ax5.semilogy(w_s_min_dy[w_s_min_dy['dy'] < 1e-10], c=self.plottingColors['W_S_plus'],
                      label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$', linestyle='--')
-        ax5.semilogy(self.W_S_min_dx[self.W_S_min_dx['dx'] < 1e-10], c=self.plottingColors['W_S_plus'],
+        ax5.semilogy(w_s_min_dx[w_s_min_dx['dx'] < 1e-10], c=self.plottingColors['W_S_plus'],
                      label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$', linestyle='--')
-        ax5.semilogy(self.W_S_min_dm[self.W_S_min_dm['dm'] < 1e-10], c=self.plottingColors['W_S_plus'],
+        ax5.semilogy(w_s_min_dm[w_s_min_dm['dm'] < 1e-10], c=self.plottingColors['W_S_plus'],
                      label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{S+}$', linestyle='--')
-        ax5.semilogy(self.W_U_plus_dy[self.W_U_plus_dy['dy'] < 1e-10], c=self.plottingColors['W_U_plus'],
+        ax5.semilogy(w_u_plus_dy[w_u_plus_dy['dy'] < 1e-10], c=self.plottingColors['W_U_plus'],
                            label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U+}$')
-        ax5.semilogy(self.W_U_plus_dx[self.W_U_plus_dx['dx'] < 1e-10], c=self.plottingColors['W_U_plus'],
+        ax5.semilogy(w_u_plus_dx[w_u_plus_dx['dx'] < 1e-10], c=self.plottingColors['W_U_plus'],
                      label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U+}$')
-        ax5.semilogy(self.W_U_min_dx[self.W_U_min_dx['dx'] < 1e-10], c=self.plottingColors['W_U_min'],
+        ax5.semilogy(w_u_min_dx[w_u_min_dx['dx'] < 1e-10], c=self.plottingColors['W_U_min'],
                            label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
-        ax5.semilogy(self.W_U_min_dy[self.W_U_min_dy['dy'] < 1e-10], c=self.plottingColors['W_U_min'],
+        ax5.semilogy(w_u_min_dy[w_u_min_dy['dy'] < 1e-10], c=self.plottingColors['W_U_min'],
                      label='$\mathbf{X}^i_n \; \\forall \; i \in \mathcal{W}^{U-}$', linestyle='--')
 
         ax5.set_ylabel('$|x^i_{t_f} - (1-\mu)|, \; |y^i_{t_f}|$ [-]')  # \; \\forall i =0, 1, \ldots m \in \mathcal{W}
