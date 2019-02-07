@@ -1645,7 +1645,8 @@ class DisplayAugmentedValidation:
         w_u_plus_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
         w_u_min_df = pd.DataFrame(index=np.linspace(0, 100, 100 / 0.05 + 1))
 
-        for i in range(self.numberOfOrbitsPerManifold):
+        # self.numberOfOrbitsPerManifold
+        for i in range(1):
             w_s_plus_t = []
             w_s_min_t = []
             w_u_plus_t = []
@@ -2059,7 +2060,7 @@ if __name__ == '__main__':
                             #display_augmented_validation.plot_eigenvectors()
                             #display_augmented_validation.plot_iom_validation()
                             #display_augmented_validation.plot_stopping_validation()
-                            display_augmented_validation.plot_thrust_validation()
+                            #display_augmented_validation.plot_thrust_validation()
                             display_augmented_validation.plot_mass_validation()
-                            display_augmented_validation.plot_massrate_validation()
+                            #display_augmented_validation.plot_massrate_validation()
                             del display_augmented_validation
