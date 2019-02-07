@@ -1658,6 +1658,7 @@ class DisplayAugmentedValidation:
             w_s_plus_first_state = self.W_S_plus.xs(0).head(1).values[0]
             w_s_plus_first_time = self.W_S_plus.xs(i).head(1).index[0]
             w_s_min_first_state = self.W_S_min.xs(0).head(1).values[0]
+            print(type(w_s_plus_first_time))
             w_s_min_first_time = self.W_S_min.xs(i).head(1).index[0]
             w_u_plus_first_state = self.W_U_plus.xs(0).head(1).values[0]
             w_u_plus_first_time = self.W_U_plus.xs(i).head(1).index[0]
@@ -1675,6 +1676,7 @@ class DisplayAugmentedValidation:
                 w_s_plus_t.append(abs(row[0]))
                 w_s_plus_state = row[1].values
                 w_s_plus_time  = row[1].index
+                print(type(w_s_plus_time))
                 w_s_plus_iom = w_s_plus_state[6]
                 w_s_plus_time_diff = abs(float(w_s_plus_first_time) - float(w_s_plus_time[0]))
                 w_s_plus_delta_j.append(abs(mass_theoretical)-(abs(w_s_plus_first_iom-w_s_plus_iom)/w_s_plus_time_diff))
