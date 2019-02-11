@@ -8,20 +8,34 @@
 
 #include "propagateOrbitAugmented.h"
 #include "stateDerivativeModelAugmented.h"
+#include "computeManifoldsAugmented.h"
 
 
-Eigen::MatrixXd getFullAugmentedInitialState( const Eigen::Vector6d& initialState, const Eigen::Vector1d& initialMass, const Eigen::Vector1d& stableInitialMass, int integrationDirection )
+Eigen::MatrixXd getFullAugmentedInitialState( const Eigen::Vector6d& initialState, const std::string spacecraftName, const std::string thrustPointing, int integrationDirection )
 {
-    Eigen::MatrixXd fullInitialState = Eigen::MatrixXd::Zero( 7, 8 );
+    Eigen::MatrixXd fullInitialState = Eigen::MatrixXd::Zero( 8, 9 );
+    Eigen::MatrixXd satelliteCharacteristic  = retrieveSpacecraftProperties(spacecraftName);
+    Eigen::Vector1d initialThrust;
+    Eigen::Vector1d initialstableThrust;
     fullInitialState.block( 0, 0, 6, 1 ) = initialState.block(0,0,6,1);
 
-    if (integrationDirection == 1){
-        fullInitialState.block( 6, 0, 1, 1)  = initialMass;
-    } else {
-        fullInitialState.block(6, 0, 1, 1) = stableInitialMass;
+    if (thrustPointing == "left" || thrustPointing == "right") {
+        auto initialThrust = static_cast<Eigen::Vector1d>( satelliteCharacteristic(0) );
+        auto initialstableThrust = static_cast<Eigen::Vector1d>( satelliteCharacteristic(0) );
+    }  else {
+        auto initialThrust = static_cast<Eigen::Vector1d>( satelliteCharacteristic(0)*(satelliteCharacteristic(1) / 1.0) );
+        auto initialstableThrust = static_cast<Eigen::Vector1d>( satelliteCharacteristic(0)*(satelliteCharacteristic(3) / 1.0) );
     }
 
-    fullInitialState.block( 0, 1, 7, 7 ).setIdentity( );
+    if (integrationDirection == 1){
+        fullInitialState.block( 6, 0, 1, 1)  = satelliteCharacteristic.block(1, 0, 1, 1);
+        fullInitialState.block( 7, 0, 1, 1)  = initialThrust;
+    } else {
+        fullInitialState.block(6, 0, 1, 1) = satelliteCharacteristic.block(3, 0, 1, 1);
+        fullInitialState.block( 7, 0, 1, 1)  = initialstableThrust;
+    }
+
+    fullInitialState.block( 0, 1, 8, 8 ).setIdentity( );
 
     //std::cout << "THE BALLISTIC INITIAL STATE IS: " << initialState << std::endl;
     //std::cout << "THE AUGMENTED INITIAL STATE IS: " << fullInitialState << std::endl;

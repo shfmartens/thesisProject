@@ -7,7 +7,7 @@
 
 #include "Tudat/Basics/basicTypedefs.h"
 
-Eigen::MatrixXd getFullAugmentedInitialState( const Eigen::Vector6d& initialState, const Eigen::Vector1d& initialMass, const Eigen::Vector1d& stableInitialMass, int integrationDirection);
+Eigen::MatrixXd getFullAugmentedInitialState( const Eigen::Vector6d& initialState, const std::string spacecraftName, const std::string thrustPointing, int integrationDirection);
 
 std::pair< Eigen::MatrixXd, double > propagateOrbitAugmented(
         const Eigen::MatrixXd& stateVectorInclSTM, double massParameter, double currentTime,
