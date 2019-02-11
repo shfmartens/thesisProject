@@ -111,8 +111,8 @@ Eigen::MatrixXd computeStateDerivativeAugmented( const double time, const Eigen:
                                  Uxx, Uxy,  Uxz,    partialXaccXvel, partialXaccYvel, 0.0,   partialXaccMass,   0.0,
                                  Uyx, Uyy,  Uyz,    partialYaccXvel, partialYaccYvel, 0.0,   partialYaccMass,   0.0,
                                  Uzx, Uzy,  Uzz,    0.0,             0.0,             0.0,   0.0,               0.0,
-                                 0.0, 0.0,          0.0,             0.0,             0.0,   0.0,               0.0,
-                                 0.0, 0.0,          0.0,             0.0,             0.0,   0.0,               0.0;
+                                 0.0, 0.0,  0.0,    0.0,             0.0,             0.0,   0.0,               0.0,
+                                 0.0, 0.0,  0.0,    0.0,             0.0,             0.0,   0.0,               0.0;
 
         // Differentiate the STM.
         stateDerivative.block( 0, 1, 8, 8 ) = stmDerivativeFunction * cartesianState.block( 0, 1, 8, 8 );
