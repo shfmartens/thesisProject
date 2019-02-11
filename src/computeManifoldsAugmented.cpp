@@ -397,13 +397,13 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
 
             // Obtain the CR3BP-LT State         
             manifoldAugmentedStartingState = getFullAugmentedInitialState(manifoldStartingState, spacecraftName, thrustPointing, integrationDirection );
-//            std::cout << "TEST INITIAL STATE OFSETT: " << manifoldAugmentedStartingState << std::endl;
-            std::cout << std::endl
-                      << "================================================"                               << std::endl
-                      << "Integral of Motion before offset                "   << integralOfMotionOnOrbit    << "    " << std::endl
-                      << "Time after offset                               "   << currentTime                << "    " << std::endl
-                      << "Integral of Motion after offset:                 " << computeIntegralOfMotion(manifoldAugmentedStartingState, spacecraftName, thrustPointing, massParameter, currentTime)   << "    " << std::endl
-                      << "================================================"                               << std::endl;
+            std::cout << "TEST INITIAL STATE OFSETT: " << manifoldAugmentedStartingState << std::endl;
+//            std::cout << std::endl
+//                      << "================================================"                               << std::endl
+//                      << "Integral of Motion before offset                "   << integralOfMotionOnOrbit    << "    " << std::endl
+//                     << "Time after offset                               "   << currentTime                << "    " << std::endl
+//                      << "Integral of Motion after offset:                 " << computeIntegralOfMotion(manifoldAugmentedStartingState, spacecraftName, thrustPointing, massParameter, currentTime)   << "    " << std::endl
+//                      << "================================================"                               << std::endl;
             if ( saveEigenvectors ) {
                 eigenvectorStateHistory[ manifoldNumber ][ trajectoryOnManifoldNumber ] = std::make_pair(localNormalizedEigenvector, localStateVector);
             }
