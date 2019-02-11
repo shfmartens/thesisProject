@@ -6,6 +6,11 @@
 #include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
 #include "Tudat/InputOutput/basicInputOutput.h"
 
+#include <Eigen/Core>
+#include <Eigen/Eigenvalues>
+#include <Eigen/QR>
+#include <Eigen/Dense>
+
 #include "propagateOrbitAugmented.h"
 #include "stateDerivativeModelAugmented.h"
 #include "computeManifoldsAugmented.h"
@@ -15,32 +20,33 @@ Eigen::MatrixXd getFullAugmentedInitialState( const Eigen::Vector6d& initialStat
 {
     Eigen::MatrixXd fullInitialState = Eigen::MatrixXd::Zero( 8, 9 );
     Eigen::MatrixXd satelliteCharacteristic  = retrieveSpacecraftProperties(spacecraftName);
-    Eigen::Vector1d initialThrust;
-    Eigen::Vector1d initialstableThrust;
     fullInitialState.block( 0, 0, 6, 1 ) = initialState.block(0,0,6,1);
 
-    if (thrustPointing == "left" || thrustPointing == "right") {
-        auto initialThrust = static_cast<Eigen::Vector1d>( satelliteCharacteristic(0) );
-        auto initialstableThrust = static_cast<Eigen::Vector1d>( satelliteCharacteristic(0) );
-    }  else {
-        auto initialThrust = static_cast<Eigen::Vector1d>( satelliteCharacteristic(0)*(satelliteCharacteristic(1) / 1.0) );
-        auto initialstableThrust = static_cast<Eigen::Vector1d>( satelliteCharacteristic(0)*(satelliteCharacteristic(3) / 1.0) );
+    if ((thrustPointing == "left" || thrustPointing == "right") && integrationDirection == 1) {
+        fullInitialState( 6, 0) = satelliteCharacteristic(1);
+        fullInitialState( 7, 0) = satelliteCharacteristic(0);
+    }  else if ((thrustPointing == "left" || thrustPointing == "right") && integrationDirection == -1) {
+        fullInitialState( 6, 0) = satelliteCharacteristic(3);
+        fullInitialState( 7, 0) = satelliteCharacteristic(0);
+    } else if ((thrustPointing != "left" || thrustPointing != "right") && integrationDirection == 1 ) {
+        fullInitialState( 6, 0) = satelliteCharacteristic(1);
+        fullInitialState( 7, 0) = satelliteCharacteristic(0) * satelliteCharacteristic(1) / 1.0;
+    } else {
+        fullInitialState( 6, 0) = satelliteCharacteristic(3);
+        fullInitialState( 7, 0) = satelliteCharacteristic(0) * satelliteCharacteristic(3) / 1.0;
     }
 
-    if (integrationDirection == 1){
-        fullInitialState.block( 6, 0, 1, 1)  = satelliteCharacteristic.block(1, 0, 1, 1);
-        fullInitialState.block( 7, 0, 1, 1)  = initialThrust;
-    } else {
-        fullInitialState.block(6, 0, 1, 1) = satelliteCharacteristic.block(3, 0, 1, 1);
-        fullInitialState.block( 7, 0, 1, 1)  = initialstableThrust;
-    }
 
     fullInitialState.block( 0, 1, 8, 8 ).setIdentity( );
 
-    std::cout << "THE  INITIAL THRUST  IS: " << initialThrust << std::endl;
-    std::cout << "THE Expected INITIAL THRUST  IS: " << satelliteCharacteristic(0) * satelliteCharacteristic(1) / 1.0 << std::endl;
-    std::cout << "THE INITIAL STABLE THRUST IS: " << initialstableThrust << std::endl;
-    std::cout << "THE Expected INITIAL THRUST  IS: " << satelliteCharacteristic(0) * satelliteCharacteristic(3) / 1.0 << std::endl;
+//    std::cout << "THE  INITIAL THRUST  IS: " << fullInitialState.block(7, 0, 1, 1) << std::endl;
+//    if ((thrustPointing == "left" || thrustPointing == "right")) {
+//        std::cout << "THE EXPECTED INITIAL THRUST  IS: " << satelliteCharacteristic(0);
+//    } else if ((thrustPointing != "left" || thrustPointing != "right") && integrationDirection == -1) {
+//        std::cout << "THE EXPECTED INITIAL THRUST  IS: " << satelliteCharacteristic(0) * satelliteCharacteristic(3) / 1.0;
+//    } else {
+//        std::cout << "THE EXPECTED INITIAL THRUST  IS: " << satelliteCharacteristic(0) * satelliteCharacteristic(1) / 1.0;
+//}
 
     return fullInitialState;
 }

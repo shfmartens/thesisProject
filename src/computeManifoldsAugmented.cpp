@@ -397,144 +397,142 @@ void computeManifoldsAugmented( const Eigen::Vector6d initialStateVector, const 
 
             // Obtain the CR3BP-LT State         
             manifoldAugmentedStartingState = getFullAugmentedInitialState(manifoldStartingState, spacecraftName, thrustPointing, integrationDirection );
-            std::cout << "TEST INITIAL STATE OFSETT: " << manifoldAugmentedStartingState << std::endl;
-//            std::cout << std::endl
-//                      << "================================================"                               << std::endl
-//                      << "Integral of Motion before offset                "   << integralOfMotionOnOrbit    << "    " << std::endl
-//                      << "Time after offset                               "   << currentTime                << "    " << std::endl
-//                      << "Integral of Motion after offset:                 " << computeIntegralOfMotion(manifoldAugmentedStartingState, spacecraftName, thrustPointing, massParameter, currentTime)   << "    " << std::endl
-//                      << "================================================"                               << std::endl;
-//            if ( saveEigenvectors ) {
-//                eigenvectorStateHistory[ manifoldNumber ][ trajectoryOnManifoldNumber ] = std::make_pair(localNormalizedEigenvector, localStateVector);
-//            }
-//            if ( saveFrequency >= 0 ) {
-//                manifoldAugmentedStateHistory[ manifoldNumber ][ trajectoryOnManifoldNumber ][ 0.0 ] = manifoldAugmentedStartingState.block( 0, 0, 8, 1 );
-//            }
+//            std::cout << "TEST INITIAL STATE OFSETT: " << manifoldAugmentedStartingState << std::endl;
+            std::cout << std::endl
+                      << "================================================"                               << std::endl
+                      << "Integral of Motion before offset                "   << integralOfMotionOnOrbit    << "    " << std::endl
+                      << "Time after offset                               "   << currentTime                << "    " << std::endl
+                      << "Integral of Motion after offset:                 " << computeIntegralOfMotion(manifoldAugmentedStartingState, spacecraftName, thrustPointing, massParameter, currentTime)   << "    " << std::endl
+                      << "================================================"                               << std::endl;
+            if ( saveEigenvectors ) {
+                eigenvectorStateHistory[ manifoldNumber ][ trajectoryOnManifoldNumber ] = std::make_pair(localNormalizedEigenvector, localStateVector);
+            }
+            if ( saveFrequency >= 0 ) {
+                manifoldAugmentedStateHistory[ manifoldNumber ][ trajectoryOnManifoldNumber ][ 0.0 ] = manifoldAugmentedStartingState.block( 0, 0, 8, 1 );
+            }
 
-//            stateVectorInclSTMAndTime = propagateOrbitAugmented(manifoldAugmentedStartingState, massParameter, 0.0, integrationDirection, spacecraftName, thrustPointing);
-//            stateVectorInclSTM        = stateVectorInclSTMAndTime.first;
-//            currentTime               = stateVectorInclSTMAndTime.second;
-//            std::cout << "================================================"                               << std::endl
-//                      << "currentTime BEFORE START OF LOOP                "   << currentTime   << "    " << std::endl
-//                      << "stateVectorInclSTM                              "   << stateVectorInclSTM   << "    " << std::endl
-//                      << "stateVectorInclSTMBLOCK                         "   << stateVectorInclSTM.block(0,0,7,1)   << "    " << std::endl
-//                      << "currentTime BEFORE START OF LOOP                "   << currentTime   << "    " << std::endl
-//                      << "================================================"                               << std::endl;
+            stateVectorInclSTMAndTime = propagateOrbitAugmented(manifoldAugmentedStartingState, massParameter, 0.0, integrationDirection, spacecraftName, thrustPointing);
+            stateVectorInclSTM        = stateVectorInclSTMAndTime.first;
+            currentTime               = stateVectorInclSTMAndTime.second;
+            std::cout << "================================================"                               << std::endl
+                      << "currentTime BEFORE START OF LOOP                "   << currentTime   << "    " << std::endl
+                      << "stateVectorInclSTM                              "   << stateVectorInclSTM   << "    " << std::endl
+                      << "stateVectorInclSTMBLOCK                         "   << stateVectorInclSTM.block(0,0,7,1)   << "    " << std::endl
+                      << "currentTime BEFORE START OF LOOP                "   << currentTime   << "    " << std::endl
+                      << "================================================"                               << std::endl;
 
-//            // Set the reference IOM
-//            if (thrustPointing == "left" || thrustPointing == "right") {
-//                referenceIoMOnManifold = integralOfMotionOnOrbit;
-//            } else {
-//                referenceIoMOnManifold = computeIntegralOfMotion(stateVectorInclSTM.block(0,0,8,1), spacecraftName, thrustPointing, massParameter, currentTime);
-//            }
-//            std::cout << "Trajectory on manifold number: " << trajectoryOnManifoldNumber << std::endl;
+            // Set the reference IOM
+            if (thrustPointing == "left" || thrustPointing == "right") {
+                referenceIoMOnManifold = integralOfMotionOnOrbit;
+            } else {
+                referenceIoMOnManifold = computeIntegralOfMotion(stateVectorInclSTM.block(0,0,8,1), spacecraftName, thrustPointing, massParameter, currentTime);
+            }
+            std::cout << "Trajectory on manifold number: " << trajectoryOnManifoldNumber << std::endl;
 
-//            while ( (std::abs( currentTime ) <= maximumIntegrationTimeManifoldTrajectories) && !fullManifoldComputed ) {
+            while ( (std::abs( currentTime ) <= maximumIntegrationTimeManifoldTrajectories) && !fullManifoldComputed ) {
 
-//                // Check whether trajectory still belongs to the same energy level
-//                IoMOutsideBounds = checkIoMOnManifoldAugmentedOutsideBounds(stateVectorInclSTM.block(0,0,8,1), referenceIoMOnManifold, massParameter, spacecraftName, thrustPointing, currentTime);
-//                fullManifoldComputed      = IoMOutsideBounds;
+                // Check whether trajectory still belongs to the same energy level
+                IoMOutsideBounds = checkIoMOnManifoldAugmentedOutsideBounds(stateVectorInclSTM.block(0,0,8,1), referenceIoMOnManifold, massParameter, spacecraftName, thrustPointing, currentTime);
+                fullManifoldComputed      = IoMOutsideBounds;
 
-//                // Check whether the spacecraft comes above its initial wet mass
-//                if ( (stateVectorInclSTM(6, 0) > 1.0 ) && (manifoldNumber == 0 || manifoldNumber == 1)) {
+                // Check whether the spacecraft comes above its initial wet mass
+                if ( (stateVectorInclSTM(6, 0) > 1.0 ) && (manifoldNumber == 0 || manifoldNumber == 1)) {
 
-//                    reduceOverShootInitialMass(stateVectorInclSTMAndTime, previousStateVectorInclSTMAndTime,
-//                                                 stateVectorInclSTM, currentTime, integrationDirection,
-//                                                 massParameter, spacecraftName, thrustPointing);
-//                    fullManifoldComputed = true;
-//                }
+                    reduceOverShootInitialMass(stateVectorInclSTMAndTime, previousStateVectorInclSTMAndTime,
+                                                 stateVectorInclSTM, currentTime, integrationDirection,
+                                                 massParameter, spacecraftName, thrustPointing);
+                    fullManifoldComputed = true;
+                }
 
-//                // Determine sign of y when crossing x = 0  (U1, U4)
-//                if ( (stateVectorInclSTM(0, 0) < 0) && !ySignSet ) {
-//                    if ( stateVectorInclSTM(1, 0) < 0 ){
-//                        ySign = -1.0;
-//                    }
-//                    if ( stateVectorInclSTM(1, 0) > 0 ) {
-//                        ySign = 1.0;
-//                    }
-//                    ySignSet = true;
-//                }
+                // Determine sign of y when crossing x = 0  (U1, U4)
+                if ( (stateVectorInclSTM(0, 0) < 0) && !ySignSet ) {
+                    if ( stateVectorInclSTM(1, 0) < 0 ){
+                        ySign = -1.0;
+                    }
+                    if ( stateVectorInclSTM(1, 0) > 0 ) {
+                        ySign = 1.0;
+                    }
+                    ySignSet = true;
+                }
 
-//                // Determine whether the trajectory approaches U2, U3 from the right or left (U2, U3)
-//                if ( !xDiffSignSet ) {
-//                    if ( (stateVectorInclSTM(0, 0) - (1.0 - massParameter)) < 0 ) {
-//                        xDiffSign = -1.0;
-//                    }
-//                    if ( (stateVectorInclSTM(0, 0) - (1.0 - massParameter)) > 0 ) {
-//                        xDiffSign = 1.0;
-//                    }
-//                    xDiffSignSet = true;
-//                }
+                // Determine whether the trajectory approaches U2, U3 from the right or left (U2, U3)
+                if ( !xDiffSignSet ) {
+                    if ( (stateVectorInclSTM(0, 0) - (1.0 - massParameter)) < 0 ) {
+                        xDiffSign = -1.0;
+                    }
+                    if ( (stateVectorInclSTM(0, 0) - (1.0 - massParameter)) > 0 ) {
+                        xDiffSign = 1.0;
+                    }
+                    xDiffSignSet = true;
+                }
 
-//                // Determine when the manifold crosses the x-axis again (U1, U4)
-//                if ( (stateVectorInclSTM(1, 0) * ySign < 0) && ySignSet ) {
-//                    reduceOvershootAtPoincareSectionU1U4Augmented(stateVectorInclSTMAndTime, previousStateVectorInclSTMAndTime,
-//                                                         stateVectorInclSTM, currentTime, ySign, integrationDirection,
-//                                                         massParameter, spacecraftName, thrustPointing);
-//                    fullManifoldComputed = true;
-//                }
+                // Determine when the manifold crosses the x-axis again (U1, U4)
+                if ( (stateVectorInclSTM(1, 0) * ySign < 0) && ySignSet ) {
+                    reduceOvershootAtPoincareSectionU1U4Augmented(stateVectorInclSTMAndTime, previousStateVectorInclSTMAndTime,
+                                                         stateVectorInclSTM, currentTime, ySign, integrationDirection,
+                                                         massParameter, spacecraftName, thrustPointing);
+                    fullManifoldComputed = true;
+                }
 
-//                // Cancel the stopping condition if the manifold crosses the Poincare section near the second primary outside of the Hill surface, only applicable for L2
-//                if ( ((stateVectorInclSTM(0, 0) - (1.0 - massParameter)) * xDiffSign < 0) &&
-//                         librationPointNr == 2 && std::fabs( stateVectorInclSTM(1, 0) ) > contourCondition )  {
+                // Cancel the stopping condition if the manifold crosses the Poincare section near the second primary outside of the Hill surface, only applicable for L2
+                if ( ((stateVectorInclSTM(0, 0) - (1.0 - massParameter)) * xDiffSign < 0) &&
+                         librationPointNr == 2 && std::fabs( stateVectorInclSTM(1, 0) ) > contourCondition )  {
 
-//                    xDiffSign = -xDiffSign;
-//                }
+                    xDiffSign = -xDiffSign;
+                }
 
-//                // Determine when the manifold crosses the Poincare section near the second primary (U2, U3)
-//                if ( ((stateVectorInclSTM(0, 0) - (1.0 - massParameter)) * xDiffSign < 0) &&
-//                        (librationPointNr == 1 ||
-//                         (librationPointNr == 2 && std::fabs( stateVectorInclSTM(1, 0) ) < contourCondition ))) {
-//                    reduceOvershootAtPoincareSectionU2U3Augmented(stateVectorInclSTMAndTime,
-//                                                         previousStateVectorInclSTMAndTime,
-//                                                         stateVectorInclSTM, currentTime, xDiffSign,
-//                                                         integrationDirection, massParameter, spacecraftName, thrustPointing);
-//                    fullManifoldComputed = true;
-//                }
+                // Determine when the manifold crosses the Poincare section near the second primary (U2, U3)
+                if ( ((stateVectorInclSTM(0, 0) - (1.0 - massParameter)) * xDiffSign < 0) &&
+                        (librationPointNr == 1 ||
+                         (librationPointNr == 2 && std::fabs( stateVectorInclSTM(1, 0) ) < contourCondition ))) {
+                    reduceOvershootAtPoincareSectionU2U3Augmented(stateVectorInclSTMAndTime,
+                                                         previousStateVectorInclSTMAndTime,
+                                                         stateVectorInclSTM, currentTime, xDiffSign,
+                                                         integrationDirection, massParameter, spacecraftName, thrustPointing);
+                    fullManifoldComputed = true;
+                }
 
-//                // Write every nth integration step to file.
+                // Write every nth integration step to file.
 
-//                if ( saveFrequency > 0 && ((stepCounter % saveFrequency == 0 || fullManifoldComputed) && !IoMOutsideBounds ) ) {
-//                    manifoldAugmentedStateHistory[ manifoldNumber ][ trajectoryOnManifoldNumber ][ currentTime ] = stateVectorInclSTM.block( 0, 0, 8, 1 );
-//                }
+                if ( saveFrequency > 0 && ((stepCounter % saveFrequency == 0 || fullManifoldComputed) && !IoMOutsideBounds ) ) {
+                    manifoldAugmentedStateHistory[ manifoldNumber ][ trajectoryOnManifoldNumber ][ currentTime ] = stateVectorInclSTM.block( 0, 0, 8, 1 );
+                }
 
-//                if ( !fullManifoldComputed ){
-//                    // Propagate to next time step
-//                    previousStateVectorInclSTMAndTime = stateVectorInclSTMAndTime;
-//                    stateVectorInclSTMAndTime         = propagateOrbitAugmented(stateVectorInclSTM, massParameter, currentTime, integrationDirection, spacecraftName, thrustPointing);
-//                    stateVectorInclSTM                = stateVectorInclSTMAndTime.first;
-//                    currentTime                       = stateVectorInclSTMAndTime.second;
-//                    stepCounter++;
+                if ( !fullManifoldComputed ){
+                    // Propagate to next time step
+                    previousStateVectorInclSTMAndTime = stateVectorInclSTMAndTime;
+                    stateVectorInclSTMAndTime         = propagateOrbitAugmented(stateVectorInclSTM, massParameter, currentTime, integrationDirection, spacecraftName, thrustPointing);
+                    stateVectorInclSTM                = stateVectorInclSTMAndTime.first;
+                    currentTime                       = stateVectorInclSTMAndTime.second;
+                    stepCounter++;
 
-//                    }
-//                }
-//            ySignSet             = false;
-//            xDiffSignSet         = false;
-//            fullManifoldComputed = false;
+                    }
+                }
+            ySignSet             = false;
+            xDiffSignSet         = false;
+            fullManifoldComputed = false;
 
-//            }
+            }
 
-//    }
-//    if( saveFrequency >= 0 ) {
-//        std::cout << "manifold state is being saved: " << saveFrequency  << std::endl;
-//        writeAugmentedManifoldStateHistoryToFile(manifoldAugmentedStateHistory, orbitNumber, librationPointNr, orbitType, spacecraftName, thrustPointing );
-//    }
-//    if ( saveEigenvectors ) {
-//        writeEigenvectorStateHistoryToFile( eigenvectorStateHistory, orbitNumber, librationPointNr, orbitType );
-//    }
-
-//    std::cout << std::endl
-//              << "================================================"                             << std::endl
-//              << "                          "   << orbitNumber    << "                        " << std::endl
-//              << "Mass parameter: "             << massParameter                                << std::endl
-//              << "Spacecraft: "                 << spacecraftName                               << std::endl
-//              << "Thrust restriction: "         << thrustPointing                               << std::endl
-//              << "IoM at initial conditions: "    << referenceIoMOnManifold                     << std::endl
-//              << "IoM at end of manifold orbit: " << computeIntegralOfMotion(stateVectorInclSTM.block(0,0,5,1), spacecraftName, thrustPointing, massParameter) << std::endl
-//              << "T: " << orbitalPeriod                                                         << std::endl
-//              << "================================================"                             << std::endl;
-
-        }
     }
+    if( saveFrequency >= 0 ) {
+        std::cout << "manifold state is being saved: " << saveFrequency  << std::endl;
+        writeAugmentedManifoldStateHistoryToFile(manifoldAugmentedStateHistory, orbitNumber, librationPointNr, orbitType, spacecraftName, thrustPointing );
+    }
+    if ( saveEigenvectors ) {
+        writeEigenvectorStateHistoryToFile( eigenvectorStateHistory, orbitNumber, librationPointNr, orbitType );
+    }
+
+    std::cout << std::endl
+              << "================================================"                             << std::endl
+              << "                          "   << orbitNumber    << "                        " << std::endl
+              << "Mass parameter: "             << massParameter                                << std::endl
+              << "Spacecraft: "                 << spacecraftName                               << std::endl
+              << "Thrust restriction: "         << thrustPointing                               << std::endl
+              << "IoM at initial conditions: "    << referenceIoMOnManifold                     << std::endl
+              << "IoM at end of manifold orbit: " << computeIntegralOfMotion(stateVectorInclSTM.block(0,0,5,1), spacecraftName, thrustPointing, massParameter) << std::endl
+              << "T: " << orbitalPeriod                                                         << std::endl
+              << "================================================"                             << std::endl;
+
 
 }
