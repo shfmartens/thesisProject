@@ -40,6 +40,7 @@ Eigen::MatrixXd computeStateDerivativeAugmented( const double time, const Eigen:
     // Set the right thrusting
     if (thrustPointing == "left" || thrustPointing == "right"){
 
+        std::cout << "CHECK THE INPUT " << cartesianState << std::endl;
         // Declare state derivative vector with same length as the state.
         Eigen::MatrixXd stateDerivative = Eigen::MatrixXd::Zero( 8, 9 );
 
