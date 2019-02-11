@@ -19,7 +19,7 @@
 Eigen::MatrixXd getFullAugmentedInitialState( const Eigen::Vector6d& initialState, const std::string spacecraftName, const std::string thrustPointing, int integrationDirection )
 {
     Eigen::MatrixXd fullInitialState = Eigen::MatrixXd::Zero( 8, 9 );
-    Eigen::MatrixXd satelliteCharacteristic  = retrieveSpacecraftProperties(spacecraftName);
+    Eigen::Vector4d satelliteCharacteristic  = retrieveSpacecraftProperties(spacecraftName);
     fullInitialState.block( 0, 0, 6, 1 ) = initialState.block(0,0,6,1);
 
     if ((thrustPointing == "left" || thrustPointing == "right") && integrationDirection == 1) {
