@@ -36,18 +36,7 @@ Eigen::MatrixXd getFullAugmentedInitialState( const Eigen::Vector6d& initialStat
         fullInitialState( 7, 0) = satelliteCharacteristic(0) * satelliteCharacteristic(3) / 1.0;
     }
 
-
     fullInitialState.block( 0, 1, 8, 8 ).setIdentity( );
-
-//    std::cout << "THE  INITIAL THRUST  IS: " << fullInitialState.block(7, 0, 1, 1) << std::endl;
-//    if ((thrustPointing == "left" || thrustPointing == "right")) {
-//        std::cout << "THE EXPECTED INITIAL THRUST  IS: " << satelliteCharacteristic(0);
-//    } else if ((thrustPointing != "left" || thrustPointing != "right") && integrationDirection == -1) {
-//        std::cout << "THE EXPECTED INITIAL THRUST  IS: " << satelliteCharacteristic(0) * satelliteCharacteristic(3) / 1.0;
-//    } else {
-//        std::cout << "THE EXPECTED INITIAL THRUST  IS: " << satelliteCharacteristic(0) * satelliteCharacteristic(1) / 1.0;
-//}
-
     return fullInitialState;
 }
 
