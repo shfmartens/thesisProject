@@ -37,8 +37,10 @@ Eigen::MatrixXd getFullAugmentedInitialState( const Eigen::Vector6d& initialStat
 
     fullInitialState.block( 0, 1, 8, 8 ).setIdentity( );
 
-    //std::cout << "THE BALLISTIC INITIAL STATE IS: " << initialState << std::endl;
-    //std::cout << "THE AUGMENTED INITIAL STATE IS: " << fullInitialState << std::endl;
+    std::cout << "THE  INITIAL THRUST  IS: " << initialThrust << std::endl;
+    std::cout << "THE Expected INITIAL THRUST  IS: " << satelliteCharacteristic(0) * satelliteCharacteristic(1) / 1.0 << std::endl;
+    std::cout << "THE INITIAL STABLE THRUST IS: " << initialstableThrust << std::endl;
+    std::cout << "THE Expected INITIAL THRUST  IS: " << satelliteCharacteristic(0) * satelliteCharacteristic(3) / 1.0 << std::endl;
 
     return fullInitialState;
 }
