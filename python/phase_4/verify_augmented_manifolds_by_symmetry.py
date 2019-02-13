@@ -714,13 +714,9 @@ class VerifyManifoldsBySymmetry:
         plt.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
         # plt.show()
         if self.lowDPI:
-            plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(
-                self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_phase_difference.png',
-                        transparent=True, dpi=self.dpi)
+            plt.savefig('../../data/figures/manifolds/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + ' ' + str(self.spacecraftName) + ' ' + self.thrustMagnitudeForTitle + ' ' + str(self.thrustRestriction) + '_phase_difference.png',transparent=True, dpi=self.dpi)
         else:
-            plt.savefig('../../data/figures/manifolds/refined_for_c/L' + str(
-                self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_phase_difference.pdf',
-                        transparent=True)
+            plt.savefig('../../data/figures/manifolds/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + ' ' + str(self.spacecraftName) + ' ' + self.thrustMagnitudeForTitle + ' ' + str(self.thrustRestriction) + '_phase_difference.pdf',transparent=True)
 
         plt.close()
         pass
