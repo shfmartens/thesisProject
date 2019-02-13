@@ -678,8 +678,8 @@ class VerifyManifoldsBySymmetry:
             axarr[1, 1].set_title('$\mathcal{W}^{S -} \cap \mathcal{W}^{U -}$ (near $L_2$)')
             axarr[1, 0].set_title('$\mathcal{W}^{S +} \cap \mathcal{W}^{U +}$ (near $L_2$)')
 
-        ylim = [min(axarr[0, 0].get_ylim()[0], axarr[0, 1].get_ylim()[0], axarr[1, 0].get_ylim()[0], axarr[1, 1].get_ylim()[0]),
-                 max(axarr[0, 0].get_ylim()[1], axarr[0, 1].get_ylim()[1], axarr[1, 0].get_ylim()[1], axarr[1, 1].get_ylim()[1])]
+        # ylim = [min(axarr[0, 0].get_ylim()[0], axarr[0, 1].get_ylim()[0], axarr[1, 0].get_ylim()[0], axarr[1, 1].get_ylim()[0]),
+        #          max(axarr[0, 0].get_ylim()[1], axarr[0, 1].get_ylim()[1], axarr[1, 0].get_ylim()[1], axarr[1, 1].get_ylim()[1])]
 
         # ylim = [min( axarr[1, 0].get_ylim()[0],axarr[1, 1].get_ylim()[0]),
         #         max(axarr[1, 0].get_ylim()[1],axarr[1, 1].get_ylim()[1])]
@@ -692,12 +692,12 @@ class VerifyManifoldsBySymmetry:
                 axarr[i, j].grid(True, which='both', ls=':')
                 axarr[i, j].yaxis.set_major_formatter(y_formatter)
                 axarr[i, j].set_ylim(ylim)
-                if min_intersect:
-                     axarr[i, j].set_ylim(axarr[0, 0].get_ylim()[0], axarr[0, 0].get_ylim()[1])
-                elif plus_intersect:
-                    axarr[i, j].set_ylim(axarr[0, 1].get_ylim()[0], axarr[0, 1].get_ylim()[1])
-                else:
-                    axarr[i, j].set_ylim(ylim)
+                # if min_intersect:
+                #      axarr[i, j].set_ylim(axarr[0, 0].get_ylim()[0], axarr[0, 0].get_ylim()[1])
+                # elif plus_intersect:
+                #     axarr[i, j].set_ylim(axarr[0, 1].get_ylim()[0], axarr[0, 1].get_ylim()[1])
+                # else:
+                #     axarr[i, j].set_ylim(ylim)
 
         axarr[0, 1].set_ylabel('$\\bar{\mathbf{X}}^{S-} (t_{s0}) - \\bar{\mathbf{X}}^{U-} (t_{uf}) \quad \\forall \quad \\tau_u = 1 - \\tau_s$ [-]')
         axarr[0, 0].set_ylabel('$\\bar{\mathbf{X}}^{S+} (t_{s0}) - \\bar{\mathbf{X}}^{U+} (t_{uf}) \quad \\forall \quad \\tau_u = 1 - \\tau_s$ [-]')
