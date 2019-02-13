@@ -746,10 +746,10 @@ if __name__ == '__main__':
                                                                          orbit_ids[orbit_type][lagrange_point][c_level],
                                                                          c_level,thrust_restriction, spacecraft_name,
                                                                                   thrust_magnitude, low_dpi=low_dpi)
-                            verify_manifolds_by_symmetry.plot_manifolds()
+                            #verify_manifolds_by_symmetry.plot_manifolds()
                             #verify_manifolds_by_symmetry.plot_eigenvectors()
-                            # verify_manifolds_by_symmetry.plot_eigenvectors_zoom()
-                            # verify_manifolds_by_symmetry.show_phase_difference()
-                            #verify_manifolds_by_symmetry.show_phase_difference_refactored()
+                            #verify_manifolds_by_symmetry.plot_eigenvectors_zoom()
+                            #verify_manifolds_by_symmetry.show_phase_difference()
+                            verify_manifolds_by_symmetry.show_phase_difference_refactored()
                             # plt.show()
                             del verify_manifolds_by_symmetry
