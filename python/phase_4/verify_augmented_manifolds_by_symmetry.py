@@ -22,7 +22,7 @@ import sys
 from matplotlib.ticker import ScalarFormatter, FormatStrFormatter
 sys.path.append('../util')
 from load_data import load_orbit, load_bodies_location, load_lagrange_points_location, load_differential_corrections, \
-    load_initial_conditions_incl_M, load_manifold, computeJacobiEnergy, load_manifold_incl_stm, load_manifold_refactored,
+    load_initial_conditions_incl_M, load_manifold, computeJacobiEnergy, load_manifold_incl_stm, load_manifold_refactored, \
     load_manifold_augmented, cr3bp_velocity, computeIntegralOfMotion, load_spacecraft_properties, computeThrustAngle, \
     computeMassRate
 
