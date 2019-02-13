@@ -681,8 +681,8 @@ class VerifyManifoldsBySymmetry:
         ylim = [min(axarr[0, 0].get_ylim()[0], axarr[0, 1].get_ylim()[0], axarr[1, 0].get_ylim()[0], axarr[1, 1].get_ylim()[0]),
                  max(axarr[0, 0].get_ylim()[1], axarr[0, 1].get_ylim()[1], axarr[1, 0].get_ylim()[1], axarr[1, 1].get_ylim()[1])]
 
-        ylim = [min( axarr[1, 0].get_ylim()[0],axarr[1, 1].get_ylim()[0]),
-                max(axarr[1, 0].get_ylim()[1],axarr[1, 1].get_ylim()[1])]
+        # ylim = [min( axarr[1, 0].get_ylim()[0],axarr[1, 1].get_ylim()[0]),
+        #         max(axarr[1, 0].get_ylim()[1],axarr[1, 1].get_ylim()[1])]
 
         axarr[0, 0].set_xlim([0, 1])
         y_formatter = matplotlib.ticker.ScalarFormatter(useOffset=True)
