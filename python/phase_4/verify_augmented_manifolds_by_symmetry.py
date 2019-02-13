@@ -708,15 +708,27 @@ class VerifyManifoldsBySymmetry:
                                '$\delta \dot{z}$'),
                            frameon=True, loc='center left', bbox_to_anchor=(1, 0))
 
-        plt.suptitle('$L_' + str(
-            self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Symmetry validation at C = ' + str(self.cLevel),
-                     size=self.suptitleSize)
+        # plot main title
+        if self.thrustRestriction == 'left':
+            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \longleftarrow }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Symmetry validation at C = ' + str(np.round(self.C, 3)), size=self.suptitleSize)
+        elif self.thrustRestriction == 'right':
+            plt.suptitle('$L_' + str(
+                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \longrightarrow }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Symmetry validation at C = ' + str(
+                np.round(self.C, 3)), size=self.suptitleSize)
+        elif self.thrustMagnitude == '0.000000':
+            plt.suptitle('$L_' + str(
+                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{  }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Symmetry validation at C = ' + str(
+                np.round(self.C, 3)), size=self.suptitleSize)
+        else:
+            plt.suptitle('$L_' + str(
+                self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \\alpha = ' + self.thrustRestriction + '}_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Symmetry validation at H$_{lt}$ = ' + str(
+                np.round(self.C, 3)), size=self.suptitleSize)
         plt.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
         # plt.show()
         if self.lowDPI:
-            plt.savefig('../../data/figures/manifolds/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + ' ' + str(self.spacecraftName) + ' ' + self.thrustMagnitudeForTitle + ' ' + str(self.thrustRestriction) + '_phase_difference.png',transparent=True, dpi=self.dpi)
+            plt.savefig('../../data/figures/manifolds/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_' + str(self.spacecraftName) + '_' + self.thrustMagnitudeForTitle + '_' + str(self.thrustRestriction) + '_phase_difference.png',transparent=True, dpi=self.dpi)
         else:
-            plt.savefig('../../data/figures/manifolds/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + ' ' + str(self.spacecraftName) + ' ' + self.thrustMagnitudeForTitle + ' ' + str(self.thrustRestriction) + '_phase_difference.pdf',transparent=True)
+            plt.savefig('../../data/figures/manifolds/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_' + str(self.spacecraftName) + '_' + self.thrustMagnitudeForTitle + '_' + str(self.thrustRestriction) + '_phase_difference.pdf',transparent=True)
 
         plt.close()
         pass
