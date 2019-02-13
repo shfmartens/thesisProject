@@ -692,9 +692,9 @@ class VerifyManifoldsBySymmetry:
                 axarr[i, j].grid(True, which='both', ls=':')
                 axarr[i, j].yaxis.set_major_formatter(y_formatter)
                 if min_intersect:
-                    axarr[i, j].set_ylim(axarr[0, 0].get_ylim()[0], axarr[0, 0].get_ylim()[1])
+                    # axarr[i, j].set_ylim(axarr[0, 0].get_ylim()[0], axarr[0, 0].get_ylim()[1])
                 elif plus_intersect:
-                    axarr[i, j].set_ylim(axarr[0, 1].get_ylim()[0], axarr[0, 1].get_ylim()[1])
+                    # axarr[i, j].set_ylim(axarr[0, 1].get_ylim()[0], axarr[0, 1].get_ylim()[1])
                 else:
                     axarr[i, j].set_ylim(ylim)
 
