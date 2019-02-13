@@ -34,6 +34,7 @@ class VerifyManifoldsBySymmetry:
         self.orbitType = orbit_type
         self.orbitId = orbit_id
         self.cLevel = c_level
+        self.C = c_level
         self.orbitTypeForTitle = orbit_type.capitalize()
         self.thrustRestrictionForTitle = thrust_restriction.capitalize()
         self.spacecraftNameForTitle = spacecraft_name.capitalize()
