@@ -137,14 +137,21 @@ class VerifyManifoldsBySymmetry:
         fig.subplots_adjust(top=0.9)
 
         plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' $\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}$ - Spatial overview', size=self.suptitleSize)
-        if self.lowDPI:
-            plt.savefig('../../data/figures/manifolds/augmented/L' + str(
-                self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_test.png',
-                        transparent=True, dpi=self.dpi)
+        # plot main title
+        if self.thrustRestriction == 'left':
+            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \longleftarrow }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Spatial overview at C = ' + str(np.round(self.C, 3)), size=self.suptitleSize)
+        elif self.thrustRestriction == 'right':
+            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \longrightarrow }_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Spatial overview at C = ' + str(np.round(self.C, 3)), size=self.suptitleSize)
         else:
-            plt.savefig('../../data/figures/manifolds/augmented/L' + str(
-                self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + '_manifold_test.pdf',
-                        transparent=True)
+            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + '$\{ \mathcal{W}^{S \pm}, \mathcal{W}^{U \pm} \}^{ \\alpha = ' + self.thrustRestriction + '}_{' + self.thrustMagnitudeForPlotTitle + '}$' + ' - Spatial overview at C = ' + str(np.round(self.C, 3)), size=self.suptitleSize)
+
+
+
+        if self.lowDPI:
+            plt.savefig('../../data/figures/manifolds/augmented/L' + str(fig.savefig('../../data/figures/manifolds/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + ' ' + str(self.spacecraftName) + ' ' + self.thrustMagnitudeForTitle + ' ' + str(self.thrustRestriction) + '_manifold_zoom.png',transparent=True, dpi=self.dpi)
+        else:
+            fig.savefig('../../data/figures/manifolds/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str(self.orbitId) + ' ' + str(self.spacecraftName) + ' ' + self.thrustMagnitudeForTitle + ' ' + str(self.thrustRestriction) + '_manifold_zoom.pdf',transparent=True)
+
         plt.close()
         pass
 
