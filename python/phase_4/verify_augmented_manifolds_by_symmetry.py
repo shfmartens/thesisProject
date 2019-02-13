@@ -28,7 +28,7 @@ from load_data import load_orbit, load_bodies_location, load_lagrange_points_loc
 
 
 class VerifyManifoldsBySymmetry:
-    def __init__(self, orbit_type, lagrange_point_nr, orbit_id, c_level, low_dpi=False):
+    def __init__(self, orbit_type, lagrange_point_nr, orbit_id, c_level,  thrust_restriction, spacecraft_name, thrust_magnitude, low_dpi=False):
         self.lowDPI = low_dpi
         self.dpi = 150
         self.orbitType = orbit_type
