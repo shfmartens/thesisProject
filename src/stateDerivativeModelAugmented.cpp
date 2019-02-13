@@ -168,7 +168,7 @@ Eigen::MatrixXd computeStateDerivativeAugmented( const double time, const Eigen:
         //Set the derivate of the mass to the mass flow rate.
         stateDerivative( 6, 0 ) = (massRate / thrustMagnitude) * cartesianState(7);
         // Set the derivative of the thrust to zero (not explicitly dependent on time)
-        stateDerivative( 7, 0)  = 0.0;
+        stateDerivative( 7, 0)  = (massRate / thrustMagnitude) * cartesianState (6);
 
         // Compute partial derivatives of the potential.
         double Uxx = (3.0*(1.0-massParameter)*xPositionScaledSquared          )/distanceToPrimaryToFifthPower+ (3.0*massParameter*xPositionScaledSquared2           )/distanceToSecondaryToFifthPower - (1.0-massParameter)/distanceToPrimaryCubed - massParameter/distanceToSecondaryCubed + 1.0;
@@ -198,7 +198,8 @@ Eigen::MatrixXd computeStateDerivativeAugmented( const double time, const Eigen:
                                  Uxx, Uxy,  Uxz,    0.0,             2.0,             0.0,   partialXaccMass,   partialXaccThrust,
                                  Uyx, Uyy,  Uyz,    -2.0,            0.0,             0.0,   partialYaccMass,   partialYaccThrust,
                                  Uzx, Uzy,  Uzz,    0.0,             0.0,             0.0,   0.0,               0.0,
-                                 0.0, 0.0,          0.0,             0.0,             0.0,   0.0,               partialMassRateThrust;
+                                 0.0, 0.0,  0.0,     0.0,             0.0,             0.0,   0.0,              partialMassRateThrust;
+                                 0.0, 0.0,  0.0,     0.0,             0.0,             0.0,   0.0,              0.0,
 
         // Differentiate the STM.
         stateDerivative.block( 0, 1, 8, 8 ) = stmDerivativeFunction * cartesianState.block( 0, 1, 8, 8 );
