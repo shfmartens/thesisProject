@@ -795,8 +795,8 @@ class DisplayAugmentedValidation:
             ax0.set_xlim([-1.0, 1.25])
             ax0.set_ylim([-0.9, 0.25])
         else:
-            ax0.set_xlim([-5.0, 2.0])
-            ax0.set_ylim([-0.5, 3.5])
+            ax0.set_xlim([-1.0, 1.25])
+            ax0.set_ylim([-0.9, 0.25])
         # ax1.set_ylim([-0.4, 0.4])
         ax0.grid(True, which='both', ls=':')
         ax3.set_xlabel('x [-]')
@@ -805,8 +805,8 @@ class DisplayAugmentedValidation:
             ax3.set_xlim([-1.0, 1.25])
             ax3.set_ylim([-0.9, 0.25])
         else:
-            ax3.set_xlim([-5.0, 2.0])
-            ax3.set_ylim([-0.5, 3.5])
+            ax0.set_xlim([-1.0, 1.25])
+            ax0.set_ylim([-0.9, 0.25])
         # ax1.set_ylim([-0.4, 0.4])
         ax3.grid(True, which='both', ls=':')
         ax6.set_xlabel('x [-]')
@@ -815,8 +815,8 @@ class DisplayAugmentedValidation:
             ax6.set_xlim([-1.0, 1.25])
             ax6.set_ylim([-0.25, 0.9])
         else:
-            ax6.set_xlim([-5.0, 2.0])
-            ax6.set_ylim([-3.5, 0.5])
+            ax0.set_xlim([-1.0, 1.25])
+            ax0.set_ylim([-0.9, 0.25])
         # ax1.set_ylim([-0.4, 0.4])
         ax6.grid(True, which='both', ls=':')
         ax9.set_xlabel('x [-]')
@@ -826,8 +826,10 @@ class DisplayAugmentedValidation:
             ax9.set_xlim([-1.0, 1.25])
             ax9.set_ylim([-0.25, 0.9])
         else:
-            ax9.set_xlim([-5.0, 2.0])
-            ax9.set_ylim([-3.5, 0.5])
+            ax9.set_xlim([-1.0, 1.25])
+            ax9.set_ylim([-0.25, 0.9])
+            #ax9.set_xlim([-5.0, 2.0])
+            #ax9.set_ylim([-3.5, 0.5])
         ax9.grid(True, which='both', ls=':')
 
         if self.orbitType != 'horizontal':
@@ -2062,10 +2064,10 @@ class DisplayAugmentedValidation:
 if __name__ == '__main__':
     #help()
     low_dpi = True
-    lagrange_points = [1,2]
+    lagrange_points = [2]
     orbit_types = ['horizontal']
     c_levels = [3.05]
-    thrust_restrictions = ['left','090.0']
+    thrust_restrictions = ['270.0']
     spacecraft_names = ['DeepSpace']
     thrust_magnitudes = ['0.010000']
     orbit_ids = {'horizontal':  {1: {3.05: 808, 3.1: 577, 3.15: 330}, 2: {3.05: 1066, 3.1: 760, 3.15: 373}}}
@@ -2082,11 +2084,11 @@ if __name__ == '__main__':
                                                                                   thrust_magnitude, low_dpi=low_dpi)
                             #display_augmented_validation.plot_manifolds()
                             #display_augmented_validation.plot_manifold_zoom()
-                            #display_augmented_validation.plot_manifold_individual()
+                            display_augmented_validation.plot_manifold_individual()
                             #display_augmented_validation.plot_eigenvectors()
                             #display_augmented_validation.plot_iom_validation()
                             #display_augmented_validation.plot_stopping_validation()
                             #display_augmented_validation.plot_thrust_validation()
-                            display_augmented_validation.plot_mass_validation()
+                            #display_augmented_validation.plot_mass_validation()
                             #display_augmented_validation.plot_massrate_validation()
                             del display_augmented_validation
