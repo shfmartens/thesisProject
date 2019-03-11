@@ -196,12 +196,14 @@ list(APPEND TUDAT_APPLICATION_PROPAGATION_LIBRARIES tudat_simulation_setup tudat
 
  set(CR3BP_SOURCES
          "${SRCROOT}/src/applyDifferentialCorrection.cpp"
+         "${SRCROOT}/src/applyMultivariateRootFinding.cpp"
          "${SRCROOT}/src/checkEigenvalues.cpp"
          #"${SRCROOT}/src/completeInitialConditionsHaloFamily.cpp"
          "${SRCROOT}/src/computeDifferentialCorrection.cpp"
          "${SRCROOT}/src/computeManifolds.cpp"
          "${SRCROOT}/src/connectManifoldsAtTheta.cpp"
          "${SRCROOT}/src/createInitialConditions.cpp"
+         "${SRCROOT}/src/createEquilibriumLocations.cpp"
          #"${SRCROOT}/src/createInitialConditionsAxialFamily.cpp"
          "${SRCROOT}/src/propagateOrbit.cpp"
          "${SRCROOT}/src/richardsonThirdOrderApproximation.cpp"
@@ -212,12 +214,14 @@ list(APPEND TUDAT_APPLICATION_PROPAGATION_LIBRARIES tudat_simulation_setup tudat
  # Set the header files.
  set(CR3BP_HEADERS
          "${SRCROOT}/src/applyDifferentialCorrection.h"
+         "${SRCROOT}/src/applyMultivariateRootFinding.h"
          "${SRCROOT}/src/checkEigenvalues.h"
          #"${SRCROOT}/src/completeInitialConditionsHaloFamily.h"
          "${SRCROOT}/src/computeDifferentialCorrection.h"
          "${SRCROOT}/src/computeManifolds.h"
          "${SRCROOT}/src/connectManifoldsAtTheta.h"
          "${SRCROOT}/src/createInitialConditions.h"
+         "${SRCROOT}/src/createEquilibriumLocations.h"
          #"${SRCROOT}/src/createInitialConditionsAxialFamily.h"
          "${SRCROOT}/src/propagateOrbit.h"
          "${SRCROOT}/src/richardsonThirdOrderApproximation.h"

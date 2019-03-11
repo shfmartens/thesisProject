@@ -15,8 +15,8 @@
 #include <cmath>
 #include <stdexcept>
 #include "Tudat/Mathematics/BasicMathematics/basicFunction.h"
-
 #include "librationPointLocationFunction.h"
+#include "signfunction.h"
 
 
 //! Test function for the root-finders.
@@ -41,10 +41,13 @@ struct LibrationPointLocationFunction2 : public LibrationPointLocationFunction,
     //! Mathematical test function.
     double evaluate( const double inputValue )
     {
+        extern double thrustAcceleration;
         // Define Mathematical function: f(x) =
-        return pow(inputValue, 5.0) + (3.0 - massParameter_) * pow(inputValue, 4.0)
-               + (3.0 - 2.0 * massParameter_) * pow(inputValue, 3.0) - massParameter_ * pow(inputValue, 2.0)
-               - 2.0 * massParameter_ * inputValue - massParameter_;
+
+        return inputValue - (1.0 - massParameter_) * (inputValue + massParameter_) / (signfunction(inputValue + massParameter_) * pow(inputValue+massParameter_,3.0))
+                -1.0 * massParameter_ * (inputValue - 1.0 + massParameter_)/(signfunction(inputValue -1.0 + massParameter_)*pow(inputValue-1.0+massParameter_,3.0)) + thrustAcceleration;
+
+        //        return pow(inputValue, 2.0) -3.0;
     }
 
     //! Derivatives of mathematical test function.
@@ -66,16 +69,15 @@ struct LibrationPointLocationFunction2 : public LibrationPointLocationFunction,
         else if ( order == 1 )
         {
             // Return the first derivative function value: y =
-            return 5.0*pow(inputValue, 4.0) + 4.0*(3.0 - massParameter_)*pow(inputValue, 3.0)
-                   + 3.0*(3.0 - 2.0 * massParameter_) * pow(inputValue, 2.0) - 2.0*massParameter_ * inputValue
-                   - 2.0 * massParameter_;
+            return 1.0 + (1.0 - massParameter_) * 2.0/(signfunction(inputValue+massParameter_)*pow(inputValue+massParameter_, 3.0))
+                    + massParameter_ * 2.0/(signfunction(inputValue-1.0+massParameter_)*pow(inputValue-1.0+massParameter_, 3.0));
         }
 
         else if ( order == 2 )
         {
             // Return the second derivative function value: y = .
-            return 20.0*pow(inputValue, 3.0) + 12.0*(3.0 - massParameter_)*pow(inputValue, 2.0)
-                   + 6.0*(3.0 - 2.0 * massParameter_) * inputValue - 2.0*massParameter_;
+            return (1.0 - massParameter_) * -6.0/(signfunction(inputValue+massParameter_)*pow(inputValue+massParameter_, 4.0))
+                    + massParameter_ * -6.0/(signfunction(inputValue-1.0+massParameter_)*pow(inputValue-1.0+massParameter_, 4.0));
         }
 
         else
@@ -100,7 +102,7 @@ struct LibrationPointLocationFunction2 : public LibrationPointLocationFunction,
      */
     double getTrueRootLocation( )
     {
-        return 1.0;
+        return 1.1556821477825;
     }
     
     //! Get the accuracy of the true location of the root.
@@ -109,7 +111,7 @@ struct LibrationPointLocationFunction2 : public LibrationPointLocationFunction,
      *
      * \return Accuracy of the true location of the root.
      */
-    double getTrueRootAccuracy( ) { return 1.0e-15; }
+    double getTrueRootAccuracy( ) { return 0.1; }
 
     //! Get a reasonable initial guess of the root location.
     /*!
@@ -117,7 +119,7 @@ struct LibrationPointLocationFunction2 : public LibrationPointLocationFunction,
      *
      * \return Initial guess for the true location of the function root.
      */
-    double getInitialGuess( ) { return 1.0; }
+    double getInitialGuess( ) { return 1.1556821477825; }
 
     //! Get a reasonable lower boundary for the root location.
     /*!
@@ -125,7 +127,7 @@ struct LibrationPointLocationFunction2 : public LibrationPointLocationFunction,
      *
      * \return Lower bound for the true location of the function root.
      */
-    double getLowerBound( ) { return 0.0; }
+    double getLowerBound( ) { return 1.001-massParameter_; }
 
     //! Get a reasonable upper boundary for the root location.
     /*!
@@ -133,7 +135,7 @@ struct LibrationPointLocationFunction2 : public LibrationPointLocationFunction,
      *
      * \return Upper bound for the true location of the function root.
      */
-    double getUpperBound( ) { return 1.0; }
+    double getUpperBound( ) { return 1.3; }
 
 protected:
 

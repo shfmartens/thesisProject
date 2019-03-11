@@ -89,6 +89,11 @@ def load_orbit(file_path):
     data.columns = ['time', 'x', 'y', 'z', 'xdot', 'ydot', 'zdot']
     return data
 
+def load_equilibria(file_path):
+    data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(7)))
+    data.columns = ['alpha', 'x', 'y']
+    return data
+
 
 def load_initial_conditions(file_path):
     data = pd.read_table(file_path, delim_whitespace=True, header=None)
