@@ -84,9 +84,9 @@ void appendDifferentialCorrectionResultsVector(
 {
 
     Eigen::VectorXd tempDifferentialCorrection = Eigen::VectorXd( 9 );
-    tempDifferentialCorrection( 0 ) = differentialCorrectionResult( 14 );  // numberOfIterations
+    tempDifferentialCorrection( 0 ) = differentialCorrectionResult( 9 );  // numberOfIterations
     tempDifferentialCorrection( 1 ) = jacobiEnergyHalfPeriod;  // jacobiEnergyHalfPeriod
-    tempDifferentialCorrection( 2 ) = differentialCorrectionResult( 13 );  // currentTime
+    tempDifferentialCorrection( 2 ) = differentialCorrectionResult( 8 );  // currentTime
     for (int i = 7; i <= 12; i++)
     {
         tempDifferentialCorrection( i - 4 ) = differentialCorrectionResult( i );  // halfPeriodStateVector

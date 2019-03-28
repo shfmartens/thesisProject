@@ -85,7 +85,7 @@ Eigen::MatrixXd computeJacobian (const int librationPointNr, const Eigen::Vector
     return inverseJacobian;
 }
 
-Eigen::Vector2d applyMultivariateRootFinding( const int librationPointNr, const Eigen::Vector2d initialEquilibrium,
+Eigen::Vector3d applyMultivariateRootFinding( const int librationPointNr, const Eigen::Vector2d initialEquilibrium,
                                               const double alpha, const double thrustAcceleration, const double massParameter, double maxDeviationFromEquilibrium,
                                               const int maxNumberOfIterations) {
 
@@ -102,7 +102,10 @@ Eigen::Vector2d applyMultivariateRootFinding( const int librationPointNr, const 
 
         if (numberOfIterations > maxNumberOfIterations) {
             std::cout << "Maximum number of iterations exceeded" << std::endl;
-            return Eigen::VectorXd::Ones(2);
+            Eigen::Vector3d endResult;
+            endResult.block(0,0,2,1) = currentGuess;
+            endResult(2)= numberOfIterations -1.0;
+            return endResult;
         }
 
         currentDeviation = computeDeviation(librationPointNr, currentGuess, alpha, thrustAcceleration, massParameter);
@@ -118,11 +121,14 @@ Eigen::Vector2d applyMultivariateRootFinding( const int librationPointNr, const 
         //std::cout << "Position deviation from equilibrium: " << deviationNormFromEquilibrium << std::endl;
 
         numberOfIterations += 1;
-        currentGuess = updatedGuess;       
+        //std::cout << "Number of Iterations" << numberOfIterations << std::endl;
+        currentGuess = updatedGuess;
 
     }
-
-    return currentGuess;
+    Eigen::Vector3d endResult;
+    endResult.block(0,0,2,1) = currentGuess;
+    endResult(2)= numberOfIterations;
+    return endResult;
 
 
 }

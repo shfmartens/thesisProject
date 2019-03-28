@@ -111,7 +111,7 @@ struct LibrationPointLocationFunction2 : public LibrationPointLocationFunction,
      *
      * \return Accuracy of the true location of the root.
      */
-    double getTrueRootAccuracy( ) { return 0.1; }
+    double getTrueRootAccuracy( ) { return 1.0e-15; }
 
     //! Get a reasonable initial guess of the root location.
     /*!
@@ -127,7 +127,7 @@ struct LibrationPointLocationFunction2 : public LibrationPointLocationFunction,
      *
      * \return Lower bound for the true location of the function root.
      */
-    double getLowerBound( ) { return 1.001-massParameter_; }
+    double getLowerBound( ) { return 1.13; }
 
     //! Get a reasonable upper boundary for the root location.
     /*!
@@ -135,7 +135,7 @@ struct LibrationPointLocationFunction2 : public LibrationPointLocationFunction,
      *
      * \return Upper bound for the true location of the function root.
      */
-    double getUpperBound( ) { return 1.3; }
+    double getUpperBound( ) { return 1.17; }
 
 protected:
 

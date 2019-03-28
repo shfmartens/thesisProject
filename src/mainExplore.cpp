@@ -1,4 +1,4 @@
-#include <Eigen/Core>
+ #include <Eigen/Core>
 #include <Eigen/Eigenvalues>
 #include <Eigen/QR>
 #include <Eigen/Dense>
@@ -15,6 +15,7 @@
 #include "Tudat/Astrodynamics/BasicAstrodynamics/celestialBodyConstants.h"
 
 #include "createInitialConditions.h"
+#include "createLowThrustInitialConditions.h"
 #include "computeManifolds.h"
 #include "propagateOrbit.h"
 //#include "completeInitialConditionsHaloFamily.h"
@@ -25,14 +26,23 @@
 
 
 double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER, tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER );
-double thrustAcceleration = 0.0001;
+double thrustAcceleration = 1.0e-2;
 int main (){
 
     // ================================
-    // == Compute equilibria ==
+    // == Compute equilibria, comment out when computing low-thrust intial positions ==
     // ================================
-        createEquilibriumLocations(1, thrustAcceleration, massParameter);
-        createEquilibriumLocations(2, thrustAcceleration, massParameter);
+        //createEquilibriumLocations(1, thrustAcceleration, massParameter);
+        //createEquilibriumLocations(2, thrustAcceleration, massParameter);
+
+    // ================================
+    // == Compute initial conditions ==
+    // ================================
+        double accelerationMagnitude = 1.0e-12;
+        double accelerationAngle = 0.0;
+        double accelerationAngle2 = 0.0;
+        double initialMass = 1.0;
+        createLowThrustInitialConditions(1, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, massParameter );
 
 
     // ================================

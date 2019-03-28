@@ -62,7 +62,7 @@ Eigen::VectorXd richardsonThirdOrderApproximation(std::string orbitType, int lib
     } else {
         // Create object containing the functions.
         //boost::shared_ptr< LibrationPointLocationFunction2 > LibrationPointLocationFunction = boost::make_shared< LibrationPointLocationFunction2 >( 1, massParameter );
-        std::shared_ptr<LibrationPointLocationFunction1> LibrationPointLocationFunction = std::make_shared< LibrationPointLocationFunction1 > (1, massParameter);
+        std::shared_ptr<LibrationPointLocationFunction2> LibrationPointLocationFunction = std::make_shared< LibrationPointLocationFunction2 > (2, massParameter);
 
         // The termination condition.
         tudat::root_finders::NewtonRaphson::TerminationFunction terminationConditionFunction =

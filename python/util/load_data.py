@@ -90,10 +90,13 @@ def load_orbit(file_path):
     return data
 
 def load_equilibria(file_path):
-    data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(7)))
-    data.columns = ['alpha', 'x', 'y']
+    data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(4)))
+    data.columns = ['alpha', 'x', 'y','iterations']
     return data
 
+def load_equilibria_stability(file_path):
+    data = pd.read_table(file_path, delim_whitespace=True, header=None)
+    return data
 
 def load_initial_conditions(file_path):
     data = pd.read_table(file_path, delim_whitespace=True, header=None)
@@ -162,6 +165,20 @@ def computeJacobiEnergy(x, y, z, xdot, ydot, zdot):
     v = np.sqrt(xdot**2 + ydot**2 + zdot**2)
     c = x**2 + y**2 + 2*(1-mass_parameter)/r_1 + 2*mass_parameter/r_2 - v**2
     return c
+
+def compute_equilibrium_deviation(alpha, x, y, acc_magnitude):
+    EARTH_GRAVITATIONAL_PARAMETER = 3.986004418E14
+    SUN_GRAVITATIONAL_PARAMETER = 1.32712440018e20
+    MOON_GRAVITATIONAL_PARAMETER = SUN_GRAVITATIONAL_PARAMETER / (328900.56 * (1.0 + 81.30059))
+    mass_parameter = MOON_GRAVITATIONAL_PARAMETER / (MOON_GRAVITATIONAL_PARAMETER + EARTH_GRAVITATIONAL_PARAMETER)
+    r_1 = np.sqrt((mass_parameter + x) ** 2 + y ** 2 )
+    r_2 = np.sqrt((1 - mass_parameter - x) ** 2 + y ** 2)
+    xdev = x * ( 1 - (1-mass_parameter)/(r_1**3) - mass_parameter/(r_2**3) ) \
+           + mass_parameter * (-(1-mass_parameter)/(r_1**3)-mass_parameter/(r_2**3)) \
+           +mass_parameter/(r_2**3)+acc_magnitude*np.cos(alpha)
+    ydev = y * ( 1 - (1-mass_parameter)/(r_1**3) - mass_parameter/(r_2**3) ) + acc_magnitude * np.sin(alpha)
+    delta_r = np.sqrt(xdev**2 + ydev**2)
+    return delta_r
 
 
 if __name__ == '__main__':
