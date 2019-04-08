@@ -144,6 +144,85 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitToFinalCondition(
     return currentState;
 }
 
+std::pair< Eigen::MatrixXd, double >  propagateOrbitToFinalSpatialCondition(
+        const Eigen::MatrixXd fullInitialState, const double massParameter, const int stateIndex, int direction,
+        std::map< double, Eigen::Vector6d >& stateHistory, const int saveFrequency, const double initialTime )
+{
+    if( saveFrequency >= 0 )
+    {
+        stateHistory[ initialTime ] = fullInitialState.block( 0, 0, 6, 1 );
+    }
+
+    // Perform first integration step
+    std::pair< Eigen::MatrixXd, double > previousState;
+    std::pair< Eigen::MatrixXd, double > currentState;
+    currentState = propagateOrbit( fullInitialState, massParameter, initialTime, direction, 1.0E-5, 1.0E-5 );
+    Eigen::VectorXd stateVectorOnly = currentState.first;
+    double currentTime = currentState.second;
+    double signChanges = 0.0;
+    double signIndex = 0.0;
+
+    if ( fullInitialState(stateIndex, 0) - stateVectorOnly(stateIndex, 0) > 0.0 ) {
+            signIndex = 1.0;
+        } else {
+            signIndex = -1.0;
+        }
+
+    int stepCounter = 1;
+    // Perform integration steps until end of half orbital period
+    for (int i = 5; i <= 12; i++)
+    {
+
+        double initialStepSize = pow(10,(static_cast<float>(-i)));
+        double maximumStepSize = initialStepSize;
+        while (signChanges <= 1.0 )
+        {
+            // Write every nth integration step to file.
+            if ( saveFrequency > 0 && ( stepCounter % saveFrequency == 0 ) )
+            {
+                stateHistory[ currentTime ] = currentState.first.block( 0, 0, 6, 1 );
+            }
+
+            currentTime = currentState.second;
+            previousState = currentState;
+            currentState = propagateOrbit(currentState.first, massParameter, currentTime, 1, initialStepSize, maximumStepSize);
+            stateVectorOnly = currentState.first;
+
+            stepCounter++;
+
+            if ( (fullInitialState(stateIndex, 0) - stateVectorOnly(stateIndex, 0))  * signIndex < 0.0 )
+            {
+                signChanges++;
+                signIndex = signIndex*-1.0;
+            }
+
+            if (signChanges > 1.0 )
+            {
+                currentState = previousState;
+                currentTime = currentState.second;
+                signChanges--;
+                signIndex = signIndex*-1.0;
+                break;
+            }
+
+
+        }
+    }
+
+    // Add final state after minimizing overshoot
+    if ( saveFrequency > 0 )
+    {
+        stateHistory[ currentTime ] = currentState.first.block( 0, 0, 6, 1 );
+    }
+    stateVectorOnly = currentState.first;
+
+    std::cout << "||Overshoot after procedure|| : " << abs(fullInitialState(stateIndex, 0) - stateVectorOnly(stateIndex, 0)) << std::endl;
+
+
+    return currentState;
+}
+
+
 std::pair< Eigen::MatrixXd, double >  propagateOrbitWithStateTransitionMatrixToFinalCondition(
         const Eigen::MatrixXd fullInitialState, const double massParameter, const double finalTime, int direction,
         std::map< double, Eigen::MatrixXd >& stateTransitionMatrixHistory, const int saveFrequency, const double initialTime )

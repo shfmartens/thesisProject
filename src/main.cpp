@@ -31,10 +31,10 @@ int main (){
     // == Compute initial conditions ==
     // ================================
 
-    #pragma omp parallel num_threads(6)
-    {
-        #pragma omp for
-        for (unsigned int i=1; i<=6; i++) {
+   // #pragma omp parallel num_threads(6)
+    //{
+        //#pragma omp for
+        for (unsigned int i=1; i<=1; i++) {
             if (i ==1)
             {
                 createInitialConditions(1, "horizontal");
@@ -60,7 +60,7 @@ int main (){
                 createInitialConditions(2, "vertical");
             }
         }
-    }
+    //}
 
     // ======================================
     // == Compute manifolds at theta (III) ==

@@ -41,12 +41,10 @@ struct LibrationPointLocationFunction2 : public LibrationPointLocationFunction,
     //! Mathematical test function.
     double evaluate( const double inputValue )
     {
-        extern double thrustAcceleration;
         // Define Mathematical function: f(x) =
 
         return inputValue - (1.0 - massParameter_) * (inputValue + massParameter_) / (signfunction(inputValue + massParameter_) * pow(inputValue+massParameter_,3.0))
-                -1.0 * massParameter_ * (inputValue - 1.0 + massParameter_)/(signfunction(inputValue -1.0 + massParameter_)*pow(inputValue-1.0+massParameter_,3.0)) + thrustAcceleration;
-
+                -1.0 * massParameter_ * (inputValue - 1.0 + massParameter_)/(signfunction(inputValue -1.0 + massParameter_)*pow(inputValue-1.0+massParameter_,3.0));
         //        return pow(inputValue, 2.0) -3.0;
     }
 

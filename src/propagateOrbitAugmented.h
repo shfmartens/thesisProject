@@ -22,6 +22,14 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFinalCondition(
         const Eigen::MatrixXd fullInitialState, const double massParameter, const double finalTime, int direction,
         std::map< double, Eigen::VectorXd >& stateHistory, const int saveFrequency = -1, const double initialTime = 0.0 );
 
+std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFinalThetaCondition(
+        const Eigen::MatrixXd fullInitialState, const double massParameter, int direction,
+        std::map< double, Eigen::VectorXd >& stateHistoryMinimized, const int saveFrequency = -1, const double initialTime = 0.0 );
+
+std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFinalSpatialCondition(
+        const Eigen::MatrixXd fullInitialState, const double massParameter, const int stateIndex, int direction,
+        std::map< double, Eigen::VectorXd >& stateHistoryMinimized, const int saveFrequency, const double initialTime );
+
 std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedWithStateTransitionMatrixToFinalCondition(
         const Eigen::MatrixXd fullInitialState, const double massParameter, const double finalTime, int direction,
         std::map< double, Eigen::MatrixXd >& stateTransitionMatrixHistory, const int saveFrequency = -1, const double initialTime = 0.0);

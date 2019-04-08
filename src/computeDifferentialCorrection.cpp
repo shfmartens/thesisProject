@@ -19,6 +19,9 @@ Eigen::VectorXd computeDifferentialCorrection( const int librationPointNr, const
     Eigen::MatrixXd updateMatrix(3,3);
     Eigen::MatrixXd multiplicationMatrix(3,1);
 
+    std::cout << "stmPartOfStateVectorInMatrixForm: \n"<<stmPartOfStateVectorInMatrixForm << std::endl;
+
+
     // Compute the accelerations and velocities (in X- and Z-direction) on the spacecraft and put them in a 2x1 vector.
     Eigen::VectorXd cartesianAccelerations = computeStateDerivative(0.0, cartesianStateWithStm).block(0,0,6,1);
 

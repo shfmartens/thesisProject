@@ -345,7 +345,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
     Eigen::Vector7d richardsonThirdOrderApproximationResultIteration1 =
             getInitialStateVectorGuess( librationPointNr, orbitType, 0 );
     Eigen::Vector7d richardsonThirdOrderApproximationResultIteration2 =
-            getInitialStateVectorGuess( librationPointNr, orbitType, 1 );
+            getInitialStateVectorGuess( librationPointNr, orbitType, 1 );    
     stateVectorInclSTM =  getCorrectedAugmentedInitialState(
                 richardsonThirdOrderApproximationResultIteration1.segment(0,6), richardsonThirdOrderApproximationResultIteration1( 6 ), 0,
                librationPointNr, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, massParameter, initialConditions, differentialCorrections,

@@ -7,242 +7,154 @@
 
 
 
-Eigen::VectorXd computeDifferentialCorrectionAugmented(const Eigen::MatrixXd& cartesianStateWithStm, const Eigen::VectorXd& deviationVector)
+Eigen::VectorXd computeDifferentialCorrectionAugmented( const Eigen::MatrixXd& cartesianStateWithStm, const Eigen::VectorXd& deviationVector, const bool symmetryDependence, const int stateIndex )
 {
-//    // Initiate vectors, matrices etc.
+
+    // Initiate vectors, matrices etc.
     Eigen::VectorXd cartesianState = cartesianStateWithStm.block( 0, 0, 6, 1 );
-    Eigen::MatrixXd stmPart = cartesianStateWithStm.block( 0, 1, 6, 6 );
+    Eigen::MatrixXd stmPartOfStateVectorInMatrixForm = cartesianStateWithStm.block( 0, 1, 6, 6 );
 
-    Eigen::VectorXd corrections(6);
-    Eigen::VectorXd deviationVector2d(4);
     Eigen::VectorXd differentialCorrection(11);
-    Eigen::VectorXd correctionVector(6);
-    Eigen::MatrixXd jacobianMatrix(6,6);
-    Eigen::MatrixXd jacobianMatrix2d(4,4);
-    Eigen::VectorXd constraintVector(6);
-    Eigen::VectorXd constraintVector2d(4);
-    Eigen::MatrixXd::Index minRow, minCol;
-    Eigen::MatrixXd::Index minRow2d, minCol2d;
+    Eigen::VectorXd corrections(3);
+    Eigen::VectorXd accelerations(2);
+    Eigen::MatrixXd relevantPartStm(1,3);
+    Eigen::MatrixXd rewrittenOrbitalPeriod(2,3);
+    Eigen::MatrixXd updateMatrixIntermediate(2,3);
+    Eigen::MatrixXd updateMatrix(2,3);
+    Eigen::VectorXd multiplicationMatrix(2);
 
-    // Determine which direction the deviation in etiher position or velocity is smallest
-    double minimumDeviationValue = deviationVector.segment(0,6).cwiseAbs().minCoeff(&minRow,&minCol);
-    double minimumDeviationValue2d = deviationVector2d.segment(0,6).cwiseAbs().minCoeff(&minRow2d,&minCol2d);
-    deviationVector2d.segment(0,2) = deviationVector.segment(0,2);
-    deviationVector2d.segment(2,2) = deviationVector.segment(3,2);
+    Eigen::VectorXd correctionsSYMM(3);
+    Eigen::VectorXd accelerationsSYMM(3);
+    Eigen::MatrixXd relevantPartStmSYMM(1,3);
+    Eigen::MatrixXd rewrittenOrbitalPeriodSYMM(3,3);
+    Eigen::MatrixXd updateMatrixIntermediateSYMM(3,3);
+    Eigen::MatrixXd updateMatrixSYMM(3,3);
+    Eigen::VectorXd multiplicationMatrixSYMM(3);
 
-    // Compute the accelerations and velocities (in X- and Z-direction) on the spacecraft and put them in a 6x1 vector.
+    // Compute the accelerations and velocities (in X- and Z-direction) on the spacecraft and put them in a 2x1 vector.
     Eigen::VectorXd cartesianAccelerations = computeStateDerivativeAugmented(0.0, cartesianStateWithStm).block(0,0,6,1);
 
-    constraintVector << deviationVector.segment(0,6);
-    constraintVector2d << deviationVector2d;
-
-//    if (minRow2d == 0) {
-//        std::cout << "\n Keeping x-position constant \n" << std::endl;
-//        std::cout << " Deviation Vector 2d \n" << deviationVector2d << std::endl;
-
-//        jacobianMatrix2d << stmPart(0,1), stmPart(0,3), stmPart(0,4), cartesianAccelerations(0),
-//                          stmPart(1,1), stmPart(1,3), stmPart(0,4), cartesianAccelerations(1),
-//                          stmPart(3,1), stmPart(3,3), stmPart(0,4), cartesianAccelerations(3),
-//                          stmPart(4,1), stmPart(0,3), stmPart(0,4), cartesianAccelerations(4);
-
-
-//        std::cout << " DET jacobian Matrix2d \n" << jacobianMatrix2d.determinant() << std::endl;
-//        std::cout << " jacobian Matrix2d \n" << jacobianMatrix << std::endl;
-
-//        corrections = jacobianMatrix2d.inverse() * constraintVector2d;
-
-//        differentialCorrection.setZero();
-//        differentialCorrection(1) = -corrections(0);
-//        differentialCorrection(3) = -corrections(1);
-//        differentialCorrection(4) = -corrections(2);
-//        differentialCorrection(10) = -corrections(3);
-
-
-//    } else if (minRow2d == 1) {
-//        std::cout << "\n Keeping y-position constant \n" << std::endl;
-//        std::cout << " Deviation Vector 2d \n" << deviationVector2d << std::endl;
-
-//        jacobianMatrix2d << stmPart(0,0), stmPart(0,3), stmPart(0,4), cartesianAccelerations(0),
-//                          stmPart(1,0), stmPart(1,3), stmPart(0,4), cartesianAccelerations(1),
-//                          stmPart(3,0), stmPart(3,3), stmPart(0,4), cartesianAccelerations(3),
-//                          stmPart(4,0), stmPart(0,3), stmPart(0,4), cartesianAccelerations(4);
-
-//        std::cout << " DET jacobian Matrix2d \n" << jacobianMatrix2d.determinant() << std::endl;
-//        std::cout << " jacobian Matrix2d \n" << jacobianMatrix2d.inverse() << std::endl;
-
-//        corrections = jacobianMatrix2d.inverse() * constraintVector2d;
-
-//        differentialCorrection.setZero();
-//        differentialCorrection(0) = -corrections(0);
-//        differentialCorrection(3) = -corrections(1);
-//        differentialCorrection(4) = -corrections(2);
-//        differentialCorrection(10) = -corrections(3);
-
-//    } else if (minRow2d == 2) {
-//        std::cout << "\n Keeping x-velocity constant \n" << std::endl;
-//        std::cout << " Deviation Vector 2d \n" << deviationVector2d << std::endl;
-
-//        jacobianMatrix2d << stmPart(0,0), stmPart(0,1), stmPart(0,4), cartesianAccelerations(0),
-//                          stmPart(1,0), stmPart(1,1), stmPart(0,4), cartesianAccelerations(1),
-//                          stmPart(3,0), stmPart(3,1), stmPart(0,4), cartesianAccelerations(3),
-//                          stmPart(4,0), stmPart(0,1), stmPart(0,4), cartesianAccelerations(4);
-
-//        std::cout << " DET jacobian Matrix2d \n" << jacobianMatrix2d.determinant() << std::endl;
-//        std::cout << " jacobian Matrix2d \n" << jacobianMatrix2d.inverse() << std::endl;
-
-//        corrections = jacobianMatrix2d.inverse() * constraintVector2d;
-
-//        differentialCorrection.setZero();
-//        differentialCorrection(0) = -corrections(0);
-//        differentialCorrection(1) = -corrections(1);
-//        differentialCorrection(4) = -corrections(2);
-//        differentialCorrection(10) = -corrections(3);
-
-//    } else {
-//        std::cout << "\n Keeping y-velocity constant \n" << std::endl;
-//        std::cout << " Deviation Vector 2d \n" << deviationVector2d << std::endl;
-
-//        jacobianMatrix2d << stmPart(0,0), stmPart(0,1), stmPart(0,4), cartesianAccelerations(0),
-//                          stmPart(1,0), stmPart(1,1), stmPart(0,4), cartesianAccelerations(1),
-//                          stmPart(3,0), stmPart(3,1), stmPart(0,4), cartesianAccelerations(3),
-//                          stmPart(4,0), stmPart(0,1), stmPart(0,4), cartesianAccelerations(4);
-
-//        std::cout << " DET jacobian Matrix2d \n" << jacobianMatrix2d.determinant() << std::endl;
-//        std::cout << " jacobian Matrix2d \n" << jacobianMatrix2d.inverse() << std::endl;
-
-//        corrections = jacobianMatrix2d.inverse() * constraintVector2d;
-
-//        differentialCorrection.setZero();
-//        differentialCorrection(0) = -corrections(0);
-//        differentialCorrection(1) = -corrections(1);
-//        differentialCorrection(3) = -corrections(2);
-//        differentialCorrection(10) = -corrections(3);
-
-//    }
-
-    minRow = 0;
-
-    if (minRow == 0) {
-        std::cout << "\n Keeping x-position constant \n" << std::endl;
-        jacobianMatrix << stmPart(0,1), stmPart(0,2), stmPart(0,3), stmPart(0,4), stmPart(0,5), cartesianAccelerations(0),
-                          stmPart(1,1), stmPart(1,2), stmPart(1,3), stmPart(1,4), stmPart(1,5), cartesianAccelerations(1),
-                          stmPart(2,1), stmPart(2,2), stmPart(2,3), stmPart(2,4), stmPart(2,5), cartesianAccelerations(2),
-                          stmPart(3,1), stmPart(3,2), stmPart(3,3), stmPart(3,4), stmPart(3,5), cartesianAccelerations(3),
-                          stmPart(4,1), stmPart(4,2), stmPart(4,3), stmPart(4,4), stmPart(4,5), cartesianAccelerations(4),
-                          stmPart(5,1), stmPart(5,2), stmPart(5,3), stmPart(5,4), stmPart(5,5), cartesianAccelerations(5);
-
-
-        corrections = jacobianMatrix.inverse() * constraintVector;
-
+    if (symmetryDependence == true)
+    {
+        // Set vectors and matrices to zero
         differentialCorrection.setZero();
-        differentialCorrection(1) = -corrections(0);
-        //differentialCorrection(2) = -corrections(1);
-        differentialCorrection(3) = -corrections(2);
-        differentialCorrection(4) = -corrections(3);
-        //differentialCorrection(5) = -corrections(4);
-        differentialCorrection(10) = -corrections(5);
+        corrections.setZero();
+        accelerations.setZero();
+        relevantPartStm.setZero();
+        rewrittenOrbitalPeriod.setZero();
+        updateMatrixIntermediate.setZero();
+        updateMatrix.setZero();
+        multiplicationMatrix.setZero();
 
-    } else if (minRow == 1) {
-        std::cout << "\n Keeping y-position constant \n" << std::endl;
-        jacobianMatrix << stmPart(0,0), stmPart(0,2), stmPart(0,3), stmPart(0,4), stmPart(0,5), cartesianAccelerations(0),
-                          stmPart(1,0), stmPart(1,2), stmPart(1,3), stmPart(1,4), stmPart(1,5), cartesianAccelerations(1),
-                          stmPart(2,0), stmPart(2,2), stmPart(2,3), stmPart(2,4), stmPart(2,5), cartesianAccelerations(2),
-                          stmPart(3,0), stmPart(3,2), stmPart(3,3), stmPart(3,4), stmPart(3,5), cartesianAccelerations(3),
-                          stmPart(4,0), stmPart(4,2), stmPart(4,3), stmPart(4,4), stmPart(4,5), cartesianAccelerations(4),
-                          stmPart(5,0), stmPart(5,2), stmPart(5,3), stmPart(5,4), stmPart(5,5), cartesianAccelerations(5);
+        // Calculate deviations at T
+        multiplicationMatrix <<  deviationVector(3), deviationVector(5);
+
+        // Compute the update matrix.
+        updateMatrixIntermediate << stmPartOfStateVectorInMatrixForm(3, 0), stmPartOfStateVectorInMatrixForm(3, 2), stmPartOfStateVectorInMatrixForm(3, 4),
+                                    stmPartOfStateVectorInMatrixForm(5, 0), stmPartOfStateVectorInMatrixForm(5, 2), stmPartOfStateVectorInMatrixForm(5, 4);
+
+        accelerations << cartesianAccelerations(3), cartesianAccelerations(5);
 
 
-        corrections = jacobianMatrix.inverse() * constraintVector;
+        relevantPartStm << stmPartOfStateVectorInMatrixForm(1,0), stmPartOfStateVectorInMatrixForm(1,2), stmPartOfStateVectorInMatrixForm(1,4);
+        rewrittenOrbitalPeriod = (-1.0 / cartesianAccelerations(1) ) * accelerations * relevantPartStm;
 
+
+        updateMatrix = updateMatrixIntermediate + rewrittenOrbitalPeriod;
+
+        // Compute the necessary differential correction.
+
+        corrections =  updateMatrix.transpose() * (updateMatrix * updateMatrix.transpose()).inverse() * multiplicationMatrix;
+
+        // Put corrections in correct format.
         differentialCorrection.setZero();
-        differentialCorrection(0) = -corrections(0);
-        //differentialCorrection(2) = -corrections(1);
-        differentialCorrection(3) = -corrections(2);
-        differentialCorrection(4) = -corrections(3);
-        //differentialCorrection(5) = -corrections(4);
-        differentialCorrection(10) = -corrections(5);
-
-    } else if (minRow == 2) {
-        std::cout << "\n Keeping z-position constant \n" << std::endl;
-        jacobianMatrix << stmPart(0,0), stmPart(0,1), stmPart(0,3), stmPart(0,4), stmPart(0,5), cartesianAccelerations(0),
-                          stmPart(1,0), stmPart(1,1), stmPart(1,3), stmPart(1,4), stmPart(1,5), cartesianAccelerations(1),
-                          stmPart(2,0), stmPart(2,1), stmPart(2,3), stmPart(2,4), stmPart(2,5), cartesianAccelerations(2),
-                          stmPart(3,0), stmPart(3,1), stmPart(3,3), stmPart(3,4), stmPart(3,5), cartesianAccelerations(3),
-                          stmPart(4,0), stmPart(4,1), stmPart(4,3), stmPart(4,4), stmPart(4,5), cartesianAccelerations(4),
-                          stmPart(5,0), stmPart(5,1), stmPart(5,3), stmPart(5,4), stmPart(5,5), cartesianAccelerations(5);
-
-
-        corrections = jacobianMatrix.inverse() * constraintVector;
-
-        differentialCorrection.setZero();
-        differentialCorrection(0) = -corrections(0);
-        differentialCorrection(1) = -corrections(1);
-        differentialCorrection(3) = -corrections(2);
-        differentialCorrection(4) = -corrections(3);
-        //differentialCorrection(5) = -corrections(4);
-        differentialCorrection(10) = -corrections(5);
-
-    } else if (minRow == 3 ) {
-        std::cout << "\n Keeping x-velocity constant \n" << std::endl;
-        jacobianMatrix << stmPart(0,0), stmPart(0,1), stmPart(0,2), stmPart(0,4), stmPart(0,5), cartesianAccelerations(0),
-                          stmPart(1,0), stmPart(1,1), stmPart(1,2), stmPart(1,4), stmPart(1,5), cartesianAccelerations(1),
-                          stmPart(2,0), stmPart(2,1), stmPart(2,2), stmPart(2,4), stmPart(2,5), cartesianAccelerations(2),
-                          stmPart(3,0), stmPart(3,1), stmPart(3,2), stmPart(3,4), stmPart(3,5), cartesianAccelerations(3),
-                          stmPart(4,0), stmPart(4,1), stmPart(4,2), stmPart(4,4), stmPart(4,5), cartesianAccelerations(4),
-                          stmPart(5,0), stmPart(5,1), stmPart(5,2), stmPart(5,4), stmPart(5,5), cartesianAccelerations(5);
-
-
-        corrections = jacobianMatrix.inverse() * constraintVector;
-
-        differentialCorrection.setZero();
-        differentialCorrection(0) = -corrections(0);
-        differentialCorrection(1) = -corrections(1);
-        //differentialCorrection(2) = -corrections(2);
-        differentialCorrection(2) = -corrections(2);
-        differentialCorrection(4) = -corrections(3);
-        differentialCorrection(5) = -corrections(4);
-        //differentialCorrection(5) = -corrections(4);
-        differentialCorrection(10) = -corrections(5);
-    } else if (minRow == 4) {
-        std::cout << "\n Keeping y-velocity constant \n" << std::endl;
-        jacobianMatrix << stmPart(0,0), stmPart(0,1), stmPart(0,2), stmPart(0,3), stmPart(0,5), cartesianAccelerations(0),
-                          stmPart(1,0), stmPart(1,1), stmPart(1,2), stmPart(1,3), stmPart(1,5), cartesianAccelerations(1),
-                          stmPart(2,0), stmPart(2,1), stmPart(2,2), stmPart(2,3), stmPart(2,5), cartesianAccelerations(2),
-                          stmPart(3,0), stmPart(3,1), stmPart(3,2), stmPart(3,3), stmPart(3,5), cartesianAccelerations(3),
-                          stmPart(4,0), stmPart(4,1), stmPart(4,2), stmPart(4,3), stmPart(4,5), cartesianAccelerations(4),
-                          stmPart(5,0), stmPart(5,1), stmPart(5,2), stmPart(5,3), stmPart(5,5), cartesianAccelerations(5);
-
-
-        corrections = jacobianMatrix.inverse() * constraintVector;
-
-        differentialCorrection.setZero();
-        differentialCorrection(0) = -corrections(0);
-        differentialCorrection(1) = -corrections(1);
-        //differentialCorrection(2) = -corrections(2);
-        differentialCorrection(3) = -corrections(3);
-        //differentialCorrection(5) = -corrections(4);
-        differentialCorrection(10) = -corrections(5);
-
-    } else {
-        std::cout << "\n Keeping z-velocity constant \n" << std::endl;
-        jacobianMatrix << stmPart(0,0), stmPart(0,1), stmPart(0,2), stmPart(0,3), stmPart(0,4), cartesianAccelerations(0),
-                          stmPart(1,0), stmPart(1,1), stmPart(1,2), stmPart(1,3), stmPart(1,4), cartesianAccelerations(1),
-                          stmPart(2,0), stmPart(2,1), stmPart(2,2), stmPart(2,3), stmPart(2,4), cartesianAccelerations(2),
-                          stmPart(3,0), stmPart(3,1), stmPart(3,2), stmPart(3,3), stmPart(3,4), cartesianAccelerations(3),
-                          stmPart(4,0), stmPart(4,1), stmPart(4,2), stmPart(4,3), stmPart(4,4), cartesianAccelerations(4),
-                          stmPart(5,0), stmPart(5,1), stmPart(5,2), stmPart(5,3), stmPart(5,4), cartesianAccelerations(5);
-
-
-        corrections = jacobianMatrix.inverse() * constraintVector;
-
-        differentialCorrection.setZero();
-        differentialCorrection(0) = -corrections(0);
-        differentialCorrection(1) = -corrections(1);
-        //differentialCorrection(2) = -corrections(2);
-        differentialCorrection(3) = -corrections(3);
-        differentialCorrection(4) = -corrections(4);
-        differentialCorrection(10) = -corrections(5);
+        differentialCorrection(0) = corrections(0);
+        differentialCorrection(2) = corrections(1);
+        differentialCorrection(4) = corrections(2);
+        differentialCorrection(10) = deviationVector(10);
     }
+    else {
+
+        // Set vectors and matrices to zero
+        differentialCorrection.setZero();
+        correctionsSYMM.setZero();
+        accelerationsSYMM.setZero();
+        relevantPartStmSYMM.setZero();
+        rewrittenOrbitalPeriodSYMM.setZero();
+        updateMatrixIntermediateSYMM.setZero();
+        updateMatrixSYMM.setZero();
+        multiplicationMatrixSYMM.setZero();
+
+        if (stateIndex == 1 )  {
+
+            //Set the correct multiplication matrix (state deviation at T )
+                multiplicationMatrixSYMM << deviationVector(0), deviationVector(3), deviationVector(4);
+
+            // Compute the update matrix.
+                updateMatrixIntermediateSYMM << stmPartOfStateVectorInMatrixForm(0, 0), stmPartOfStateVectorInMatrixForm(0, 3), stmPartOfStateVectorInMatrixForm(0, 4),
+                                                stmPartOfStateVectorInMatrixForm(3, 0), stmPartOfStateVectorInMatrixForm(3, 3), stmPartOfStateVectorInMatrixForm(3, 4),
+                                                stmPartOfStateVectorInMatrixForm(4, 0), stmPartOfStateVectorInMatrixForm(4, 3), stmPartOfStateVectorInMatrixForm(4, 4);
+
+                accelerationsSYMM << cartesianAccelerations(0), cartesianAccelerations(3), cartesianAccelerations(4);
+
+                relevantPartStmSYMM << stmPartOfStateVectorInMatrixForm(1,0), stmPartOfStateVectorInMatrixForm(1,3), stmPartOfStateVectorInMatrixForm(1,4);
+
+                rewrittenOrbitalPeriodSYMM = (-1.0 / cartesianAccelerations(1) ) * accelerationsSYMM * relevantPartStmSYMM;
+
+                updateMatrixSYMM = updateMatrixIntermediateSYMM + rewrittenOrbitalPeriodSYMM;
+
+           // Compute the necessary differential correction.
+                correctionsSYMM =  updateMatrixSYMM.inverse() * multiplicationMatrixSYMM;
+
+                differentialCorrection(0) = correctionsSYMM(0);
+                differentialCorrection(3) = correctionsSYMM(1);
+                differentialCorrection(4) = correctionsSYMM(2);
+                differentialCorrection(10) = deviationVector(10);
+
+        } else {
+
+            //Set the correct multiplication matrix (state deviation at T )
+                multiplicationMatrixSYMM << deviationVector(1), deviationVector(3), deviationVector(4);
+
+            // Compute the update matrix.
+                updateMatrixIntermediateSYMM << stmPartOfStateVectorInMatrixForm(1, 1), stmPartOfStateVectorInMatrixForm(1, 3), stmPartOfStateVectorInMatrixForm(1, 4),
+                                                stmPartOfStateVectorInMatrixForm(3, 1), stmPartOfStateVectorInMatrixForm(3, 3), stmPartOfStateVectorInMatrixForm(3, 4),
+                                                stmPartOfStateVectorInMatrixForm(4, 1), stmPartOfStateVectorInMatrixForm(4, 3), stmPartOfStateVectorInMatrixForm(4, 4);
+
+                accelerationsSYMM << cartesianAccelerations(0), cartesianAccelerations(3), cartesianAccelerations(4);
+
+                relevantPartStmSYMM << stmPartOfStateVectorInMatrixForm(0,1), stmPartOfStateVectorInMatrixForm(0,3), stmPartOfStateVectorInMatrixForm(0,4);
+
+                rewrittenOrbitalPeriodSYMM = (-1.0 / cartesianAccelerations(0) ) * accelerationsSYMM * relevantPartStmSYMM;
+
+                updateMatrixSYMM = updateMatrixIntermediateSYMM + rewrittenOrbitalPeriodSYMM;
+
+           // Compute the necessary differential correction.
+                correctionsSYMM =  updateMatrixSYMM.inverse() * multiplicationMatrixSYMM;
+
+                differentialCorrection(1) = correctionsSYMM(0);
+                differentialCorrection(3) = correctionsSYMM(1);
+                differentialCorrection(4) = correctionsSYMM(2);
+                differentialCorrection(10) = deviationVector(10);
+
+        }
+    }
+
+//        std::cout << "============= Compute Differential Correction Matrices ========= " << std::endl
+//                  << "multiplicationMatrix: \n" << multiplicationMatrix << std::endl
+//                  << "updateMatrix: \n" << updateMatrix << std::endl
+//                 << "updateMatrix.inverse(): \n" << updateMatrix.transpose() * ( updateMatrix * updateMatrix.transpose()).inverse() << std::endl
+//                 << "corrections: \n"  << corrections << std::endl
+//                  << "differentialCorrection: \n" << differentialCorrection << std::endl;
+//        std::cout << "================================================================ " << std::endl;
+
+//        std::cout << "============= Compute Differential Correction Matrices ========= " << std::endl
+//                  << "multiplicationMatrix: \n" << multiplicationMatrixSYMM << std::endl
+//                  << "updateMatrix: \n" << updateMatrixSYMM << std::endl
+//                 << "updateMatrix.inverse(): \n" << updateMatrixSYMM.transpose() * ( updateMatrixSYMM * updateMatrixSYMM.transpose()).inverse() << std::endl
+//                 << "corrections: \n"  << correctionsSYMM << std::endl
+//                  << "differentialCorrection: \n" << differentialCorrection << std::endl;
+//        std::cout << "================================================================ " << std::endl;
 
     return differentialCorrection;
 }

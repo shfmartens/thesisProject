@@ -93,6 +93,9 @@ Eigen::VectorXd applyDifferentialCorrection(const int librationPointNr, const st
         }
         else
         {
+            std::cout << "StateVectorT/2: \n " << stateVectorInclSTM.block(0,0,6,1) << std::endl;
+            std::cout << "currentTime: \n " << currentTime << std::endl;
+
             differentialCorrection = computeDifferentialCorrection( librationPointNr, orbitType, stateVectorInclSTM, false );
         }
 

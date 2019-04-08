@@ -5,6 +5,7 @@
 #include "Tudat/Astrodynamics/BasicAstrodynamics/celestialBodyConstants.h"
 #include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
 #include "Tudat/InputOutput/basicInputOutput.h"
+#include <cmath>
 
 #include "propagateOrbitAugmented.h"
 #include "stateDerivativeModelAugmented.h"
@@ -141,6 +142,200 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFinalCondition(
     }
 
     return currentState;
+}
+
+std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFinalThetaCondition(
+        const Eigen::MatrixXd fullInitialState, const double massParameter, int direction,
+        std::map< double, Eigen::VectorXd >& stateHistoryMinimized, const int saveFrequency, const double initialTime )
+{
+    if( saveFrequency >= 0 )
+    {
+        stateHistoryMinimized[ initialTime ] = fullInitialState.block( 0, 0, 10, 1 );
+    }
+
+    // compute theta of initial state w.r.t. secondary body
+    double initialAngleOfOrbit = fmod(atan2( fullInitialState(1,0), fullInitialState(0,0) - (1.0 - massParameter) ) * 180.0 / tudat::mathematical_constants::PI, 360.0 );
+    if (initialAngleOfOrbit < 0.0 ) {
+        initialAngleOfOrbit = initialAngleOfOrbit + 360.0;
+    }
+    // Perform first integration step
+    std::pair< Eigen::MatrixXd, double > previousState;
+    std::pair< Eigen::MatrixXd, double > currentState;
+    double thetaSign;
+    int thetaSignChanges;
+    Eigen::MatrixXd stateVectorInclSTM;
+    currentState = propagateOrbitAugmented(fullInitialState, massParameter, initialTime, direction, 1.0E-5, 1.0E-5 );
+    Eigen::MatrixXd stateVectorOnly = currentState.first;
+    double currentTime = currentState.second;
+    double currentAngleOfOrbit = fmod(atan2( stateVectorOnly(1,0), stateVectorOnly(0,0) - (1.0 - massParameter) ) *180.0 / tudat::mathematical_constants::PI, 360.0 ) ;
+    if (currentAngleOfOrbit < 0.0 ) {
+        currentAngleOfOrbit = currentAngleOfOrbit + 360.0;
+    }
+
+    //std::cout << "Begin angle" << initialAngleOfOrbit << std::endl;
+    //std::cout << "current angle" << currentAngleOfOrbit  << std::endl;
+
+    thetaSignChanges = 0;
+    if (initialAngleOfOrbit - currentAngleOfOrbit > 0.0 ) {
+        thetaSign = 1.0;
+    } else {
+        thetaSign = -1.0;
+    }
+    int stepCounter = 1;
+
+    // Perform integration steps until end of half orbital period
+    for (int i = 5; i <= 12; i++)
+    {
+        double initialStepSize = pow(10,(static_cast<float>(-i)));
+        double maximumStepSize = initialStepSize;
+        //std::cout << "Step size maximum: " << initialStepSize << std::endl;
+
+        while (thetaSignChanges <= 1.0 )
+        {
+            // Write every nth integration step to file.
+            if ( saveFrequency > 0 && ( stepCounter % saveFrequency == 0 ) )
+            {
+                stateHistoryMinimized[ currentTime ] = currentState.first.block( 0, 0, 10, 1 );
+            }
+
+                currentTime = currentState.second;
+                stateVectorInclSTM = currentState.first;
+                previousState = currentState;
+                currentState = propagateOrbitAugmented(currentState.first, massParameter, currentTime, 1, initialStepSize, maximumStepSize);
+                stateVectorOnly = currentState.first;
+                currentAngleOfOrbit = fmod(std::atan2( stateVectorOnly(1,0), stateVectorOnly(0,0) - (1.0 - massParameter) ) * 180.0 / tudat::mathematical_constants::PI, 360.0);
+                if (currentAngleOfOrbit < 0.0 ) {
+                    currentAngleOfOrbit = currentAngleOfOrbit + 360.0;
+                }
+
+
+                stepCounter++;
+                if ( (initialAngleOfOrbit - currentAngleOfOrbit) * thetaSign < 0.0 )
+                {
+
+                    thetaSignChanges++;
+                    thetaSign = thetaSign*-1.0;
+                }
+
+
+
+
+                if (thetaSignChanges > 1.0 )
+                {
+                    currentState = previousState;
+                    currentTime = currentState.second;
+                    thetaSignChanges--;
+                    thetaSign = thetaSign*-1.0;
+                    break;
+                }
+
+            }
+    }
+
+    // Add final state after minimizing overshoot
+    if ( saveFrequency > 0 )
+    {
+        stateHistoryMinimized[ currentTime ] = currentState.first.block( 0, 0, 10, 1 );
+    }
+    stateVectorInclSTM = currentState.first;
+    std::cout << "||delta theta|| = " << abs(initialAngleOfOrbit - currentAngleOfOrbit) << ", at end of iterative procedure" << std::endl;
+    return currentState;
+
+}
+
+std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFinalSpatialCondition(
+        const Eigen::MatrixXd fullInitialState, const double massParameter, const int stateIndex, int direction,
+        std::map< double, Eigen::VectorXd >& stateHistoryMinimized, const int saveFrequency, const double initialTime )
+{
+    if( saveFrequency >= 0 )
+    {
+        stateHistoryMinimized[ initialTime ] = fullInitialState.block( 0, 0, 10, 1 );
+    }
+
+    // compute theta of initial spatial coordinate for reference
+    double initialStateCoordinate = fullInitialState(stateIndex, 0);
+
+    // Perform first integration step
+    std::pair< Eigen::MatrixXd, double > previousState;
+    std::pair< Eigen::MatrixXd, double > currentState;
+    double coordinateSign;
+    double coordinateSignChanges;
+    Eigen::MatrixXd stateVectorInclSTM;
+    currentState = propagateOrbitAugmented(fullInitialState, massParameter, initialTime, direction, 1.0E-5, 1.0E-5 );
+    Eigen::MatrixXd stateVectorOnly = currentState.first;
+    double currentTime = currentState.second;
+    double currentStateCoordinate = stateVectorOnly(stateIndex, 0);
+
+
+
+
+    coordinateSignChanges = 0;
+    if (currentStateCoordinate - initialStateCoordinate > 0.0 ) {
+        coordinateSign = 1.0;
+    } else {
+        coordinateSign = -1.0;
+    }
+    int stepCounter = 1;
+
+    // Perform integration steps until end of half orbital period
+    for (int i = 5; i <= 12; i++)
+    {
+        double initialStepSize = pow(10,(static_cast<float>(-i)));
+        double maximumStepSize = initialStepSize;
+
+//        std::cout << "Initial State Coordinate: " << initialStateCoordinate << std::endl;
+//        std::cout << "current State Coordinate: " << currentStateCoordinate << std::endl;
+//        std::cout << "Sign:  " << coordinateSign << std::endl;
+//        std::cout << "Step size maximum: " << initialStepSize << std::endl;
+//        std::cout << "difference bewtween coordinate: " << initialStateCoordinate - currentStateCoordinate << std::endl;
+
+
+        while (coordinateSignChanges <= 1.0 )
+        {
+            // Write every nth integration step to file.
+            if ( saveFrequency > 0 && ( stepCounter % saveFrequency == 0 ) )
+            {
+                stateHistoryMinimized[ currentTime ] = currentState.first.block( 0, 0, 10, 1 );
+            }
+
+                currentTime = currentState.second;
+                stateVectorInclSTM = currentState.first;
+                previousState = currentState;
+                currentState = propagateOrbitAugmented(currentState.first, massParameter, currentTime, 1, initialStepSize, maximumStepSize);
+                stateVectorOnly = currentState.first;
+                currentStateCoordinate = stateVectorOnly(stateIndex, 0);
+
+                stepCounter++;
+
+                if ( (currentStateCoordinate - initialStateCoordinate ) * coordinateSign < 0.0 )
+                {
+                    coordinateSignChanges = coordinateSignChanges + 1.0;
+                    coordinateSign = coordinateSign*-1.0;
+                }
+
+                //std::cout << "difference state coordinate " <<initialStateCoordinate - currentStateCoordinate << std::endl;
+
+                if (coordinateSignChanges > 1.0 )
+                {
+                    currentState = previousState;
+                    currentTime = currentState.second;
+                    coordinateSignChanges = coordinateSignChanges - 1.0;
+                    coordinateSign = coordinateSign*-1.0;
+                    break;
+                }
+
+            }
+    }
+
+    // Add final state after minimizing overshoot
+    if ( saveFrequency > 0 )
+    {
+        stateHistoryMinimized[ currentTime ] = currentState.first.block( 0, 0, 10, 1 );
+    }
+    stateVectorInclSTM = currentState.first;
+    std::cout << "||delta coordinate|| = " << abs( initialStateCoordinate - currentStateCoordinate ) << ", at end of iterative procedure" << std::endl;
+    return currentState;
+
 }
 
 std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedWithStateTransitionMatrixToFinalCondition(

@@ -35,7 +35,7 @@ Eigen::MatrixXd getCorrectedInitialState( const Eigen::Vector6d& initialStateGue
                                           const double accelerationAngle2, const double initialMass, const double massParameter,
                                           std::vector< Eigen::VectorXd >& initialConditions,
                                           std::vector< Eigen::VectorXd >& differentialCorrections,
-                                          const double maxPositionDeviationFromPeriodicOrbit = 1.0e-12, const double maxVelocityDeviationFromPeriodicOrbit = 1.0e-12 );
+                                          const double maxPositionDeviationFromPeriodicOrbit = 1.0e-10, const double maxVelocityDeviationFromPeriodicOrbit = 1.0e-10 );
 
 
 void createLowThrustInitialConditions( const int librationPointNr, const double accelerationMagnitude, const double accelerationAngle,
@@ -43,7 +43,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                               const double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter(
             tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER,
             tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER ),
-                              const double maxPositionDeviationFromPeriodicOrbit = 1.0e-12, const double maxVelocityDeviationFromPeriodicOrbit = 1.0e-12,
+                              const double maxPositionDeviationFromPeriodicOrbit = 1.0e-10, const double maxVelocityDeviationFromPeriodicOrbit = 1.0e-10,
                               const double maxEigenvalueDeviation = 1.0e-3,
                               const boost::function< double( const Eigen::Vector6d& ) > pseudoArcLengthFunction =
         boost::bind( &getDefaultArcLengthAugmented, 1.0E-4, _1 ) );

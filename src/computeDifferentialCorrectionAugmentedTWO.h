@@ -3,7 +3,7 @@
 
 #include <Eigen/Core>
 
-Eigen::VectorXd computeDifferentialCorrectionAugmented( const Eigen::MatrixXd& cartesianStateWithStm, const Eigen::VectorXd& deviationVector, const bool symmetryDependence = true , const int stateIndex = 1 );
+Eigen::VectorXd computeDifferentialCorrectionAugmented(const Eigen::MatrixXd& cartesianStateWithStm, const Eigen::VectorXd& deviationVector);
 
 
 

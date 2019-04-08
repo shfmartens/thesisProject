@@ -22,6 +22,11 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitToFinalCondition(
         const Eigen::MatrixXd fullInitialState, const double massParameter, const double finalTime, int direction,
         std::map< double, Eigen::Vector6d >& stateHistory, const int saveFrequency = -1, const double initialTime = 0.0 );
 
+std::pair< Eigen::MatrixXd, double >  propagateOrbitToFinalSpatialCondition(
+        const Eigen::MatrixXd fullInitialState, const double massParameter, const int stateIndex, int direction,
+        std::map< double, Eigen::Vector6d >& stateHistory, const int saveFrequency, const double initialTime );
+
+
 std::pair< Eigen::MatrixXd, double >  propagateOrbitWithStateTransitionMatrixToFinalCondition(
         const Eigen::MatrixXd fullInitialState, const double massParameter, const double finalTime, int direction,
         std::map< double, Eigen::MatrixXd >& stateTransitionMatrixHistory, const int saveFrequency = -1, const double initialTime = 0.0);

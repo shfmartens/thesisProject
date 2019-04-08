@@ -26,7 +26,7 @@
 
 
 double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER, tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER );
-double thrustAcceleration = 1.0e-2;
+double thrustAcceleration = 0.0;
 int main (){
 
     // ================================
@@ -38,7 +38,7 @@ int main (){
     // ================================
     // == Compute initial conditions ==
     // ================================
-        double accelerationMagnitude = 1.0e-12;
+        double accelerationMagnitude = 0.0;
         double accelerationAngle = 0.0;
         double accelerationAngle2 = 0.0;
         double initialMass = 1.0;

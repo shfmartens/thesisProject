@@ -73,21 +73,24 @@ Eigen::MatrixXd computeStateDerivativeAugmented( const double time, const Eigen:
     double xAccelerationPartialBeta = -cartesianState(6) * std::cos( alpha ) * std::sin( beta );
     double yAccelerationPartialBeta = -cartesianState(6) * std::sin( alpha ) * std::sin( beta );
     double zAccelerationPartialBeta = cartesianState( 6 ) * std::cos( beta );
-    // Create the STM-derivative matrix
-    Eigen::MatrixXd stmDerivativeFunction (10,10);
-    stmDerivativeFunction << 0.0, 0.0, 0.0,  1.0, 0.0, 0.0, 0,0,                      0.0,                          0.0,                         0.0,
-                             0.0, 0.0, 0.0,  0.0, 1.0, 0.0, 0.0,                      0.0,                          0.0,                         0.0,
-                             0.0, 0.0, 0.0,  0.0, 0.0, 1.0, 0.0,                      0.0,                          0.0,                         0.0,
-                             Uxx, Uxy, Uxz,  0.0, 2.0, 0.0, 0.0,                      xAccelerationPartialAlpha,    xAccelerationPartialBeta,    xAccelerationPartialMass,
-                             Uyx, Uyy, Uyz, -2.0, 0.0, 0.0, 0.0,                      yAccelerationPartialAlpha,    yAccelerationPartialBeta,    yAccelerationPartialMass,
-                             Uzx, Uzy, Uzz,  0.0, 0.0, 0.0, 0.0,                      zAccelerationPartialAlpha,    zAccelerationPartialBeta,    zAccelerationPartialMass,
-                             0.0, 0,0, 0.0, 0.0, 0.0,  0.0, 0.0,                      0.0,                          0.0,                         0.0,
-                             0.0, 0,0, 0.0, 0.0, 0.0,  0.0, 0.0,                      0.0,                          0.0,                         0.0,
-                             0.0, 0,0, 0.0, 0.0, 0.0,  0.0, 0.0,                      0.0,                          0.0,                         0.0,
-                             0.0, 0,0, 0.0, 0.0, 0.0,  0.0, 0.0,                      0.0,                          0.0,                         0.0;
 
+    // Create the STM-derivative matrix
+    Eigen::MatrixXd stmDerivativeFunctionAugmented (10,10);
+    stmDerivativeFunctionAugmented << 0.0, 0.0, 0.0,  1.0, 0.0, 0.0, 0.0,                      0.0,                          0.0,                         0.0,
+                                      0.0, 0.0, 0.0,  0.0, 1.0, 0.0, 0.0,                      0.0,                          0.0,                         0.0,
+                                      0.0, 0.0, 0.0,  0.0, 0.0, 1.0, 0.0,                      0.0,                          0.0,                         0.0,
+                                      Uxx, Uxy, Uxz,  0.0, 2.0, 0.0, 0.0,                      xAccelerationPartialAlpha,    xAccelerationPartialBeta,    xAccelerationPartialMass,
+                                      Uyx, Uyy, Uyz, -2.0, 0.0, 0.0, 0.0,                      yAccelerationPartialAlpha,    yAccelerationPartialBeta,    yAccelerationPartialMass,
+                                      Uzx, Uzy, Uzz,  0.0, 0.0, 0.0, 0.0,                      zAccelerationPartialAlpha,    zAccelerationPartialBeta,    zAccelerationPartialMass,
+                                      0.0, 0.0, 0.0,  0.0, 0.0,  0.0, 0.0,                      0.0,                          0.0,                         0.0,
+                                      0.0, 0.0, 0.0,  0.0, 0.0,  0.0, 0.0,                      0.0,                          0.0,                         0.0,
+                                      0.0, 0.0, 0.0,  0.0, 0.0,  0.0, 0.0,                      0.0,                          0.0,                         0.0,
+                                      0.0, 0.0, 0.0,  0.0, 0.0,  0.0, 0.0,                      0.0,                          0.0,                         0.0;
+//    std::cout << "==========" << std::endl
+//              << stmDerivativeFunctionAugmented << std::endl
+//              << "==========" << std::endl;
     // Differentiate the STM.
-    stateDerivative.block( 0, 1, 10, 10 ) = stmDerivativeFunction * cartesianState.block( 0, 1, 10, 10 );
+    stateDerivative.block( 0, 1, 10, 10 ) = stmDerivativeFunctionAugmented * cartesianState.block( 0, 1, 10, 10 );
 
     return stateDerivative;
 }

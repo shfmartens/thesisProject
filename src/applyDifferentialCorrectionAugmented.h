@@ -5,14 +5,18 @@
 
 #include "Eigen/Core"
 
-Eigen::VectorXd computeDeviationVector (const Eigen::VectorXd& initialStateVector, const double initialPeriod,
-                                        const Eigen::VectorXd& targetStateVector, const double targetPeriod);
+void computeDifferenceStateDerivatives ( const Eigen::MatrixXd fullStateVectorAugmented, const Eigen::MatrixXd fullStateVectorBallistic, const double finalTime);
+
+int computePositionMinimumDeviation (const Eigen::MatrixXd initialStateVectorInclSTM, const double massParameter, const double orbitalPeriod, const bool symmetryDependence );
+
+Eigen::VectorXd computeDeviationVector (const Eigen::VectorXd& initialStateVector, const double targetPeriod,
+                                        const Eigen::VectorXd& targetStateVector, const double currentPeriod);
 
 Eigen::VectorXd applyDifferentialCorrectionAugmented( const int librationPointNr,
                                              const Eigen::VectorXd& initialStateVector,
                                              double orbitalPeriod, const double massParameter,
                                              double maxPositionDeviationFromPeriodicOrbit,
-                                             double maxVelocityDeviationFromPeriodicOrbit,
+                                             double maxVelocityDeviationFromPeriodicOrbit, const bool symmetryDependence,
                                              const int maxNumberOfIterations = 1000 );
 
 
