@@ -283,7 +283,7 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFinalSpatialCondi
         double initialStepSize = pow(10,(static_cast<float>(-i)));
         double maximumStepSize = initialStepSize;
 
-        while (coordinateSignChanges <= 1.0 )
+        while (coordinateSignChanges <= 0.0 )
         {
             // Write every nth integration step to file.
             if ( saveFrequency > 0 && ( stepCounter % saveFrequency == 0 ) )
@@ -310,7 +310,7 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFinalSpatialCondi
                 }
 
 
-                if ( coordinateSignChanges > 1.0 )
+                if ( coordinateSignChanges > 0.0 )
                 {
                     currentState = previousState;
                     currentTime = currentState.second;

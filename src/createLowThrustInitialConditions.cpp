@@ -443,13 +443,6 @@ Eigen::VectorXd getLowThrustInitialStateVectorGuess( const int librationPointNr,
 }
 
 
-double getDefaultArcLengthAugmented(
-        const double distanceIncrement,
-        const Eigen::Vector6d& currentState )
-{
-   return distanceIncrement / currentState.segment( 0, 3 ).norm( );
-}
-
 double computeHamiltonian (const double massParameter, const Eigen::VectorXd stateVector) {
 
     double Hamiltonian;
@@ -481,7 +474,7 @@ Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initia
     // Correct state vector guess
     Eigen::VectorXd differentialCorrectionResult = applyDifferentialCorrectionAugmented(
                 librationPointNr, initialStateGuess, orbitalPeriod, massParameter,
-                maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit, 1 );
+                maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit );
     std::cout << "DC result: " << differentialCorrectionResult << std::endl;
     initialStateVector = differentialCorrectionResult.segment( 0, 10 );
     orbitalPeriod = differentialCorrectionResult( 10 );
@@ -593,9 +586,10 @@ double getDefaultArcLengthAugmented(
         const Eigen::VectorXd& currentState, const int continuationIndex )
 {
    std::cout << "distanceIncrement: \n" << distanceIncrement << std::endl
-             << "currentState: \n" << currentState << std::endl
+             << "currentStateIncPeriod: \n" << currentState << std::endl
              << "continuationIndex: \n" << continuationIndex << std::endl
-             << "fraction result: " << distanceIncrement / currentState.segment( 0, 3 ).norm( ) << std::endl;
+             << "fraction result: " << distanceIncrement / currentState.segment( 0, 3 ).norm( ) << std::endl
+             << "fraction result Period: " << distanceIncrement / abs(currentState(10)) << std::endl;
    return distanceIncrement / currentState.segment( 0, 3 ).norm( );
 }
 
@@ -640,6 +634,10 @@ void createLowThrustInitialConditions( const int librationPointNr, const std::st
     // Set output maximum precision
     std::cout.precision(std::numeric_limits<double>::digits10);
 
+    // Create two refined initial guesses to seed numerical continuation
+    // If orbital Period: two initial guesses from linearized dynamics
+    // If orbi
+
     // Initialize state vectors and orbital periods
     Eigen::VectorXd initialStateVector = Eigen::VectorXd::Zero( 10 );
     Eigen::MatrixXd stateVectorInclSTM = Eigen::MatrixXd::Zero( 10, 11 );
@@ -672,7 +670,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const std::st
     // Generate periodic orbits until termination
     double orbitalPeriod  = 0.0, periodIncrement = 0.0, pseudoArcLengthCorrection = 0.0;
     bool continueNumericalContinuation = true;
-    Eigen::VectorXd stateIncrement(10);
+    Eigen::VectorXd stateIncrement(11);
 
     while( ( numberOfInitialConditions < maximumNumberOfInitialConditions ) && continueNumericalContinuation)
     {
@@ -681,9 +679,9 @@ void createLowThrustInitialConditions( const int librationPointNr, const std::st
                   << "X^{n+1}: \n" << initialConditions[ initialConditions.size( ) - 1 ].segment( 2, 10 ) << std::endl;
 
         // Determine increments to state and time
-        stateIncrement = initialConditions[ initialConditions.size( ) - 1 ].segment( 2, 10 ) -
+        stateIncrement.segment(0,10) = initialConditions[ initialConditions.size( ) - 1 ].segment( 2, 10 ) -
                 initialConditions[ initialConditions.size( ) - 2 ].segment( 2, 10 );
-        periodIncrement = initialConditions[ initialConditions.size( ) - 1 ]( 1 ) -
+        stateIncrement(10) = initialConditions[ initialConditions.size( ) - 1 ]( 1 ) -
                 initialConditions[ initialConditions.size( ) - 2 ]( 1 );
         pseudoArcLengthCorrection =
                 pseudoArcLengthFunctionAugmented( stateIncrement, continuationIndex );
@@ -693,9 +691,11 @@ void createLowThrustInitialConditions( const int librationPointNr, const std::st
 
         // Apply numerical continuation
         initialStateVector = initialConditions[ initialConditions.size( ) - 1 ].segment( 2, 10 ) +
-                stateIncrement * pseudoArcLengthCorrection;
+                stateIncrement.segment(0,10) * pseudoArcLengthCorrection;
+
+
         orbitalPeriod = initialConditions[ initialConditions.size( ) - 1 ]( 1 ) +
-                periodIncrement * pseudoArcLengthCorrection;
+                stateIncrement(10) * 1.0E-4 / stateIncrement(10) ;
 
 //        initialStateVector(0) = 0.8370000570317;
 //        initialStateVector(4) = -0.00071189200525661;
