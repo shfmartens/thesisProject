@@ -162,7 +162,7 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitToFinalSpatialCondition(
     double signChanges = 0.0;
     double signIndex = 0.0;
 
-    if ( fullInitialState(stateIndex, 0) - stateVectorOnly(stateIndex, 0) > 0.0 ) {
+    if ( ( stateVectorOnly(stateIndex, 0) - fullInitialState(stateIndex, 0) ) > 0.0 ) {
             signIndex = 1.0;
         } else {
             signIndex = -1.0;
@@ -173,14 +173,22 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitToFinalSpatialCondition(
     for (int i = 5; i <= 12; i++)
     {
 
+
+
         double initialStepSize = pow(10,(static_cast<float>(-i)));
         double maximumStepSize = initialStepSize;
+
+        std::cout << "current - initial: " << stateVectorOnly(stateIndex, 0) - fullInitialState(stateIndex, 0) << std::endl
+                  << "signIndex: " << signIndex << std::endl;
+
         while (signChanges <= 1.0 )
         {
             // Write every nth integration step to file.
             if ( saveFrequency > 0 && ( stepCounter % saveFrequency == 0 ) )
             {
                 stateHistory[ currentTime ] = currentState.first.block( 0, 0, 6, 1 );
+
+                std::cout << "current - initial SF: " << stateVectorOnly(stateIndex, 0) - fullInitialState(stateIndex, 0) << std::endl;
             }
 
             currentTime = currentState.second;
@@ -190,7 +198,7 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitToFinalSpatialCondition(
 
             stepCounter++;
 
-            if ( (fullInitialState(stateIndex, 0) - stateVectorOnly(stateIndex, 0))  * signIndex < 0.0 )
+            if ( (stateVectorOnly(stateIndex, 0) - fullInitialState(stateIndex, 0) )  * signIndex < 0.0 )
             {
                 signChanges++;
                 signIndex = signIndex*-1.0;
@@ -200,7 +208,7 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitToFinalSpatialCondition(
             {
                 currentState = previousState;
                 currentTime = currentState.second;
-                signChanges--;
+                signChanges = signChanges - 1.0;
                 signIndex = signIndex*-1.0;
                 break;
             }

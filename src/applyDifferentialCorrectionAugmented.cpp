@@ -100,7 +100,7 @@ Eigen::VectorXd applyDifferentialCorrectionAugmented(const int librationPointNr,
                                             const Eigen::VectorXd& initialStateVector,
                                             double orbitalPeriod, const double massParameter,
                                             double maxPositionDeviationFromPeriodicOrbit,
-                                            double maxVelocityDeviationFromPeriodicOrbit, const bool symmetryDependence,
+                                            double maxVelocityDeviationFromPeriodicOrbit, const double maxPeriodDeviationFromPeriodicOrbit, const bool symmetryDependence,
                                             const int maxNumberOfIterations )
 {
     std::cout << "\nApply differential correction:" << std::endl;
@@ -124,6 +124,14 @@ Eigen::VectorXd applyDifferentialCorrectionAugmented(const int librationPointNr,
 //    initialStateVectorInclSTM.block( 0, 0, 10, 1 ) = refinedStateVectorInclSTM.block(0,0,10,1);
 //    orbitalPeriod = refinedOrbitalPeriod;
 
+//    std::cout << "==== Check on the propagation input  condition ====" << std::endl
+//              << "Full period State: \n" << initialStateVectorInclSTM << std::endl
+//                 << "State index minimum deviation: \n" << stateIndexMinimalDeviation << std::endl
+//                 << "Mass Parameter: \n" << massParameter << std::endl
+//              << "==== Check on the propagation input COMPLETE ====" << std::endl;
+
+
+
     std::map< double, Eigen::VectorXd > stateHistory;
     std::pair< Eigen::MatrixXd, double > fullPeriodState = propagateOrbitAugmentedToFinalSpatialCondition(
                 initialStateVectorInclSTM, massParameter, stateIndexMinimalDeviation , 1, stateHistory, -1, 0.0 );
@@ -131,11 +139,26 @@ Eigen::VectorXd applyDifferentialCorrectionAugmented(const int librationPointNr,
     double currentTime             = fullPeriodState.second;
     Eigen::VectorXd stateVectorOnly = stateVectorInclSTM.block( 0, 0, 10, 1 );
 
+    if (initialStateVector(0) > 0.83691 ) {
+
+        std::map< double, Eigen::VectorXd > stateHistoryTEST;
+        std::pair< Eigen::MatrixXd, double > fullPeriodStateTEST = propagateOrbitAugmentedToFinalSpatialCondition(
+                    initialStateVectorInclSTM, massParameter, stateIndexMinimalDeviation , 1, stateHistory, 1000, 0.0 );
+        Eigen::MatrixXd stateVectorInclSTMTEST      = fullPeriodStateTEST.first;
+        double currentTimeTEST             = fullPeriodStateTEST.second;
+        Eigen::VectorXd stateVectorOnly = stateVectorInclSTMTEST.block( 0, 0, 10, 1 );
+
+        std::cout << "TEST TEST Final Time when having crossing y-axis twice!: " << currentTimeTEST <<std::endl;
+
+
+    }
+
     // Initialize variables
     Eigen::VectorXd differentialCorrection(11);
     Eigen::VectorXd outputVector(23);
     double positionDeviationFromPeriodicOrbit;
     double velocityDeviationFromPeriodicOrbit;
+    double periodDeviationFromPeriodicOrbit;
 
     // Compute Deviation Vector
     Eigen::VectorXd deviationVector(11);
@@ -143,6 +166,9 @@ Eigen::VectorXd applyDifferentialCorrectionAugmented(const int librationPointNr,
 
     positionDeviationFromPeriodicOrbit = sqrt(pow(deviationVector(0), 2) + pow(deviationVector(1), 2) );
     velocityDeviationFromPeriodicOrbit = sqrt(pow(deviationVector(3), 2) + pow(deviationVector(4), 2) );
+    periodDeviationFromPeriodicOrbit = sqrt( pow( deviationVector(10), 2) );
+
+
 
     bool deviationFromPeriodicOrbitRelaxed = false;
 
@@ -150,13 +176,15 @@ Eigen::VectorXd applyDifferentialCorrectionAugmented(const int librationPointNr,
 
     std::cout << "positionDeviationFromPeriodicOrbit: " << positionDeviationFromPeriodicOrbit << std::endl
               << "velocityDeviationFromPeriodicOrbit: " << velocityDeviationFromPeriodicOrbit << std::endl
+              << "periodDeviationFromPeriodicOrbit: " << periodDeviationFromPeriodicOrbit << std::endl
               << "numberOfIterations: " << numberOfIterations  << std::endl
               << "maxPositionDeviationFromPeriodicOrbit: " << maxPositionDeviationFromPeriodicOrbit << std::endl
-              << "maxVelocityDeviationFromPeriodicOrbit: " << maxVelocityDeviationFromPeriodicOrbit << "\n" << std::endl;
+              << "maxVelocityDeviationFromPeriodicOrbit: " << maxVelocityDeviationFromPeriodicOrbit << std::endl
+              << "maxPeriodDeviationFromPeriodicOrbit: " << maxPeriodDeviationFromPeriodicOrbit << "\n" << std::endl;
 
     // Apply differential correction and propagate to full-period point until converged.
     while ( positionDeviationFromPeriodicOrbit > maxPositionDeviationFromPeriodicOrbit or
-            velocityDeviationFromPeriodicOrbit > maxVelocityDeviationFromPeriodicOrbit ) {
+            velocityDeviationFromPeriodicOrbit > maxVelocityDeviationFromPeriodicOrbit or periodDeviationFromPeriodicOrbit > maxPeriodDeviationFromPeriodicOrbit ) {
 
         // If the maximum number of iterations has been reached, return a zero vector to stop the numerical continuation
         if ( numberOfIterations > maxNumberOfIterations and deviationFromPeriodicOrbitRelaxed == false )
@@ -184,7 +212,7 @@ Eigen::VectorXd applyDifferentialCorrectionAugmented(const int librationPointNr,
        std::cout<<"APPLYING DIFF. CORR: "<<differentialCorrection<<std::endl;
 
         initialStateVectorInclSTM.block( 0, 0, 10, 1 ) = initialStateVectorInclSTM.block( 0, 0, 10, 1 ) + differentialCorrection.segment( 0, 10 ) / 1.0;
-        orbitalPeriod  = orbitalPeriod + 1.0 * differentialCorrection( 10 ) / 1.0;
+        orbitalPeriod  = orbitalPeriod + differentialCorrection( 10 ) / 1.0;
 
        //stateIndexMinimalDeviation = computePositionMinimumDeviation( initialStateVectorInclSTM, massParameter, orbitalPeriod, symmetryDependence);
        stateIndexMinimalDeviation = 1;
@@ -200,13 +228,16 @@ Eigen::VectorXd applyDifferentialCorrectionAugmented(const int librationPointNr,
 
         positionDeviationFromPeriodicOrbit = sqrt(pow(deviationVector(0), 2) + pow(deviationVector(1), 2) );
         velocityDeviationFromPeriodicOrbit = sqrt(pow(deviationVector(3), 2) + pow(deviationVector(4), 2) );
+        periodDeviationFromPeriodicOrbit = sqrt( pow( deviationVector(10), 2) );
 
 
         std::cout << "positionDeviationFromPeriodicOrbit: " << positionDeviationFromPeriodicOrbit << std::endl
                   << "velocityDeviationFromPeriodicOrbit: " << velocityDeviationFromPeriodicOrbit << std::endl
+                  << "periodDeviationFromPeriodicOrbit: " << periodDeviationFromPeriodicOrbit << std::endl
                   << "numberOfIterations: " << numberOfIterations << std::endl
                   << "maxPositionDeviationFromPeriodicOrbit: " << maxPositionDeviationFromPeriodicOrbit << std::endl
-                  << "maxVelocityDeviationFromPeriodicOrbit: " << maxVelocityDeviationFromPeriodicOrbit << "\n" << std::endl;
+                  << "maxVelocityDeviationFromPeriodicOrbit: " << maxVelocityDeviationFromPeriodicOrbit << std::endl
+                  << "maxPeriodDeviationFromPeriodicOrbit: " << maxPeriodDeviationFromPeriodicOrbit << "\n" << std::endl;
 
     }
 
@@ -229,7 +260,7 @@ Eigen::VectorXd applyDifferentialCorrectionAugmented(const int librationPointNr,
        outputVector.segment(11,10)    = stateVectorOnly;
         outputVector(21)             = currentTime;
         outputVector(22)             = numberOfIterations;
-        outputVector = Eigen::VectorXd::Zero(23);
+        //outputVector = Eigen::VectorXd::Zero(23);
         return outputVector;
 
 

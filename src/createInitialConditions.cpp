@@ -300,7 +300,7 @@ bool checkTermination( const std::vector< Eigen::VectorXd >& differentialCorrect
 }
 
 double getDefaultArcLength(
-        const double distanceIncrement,
+        const double  distanceIncrement,
         const Eigen::Vector6d& currentState )
 {
    return distanceIncrement / currentState.segment( 0, 3 ).norm( );
@@ -358,11 +358,25 @@ void createInitialConditions( const int librationPointNr, const std::string& orb
         pseudoArcLengthCorrection =
                 pseudoArcLengthFunction( stateIncrement );
 
+
         // Apply numerical continuation
         initialStateVector = initialConditions[ initialConditions.size( ) - 1 ].segment( 2, 6 ) +
                 stateIncrement * pseudoArcLengthCorrection;
         orbitalPeriod = initialConditions[ initialConditions.size( ) - 1 ]( 1 ) +
                 periodIncrement * pseudoArcLengthCorrection;
+
+        std::cout << "============" << std::endl
+                  << "X^{n}: \n" << initialConditions[ initialConditions.size( ) - 2 ].segment( 2, 10 ) << std::endl
+                  << "X^{n+1}: \n" << initialConditions[ initialConditions.size( ) - 1 ].segment( 2, 10 ) << std::endl
+                  << "stateIncrement: \n" << stateIncrement << std::endl
+                  << "periodIncrement: \n" << periodIncrement << std::endl
+                  << "pseudo arc length correction: \n" << pseudoArcLengthCorrection << std::endl
+                  << "initialStateVector: \n "<< initialStateVector << std::endl
+                  << " orbitalPeriod: \n " << orbitalPeriod << std::endl
+                  << "============" << std::endl;
+
+
+
         stateVectorInclSTM = getCorrectedInitialState(
                     initialStateVector, orbitalPeriod, numberOfInitialConditions,
                     librationPointNr, orbitType, massParameter, initialConditions, differentialCorrections,

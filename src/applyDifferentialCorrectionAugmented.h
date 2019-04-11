@@ -16,7 +16,7 @@ Eigen::VectorXd applyDifferentialCorrectionAugmented( const int librationPointNr
                                              const Eigen::VectorXd& initialStateVector,
                                              double orbitalPeriod, const double massParameter,
                                              double maxPositionDeviationFromPeriodicOrbit,
-                                             double maxVelocityDeviationFromPeriodicOrbit, const bool symmetryDependence,
+                                             double maxVelocityDeviationFromPeriodicOrbit, const double maxPeriodDeviationFromPeriodicOrbit, const bool symmetryDependence,
                                              const int maxNumberOfIterations = 1000 );
 
 

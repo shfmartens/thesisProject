@@ -283,19 +283,14 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFinalSpatialCondi
         double initialStepSize = pow(10,(static_cast<float>(-i)));
         double maximumStepSize = initialStepSize;
 
-//        std::cout << "Initial State Coordinate: " << initialStateCoordinate << std::endl;
-//        std::cout << "current State Coordinate: " << currentStateCoordinate << std::endl;
-//        std::cout << "Sign:  " << coordinateSign << std::endl;
-//        std::cout << "Step size maximum: " << initialStepSize << std::endl;
-//        std::cout << "difference bewtween coordinate: " << initialStateCoordinate - currentStateCoordinate << std::endl;
-
-
         while (coordinateSignChanges <= 1.0 )
         {
             // Write every nth integration step to file.
             if ( saveFrequency > 0 && ( stepCounter % saveFrequency == 0 ) )
             {
                 stateHistoryMinimized[ currentTime ] = currentState.first.block( 0, 0, 10, 1 );
+
+                //std::cout << "current - initial: " << currentStateCoordinate - initialStateCoordinate << std::endl;
             }
 
                 currentTime = currentState.second;
@@ -309,13 +304,13 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFinalSpatialCondi
 
                 if ( (currentStateCoordinate - initialStateCoordinate ) * coordinateSign < 0.0 )
                 {
+
                     coordinateSignChanges = coordinateSignChanges + 1.0;
                     coordinateSign = coordinateSign*-1.0;
                 }
 
-                //std::cout << "difference state coordinate " <<initialStateCoordinate - currentStateCoordinate << std::endl;
 
-                if (coordinateSignChanges > 1.0 )
+                if ( coordinateSignChanges > 1.0 )
                 {
                     currentState = previousState;
                     currentTime = currentState.second;

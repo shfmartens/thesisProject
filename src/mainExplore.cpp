@@ -38,11 +38,13 @@ int main (){
     // ================================
     // == Compute initial conditions ==
     // ================================
+        std::string orbitType = "horizontal";
+        int continuationIndex = 1; //1: Refine for T, 8: acceleration, 9: alpha, 10: beta
         double accelerationMagnitude = 0.0;
         double accelerationAngle = 0.0;
         double accelerationAngle2 = 0.0;
         double initialMass = 1.0;
-        createLowThrustInitialConditions(1, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, massParameter );
+        createLowThrustInitialConditions(1, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, massParameter );
 
 
     // ================================
