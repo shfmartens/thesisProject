@@ -75,7 +75,6 @@ Eigen::VectorXd computeDifferentialCorrectionAugmented( const Eigen::MatrixXd& c
     {
         if (symmetryDependence == true){
 
-            std::cout << "TEST TEST  HAAAI" << std::endl;
             // Initiate vectors, matrices etc.
             Eigen::VectorXd corrections(3);
             Eigen::VectorXd accelerations(3);
@@ -105,11 +104,10 @@ Eigen::VectorXd computeDifferentialCorrectionAugmented( const Eigen::MatrixXd& c
                         differentialCorrection(0) = corrections(0);
                         differentialCorrection(2) = corrections(1);
                         differentialCorrection(4) = corrections(2);
-                        differentialCorrection(10) = deviationVector(10);
+                        //differentialCorrection(10) = deviationVector(10);
 
         } else {
 
-            std::cout << "TEST TETS TEST" << std::endl;
             // Initiate vectors, matrices etc.
             Eigen::VectorXd corrections(6);
             Eigen::VectorXd accelerations(6);

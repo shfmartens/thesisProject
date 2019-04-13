@@ -33,16 +33,16 @@ Eigen::VectorXd applyDifferentialCorrection(const int librationPointNr, const st
     double currentTime             = halfPeriodState.second;
     Eigen::VectorXd stateVectorOnly = stateVectorInclSTM.block( 0, 0, 6, 1 );
 
-    if ( initialStateVector(0) > 0.83691 ){
+//    if ( initialStateVector(0) > 0.83691 ){
 
-        std::pair< Eigen::MatrixXd, double > halfPeriodStateTEST = propagateOrbitToFinalSpatialCondition(
-                    initialStateVectorInclSTM, massParameter, 1 , 1.0, stateHistory, 1000, 0.0 );
-        Eigen::MatrixXd stateVectorInclSTMTEST      = halfPeriodStateTEST.first;
-        double currentTimeTEST             = halfPeriodStateTEST.second;
-        Eigen::VectorXd stateVectorOnlyTEST = stateVectorInclSTM.block( 0, 0, 6, 1 );
+//        std::pair< Eigen::MatrixXd, double > halfPeriodStateTEST = propagateOrbitToFinalSpatialCondition(
+//                    initialStateVectorInclSTM, massParameter, 1 , 1.0, stateHistory, 1000, 0.0 );
+//        Eigen::MatrixXd stateVectorInclSTMTEST      = halfPeriodStateTEST.first;
+//        double currentTimeTEST             = halfPeriodStateTEST.second;
+//        Eigen::VectorXd stateVectorOnlyTEST = stateVectorInclSTM.block( 0, 0, 6, 1 );
 
-        std::cout << "TEST TEST Final Time when having crossing y-axis twice!: " << currentTimeTEST <<std::endl;
-    }
+//        std::cout << "TEST TEST Final Time when having crossing y-axis twice!: " << currentTimeTEST <<std::endl;
+//    }
 
 
     // Initialize variables

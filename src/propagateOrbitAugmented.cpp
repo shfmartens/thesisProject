@@ -61,6 +61,7 @@ std::pair< Eigen::MatrixXd, double > propagateOrbitAugmented(
     double stepSize = initialStepSize;
 
     double minimumStepSize   = std::numeric_limits<double>::epsilon( ); // 2.22044604925031e-16
+    //double minimumStepSize   = 0.99E-13;
     const double relativeErrorTolerance = 100.0 * std::numeric_limits<double>::epsilon( ); // 2.22044604925031e-14
     const double absoluteErrorTolerance = 1.0e-24;
 
@@ -107,12 +108,13 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFinalCondition(
     double currentTime = currentState.second;
     int stepCounter = 1;
     // Perform integration steps until end of half orbital period
-    for (int i = 5; i <= 12; i++)
+    for (int i = 5; i <= 13; i++)
     {
 
         double initialStepSize = pow(10,(static_cast<float>(-i)));
         double maximumStepSize = initialStepSize;
-
+        //std::cout << "SLOWNESS TEST, i is : " << maximumStepSize  << std::endl;
+        //std::cout << "FINAL TIME, ORBPER is : " << finalTime  << std::endl;
         while (currentTime <= finalTime )
         {
             // Write every nth integration step to file.

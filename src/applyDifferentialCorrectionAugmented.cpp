@@ -96,8 +96,7 @@ Eigen::VectorXd applyDifferentialCorrectionAugmented(const int librationPointNr,
             // Relax the periodicity constraints after exceeding the maximum number of iterations instead of termination
             maxPositionDeviationFromPeriodicOrbit = 10.0 * maxPositionDeviationFromPeriodicOrbit;
             maxVelocityDeviationFromPeriodicOrbit = 10.0 * maxVelocityDeviationFromPeriodicOrbit;
-            //deviationFromPeriodicOrbitRelaxed = true;
-            //return Eigen::VectorXd::Zero(15)
+            return outputVector = Eigen::VectorXd::Zero(23);
     }
         // Relax the maximum deviation requirements to compute the horizontal Lyapunov family in L2
                     if (deviationFromPeriodicOrbitRelaxed == false and numberOfIterations > 10 and librationPointNr == 2)
@@ -114,15 +113,23 @@ Eigen::VectorXd applyDifferentialCorrectionAugmented(const int librationPointNr,
         differentialCorrection = computeDifferentialCorrectionAugmented( stateVectorInclSTM, deviationVector );
 
        std::cout<<"APPLYING DIFF. CORR: "<<differentialCorrection<<std::endl;
-
         initialStateVectorInclSTM.block( 0, 0, 10, 1 ) = initialStateVectorInclSTM.block( 0, 0, 10, 1 ) + differentialCorrection.segment( 0, 10 ) / 1.0;
-        orbitalPeriod  = orbitalPeriod + differentialCorrection( 10 ) / 1.0;
+        //orbitalPeriod  = orbitalPeriod + differentialCorrection( 10 ) / 1.0;
+        orbitalPeriod = orbitalPeriod;
+
+        //std::cout<<"TEST TEST ON SLOWNESS "<<differentialCorrection<<std::endl;
+        //std::cout << "TEST TETST PM SLOWNESS INPUT PROPAGATE: " << initialStateVectorInclSTM << std::endl;
+
+       stateHistory.clear();
+       std::map< double, Eigen::VectorXd > stateHistory;
        std::pair< Eigen::MatrixXd, double > fullPeriodState = propagateOrbitAugmentedToFinalCondition(
                    initialStateVectorInclSTM, massParameter, orbitalPeriod / multiplierPeriod, 1.0, stateHistory, -1, 0.0 );
-
         stateVectorInclSTM      = fullPeriodState.first;
         currentTime             = fullPeriodState.second;
         stateVectorOnly = stateVectorInclSTM.block( 0, 0, 10, 1 );
+
+        //std::cout<<"TEST TEST ON SLOWNESS COMPLETE "<<differentialCorrection<<std::endl;
+
 
         numberOfIterations += 1;
 
@@ -149,13 +156,13 @@ Eigen::VectorXd applyDifferentialCorrectionAugmented(const int librationPointNr,
     }
 
         double hamiltonianFullPeriod       = computeHamiltonian(massParameter, stateVectorInclSTM.block(0,0,10,1) );
-        double hamiltonianInitialCondition = computeHamiltonian(massParameter, initialStateVector );
+        double hamiltonianInitialCondition = computeHamiltonian(massParameter, initialStateVectorInclSTM.block(0,0,10,1) );
 
 
         std::cout << "\nCorrected initial state vector:" << std::endl << initialStateVectorInclSTM.block( 0, 0, 10, 1 )        << std::endl
                   << "\nwith orbital period: "           << currentTime * 2.0                                             << std::endl
                   << "||H(0) - H(T/2)|| = "               << std::abs(hamiltonianInitialCondition - hamiltonianFullPeriod) << std::endl
-                  << "||T - t|| = "                    << std::abs(targetOrbitalPeriod - 2.0 * currentTime) << "\n"               << std::endl;
+                  << "||T/2 - t|| = "                    << std::abs(targetOrbitalPeriod - 2.0 * currentTime) << "\n"               << std::endl;
 
        // The output vector consists of:
        // 1. Corrected initial state vector, including orbital period
