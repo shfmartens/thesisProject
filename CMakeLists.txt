@@ -244,6 +244,10 @@ set(CR3BPLT_SOURCES
          "${SRCROOT}/src/createEquilibriumLocations.cpp"
          "${SRCROOT}/src/propagateOrbitAugmented.cpp"
          "${SRCROOT}/src/stateDerivativeModelAugmented.cpp"
+         "${SRCROOT}/src/richardsonThirdOrderApproximation.cpp"
+         "${SRCROOT}/src/checkEigenvalues.cpp"
+
+
              )
 
 set(CR3BPLT_HEADERS
@@ -254,6 +258,10 @@ set(CR3BPLT_HEADERS
          "${SRCROOT}/src/createEquilibriumLocations.h"
          "${SRCROOT}/src/propagateOrbitAugmented.h"
          "${SRCROOT}/src/stateDerivativeModelAugmented.h"
+         "${SRCROOT}/src/richardsonThirdOrderApproximation.h"
+         "${SRCROOT}/src/checkEigenvalues.h"
+
+
                  )
 
  # Add static libraries.
