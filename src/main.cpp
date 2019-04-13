@@ -37,7 +37,7 @@ int main (){
         for (unsigned int i=1; i<=1; i++) {
             if (i ==1)
             {
-                createInitialConditions(1, "horizontal");
+                createInitialConditions(2, "horizontal");
             }
             if (i ==2)
             {
