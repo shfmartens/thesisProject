@@ -670,7 +670,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const std::st
 
         numberOfInitialConditions = 1;
     }
-    int maximumNumberOfInitialConditions = 3000;
+    int maximumNumberOfInitialConditions = 10000;
 
     // Generate periodic orbits until termination
     double orbitalPeriod  = 0.0, periodIncrement = 0.0, pseudoArcLengthCorrection = 0.0;
