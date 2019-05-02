@@ -31,14 +31,14 @@ double getDefaultArcLengthAugmented(
 double computeHamiltonian ( const double massParameter, const Eigen::VectorXd stateVector );
 
 Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initialStateGuess, const double orbitalPeriod, const int orbitNumber,
-                                          const int librationPointNr, const double massParameter,
+                                          const int librationPointNr, const double massParameter, const int numberOfPatchPoints,
                                           std::vector< Eigen::VectorXd >& initialConditions,
                                           std::vector< Eigen::VectorXd >& differentialCorrections,
                                           const double maxPositionDeviationFromPeriodicOrbit = 1.0e-12, const double maxVelocityDeviationFromPeriodicOrbit = 1.0e-12, const double maxPeriodDeviationFromPeriodicOrbit = 1.0e-12 );
 
 Eigen::VectorXd getEarthMoonInitialGuessParameters ( const int librationPointNr, const std::string& orbitType, const double accelerationMagnitude, const double accelerationAngle, const double accelerationAngle2, const int continuationIndex, const int guessIteration );
 
-Eigen::VectorXd getLowThrustInitialStateVectorGuess( const int librationPointNr, const std::string& orbitType, const double accelerationMagnitude, const double accelerationAngle, const double accelerationAngle2, const double initialMass, const int continuationIndex, const int guessIteration,
+Eigen::VectorXd getLowThrustInitialStateVectorGuess( const int librationPointNr, const std::string& orbitType, const double accelerationMagnitude, const double accelerationAngle, const double accelerationAngle2, const double initialMass, const int continuationIndex, const int numberOfPatchPoints, const int guessIteration,
                                             const boost::function< Eigen::VectorXd( const int librationPointNr, const std::string& orbitType, const double accelerationMagnitude, const double accelerationAngle, const double accelerationAngle2, const int continuationIndex, const int guessIteration ) > getInitialGuessParameters = getEarthMoonInitialGuessParameters );
 
 double getDefaultArcLengthAugmented(
@@ -54,6 +54,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const std::st
                               const double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter(
             tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER,
             tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER ),
+                                       const int numberOfPatchPoints = 50,
                               const double maxPositionDeviationFromPeriodicOrbit = 1.0e-12, const double maxVelocityDeviationFromPeriodicOrbit = 1.0e-12, const double maxPeriodDeviationFromPeriodicOrbit = 1.0e-12,
                               const double maxEigenvalueDeviation = 1.0e-3,
                               const boost::function< double( const Eigen::VectorXd&, const int ) > pseudoArcLengthFunctionAugmented =

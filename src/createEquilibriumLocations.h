@@ -16,7 +16,7 @@ Eigen::MatrixXd computeEquilibriaStability(Eigen::Vector2d equilibriumLocation, 
 void writeResultsToFile (const int librationPointNr, const std::map< double, Eigen::Vector3d > equilibriaCatalog );
 
 
-void createEquilibriumLocations (const int librationPointNr, const double thrustAcceleration, const double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter(
+Eigen::Vector2d createEquilibriumLocations (const int librationPointNr, const double thrustAcceleration, const double accelerationAngle, const double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter(
             tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER,tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER), const double maxDeviationFromSolution = 1.0e-15, const int maxIterations = 10000);
 
 #endif  // TUDATBUNDLE_CREATEEQUILIBRIUMCONDITIONS_H

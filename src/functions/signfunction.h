@@ -31,7 +31,8 @@ double signfunction (const double inputValue) {
 
    if (inputValue < 0.0 ){
       outputValue = -1.0;
-    } else {
+    }
+   else {
       outputValue = 1.0;
   }
    return outputValue;

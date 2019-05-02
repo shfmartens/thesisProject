@@ -238,6 +238,9 @@ list(APPEND TUDAT_APPLICATION_PROPAGATION_LIBRARIES tudat_simulation_setup tudat
 set(CR3BPLT_SOURCES
 
          "${SRCROOT}/src/applyDifferentialCorrectionAugmented.cpp"
+         "${SRCROOT}/src/applyPredictionCorrection.cpp"
+         "${SRCROOT}/src/computeLevel1Correction.cpp"
+         "${SRCROOT}/src/computeLevel2Correction.cpp"
          "${SRCROOT}/src/computeDifferentialCorrectionAugmented.cpp"
          "${SRCROOT}/src/applyMultivariateRootFinding.cpp"
          "${SRCROOT}/src/createLowThrustInitialConditions.cpp"
@@ -245,6 +248,7 @@ set(CR3BPLT_SOURCES
          "${SRCROOT}/src/propagateOrbitAugmented.cpp"
          "${SRCROOT}/src/stateDerivativeModelAugmented.cpp"
          "${SRCROOT}/src/richardsonThirdOrderApproximation.cpp"
+         "${SRCROOT}/src/morimotoFirstOrderApproximation.cpp"
          "${SRCROOT}/src/checkEigenvalues.cpp"
 
 
@@ -253,6 +257,9 @@ set(CR3BPLT_SOURCES
 
 set(CR3BPLT_HEADERS
          "${SRCROOT}/src/applyDifferentialCorrectionAugmented.h"
+         "${SRCROOT}/src/applyPredictionCorrection.h"
+         "${SRCROOT}/src/computeLevel1Correction.h"
+         "${SRCROOT}/src/computeLevel2Correction.h"
          "${SRCROOT}/src/computeDifferentialCorrectionAugmented.h"
          "${SRCROOT}/src/applyMultivariateRootFinding.h"
          "${SRCROOT}/src/createLowThrustInitialConditions.h"
@@ -260,6 +267,7 @@ set(CR3BPLT_HEADERS
          "${SRCROOT}/src/propagateOrbitAugmented.h"
          "${SRCROOT}/src/stateDerivativeModelAugmented.h"
          "${SRCROOT}/src/richardsonThirdOrderApproximation.h"
+         "${SRCROOT}/src/morimotoFirstOrderApproximation.h"
          "${SRCROOT}/src/checkEigenvalues.h"
 
 

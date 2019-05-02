@@ -36,18 +36,18 @@ struct ArtificialLibrationPointLocationFunction1 : public ArtificialLibrationPoi
     unsigned int maximumDerivativeOrder;
 
     //! Create a function, where aMaximumDerivativeOrder is the maximum order of the derivative.
-    ArtificialLibrationPointLocationFunction1( unsigned int aMaximumDerivativeOrder, const double massParameter )
-        : maximumDerivativeOrder( aMaximumDerivativeOrder ), massParameter_( massParameter )
+    ArtificialLibrationPointLocationFunction1( unsigned int aMaximumDerivativeOrder, const double thrustAcceleration )
+        : maximumDerivativeOrder( aMaximumDerivativeOrder ), thrustAcceleration_( thrustAcceleration )
     { }
 
     //! Mathematical test function.
     double evaluate( const double inputValue )
     {
-        extern double thrustAcceleration;
+        extern double massParameter;
         // Define Mathematical function: f(x) =
 
-        return inputValue - (1.0 - massParameter_) * (inputValue + massParameter_) / (signfunction(inputValue + massParameter_) * pow(inputValue+massParameter_,3.0))
-                -1.0 * massParameter_ * (inputValue - 1.0 + massParameter_)/(signfunction(inputValue -1.0 + massParameter_)*pow(inputValue-1.0+massParameter_,3.0)) + thrustAcceleration;
+        return inputValue - (1.0 - massParameter) * (inputValue + massParameter) / (signfunction(inputValue + massParameter) * pow(inputValue+massParameter,3.0))
+                -1.0 * massParameter * (inputValue - 1.0 + massParameter)/(signfunction(inputValue -1.0 + massParameter)*pow(inputValue-1.0+massParameter,3.0)) + thrustAcceleration_;
 
         //        return pow(inputValue, 2.0) -3.0;
 //        return pow(inputValue, 5.0) - (3.0 - massParameter_) * pow(inputValue, 4.0)
@@ -58,6 +58,7 @@ struct ArtificialLibrationPointLocationFunction1 : public ArtificialLibrationPoi
     //! Derivatives of mathematical test function.
     double computeDerivative( const unsigned int order, const double inputValue )
     { 
+        extern double massParameter;
         // Sanity check.
         if ( order > maximumDerivativeOrder )
         {
@@ -75,8 +76,8 @@ struct ArtificialLibrationPointLocationFunction1 : public ArtificialLibrationPoi
         else if ( order == 1 )
         {
             // Return the first derivative function value: y =
-            return 1.0 + (1.0 - massParameter_) * 2.0/(signfunction(inputValue+massParameter_)*pow(inputValue+massParameter_, 3.0))
-                    + massParameter_ * 2.0/(signfunction(inputValue-1.0+massParameter_)*pow(inputValue-1.0+massParameter_, 3.0));
+            return 1.0 + (1.0 - massParameter) * 2.0/(signfunction(inputValue+massParameter)*pow(inputValue+massParameter, 3.0))
+                    + massParameter * 2.0/(signfunction(inputValue-1.0+massParameter)*pow(inputValue-1.0+massParameter, 3.0));
 //            return 2.0 * pow(inputValue, 1.0);
 //            return 5.0*pow(inputValue, 4.0) - 4.0*(3.0 - massParameter_)*pow(inputValue, 3.0)
 //                   + 3.0*(3.0 - 2.0 * massParameter_) * pow(inputValue, 2.0) - 2.0*massParameter_ * inputValue
@@ -86,8 +87,8 @@ struct ArtificialLibrationPointLocationFunction1 : public ArtificialLibrationPoi
         else if ( order == 2 )
         {
             // Return the second derivative function value: y = .
-            return (1.0 - massParameter_) * -6.0/(signfunction(inputValue+massParameter_)*pow(inputValue+massParameter_, 4.0))
-                    + massParameter_ * -6.0/(signfunction(inputValue-1.0+massParameter_)*pow(inputValue-1.0+massParameter_, 4.0));
+            return (1.0 - massParameter) * -6.0/(signfunction(inputValue+massParameter)*pow(inputValue+massParameter, 4.0))
+                    + massParameter * -6.0/(signfunction(inputValue-1.0+massParameter)*pow(inputValue-1.0+massParameter, 4.0));
         }
 
         else
@@ -146,11 +147,13 @@ struct ArtificialLibrationPointLocationFunction1 : public ArtificialLibrationPoi
      *
      * \return Upper bound for the true location of the function root.
      */
-    double getUpperBound( ) { return 0.999-massParameter_; }
+    double getUpperBound( ) {
+        extern double massParameter;
+        return 0.999-massParameter; }
 
 protected:
 
-    double massParameter_;
+    double thrustAcceleration_;
 private:
 };
 

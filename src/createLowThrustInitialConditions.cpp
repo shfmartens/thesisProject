@@ -15,10 +15,11 @@
 #include "createInitialConditions.h"
 #include "createLowThrustInitialConditions.h"
 #include "applyDifferentialCorrection.h"
+#include "applyPredictionCorrection.h"
 #include "checkEigenvalues.h"
 #include "propagateOrbit.h"
 #include "propagateOrbitAugmented.h"
-#include "richardsonThirdOrderApproximation.h"
+#include "morimotoFirstOrderApproximation.h"
 #include "applyDifferentialCorrectionAugmented.h"
 
 void appendResultsVectorAugmented(const double hamiltonian, const double orbitalPeriod, const Eigen::VectorXd& initialStateVector,
@@ -190,7 +191,7 @@ Eigen::VectorXd getEarthMoonInitialGuessParameters ( const int librationPointNr,
             {
                 if (librationPointNr == 1)
                 {
-                    initialGuessParameters(0) = 1.0e-4;
+                    initialGuessParameters(0) = 1.0e-6;
                 }
                 else if (librationPointNr == 2)
                 {
@@ -227,7 +228,7 @@ Eigen::VectorXd getEarthMoonInitialGuessParameters ( const int librationPointNr,
             {
                 if (librationPointNr == 1)
                 {
-                    initialGuessParameters(0) = 1.0e-3;
+                    initialGuessParameters(0) = 1.0e-5;
                 }
                 else if (librationPointNr == 2)
                 {
@@ -424,20 +425,15 @@ Eigen::VectorXd getEarthMoonInitialGuessParameters ( const int librationPointNr,
     return initialGuessParameters;
 }
 
-Eigen::VectorXd getLowThrustInitialStateVectorGuess( const int librationPointNr, const std::string& orbitType, const double accelerationMagnitude, const double accelerationAngle, const double accelerationAngle2, const double initialMass, const int continuationIndex, const int guessIteration,
+Eigen::VectorXd getLowThrustInitialStateVectorGuess( const int librationPointNr, const std::string& orbitType, const double accelerationMagnitude, const double accelerationAngle, const double accelerationAngle2, const double initialMass, const int continuationIndex, const int numberOfPatchPoints, const int guessIteration,
                                             const boost::function< Eigen::VectorXd( const int librationPointNr, const std::string& orbitType, const double accelerationMagnitude, const double accelerationAngle, const double accelerationAngle2, const int continuationIndex, const int guessIteration ) > getInitialGuessParameters )
 {
-    Eigen::VectorXd lowThrustInitialStateVectorGuess(11);
+    Eigen::VectorXd lowThrustInitialStateVectorGuess = Eigen::VectorXd::Zero(numberOfPatchPoints*11);
     Eigen::VectorXd initialGuessParameters(4);
 
     initialGuessParameters = getInitialGuessParameters(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, continuationIndex, guessIteration );
-    Eigen::Vector7d richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation(orbitType, librationPointNr, initialGuessParameters(0));
 
-    // Construct the initial state Vector
-    lowThrustInitialStateVectorGuess.segment(0, 6) = richardsonThirdOrderApproximationResult.segment(0, 6);
-    lowThrustInitialStateVectorGuess.segment(6,3) = initialGuessParameters.segment(1,3);
-    lowThrustInitialStateVectorGuess(9) = initialMass;
-    lowThrustInitialStateVectorGuess(10) = richardsonThirdOrderApproximationResult(6);
+    lowThrustInitialStateVectorGuess = morimotoFirstOrderApproximation(librationPointNr, initialGuessParameters(0), initialGuessParameters(1), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
 
     return lowThrustInitialStateVectorGuess;
 }
@@ -462,7 +458,7 @@ double computeHamiltonian (const double massParameter, const Eigen::VectorXd sta
 }
 
 Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initialStateGuess, double orbitalPeriod, const int orbitNumber,
-                                          const int librationPointNr, const double massParameter,
+                                          const int librationPointNr, const double massParameter, const int numberOfPatchPoints,
                                           std::vector< Eigen::VectorXd >& initialConditions,
                                           std::vector< Eigen::VectorXd >& differentialCorrections,
                                                    const double maxPositionDeviationFromPeriodicOrbit, double maxVelocityDeviationFromPeriodicOrbit, const double maxPeriodDeviationFromPeriodicOrbit ) {
@@ -471,10 +467,10 @@ Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initia
     Eigen::VectorXd initialStateVector(10);
 
     // Correct state vector guess
-    Eigen::VectorXd differentialCorrectionResult = applyDifferentialCorrectionAugmented(
-                librationPointNr, initialStateGuess, orbitalPeriod, massParameter,
+    Eigen::VectorXd differentialCorrectionResult = applyPredictionCorrection(
+                librationPointNr, initialStateGuess, massParameter, numberOfPatchPoints,
                 maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit );
-    //std::cout << "DC result: " << differentialCorrectionResult << std::endl;
+    std::cout << "DC result: " << differentialCorrectionResult << std::endl;
     initialStateVector = differentialCorrectionResult.segment( 0, 10 );
     orbitalPeriod = differentialCorrectionResult( 10 );
 
@@ -621,9 +617,7 @@ bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differenti
 
 void createLowThrustInitialConditions( const int librationPointNr, const std::string& orbitType, const int continuationIndex, const double accelerationMagnitude, const double accelerationAngle,
                                        const double accelerationAngle2, const double initialMass,
-                              const double massParameter,
-                              const double maxPositionDeviationFromPeriodicOrbit, const double maxVelocityDeviationFromPeriodicOrbit, const double maxPeriodDeviationFromPeriodicOrbit,
-                              const double maxEigenvalueDeviation,
+                              const double massParameter, const int numberOfPatchPoints, const double maxPositionDeviationFromPeriodicOrbit, const double maxVelocityDeviationFromPeriodicOrbit, const double maxPeriodDeviationFromPeriodicOrbit, const double maxEigenvalueDeviation,
                               const boost::function< double( const Eigen::VectorXd&, const int ) > pseudoArcLengthFunctionAugmented ) {
 
     std::cout << "\nCreate initial conditions:\n" << std::endl;
@@ -631,163 +625,165 @@ void createLowThrustInitialConditions( const int librationPointNr, const std::st
     // Set output maximum precision
     std::cout.precision(std::numeric_limits<double>::digits10);
 
-
     // Initialize state vectors and orbital periods
     Eigen::VectorXd initialStateVector = Eigen::VectorXd::Zero( 10 );
     Eigen::MatrixXd stateVectorInclSTM = Eigen::MatrixXd::Zero( 10, 11 );
 
+    Eigen::VectorXd linearApproximationResultIteration1 = Eigen::VectorXd::Zero(11*numberOfPatchPoints);
+    Eigen::VectorXd linearApproximationResultIteration2 = Eigen::VectorXd::Zero(11*numberOfPatchPoints);
+
+
     std::vector< Eigen::VectorXd > initialConditions;
     std::vector< Eigen::VectorXd > differentialCorrections;
 
-    Eigen::VectorXd linearApproximationResultIteration1(11);
-    Eigen::VectorXd linearApproximationResultIteration2(11);
-
     // Obtain ballistic initial guesses and refine them
-    linearApproximationResultIteration1 = getLowThrustInitialStateVectorGuess(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, 0);
-    linearApproximationResultIteration2 = getLowThrustInitialStateVectorGuess(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, 1);
+    linearApproximationResultIteration1 = getLowThrustInitialStateVectorGuess(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 0);
+    linearApproximationResultIteration2 = getLowThrustInitialStateVectorGuess(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 1);
 
+
+    //std::cout << "linearApproximationResultIteration1: \n" << linearApproximationResultIteration1 << std::endl;
 
     stateVectorInclSTM =  getCorrectedAugmentedInitialState(
-                linearApproximationResultIteration1.segment(0,10), linearApproximationResultIteration1( 10 ), 0,
-               librationPointNr, massParameter, initialConditions, differentialCorrections,
+                linearApproximationResultIteration1, linearApproximationResultIteration1( 10 ), 0,
+               librationPointNr, massParameter, numberOfPatchPoints, initialConditions, differentialCorrections,
                 maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
 
-    if ( continuationIndex == 1 ) {
+//    if ( continuationIndex == 1 ) {
 
-        stateVectorInclSTM =  getCorrectedAugmentedInitialState(
-                    linearApproximationResultIteration2.segment(0,10), linearApproximationResultIteration2( 10 ), 1,
-                   librationPointNr, massParameter, initialConditions, differentialCorrections,
-                    maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit );
-    }
+//        stateVectorInclSTM =  getCorrectedAugmentedInitialState(
+//                    linearApproximationResultIteration2.segment(0,10), linearApproximationResultIteration2( 10 ), 1,
+//                   librationPointNr, massParameter, initialConditions, differentialCorrections,
+//                    maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit );
+//    }
 
-    // Set exit parameters of continuation procedure
-    int numberOfInitialConditions;
-    if ( continuationIndex == 1 ) {
+//    // Set exit parameters of continuation procedure
+//    int numberOfInitialConditions;
+//    if ( continuationIndex == 1 ) {
 
-        numberOfInitialConditions = 2;
+//        numberOfInitialConditions = 2;
 
-    } else {
+//    } else {
 
-        numberOfInitialConditions = 1;
-    }
-    int maximumNumberOfInitialConditions = 10000;
+//        numberOfInitialConditions = 1;
+//    }
+//    int maximumNumberOfInitialConditions = 10000;
 
-    // Generate periodic orbits until termination
-    double orbitalPeriod  = 0.0, periodIncrement = 0.0, pseudoArcLengthCorrection = 0.0;
-    int orderOfMagnitude = 5, minimumIncrementOrderOfMagnitude = 10;
-    bool continueNumericalContinuation = true;
-    Eigen::VectorXd stateIncrement(11);
+//    // Generate periodic orbits until termination
+//    double orbitalPeriod  = 0.0, periodIncrement = 0.0, pseudoArcLengthCorrection = 0.0;
+//    int orderOfMagnitude = 5, minimumIncrementOrderOfMagnitude = 10;
+//    bool continueNumericalContinuation = true;
+//    Eigen::VectorXd stateIncrement(11);
 
-    while( ( numberOfInitialConditions < maximumNumberOfInitialConditions ) && continueNumericalContinuation)
-    {
+//    while( ( numberOfInitialConditions < maximumNumberOfInitialConditions ) && continueNumericalContinuation)
+//    {
 
-        std::cout << "========== Numerical continuation Status Update ========== "<< std::endl
-                << "Creating initial guess number "  << numberOfInitialConditions + 1 << std::endl
-                << "Continuating along continuation index "  << continuationIndex << std::endl
-                << "============================================================ " << std::endl;
+//        std::cout << "========== Numerical continuation Status Update ========== "<< std::endl
+//                << "Creating initial guess number "  << numberOfInitialConditions + 1 << std::endl
+//                << "Continuating along continuation index "  << continuationIndex << std::endl
+//                << "============================================================ " << std::endl;
 
-        double incrementContinuationParameter =  pow(10,(static_cast<float>(-orderOfMagnitude)));
+//        double incrementContinuationParameter =  pow(10,(static_cast<float>(-orderOfMagnitude)));
 
-        if (continuationIndex == 1) {
+//        if (continuationIndex == 1) {
 
 //            std::cout << "============" << std::endl
 //                      << "X^{n}: \n" << initialConditions[ initialConditions.size( ) - 2 ].segment( 2, 10 ) << std::endl
 //                      << "X^{n+1}: \n" << initialConditions[ initialConditions.size( ) - 1 ].segment( 2, 10 ) << std::endl;
 
 
-            // Determine increments to state and time
-            stateIncrement.segment(0,10) = initialConditions[ initialConditions.size( ) - 1 ].segment( 2, 10 ) -
-                    initialConditions[ initialConditions.size( ) - 2 ].segment( 2, 10 );
-            stateIncrement(10) = initialConditions[ initialConditions.size( ) - 1 ]( 1 ) -
-                    initialConditions[ initialConditions.size( ) - 2 ]( 1 );
-            periodIncrement = stateIncrement(10);
-            pseudoArcLengthCorrection =
-                    pseudoArcLengthFunctionAugmented( stateIncrement, continuationIndex );
+//            // Determine increments to state and time
+//            stateIncrement.segment(0,10) = initialConditions[ initialConditions.size( ) - 1 ].segment( 2, 10 ) -
+//                    initialConditions[ initialConditions.size( ) - 2 ].segment( 2, 10 );
+//            stateIncrement(10) = initialConditions[ initialConditions.size( ) - 1 ]( 1 ) -
+//                    initialConditions[ initialConditions.size( ) - 2 ]( 1 );
+//            periodIncrement = stateIncrement(10);
+//            pseudoArcLengthCorrection =
+//                    pseudoArcLengthFunctionAugmented( stateIncrement, continuationIndex );
 
-            // Apply numerical continuation
-            initialStateVector = initialConditions[ initialConditions.size( ) - 1 ].segment( 2, 10 ) +
-                    stateIncrement.segment(0,10) * pseudoArcLengthCorrection;
+//            // Apply numerical continuation
+//            initialStateVector = initialConditions[ initialConditions.size( ) - 1 ].segment( 2, 10 ) +
+//                    stateIncrement.segment(0,10) * pseudoArcLengthCorrection;
 
-           orbitalPeriod = initialConditions[ initialConditions.size( ) - 1 ]( 1 ) +
-                    stateIncrement(10) * pseudoArcLengthCorrection;
+//           orbitalPeriod = initialConditions[ initialConditions.size( ) - 1 ]( 1 ) +
+//                    stateIncrement(10) * pseudoArcLengthCorrection;
 
 
-        } else {
+//        } else {
 
 //            std::cout << "============" << std::endl
 //                      << "X^{n}: \n" << initialConditions[ initialConditions.size( ) - 1 ].segment( 2, 10 ) << std::endl;
 
-            stateIncrement = Eigen::VectorXd::Zero(11);
-            stateIncrement(6, 0) = initialConditions[ initialConditions.size( ) - 1 ](continuationIndex) + incrementContinuationParameter;
+//            stateIncrement = Eigen::VectorXd::Zero(11);
+//            stateIncrement(6, 0) = initialConditions[ initialConditions.size( ) - 1 ](continuationIndex) + incrementContinuationParameter;
 
-            // Apply numerical continuation
-            initialStateVector = initialConditions[ initialConditions.size( ) - 1 ].segment( 2, 10 ) +
-                    stateIncrement.segment(0,10);
+//            // Apply numerical continuation
+//            initialStateVector = initialConditions[ initialConditions.size( ) - 1 ].segment( 2, 10 ) +
+//                    stateIncrement.segment(0,10);
 
-           orbitalPeriod = initialConditions[ initialConditions.size( ) - 1 ]( 1 ) +
-                    stateIncrement(10) * pseudoArcLengthCorrection;
+//           orbitalPeriod = initialConditions[ initialConditions.size( ) - 1 ]( 1 ) +
+//                    stateIncrement(10) * pseudoArcLengthCorrection;
 
-        }
-
-
-
-
-
-                 //std::cout << " X^{n+2}"<< initialStateVector << std::endl;
-
-
-                stateVectorInclSTM =  getCorrectedAugmentedInitialState(
-                                    initialStateVector, orbitalPeriod, numberOfInitialConditions,
-                                    librationPointNr, massParameter, initialConditions, differentialCorrections,
-                                    maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit );
-
-                numberOfInitialConditions += 1;
-
-                continueNumericalContinuation = checkTerminationAugmented(differentialCorrections, stateVectorInclSTM, orbitType, librationPointNr, maxEigenvalueDeviation );
-
-                if ( continuationIndex != 1 && continueNumericalContinuation == false && orderOfMagnitude > minimumIncrementOrderOfMagnitude )
-                  {
-                            orderOfMagnitude = orderOfMagnitude + 1;
-                            continueNumericalContinuation = true;
-                        }
-
-        // Copy previous solution as current solution
-        //initialStateVector = initialConditions[ initialConditions.size( ) - 1 ].segment( 2, 10 );
-        //orbitalPeriod = initialConditions[ initialConditions.size( ) - 1 ](1);
-
-        // Provide increment to the continuation parameter
-        //if (continuationIndex == 1) {
-        //   orbitalPeriod = orbitalPeriod + incrementContinuationParameter ;
-        //} else {
-
-        //   initialStateVector( continuationIndex - 2 ) = initialStateVector( continuationIndex - 2 ) + incrementContinuationParameter;
-        //
-        //}
+//        }
 
 
 
 
-        // impleement pseudo arc length for potential further guesses
 
-        // Adapt first and second intiial guesses from Earth Moon Parameters
-
-        // T orbit: switch amplitudes so it seeds to the left!
-
-        // acceleration largest amplitude and one initial guess, start at 10^-4
-
-        // alpha largest amplitude and start at alpha
+//                 //std::cout << " X^{n+2}"<< initialStateVector << std::endl;
 
 
-        std::cout << "============" << std::endl
-                  << "X^{n}: \n" << initialConditions[ initialConditions.size( ) - 2 ].segment( 2, 10 ) << std::endl
-                  << "X^{n+1}: \n" << initialConditions[ initialConditions.size( ) - 1 ].segment( 2, 10 ) << std::endl;
+//                stateVectorInclSTM =  getCorrectedAugmentedInitialState(
+//                                    initialStateVector, orbitalPeriod, numberOfInitialConditions,
+//                                    librationPointNr, massParameter, initialConditions, differentialCorrections,
+//                                    maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit );
+
+//                numberOfInitialConditions += 1;
+
+//                continueNumericalContinuation = checkTerminationAugmented(differentialCorrections, stateVectorInclSTM, orbitType, librationPointNr, maxEigenvalueDeviation );
+
+//                if ( continuationIndex != 1 && continueNumericalContinuation == false && orderOfMagnitude > minimumIncrementOrderOfMagnitude )
+//                  {
+//                            orderOfMagnitude = orderOfMagnitude + 1;
+//                            continueNumericalContinuation = true;
+//                        }
+
+//        // Copy previous solution as current solution
+//        //initialStateVector = initialConditions[ initialConditions.size( ) - 1 ].segment( 2, 10 );
+//        //orbitalPeriod = initialConditions[ initialConditions.size( ) - 1 ](1);
+
+//        // Provide increment to the continuation parameter
+//        //if (continuationIndex == 1) {
+//        //   orbitalPeriod = orbitalPeriod + incrementContinuationParameter ;
+//        //} else {
+
+//        //   initialStateVector( continuationIndex - 2 ) = initialStateVector( continuationIndex - 2 ) + incrementContinuationParameter;
+//        //
+//        //}
 
 
 
 
-    }
+//        // impleement pseudo arc length for potential further guesses
+
+//        // Adapt first and second intiial guesses from Earth Moon Parameters
+
+//        // T orbit: switch amplitudes so it seeds to the left!
+
+//        // acceleration largest amplitude and one initial guess, start at 10^-4
+
+//        // alpha largest amplitude and start at alpha
 
 
-    writeFinalResultsToFilesAugmented( librationPointNr, accelerationMagnitude, accelerationAngle, initialConditions, differentialCorrections );
+//        std::cout << "============" << std::endl
+//                  << "X^{n}: \n" << initialConditions[ initialConditions.size( ) - 2 ].segment( 2, 10 ) << std::endl
+//                  << "X^{n+1}: \n" << initialConditions[ initialConditions.size( ) - 1 ].segment( 2, 10 ) << std::endl;
+
+
+
+
+//    }
+
+
+//    writeFinalResultsToFilesAugmented( librationPointNr, accelerationMagnitude, accelerationAngle, initialConditions, differentialCorrections );
 
 }

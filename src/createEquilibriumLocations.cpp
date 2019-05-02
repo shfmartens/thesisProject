@@ -21,7 +21,7 @@
 #include "functions/artificialLibrationPointLocationFunction.h"
 #include "functions/artificialLibrationPointLocationFunction1.h"
 #include "functions/artificialLibrationPointLocationFunction2.h"
-#include "functions/signfunction.h"
+//#include "functions/signfunction.h"
 #include "applyMultivariateRootFinding.h"
 
 #include "createEquilibriumLocations.h"
@@ -99,14 +99,15 @@ void writeResultsToFile (const int librationPointNr, const double thrustAccelera
 
 
 
-void createEquilibriumLocations (const int librationPointNr, const double thrustAcceleration, const double massParameter, const double maxDeviationFromSolution, const int maxIterations) {
+Eigen::Vector2d createEquilibriumLocations (const int librationPointNr, const double thrustAcceleration, const double accelerationAngle, const double massParameter, const double maxDeviationFromSolution, const int maxIterations) {
 
-    std::cout << "Compute the collinear equilibria, serving as seed solution" << std::endl;
+    //std::cout << "Compute the collinear equilibria, serving as seed solution" << std::endl;
 
     // Set output precision and clear screen.
     std::cout.precision(14);
     double xLocationEquilibrium;
     Eigen::Vector2d equilibriumLocation;
+    Eigen::Vector2d targetEquilibrium;
     Eigen::Vector3d equilibriumLocationWithIterations;
     Eigen::MatrixXd linearizedStability;
     std::map< double, Eigen::Vector3d > equilibriaCatalog;
@@ -116,7 +117,7 @@ void createEquilibriumLocations (const int librationPointNr, const double thrust
     {
         // Create object containing the functions.
         // boost::shared_ptr< LibrationPointLocationFunction1 > LibrationPointLocationFunction = boost::make_shared< LibrationPointLocationFunction1 >( 1, massParameter );
-        std::shared_ptr<ArtificialLibrationPointLocationFunction1> ArtificialLibrationPointLocationFunction = std::make_shared< ArtificialLibrationPointLocationFunction1 > (1, massParameter);
+        std::shared_ptr<ArtificialLibrationPointLocationFunction1> ArtificialLibrationPointLocationFunction = std::make_shared< ArtificialLibrationPointLocationFunction1 > (1, thrustAcceleration);
 
         // The termination condition.
         tudat::root_finders::NewtonRaphson::TerminationFunction terminationConditionFunction =
@@ -141,8 +142,8 @@ void createEquilibriumLocations (const int librationPointNr, const double thrust
 
         // Let Newton-Raphson search for the root.
         xLocationEquilibrium = newtonRaphson.execute( ArtificialLibrationPointLocationFunction, ArtificialLibrationPointLocationFunction->getInitialGuess( ) );
-        std::cout << "The root of the seed solution is: " << xLocationEquilibrium << std::endl;
-        std::cout << "The residual of the seed solution is:" << ArtificialLibrationPointLocationFunction->evaluate(xLocationEquilibrium) << std::endl;
+        //std::cout << "The root of the seed solution is: " << xLocationEquilibrium << std::endl;
+        //std::cout << "The residual of the seed solution is:" << ArtificialLibrationPointLocationFunction->evaluate(xLocationEquilibrium) << std::endl;
         equilibriumLocation(0) = xLocationEquilibrium;
         equilibriumLocation(1) = 0.0;
         int numberOfIterations = 0;
@@ -153,7 +154,7 @@ void createEquilibriumLocations (const int librationPointNr, const double thrust
     } else {
         // Create object containing the functions.
         //boost::shared_ptr< LibrationPointLocationFunction2 > LibrationPointLocationFunction = boost::make_shared< LibrationPointLocationFunction2 >( 1, massParameter );
-        std::shared_ptr<ArtificialLibrationPointLocationFunction2> ArtificialLibrationPointLocationFunction = std::make_shared< ArtificialLibrationPointLocationFunction2 > (2, massParameter);
+        std::shared_ptr<ArtificialLibrationPointLocationFunction2> ArtificialLibrationPointLocationFunction = std::make_shared< ArtificialLibrationPointLocationFunction2 > (2, thrustAcceleration);
 
         // The termination condition.
         tudat::root_finders::NewtonRaphson::TerminationFunction terminationConditionFunction =
@@ -177,8 +178,8 @@ void createEquilibriumLocations (const int librationPointNr, const double thrust
 
         // Let Newton-Raphson search for the root.
         xLocationEquilibrium = newtonRaphson.execute( ArtificialLibrationPointLocationFunction, ArtificialLibrationPointLocationFunction->getInitialGuess( ) );
-        std::cout << "The root of the seed solution is: " << xLocationEquilibrium << std::endl;
-        std::cout << "The residual of the seed solution is:" << ArtificialLibrationPointLocationFunction->evaluate(xLocationEquilibrium) << std::endl;
+        //std::cout << "The root of the seed solution is: " << xLocationEquilibrium << std::endl;
+        //std::cout << "The residual of the seed solution is:" << ArtificialLibrationPointLocationFunction->evaluate(xLocationEquilibrium) << std::endl;
 
         equilibriumLocation(0) = xLocationEquilibrium;
         equilibriumLocation(1) = 0.0;
@@ -194,6 +195,12 @@ void createEquilibriumLocations (const int librationPointNr, const double thrust
     equilibriaCatalog[ 0.0 * tudat::mathematical_constants::PI / 180.0 ] = equilibriumLocationWithIterations;
     stabilityCatalog[ 0.0 * tudat::mathematical_constants::PI / 180.0 ] = linearizedStability;
 
+    if ( accelerationAngle == 0.0){
+
+        targetEquilibrium = equilibriumLocation;
+
+    }
+
     for (int i = 1; i <= 3600; i++ ) {
         auto alpha = static_cast< double > (i * 0.1);
         equilibriumLocationWithIterations = applyMultivariateRootFinding(librationPointNr, equilibriumLocation, alpha, thrustAcceleration ,massParameter, 2.0e-15, maxIterations );
@@ -201,8 +208,16 @@ void createEquilibriumLocations (const int librationPointNr, const double thrust
         linearizedStability = computeEquilibriaStability(equilibriumLocation, 0.0, thrustAcceleration, massParameter);
         equilibriaCatalog[ alpha * tudat::mathematical_constants::PI / 180.0 ] = equilibriumLocationWithIterations;
         stabilityCatalog [alpha * tudat::mathematical_constants::PI / 180.0 ] = linearizedStability;
+
+        if (alpha == accelerationAngle ){
+
+            targetEquilibrium = equilibriumLocation;
+
+        }
     }
 
     writeResultsToFile(librationPointNr, thrustAcceleration, equilibriaCatalog, stabilityCatalog);
+
+    return targetEquilibrium;
 
 }

@@ -60,8 +60,8 @@ Eigen::VectorXd richardsonThirdOrderApproximation(std::string orbitType, int lib
         c3 = 1.0 / pow(gammaL, 3.0) * (pow(1.0,3.0) * massParameter + pow(-1.0,3.0) * (1.0 - massParameter) * pow(gammaL, 3.0+1.0) / pow((1.0 - gammaL), (3.0+1.0)));
         c4 = 1.0 / pow(gammaL, 3.0) * (pow(1.0,4.0) * massParameter + pow(-1.0,4.0) * (1.0 - massParameter) * pow(gammaL, 4.0+1.0) / pow((1.0 - gammaL), (4.0+1.0)));
 
-        std::cout << "massParameter: " << massParameter << std::endl;
-        std::cout << "gammaL output: " << gammaL << std::endl;
+        //std::cout << "massParameter: " << massParameter << std::endl;
+        //sstd::cout << "gammaL output: " << gammaL << std::endl;
 
 
     } else {
