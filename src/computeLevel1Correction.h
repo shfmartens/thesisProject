@@ -3,6 +3,6 @@
 
 #include <Eigen/Core>
 
-Eigen::VectorXd computeLevel1Correction( const Eigen::VectorXd deviationVector, const Eigen::MatrixXd propagatedStatesInclSTM, const int numberOfPatchPoints);
+Eigen::VectorXd computeLevel1Correction( const Eigen::VectorXd deviationVector, const Eigen::MatrixXd propagatedStatesInclSTM, const Eigen::VectorXd initialGuess, const int numberOfPatchPoints);
 
 #endif  // TUDATBUNDLE_COMPUTELEVEL1CORRECTION_H

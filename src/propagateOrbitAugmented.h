@@ -9,6 +9,9 @@
 
 Eigen::MatrixXd getFullInitialStateAugmented( const Eigen::VectorXd& initialState );
 
+void writeStateHistoryAndStateVectorsToFile ( const std::map< double, Eigen::VectorXd >& stateHistory, const Eigen::VectorXd stateVectors, const Eigen::VectorXd deviationVector, const Eigen::VectorXd deviationVectorFull,
+                                              const int numberOfIterations, const int correctionLevel );
+
 void writeStateHistoryToFileAugmented(
         const std::map< double, Eigen::VectorXd >& stateHistory, const double accelerationMagnitude, const double accelerationAngle,
         const int orbitId, const int librationPointNr,

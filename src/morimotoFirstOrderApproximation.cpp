@@ -276,8 +276,9 @@ Eigen::VectorXd morimotoFirstOrderApproximation(int librationPointNr,
         stateAtCurrentPatchPoint(4) = initialOffsets(4);
         stateAtCurrentPatchPoint(5) = initialOffsets(5);
         stateAtCurrentPatchPoint(6) = thrustMagnitude;
-        stateAtCurrentPatchPoint(8) = accelerationAngle;
-        stateAtCurrentPatchPoint(9) = accelerationAngle2;
+        stateAtCurrentPatchPoint(7) = accelerationAngle;
+        stateAtCurrentPatchPoint(8) = accelerationAngle2;
+        stateAtCurrentPatchPoint(9) = initialMass;
         stateAtCurrentPatchPoint(10) = currentTime;
 
         //Add current state to complete initial guess

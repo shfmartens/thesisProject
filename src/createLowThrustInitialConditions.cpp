@@ -20,6 +20,7 @@
 #include "propagateOrbit.h"
 #include "propagateOrbitAugmented.h"
 #include "morimotoFirstOrderApproximation.h"
+//#include "richardsonThirdOrderApproximationMultiple.h"
 #include "applyDifferentialCorrectionAugmented.h"
 
 void appendResultsVectorAugmented(const double hamiltonian, const double orbitalPeriod, const Eigen::VectorXd& initialStateVector,
@@ -191,7 +192,7 @@ Eigen::VectorXd getEarthMoonInitialGuessParameters ( const int librationPointNr,
             {
                 if (librationPointNr == 1)
                 {
-                    initialGuessParameters(0) = 1.0e-6;
+                    initialGuessParameters(0) = 1.0e-5;
                 }
                 else if (librationPointNr == 2)
                 {
@@ -322,7 +323,7 @@ Eigen::VectorXd getEarthMoonInitialGuessParameters ( const int librationPointNr,
         {
             if (librationPointNr == 1)
             {
-                initialGuessParameters(0) = 1.0e-3;
+                initialGuessParameters(0) = 1.0e-2;
             }
             else if (librationPointNr == 2)
             {
@@ -376,7 +377,7 @@ Eigen::VectorXd getEarthMoonInitialGuessParameters ( const int librationPointNr,
         {
             if (librationPointNr == 1)
             {
-                initialGuessParameters(0) = 1.0e-3;
+                initialGuessParameters(0) = 1.0e-5;
             }
             else if (librationPointNr == 2)
             {
@@ -433,7 +434,10 @@ Eigen::VectorXd getLowThrustInitialStateVectorGuess( const int librationPointNr,
 
     initialGuessParameters = getInitialGuessParameters(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, continuationIndex, guessIteration );
 
-    lowThrustInitialStateVectorGuess = morimotoFirstOrderApproximation(librationPointNr, initialGuessParameters(0), initialGuessParameters(1), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
+    //lowThrustInitialStateVectorGuess = richardsonThirdOrderApproximationMultiple( "horizontal", librationPointNr,
+    //                                                                              initialGuessParameters(0), initialGuessParameters(1), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
+
+    lowThrustInitialStateVectorGuess =  morimotoFirstOrderApproximation(librationPointNr, initialGuessParameters(0), initialGuessParameters(1), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
 
     return lowThrustInitialStateVectorGuess;
 }
@@ -638,10 +642,13 @@ void createLowThrustInitialConditions( const int librationPointNr, const std::st
 
     // Obtain ballistic initial guesses and refine them
     linearApproximationResultIteration1 = getLowThrustInitialStateVectorGuess(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 0);
-    linearApproximationResultIteration2 = getLowThrustInitialStateVectorGuess(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 1);
-
 
     //std::cout << "linearApproximationResultIteration1: \n" << linearApproximationResultIteration1 << std::endl;
+
+    //linearApproximationResultIteration2 = getLowThrustInitialStateVectorGuess(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 1);
+
+
+    std::cout << "linearApproximationResultIteration1: \n" << linearApproximationResultIteration1 << std::endl;
 
     stateVectorInclSTM =  getCorrectedAugmentedInitialState(
                 linearApproximationResultIteration1, linearApproximationResultIteration1( 10 ), 0,

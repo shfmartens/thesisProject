@@ -106,7 +106,7 @@ double getEarthMoonAmplitude( const int librationPointNr, const std::string& orb
         {
             if (librationPointNr == 1)
             {
-                amplitude = 1.0e-3;
+                amplitude = 1.0e-4;
             }
             else if (librationPointNr == 2)
             {
@@ -143,7 +143,7 @@ double getEarthMoonAmplitude( const int librationPointNr, const std::string& orb
         {
             if (librationPointNr == 1)
             {
-                amplitude = 1.0e-4;
+                amplitude = 1.0e-3;
             }
             else if (librationPointNr == 2)
             {

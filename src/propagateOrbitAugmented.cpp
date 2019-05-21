@@ -18,6 +18,33 @@ Eigen::MatrixXd getFullInitialStateAugmented( const Eigen::VectorXd& initialStat
     return fullInitialState;
 }
 
+void writeStateHistoryAndStateVectorsToFile ( const std::map< double, Eigen::VectorXd >& stateHistory, const Eigen::VectorXd stateVectors, const Eigen::VectorXd deviationVector, const Eigen::VectorXd deviationVectorFull,
+                                              const int numberOfIterations, const int correctionLevel)
+{
+
+    std::string fileNameString;
+    std::string fileNameStringStateVectors;
+    std::string fileNameStringDeviations;
+    std::string fileNameStringDeviationsFull;
+
+    std::string directoryString = "/Users/Sjors/Desktop/debuggingLII/stateHistory/";
+
+    fileNameString = ("propagatedSolution_" + std::to_string(numberOfIterations) + "_" + std::to_string(correctionLevel) + ".txt");
+    fileNameStringStateVectors = ("patchPoints_" + std::to_string(numberOfIterations) + "_" + std::to_string(correctionLevel) + ".txt");
+    fileNameStringDeviations = ("deviations_" + std::to_string(numberOfIterations) + "_" + std::to_string(correctionLevel) + ".txt");
+    fileNameStringDeviationsFull = ("deviationsFull_" + std::to_string(numberOfIterations) + "_" + std::to_string(correctionLevel) + ".txt");
+
+
+
+    tudat::input_output::writeDataMapToTextFile( stateHistory, fileNameString, directoryString );
+    tudat::input_output::writeMatrixToFile( stateVectors, fileNameStringStateVectors, 16, directoryString);
+    tudat::input_output::writeMatrixToFile( deviationVector, fileNameStringDeviations, 16, directoryString);
+    tudat::input_output::writeMatrixToFile( deviationVectorFull, fileNameStringDeviationsFull, 16, directoryString);
+
+
+}
+
+
 void writeStateHistoryToFileAugmented(
         const std::map< double, Eigen::VectorXd >& stateHistory, const double accelerationMagnitude, const double accelerationAngle,
         const int orbitId, const int librationPointNr,
@@ -107,35 +134,67 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFinalCondition(
     currentState = propagateOrbitAugmented(fullInitialState, massParameter, initialTime, direction, 1.0E-5, 1.0E-5 );
     double currentTime = currentState.second;
     int stepCounter = 1;
-    // Perform integration steps until end of half orbital period
+    // Perform integration steps until end of target time of half orbital period
     for (int i = 5; i <= 13; i++)
     {
 
         double initialStepSize = pow(10,(static_cast<float>(-i)));
         double maximumStepSize = initialStepSize;
-        //std::cout << "SLOWNESS TEST, i is : " << maximumStepSize  << std::endl;
+        //std::cout << "TEST, i is : " << maximumStepSize  << std::endl;
         //std::cout << "FINAL TIME, ORBPER is : " << finalTime  << std::endl;
-        while (currentTime <= finalTime )
+
+        if (direction == 1)
         {
-            // Write every nth integration step to file.
-            if ( saveFrequency > 0 && ( stepCounter % saveFrequency == 0 ) )
+
+            while (currentTime <= finalTime )
             {
-                stateHistory[ currentTime ] = currentState.first.block( 0, 0, 10, 1 );
+                // Write every nth integration step to file.
+                if ( saveFrequency > 0 && ( stepCounter % saveFrequency == 0 ) )
+                {
+                    stateHistory[ currentTime ] = currentState.first.block( 0, 0, 10, 1 );
+                }
+
+                currentTime = currentState.second;
+                previousState = currentState;
+                currentState = propagateOrbitAugmented(currentState.first, massParameter, currentTime, 1, initialStepSize, maximumStepSize);
+
+                stepCounter++;
+
+                if (currentState.second > finalTime )
+                {
+                    currentState = previousState;
+                    currentTime = currentState.second;
+                    break;
+                }
             }
 
-            currentTime = currentState.second;
-            previousState = currentState;
-            currentState = propagateOrbitAugmented(currentState.first, massParameter, currentTime, 1, initialStepSize, maximumStepSize);
+        }
 
-            stepCounter++;
-
-            if (currentState.second > finalTime )
+        if (direction == -1)
+        {
+            while (currentTime >= finalTime )
             {
-                currentState = previousState;
+                // Write every nth integration step to file.
+                if ( saveFrequency > 0 && ( stepCounter % saveFrequency == 0 ) )
+                {
+                    stateHistory[ currentTime ] = currentState.first.block( 0, 0, 10, 1 );
+                }
+
                 currentTime = currentState.second;
-                break;
+                previousState = currentState;
+                currentState = propagateOrbitAugmented(currentState.first, massParameter, currentTime, -1, initialStepSize, maximumStepSize);
+
+                stepCounter++;
+
+                if (currentState.second < finalTime )
+                {
+                    currentState = previousState;
+                    currentTime = currentState.second;
+                    break;
+                }
             }
         }
+
     }
     // Add final state after minimizing overshoot
     if ( saveFrequency > 0 )
