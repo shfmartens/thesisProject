@@ -519,24 +519,24 @@ void writeFinalResultsToFilesAugmented( const int librationPointNr, const double
                                std::vector< Eigen::VectorXd > statesContinuation)
 {
     // Prepare file for initial conditions
-    remove(("/Users/Sjors/Documents/thesisSoftware/tudatBundle/tudatApplications/thesisProject/data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_initial_conditions.txt").c_str());
-    //remove(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_initial_conditions.txt").c_str());
+    //remove(("/Users/Sjors/Documents/thesisSoftware/tudatBundle/tudatApplications/thesisProject/data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_initial_conditions.txt").c_str());
+    remove(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_initial_conditions.txt").c_str());
     std::ofstream textFileInitialConditions;
-    textFileInitialConditions.open(("/Users/Sjors/Documents/thesisSoftware/tudatBundle/tudatApplications/thesisProject/data/raw/orbits/data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_initial_conditions.txt"));
-    //textFileInitialConditions.open(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_initial_conditions.txt"));
+    //textFileInitialConditions.open(("/Users/Sjors/Documents/thesisSoftware/tudatBundle/tudatApplications/thesisProject/data/raw/orbits/data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_initial_conditions.txt"));
+    textFileInitialConditions.open(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_initial_conditions.txt"));
     textFileInitialConditions.precision(std::numeric_limits<double>::digits10);
 
     // Prepare file for differential correction
-    remove(("/Users/Sjors/Documents/thesisSoftware/tudatBundle/tudatApplications/thesisProject/data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_differential_correction.txt").c_str());
-    //remove(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_differential_correction.txt").c_str());
+    //remove(("/Users/Sjors/Documents/thesisSoftware/tudatBundle/tudatApplications/thesisProject/data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_differential_correction.txt").c_str());
+    remove(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_differential_correction.txt").c_str());
     std::ofstream textFileDifferentialCorrection;
-    textFileDifferentialCorrection.open(("/Users/Sjors/Documents/thesisSoftware/tudatBundle/tudatApplications/thesisProject/data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_differential_correction.txt"));
-    //textFileDifferentialCorrection.open(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_differential_correction.txt"));
+    //textFileDifferentialCorrection.open(("/Users/Sjors/Documents/thesisSoftware/tudatBundle/tudatApplications/thesisProject/data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_differential_correction.txt"));
+    textFileDifferentialCorrection.open(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_differential_correction.txt"));
     textFileDifferentialCorrection.precision(std::numeric_limits<double>::digits10);
 
     // Prepare file for differential correction
-    remove(("/Users/Sjors/Documents/thesisSoftware/tudatBundle/tudatApplications/thesisProject/data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_states_continuation.txt").c_str());
-    //remove(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_differential_correction.txt").c_str());
+    //remove(("/Users/Sjors/Documents/thesisSoftware/tudatBundle/tudatApplications/thesisProject/data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_states_continuation.txt").c_str());
+    remove(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_differential_correction.txt").c_str());
     std::ofstream textFileStatesContinuation;
     textFileStatesContinuation.open(("/Users/Sjors/Documents/thesisSoftware/tudatBundle/tudatApplications/thesisProject/data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_states_continuation.txt"));
     //textFileStatesContinuation.open(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_states_continuation.txt"));

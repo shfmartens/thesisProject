@@ -201,7 +201,7 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
 
     int numberOfIterations = 0;
 
-    writeStateHistoryAndStateVectorsToFile( stateHistory, initialStateVectors, deviationsFromPeriodicOrbit, deviationVector, numberOfIterations, 0);
+    //writeStateHistoryAndStateVectorsToFile( stateHistory, initialStateVectors, deviationsFromPeriodicOrbit, deviationVector, numberOfIterations, 0);
 
     // LINE ATTENUATION IS CURRENTLY BLOCKED FOR LEVEL 1
 
@@ -373,7 +373,7 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
 
         }
 
-        writeStateHistoryAndStateVectorsToFile( stateHistory, initialStateVectors, deviationsFromPeriodicOrbit, deviationVector, numberOfIterations, 1);
+        ( stateHistory, initialStateVectors, deviationsFromPeriodicOrbit, deviationVector, numberOfIterations, 1);
 
         // ========= CHECK IF LI OUTPUT MEETS THE DESIRED CRITERIA ==== //
         if (positionDeviationFromPeriodicOrbit < maxPeriodDeviationFromPeriodicOrbit
@@ -517,7 +517,7 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
 
             applyLevel1Correction = true;
 
-            writeStateHistoryAndStateVectorsToFile( stateHistory, initialStateVectors, deviationsFromPeriodicOrbit, deviationVector, numberOfIterations, 2);
+            //writeStateHistoryAndStateVectorsToFile( stateHistory, initialStateVectors, deviationsFromPeriodicOrbit, deviationVector, numberOfIterations, 2);
 
             numberOfIterations += 1;
 
