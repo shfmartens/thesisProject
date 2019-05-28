@@ -34,17 +34,20 @@ int main (){
     #pragma omp parallel num_threads(6)
     {
         #pragma omp for
-        for (unsigned int i=1; i<=1; i++) {
+        for (unsigned int i=1; i<=6; i++) {
             if (i ==1)
             {
+                std::cout << "loop 1 started" << std::endl;
                 createInitialConditions(1, "horizontal");
             }
             if (i ==2)
             {
+                std::cout << "loop 2 started" << std::endl;
                 createInitialConditions(2, "horizontal");
             }
             if (i ==3)
             {
+                std::cout << "loop 3 started" << std::endl;
                 createInitialConditions(1, "halo");
             }
             if (i ==4)
@@ -53,10 +56,13 @@ int main (){
             }
             if (i ==5)
             {
+
                 createInitialConditions(1, "vertical");
             }
             if (i ==6)
             {
+                std::cout << "loop 6 started" << std::endl;
+
                 createInitialConditions(2, "vertical");
             }
         }
