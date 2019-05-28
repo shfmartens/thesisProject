@@ -13,9 +13,9 @@
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 
-void writeFinalResultsToFiles( const int librationPointNr, const double accelerationMagnitude, const double accelerationAngle,
+void writeFinalResultsToFiles( const int librationPointNr, const double accelerationMagnitude, const double accelerationAngle, const int numberOfPatchPoints,
                                std::vector< Eigen::VectorXd > initialConditions,
-                               std::vector< Eigen::VectorXd > differentialCorrections );
+                               std::vector< Eigen::VectorXd > differentialCorrections, std::vector< Eigen::VectorXd > statesContinuation );
 
 void appendResultsVectorAugmented(const double hamiltonian, const double orbitalPeriod, const Eigen::VectorXd& initialStateVector,
         const Eigen::MatrixXd& stateVectorInclSTM, std::vector< Eigen::VectorXd >& initialConditions );
@@ -24,16 +24,20 @@ void appendDifferentialCorrectionResultsVectorAugmented(
         const double hamiltonianHalfPeriod,  const Eigen::VectorXd& differentialCorrectionResult,
         std::vector< Eigen::VectorXd >& differentialCorrections );
 
+void appendContinuationStatesVectorAugmented(const int orbitNumber, const int numberOfPatchPoints, const double hamiltonianInitialCondition,
+                                             const Eigen::VectorXd& differentialCorrectionResult, std::vector< Eigen::VectorXd >& statesContinuation);
+
 double getDefaultArcLengthAugmented(
         const double distanceIncrement,
         const Eigen::Vector6d& currentState, const double periodIncrement, const int continuationIndex );
 
 double computeHamiltonian ( const double massParameter, const Eigen::VectorXd stateVector );
 
-Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initialStateGuess, const double orbitalPeriod, const int orbitNumber,
-                                          const int librationPointNr, const double massParameter, const int numberOfPatchPoints,
+Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initialStateGuess, const double targetHamiltonian, const int orbitNumber,
+                                          const int librationPointNr, const double massParameter, const int numberOfPatchPoints, const bool hamiltonianConstraint,
                                           std::vector< Eigen::VectorXd >& initialConditions,
                                           std::vector< Eigen::VectorXd >& differentialCorrections,
+                                          std::vector< Eigen::VectorXd >& statesContinuation,
                                           const double maxPositionDeviationFromPeriodicOrbit = 1.0e-12, const double maxVelocityDeviationFromPeriodicOrbit = 1.0e-12, const double maxPeriodDeviationFromPeriodicOrbit = 1.0e-12);
 
 Eigen::VectorXd getEarthMoonInitialGuessParameters ( const int librationPointNr, const std::string& orbitType, const double accelerationMagnitude, const double accelerationAngle, const double accelerationAngle2, const int continuationIndex, const int guessIteration );
@@ -54,11 +58,11 @@ void createLowThrustInitialConditions( const int librationPointNr, const std::st
                               const double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter(
             tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER,
             tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER ),
-                                       const int numberOfPatchPoints = 8,
+                                       const int numberOfPatchPoints = 4,
                               const double maxPositionDeviationFromPeriodicOrbit = 1.0e-12, const double maxVelocityDeviationFromPeriodicOrbit = 1.0e-12, const double maxPeriodDeviationFromPeriodicOrbit = 1.0e-12,
                               const double maxEigenvalueDeviation = 1.0e-3,
                               const boost::function< double( const Eigen::VectorXd&, const int ) > pseudoArcLengthFunctionAugmented =
-        boost::bind( &getDefaultArcLengthAugmented, 1.0E-3, _1, _2 ) );
+        boost::bind( &getDefaultArcLengthAugmented, 1.0E-6, _1, _2 ) );
 
 
 #endif  // TUDATBUNDLE_CREATELOWTHRUSTINITIALCONDITIONS_H

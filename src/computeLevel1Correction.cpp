@@ -62,10 +62,10 @@ correctionsLSQ = (updateMatrixLSQ.transpose())*((updateMatrixLSQ*(updateMatrixLS
 // store results into the outputVector
 for(int i = 0; i <= numberOfPatchPoints-2; i++ ) {
 
-    //differentialCorrection.segment(((11*i)+3),3) = corrections.segment(i*3,3);
+    differentialCorrection.segment(((11*i)+3),3) = corrections.segment(i*3,3);
 
-    differentialCorrection.segment(((11*i)+3),3) = correctionsLSQ.segment(i*4,3);
-    differentialCorrection(((11*i)+10)) = correctionsLSQ( (i*4) +3 );
+    //differentialCorrection.segment(((11*i)+3),3) = correctionsLSQ.segment(i*4,3);
+    //differentialCorrection(((11*i)+10)) = correctionsLSQ( (i*4) +3 );
 
 
 }

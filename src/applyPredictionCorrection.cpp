@@ -71,13 +71,19 @@ Eigen::VectorXd computeDeviationsFromPeriodicOrbit(const Eigen::VectorXd deviati
 
 Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
                                             const Eigen::VectorXd& initialStateVector,
+                                            const double targetHamiltonian,
                                             const double massParameter, const int numberOfPatchPoints,
+                                            const bool hamiltonianConstraint,
                                             double maxPositionDeviationFromPeriodicOrbit,
                                             double maxVelocityDeviationFromPeriodicOrbit, const double maxPeriodDeviationFromPeriodicOrbit,
                                             const int maxNumberOfIterations )
 {
     std::cout << "\nApply Prediction Correction:" << std::endl;
-    //std::cout << "Initial guess from linearized dynamics: \n" << initialStateVector << std::endl;
+    std::cout << "Initial guess from linearized dynamics: \n" << initialStateVector << std::endl;
+
+    std::cout << "TESTING TARGETHAMILTONIAN: " << targetHamiltonian << std::endl;
+    std::cout << "TESTING HAMILTONIANCONSTRAINT: " << hamiltonianConstraint << std::endl;
+
 
     // Declare and/or initialize variables variables and matrices
     Eigen::VectorXd initialStateVectors(numberOfPatchPoints*11);
@@ -89,14 +95,16 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
     double initialTime;
     double lineSearchIterationNumber;
     double attenuationFactor;
+    int blockAttenuation;
+    bool convergenceReached = false;
+    double finalPropagatedTime = 0.0;
 
 
     Eigen::VectorXd deviationVector = Eigen::VectorXd::Zero(11*(numberOfPatchPoints-1));
-    Eigen::VectorXd deviationVectorBackward = Eigen::VectorXd::Zero(11*(numberOfPatchPoints-1));
+    Eigen::VectorXd hamiltonianDeviationVector = Eigen::VectorXd::Zero(numberOfPatchPoints);
+
     Eigen::VectorXd outputVector(23);
     Eigen::MatrixXd forwardPropagatedStatesInclSTM((numberOfPatchPoints-1)*10,11);
-    Eigen::MatrixXd backwardPropagatedStatesInclSTM((numberOfPatchPoints-1)*10,11);
-    Eigen::VectorXd multipleShooting(11*numberOfPatchPoints);
     Eigen::VectorXd correctionVectorLevel1(11*numberOfPatchPoints);
     Eigen::VectorXd correctionVectorLevel2(11*numberOfPatchPoints);
 
@@ -128,23 +136,35 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
 
         // compute deviations at current patch points  and store stateVector and STM and end of propagation
         Eigen::VectorXd deviationAtCurrentPatchPoint(11);
+        double hamiltonianDeviationAtCurrentPatchPoint;
         if (i < (numberOfPatchPoints -2))
         {
 
           deviationAtCurrentPatchPoint = computeDeviationVector( initialStateVectorInclSTM.block(0,0,10,1), finalTime, stateVectorOnly, currentTime );
+          hamiltonianDeviationAtCurrentPatchPoint = targetHamiltonian - computeHamiltonian(massParameter, initialStateVectors.segment(i*11,10));
 
         } else
         {
             deviationAtCurrentPatchPoint = computeDeviationVector( initialStateVectors.segment(0,10), finalTime, stateVectorOnly, currentTime );
+            hamiltonianDeviationAtCurrentPatchPoint = targetHamiltonian - computeHamiltonian(massParameter, initialStateVectors.segment(i*11,10));
 
         }
 
         deviationVector.segment(i*11,11) = deviationAtCurrentPatchPoint;
         forwardPropagatedStatesInclSTM.block(i*10,0,10,11) = stateVectorInclSTM;
+        hamiltonianDeviationVector(i) = hamiltonianDeviationAtCurrentPatchPoint;
+
+        if ( i == (numberOfPatchPoints -2))
+        {
+            hamiltonianDeviationVector(i+1) = targetHamiltonian - computeHamiltonian(massParameter, stateVectorOnly);
+
+        }
+
+        finalPropagatedTime = currentTime;
 
     }
 
-    //std::cout << "Test the deviaiton Vector: " << deviationVector << std::endl;
+    std::cout << "Test the hamiltonianDeviation Vector: " << hamiltonianDeviationVector << std::endl;
 
     // compute deviations at the patch points
     Eigen::VectorXd deviationsFromPeriodicOrbit(5);
@@ -155,6 +175,7 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
     double periodDeviationFromPeriodicOrbit = deviationsFromPeriodicOrbit(2);
     double velocityInteriorDeviationFromPeriodicOrbit = deviationsFromPeriodicOrbit(3);
     double velocityExteriorDeviationFromPeriodicOrbit = deviationsFromPeriodicOrbit(4);
+    double hamiltonianDeviationFromDesiredValue = hamiltonianDeviationVector.norm();
 
     double benchmarkPositionDeviation = positionDeviationFromPeriodicOrbit;
     double benchmarkVelocityDeviation = velocityDeviationFromPeriodicOrbit;
@@ -166,6 +187,14 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
               << "velocityInteriorDeviations: " << velocityInteriorDeviationFromPeriodicOrbit << std::endl
               << "velocityExteriorDeviations: " << velocityExteriorDeviationFromPeriodicOrbit << std::endl
               << "timeDeviations: " << periodDeviationFromPeriodicOrbit << std::endl;
+    if (hamiltonianConstraint == false )
+    {
+        std::cout << "hamiltonianDeviation: " << "Orbit not refined for Hamiltonian value." << std::endl;
+    } else
+    {
+        std::cout << "hamiltonianDeviation: " << abs(hamiltonianDeviationFromDesiredValue) << std::endl;
+
+    }
               //<< "maxPositionDeviationFromPeriodicOrbit: " << maxPositionDeviationFromPeriodicOrbit << std::endl
               //<< "maxVelocityDeviationFromPeriodicOrbit: " << maxVelocityDeviationFromPeriodicOrbit << std::endl
               //<< "maxPeriodDeviationFromPeriodicOrbit: " << maxPeriodDeviationFromPeriodicOrbit << std::endl;
@@ -173,6 +202,8 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
     int numberOfIterations = 0;
 
     writeStateHistoryAndStateVectorsToFile( stateHistory, initialStateVectors, deviationsFromPeriodicOrbit, deviationVector, numberOfIterations, 0);
+
+    // LINE ATTENUATION IS CURRENTLY BLOCKED FOR LEVEL 1
 
     // ==== LEVEL I CORRECTION ======//
     stateHistory.clear();
@@ -202,15 +233,19 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
             std::cout << "\nAPPLYING LEVEL I CORRECTION"<< std::endl;
             correctionVectorLevel1 = computeLevel1Correction(deviationVector, forwardPropagatedStatesInclSTM, initialStateVectors, numberOfPatchPoints );
 
-            initialStateVectorsBeforeCorrection = initialStateVectors;
+            initialStateVectorsBeforeCorrection = initialStateVectors;           
+
+            // Line search attenuation parameters, Currently
             lineSearchIterationNumber = 0.0;
             attenuationFactor = 0.0;
-            int blockAttenuation = 0;
+            blockAttenuation = 0;
 
             while ( benchmarkPositionDeviation <= positionDeviationFromPeriodicOrbit and blockAttenuation == 0 )
             {
                 // Reset input to values before correction
                 initialStateVectors = initialStateVectorsBeforeCorrection;
+
+                //std::cout << "initialStateVectors after LI correction: " << initialStateVectors << std::endl;
 
                 // Empty the stateHistory Vector
                 stateHistory.clear();
@@ -245,11 +280,35 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
 
                     // compute deviations at current patch points
                     Eigen::VectorXd deviationAtCurrentPatchPoint(11);
-                    deviationAtCurrentPatchPoint = computeDeviationVector( initialStateVectorInclSTM.block(0,0,10,1), finalTime, stateVectorOnly, currentTime );
+                    double hamiltonianDeviationAtCurrentPatchPoint;
+
+                    if (i < (numberOfPatchPoints -2))
+                    {
+
+                      deviationAtCurrentPatchPoint = computeDeviationVector( initialStateVectorInclSTM.block(0,0,10,1), finalTime, stateVectorOnly, currentTime );
+                      hamiltonianDeviationAtCurrentPatchPoint = targetHamiltonian - computeHamiltonian(massParameter, initialStateVectors.segment(i*11,10));
+
+
+                    } else
+                    {
+                        deviationAtCurrentPatchPoint = computeDeviationVector( initialStateVectors.segment(0,10), finalTime, stateVectorOnly, currentTime );
+                        hamiltonianDeviationAtCurrentPatchPoint = targetHamiltonian - computeHamiltonian(massParameter, initialStateVectors.segment(i*11,10));
+
+                    }
+
                     deviationVector.segment(i*11,11) = deviationAtCurrentPatchPoint;
+                    hamiltonianDeviationVector(i) = hamiltonianDeviationAtCurrentPatchPoint;
+
+                    if ( i == (numberOfPatchPoints -2))
+                    {
+                        hamiltonianDeviationVector(i+1) = targetHamiltonian - computeHamiltonian(massParameter, stateVectorOnly);
+
+                    }
 
                     // Fill the PropagatedStatesInclSTM matrix
                     forwardPropagatedStatesInclSTM.block(i*10,0,10,11) = stateVectorInclSTM;
+
+                    finalPropagatedTime = currentTime;
 
                 }
 
@@ -261,12 +320,15 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
                 periodDeviationFromPeriodicOrbit = deviationsFromPeriodicOrbit(2);
                 velocityInteriorDeviationFromPeriodicOrbit = deviationsFromPeriodicOrbit(3);
                 velocityExteriorDeviationFromPeriodicOrbit = deviationsFromPeriodicOrbit(4);
+                hamiltonianDeviationFromDesiredValue = hamiltonianDeviationVector.norm();
 
-                std::cout << "=== Check line search attenuation loop ==="<< std::endl
-                          << " attenuation Factor: " << attenuationFactor << std::endl
-                          << " positionDeviation: " << positionDeviationFromPeriodicOrbit << std::endl
-                          << " benchmarkDeviation: " << benchmarkPositionDeviation << std::endl;
 
+                //std::cout << "=== Check line search attenuation loop ==="<< std::endl
+                //          << " attenuation Factor: " << attenuationFactor << std::endl
+                //          << " positionDeviation: " << positionDeviationFromPeriodicOrbit << std::endl
+                //          << " benchmarkDeviation: " << benchmarkPositionDeviation << std::endl;
+
+                // Line search attenuation currently disabled, to active change blockattenuation below to 0
                 lineSearchIterationNumber = lineSearchIterationNumber + 1.0;
                 blockAttenuation = 1;
 
@@ -283,6 +345,14 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
                       << "velocityInteriorDeviations: " << velocityInteriorDeviationFromPeriodicOrbit << std::endl
                       << "velocityExteriorDeviations: " << velocityExteriorDeviationFromPeriodicOrbit << std::endl
                       << "timeDeviations: " << periodDeviationFromPeriodicOrbit << std::endl;
+            if (hamiltonianConstraint == false )
+            {
+                std::cout << "hamiltonianDeviation: " << "Orbit not refined for Hamiltonian value." << std::endl;
+            } else
+            {
+                std::cout << "hamiltonianDeviation: " << abs(hamiltonianDeviationFromDesiredValue) << std::endl;
+
+            }
 
             if (positionDeviationFromPeriodicOrbit < maxPositionDeviationFromPeriodicOrbit)
             {
@@ -298,162 +368,185 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
 
             numberOfIterationsLevel1++;
 
+            //std::cout << "Test the hamiltonianDeviation Vector: " << hamiltonianDeviationVector << std::endl;
+
 
         }
 
         writeStateHistoryAndStateVectorsToFile( stateHistory, initialStateVectors, deviationsFromPeriodicOrbit, deviationVector, numberOfIterations, 1);
 
-//        // ====== BACKWARD PROPAGATION TO OBTAIN THE STMS BACKWARD IN TIME and deviations //
+        // ========= CHECK IF LI OUTPUT MEETS THE DESIRED CRITERIA ==== //
+        if (positionDeviationFromPeriodicOrbit < maxPeriodDeviationFromPeriodicOrbit
+            and velocityDeviationFromPeriodicOrbit < maxVelocityDeviationFromPeriodicOrbit
+            and periodDeviationFromPeriodicOrbit < maxPeriodDeviationFromPeriodicOrbit)
+        {
+            convergenceReached = true;
+            std::cout << "Convergence is reached after LI for numberOfIterations: " << numberOfIterations << std::endl;
+        }
 
-//        // Seed backwards propagation by selecting final state and appropriate times
-//        finalStateVectorInclSTM.block(0,0,10,1) = forwardPropagatedStatesInclSTM.block(10*(numberOfPatchPoints-1),0,10,1);
-//        finalStateVectorInclSTM.block(0,1,10,10).setIdentity();
-//        initialTime = initialStateVectors( 11*(numberOfPatchPoints-1) + 10 ) - deviationVector(11*(numberOfPatchPoints-1) + 10);
-//        finalTime = initialStateVectors( 11*(numberOfPatchPoints-1) -1 );
-
-//        // compute the State Transition Matrices backwards in time
-//        for ( int i = ( numberOfPatchPoints-1 ); i > 0; i--)
-//        {
-
-//            initialTime = initialStateVectors((i)*11 + 10) - deviationVector(11*(i) + 10);
-//            finalTime = initialStateVectors((i)*11 - 1 );
-
-//            std::map< double, Eigen::VectorXd > stateHistory;
-//            std::pair< Eigen::MatrixXd, double > finalTimeState = propagateOrbitAugmentedToFinalCondition(
-//                        finalStateVectorInclSTM, massParameter, finalTime, -1, stateHistory, -1, initialTime );
-
-//            Eigen::MatrixXd stateVectorInclSTM      = finalTimeState.first;
-//            double currentTime             = finalTimeState.second;
-//            Eigen::VectorXd stateVectorOnly = stateVectorInclSTM.block( 0, 0, 10, 1 );
-
-//            // compute the state, STM and time the next patch point and set as initial conditions for next loop
-//            finalStateVectorInclSTM.block(0,0,10,1) = initialStateVectors.segment(11*(i-1),10);
-//            finalStateVectorInclSTM.block(0,1,10,10).setIdentity();
-
-//            // compute deviations at current patch points
-//            Eigen::VectorXd deviationAtCurrentPatchPoint(11);
-//            deviationAtCurrentPatchPoint = computeDeviationVector( finalStateVectorInclSTM.block(0,0,10,1), finalTime, stateVectorOnly, currentTime );
-//            deviationVectorBackward.segment((i-1)*11,11) = deviationAtCurrentPatchPoint;
-
-
-//            // fill backwardPropagatedStatesInclSTM backwards
-//            backwardPropagatedStatesInclSTM.block((i-1)*10,0,10,11) = stateVectorInclSTM;
-
-//        }
-
-//std::cout << "Backward Propagation STM's from - to plus: \n" << backwardPropagatedStatesInclSTM << std::endl;
+        //std::cout << "Hamiltonian Deviation Vector: \n" << hamiltonianDeviationVector << std::endl;
 
         // ============ LEVEL II CORRECTION ============= //
 
-        std::cout << "\nAPPLYING LEVEL II CORRECTION"<< std::endl;
-        correctionVectorLevel2 = computeLevel2Correction( deviationVector, forwardPropagatedStatesInclSTM, initialStateVectors, numberOfPatchPoints );
-
-
-        initialStateVectorsBeforeCorrection = initialStateVectors;
-        lineSearchIterationNumber = 0.0;
-        attenuationFactor = 1.0;
-
-        // Currently disabled, remove lineSearchIterationNumberCondition
-        while ( velocityInteriorDeviationFromPeriodicOrbit >= benchmarkInteriorVelocityDeviation and lineSearchIterationNumber == 0.0 )
+        if (convergenceReached == false)
         {
-            // Reset input to values before correction
-            initialStateVectors = initialStateVectorsBeforeCorrection;
 
-            // Reset stateHistory
-            stateHistory.clear();
+            std::cout << "\nAPPLYING LEVEL II CORRECTION"<< std::endl;
+            correctionVectorLevel2 = computeLevel2Correction( deviationVector, forwardPropagatedStatesInclSTM, initialStateVectors, numberOfPatchPoints, massParameter, hamiltonianConstraint, hamiltonianDeviationVector );
 
-            // Apply the line search attenuated correction
-            attenuationFactor = pow(0.8, lineSearchIterationNumber);
-            initialStateVectors = initialStateVectors + attenuationFactor * correctionVectorLevel2;
+            // Line attenuation is currently blocked since later on, blockattenuation is set to 1
+            initialStateVectorsBeforeCorrection = initialStateVectors;
+            lineSearchIterationNumber = 0.0;
+            attenuationFactor = 1.0;
+            blockAttenuation = 0;
 
-            // Propagate the updated guess and compute deviations and STM's
-            initialStateVectorInclSTM.block(0,0,10,1) = initialStateVectors.segment(0,10);
-            initialStateVectorInclSTM.block(0,1,10,10).setIdentity();
-            initialTime = initialStateVectors( 10 );
-            finalTime = initialStateVectors( 21 );
 
-            //std::cout << "\nCorrection applied" << std::endl;
-            //std::cout << "initialStateVectors after correction: " << initialStateVectors << std::endl;
-            for (int i = 0; i <= (numberOfPatchPoints -2); i++) {
+            // Currently disabled, remove lineSearchIterationNumberCondition
+            while ( velocityInteriorDeviationFromPeriodicOrbit >= benchmarkInteriorVelocityDeviation and blockAttenuation == 0 )
+            {
+                // Reset input to values before correction
+                initialStateVectors = initialStateVectorsBeforeCorrection;
 
-                initialTime = initialStateVectors((i+1)*10 + (i));
-                finalTime = initialStateVectors((i+2)*10 + (i+1) );
+                // Reset stateHistory
+                stateHistory.clear();
 
-                std::pair< Eigen::MatrixXd, double > finalTimeState = propagateOrbitAugmentedToFinalCondition(
-                           initialStateVectorInclSTM, massParameter, finalTime, 1.0, stateHistory, 2000, initialTime );
+                // Apply the line search attenuated correction
+                attenuationFactor = pow(0.8, lineSearchIterationNumber);
+                initialStateVectors = initialStateVectors + attenuationFactor * correctionVectorLevel2;
 
-                Eigen::MatrixXd stateVectorInclSTM      = finalTimeState.first;
-                double currentTime             = finalTimeState.second;
-                Eigen::VectorXd stateVectorOnly = stateVectorInclSTM.block( 0, 0, 10, 1 );
-
-                // compute the state, STM and time the next patch point and set as initial conditions for next loop
-                initialStateVectorInclSTM.block(0,0,10,1) = initialStateVectors.segment(11*(i+1),10);
+                // Propagate the updated guess and compute deviations and STM's
+                initialStateVectorInclSTM.block(0,0,10,1) = initialStateVectors.segment(0,10);
                 initialStateVectorInclSTM.block(0,1,10,10).setIdentity();
+                initialTime = initialStateVectors( 10 );
+                finalTime = initialStateVectors( 21 );
 
-                // compute deviations at current patch points
-                Eigen::VectorXd deviationAtCurrentPatchPoint(11);
-                if (i < (numberOfPatchPoints -2))
+                //std::cout << "\nCorrection applied" << std::endl;
+                //std::cout << "initialStateVectors after correction: " << initialStateVectors << std::endl;
+                for (int i = 0; i <= (numberOfPatchPoints -2); i++) {
+
+                    initialTime = initialStateVectors((i+1)*10 + (i));
+                    finalTime = initialStateVectors((i+2)*10 + (i+1) );
+
+                    std::pair< Eigen::MatrixXd, double > finalTimeState = propagateOrbitAugmentedToFinalCondition(
+                               initialStateVectorInclSTM, massParameter, finalTime, 1.0, stateHistory, 2000, initialTime );
+
+                    Eigen::MatrixXd stateVectorInclSTM      = finalTimeState.first;
+                    double currentTime             = finalTimeState.second;
+                    Eigen::VectorXd stateVectorOnly = stateVectorInclSTM.block( 0, 0, 10, 1 );
+
+                    // compute the state, STM and time the next patch point and set as initial conditions for next loop
+                    initialStateVectorInclSTM.block(0,0,10,1) = initialStateVectors.segment(11*(i+1),10);
+                    initialStateVectorInclSTM.block(0,1,10,10).setIdentity();
+
+                    // compute deviations at current patch points
+                    Eigen::VectorXd deviationAtCurrentPatchPoint(11);
+                    double hamiltonianDeviationAtCurrentPatchPoint;
+
+                    if (i < (numberOfPatchPoints -2))
+                    {
+
+                      deviationAtCurrentPatchPoint = computeDeviationVector( initialStateVectorInclSTM.block(0,0,10,1), finalTime, stateVectorOnly, currentTime );
+                      hamiltonianDeviationAtCurrentPatchPoint = targetHamiltonian - computeHamiltonian(massParameter, initialStateVectors.segment(i*11,10));
+
+
+                    } else
+                    {
+                        deviationAtCurrentPatchPoint = computeDeviationVector( initialStateVectors.segment(0,10), finalTime, stateVectorOnly, currentTime );
+                        hamiltonianDeviationAtCurrentPatchPoint = targetHamiltonian - computeHamiltonian(massParameter, initialStateVectors.segment(i*11,10));
+
+                    }
+
+
+                    deviationVector.segment(i*11,11) = deviationAtCurrentPatchPoint;
+                    hamiltonianDeviationVector(i) = hamiltonianDeviationAtCurrentPatchPoint;
+
+                    if ( i == (numberOfPatchPoints -2))
+                    {
+                        hamiltonianDeviationVector(i+1) = targetHamiltonian - computeHamiltonian(massParameter, stateVectorOnly);
+
+                    }
+
+                    forwardPropagatedStatesInclSTM.block(i*10,0,10,11) = stateVectorInclSTM;
+
+                    }
+
+                // compute deviations at the patch points
+                deviationsFromPeriodicOrbit = computeDeviationsFromPeriodicOrbit(deviationVector, numberOfPatchPoints);
+
+                positionDeviationFromPeriodicOrbit = deviationsFromPeriodicOrbit(0);
+                velocityDeviationFromPeriodicOrbit = deviationsFromPeriodicOrbit(1);
+                periodDeviationFromPeriodicOrbit = deviationsFromPeriodicOrbit(2);
+                velocityInteriorDeviationFromPeriodicOrbit = deviationsFromPeriodicOrbit(3);
+                velocityExteriorDeviationFromPeriodicOrbit = deviationsFromPeriodicOrbit(4);
+                hamiltonianDeviationFromDesiredValue = hamiltonianDeviationVector.norm();
+
+
+                // Line attenuation is currently blocked
+                //std::cout << "=== Check LII line search attenuation loop ==="<< std::endl
+                //          << " attenuation Factor: " << attenuationFactor << std::endl
+                //          << " interiorVelocityDeviation: " << velocityInteriorDeviationFromPeriodicOrbit << std::endl
+                //          << " benchmarkInteriorVelocityDeviation: " << benchmarkInteriorVelocityDeviation  << std::endl;
+
+                lineSearchIterationNumber = lineSearchIterationNumber + 1.0;
+                blockAttenuation = 1;
+
+            }
+
+            // Set new benchmarks for grid search attenuation
+            benchmarkPositionDeviation = positionDeviationFromPeriodicOrbit;
+            benchmarkVelocityDeviation = velocityDeviationFromPeriodicOrbit;
+            benchmarkInteriorVelocityDeviation = velocityInteriorDeviationFromPeriodicOrbit;
+            benchmarkExteriorVelocityDeviation = velocityExteriorDeviationFromPeriodicOrbit;
+
+                std::cout << "\npositionDeviationsAfterLII: " << positionDeviationFromPeriodicOrbit << std::endl
+                          << "velocityDeviationsAfterLII: " << velocityDeviationFromPeriodicOrbit << std::endl
+                          << "velocityInteriorDeviationsAfterLII: " << velocityInteriorDeviationFromPeriodicOrbit << std::endl
+                          << "velocityExteriorDeviationsAfterLII: " << velocityExteriorDeviationFromPeriodicOrbit << std::endl
+                          << "timeDeviationsAfterLII: " << periodDeviationFromPeriodicOrbit << std::endl;
+                if (hamiltonianConstraint == false )
                 {
-
-                  deviationAtCurrentPatchPoint = computeDeviationVector( initialStateVectorInclSTM.block(0,0,10,1), finalTime, stateVectorOnly, currentTime );
-
+                    std::cout << "hamiltonianDeviationAfterLII: " << "Orbit not refined for Hamiltonian value." << std::endl;
                 } else
                 {
-                    deviationAtCurrentPatchPoint = computeDeviationVector( initialStateVectors.segment(0,10), finalTime, stateVectorOnly, currentTime );
+                    std::cout << "hamiltonianDeviationAfterLII: " << abs(hamiltonianDeviationFromDesiredValue) << std::endl;
 
                 }
 
-
-                deviationVector.segment(i*11,11) = deviationAtCurrentPatchPoint;
-
-                forwardPropagatedStatesInclSTM.block(i*10,0,10,11) = stateVectorInclSTM;
-
-                }
-
-            // compute deviations at the patch points
-            deviationsFromPeriodicOrbit = computeDeviationsFromPeriodicOrbit(deviationVector, numberOfPatchPoints);
-
-            positionDeviationFromPeriodicOrbit = deviationsFromPeriodicOrbit(0);
-            velocityDeviationFromPeriodicOrbit = deviationsFromPeriodicOrbit(1);
-            periodDeviationFromPeriodicOrbit = deviationsFromPeriodicOrbit(2);
-            velocityInteriorDeviationFromPeriodicOrbit = deviationsFromPeriodicOrbit(3);
-            velocityExteriorDeviationFromPeriodicOrbit = deviationsFromPeriodicOrbit(4);
+                std::cout << "Test the hamiltonianDeviation Vector: " << hamiltonianDeviationVector << std::endl;
 
 
-            std::cout << "=== Check LII line search attenuation loop ==="<< std::endl
-                      << " attenuation Factor: " << attenuationFactor << std::endl
-                      << " interiorVelocityDeviation: " << velocityInteriorDeviationFromPeriodicOrbit << std::endl
-                      << " benchmarkInteriorVelocityDeviation: " << benchmarkInteriorVelocityDeviation  << std::endl;
+            applyLevel1Correction = true;
 
-            lineSearchIterationNumber = lineSearchIterationNumber + 1.0;
+            writeStateHistoryAndStateVectorsToFile( stateHistory, initialStateVectors, deviationsFromPeriodicOrbit, deviationVector, numberOfIterations, 2);
+
+            numberOfIterations += 1;
 
         }
 
-        // Set new benchmarks for grid search attenuation
-        benchmarkPositionDeviation = positionDeviationFromPeriodicOrbit;
-        benchmarkVelocityDeviation = velocityDeviationFromPeriodicOrbit;
-        benchmarkInteriorVelocityDeviation = velocityInteriorDeviationFromPeriodicOrbit;
-        benchmarkExteriorVelocityDeviation = velocityExteriorDeviationFromPeriodicOrbit;
-
-            std::cout << "\npositionDeviationsAfterLII: " << positionDeviationFromPeriodicOrbit << std::endl
-                      << "velocityDeviationsAfterLII: " << velocityDeviationFromPeriodicOrbit << std::endl
-                      << "velocityInteriorDeviationsAfterLII: " << velocityInteriorDeviationFromPeriodicOrbit << std::endl
-                      << "velocityExteriorDeviationsAfterLII: " << velocityExteriorDeviationFromPeriodicOrbit << std::endl
-                      << "timeDeviationsAfterLII: " << periodDeviationFromPeriodicOrbit << std::endl;
-
-        applyLevel1Correction = true;
-        //std::cout << "deviationVector: "<< deviationVector << std::endl;
-        //std::cout << "Level II OUTPUT TESTT: "<< initialStateVectors << std::endl;
-
-        writeStateHistoryAndStateVectorsToFile( stateHistory, initialStateVectors, deviationsFromPeriodicOrbit, deviationVector, numberOfIterations, 2);
-
-        numberOfIterations += 1;
-
     }
 
+    Eigen::VectorXd initialCondition = initialStateVectors.segment(0,10);
+    Eigen::VectorXd finalCondition   = forwardPropagatedStatesInclSTM.block(10*(numberOfPatchPoints-2),0,10,1);
+    double orbitalPeriod = finalPropagatedTime - initialStateVectors(10);
 
-    outputVector = Eigen::VectorXd::Zero(23);
-    outputVector.segment(0,11) = initialStateVector.segment(0,11);
+    double hamiltonianInitialCondition  = computeHamiltonian( massParameter, initialCondition);
+    double hamiltonianEndState          = computeHamiltonian( massParameter, finalCondition  );
+
+    // The output vector consists of:
+    // 1. Corrected initial state vector, including orbital period and energy
+    // 2. Full period state vector, including currentTime of integration and energy
+    // 3. numberOfIterations
+
+    outputVector = Eigen::VectorXd::Zero(25+11*numberOfPatchPoints);
+    outputVector.segment(0,10) = initialCondition;
+    outputVector(10) = orbitalPeriod;
+    outputVector(11) = hamiltonianInitialCondition;
+    outputVector.segment(12,10) = finalCondition;
+    outputVector(22) = finalPropagatedTime;
+    outputVector(23) = hamiltonianEndState;
+    outputVector(24) = numberOfIterations;
+    outputVector.segment(25,11*numberOfPatchPoints) = initialStateVectors;
+
     return outputVector;
 
 
