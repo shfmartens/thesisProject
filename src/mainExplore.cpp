@@ -22,7 +22,7 @@
 //#include "createInitialConditionsAxialFamily.h"
 #include "connectManifoldsAtTheta.h"
 #include "createEquilibriumLocations.h"
-//#include "omp.h"
+#include "omp.h"
 
 
 double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER, tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER );
@@ -51,36 +51,157 @@ int main (){
     // ================================ 
 
 
-//    #pragma omp parallel num_threads(6)
-//    {
-//        #pragma omp for
-//        for (unsigned int i=1; i<=6; i++) {
-//            if (i ==1)
-//            {
-//                createInitialConditions(1, "horizontal");
-//            }
-//            if (i ==2)
-//            {
-//                createInitialConditions(2, "horizontal");
-//            }
-//            if (i ==3)
-//            {
-//                createInitialConditions(1, "halo");
-//            }
-//            if (i ==4)
-//            {
-//                createInitialConditions(2, "halo");
-//            }
-//            if (i ==5)
-//            {
-//                createInitialConditions(1, "vertical");
-//            }
-//            if (i ==6)
-//            {
-//                createInitialConditions(2, "vertical");
-//            }
-//        }
-//    }
+    #pragma omp parallel num_threads(6)
+    {
+        #pragma omp for
+        for (unsigned int i=1; i<=14; i++) {
+            if (i ==1)
+            {
+                std::string orbitType = "horizontal";
+                int continuationIndex = 1; //1: Refine for T, 8: acceleration, 9: alpha, 10: beta
+                double accelerationMagnitude = 0.0;
+                double accelerationAngle = 0.0;
+                double accelerationAngle2 = 0.0;
+                double initialMass = 1.0;
+                createLowThrustInitialConditions(1, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, massParameter );
+            }
+            if (i ==2)
+            {
+                std::string orbitType = "horizontal";
+                int continuationIndex = 1; //1: Refine for T, 8: acceleration, 9: alpha, 10: beta
+                double accelerationMagnitude = 0.0001;
+                double accelerationAngle = 0.0;
+                double accelerationAngle2 = 0.0;
+                double initialMass = 1.0;
+                createLowThrustInitialConditions(1, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, massParameter );
+            }
+            if (i ==3)
+            {
+                std::string orbitType = "horizontal";
+                int continuationIndex = 1; //1: Refine for T, 8: acceleration, 9: alpha, 10: beta
+                double accelerationMagnitude = 0.0005;
+                double accelerationAngle = 0.0;
+                double accelerationAngle2 = 0.0;
+                double initialMass = 1.0;
+                createLowThrustInitialConditions(1, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, massParameter );
+            }
+            if (i ==4)
+            {
+                std::string orbitType = "horizontal";
+                int continuationIndex = 1; //1: Refine for T, 8: acceleration, 9: alpha, 10: beta
+                double accelerationMagnitude = 0.001;
+                double accelerationAngle = 0.0;
+                double accelerationAngle2 = 0.0;
+                double initialMass = 1.0;
+                createLowThrustInitialConditions(1, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, massParameter );
+            }
+            if (i ==5)
+            {
+                std::string orbitType = "horizontal";
+                int continuationIndex = 1; //1: Refine for T, 8: acceleration, 9: alpha, 10: beta
+                double accelerationMagnitude = 0.005;
+                double accelerationAngle = 0.0;
+                double accelerationAngle2 = 0.0;
+                double initialMass = 1.0;
+                createLowThrustInitialConditions(1, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, massParameter );
+            }
+            if (i ==6)
+           {
+                std::string orbitType = "horizontal";
+                int continuationIndex = 1; //1: Refine for T, 8: acceleration, 9: alpha, 10: beta
+                double accelerationMagnitude = 0.01;
+                double accelerationAngle = 0.0;
+                double accelerationAngle2 = 0.0;
+                double initialMass = 1.0;
+                createLowThrustInitialConditions(1, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, massParameter );
+            }
+
+            if (i ==7)
+           {
+                std::string orbitType = "horizontal";
+                int continuationIndex = 1; //1: Refine for T, 8: acceleration, 9: alpha, 10: beta
+                double accelerationMagnitude = 0.07;
+                double accelerationAngle = 0.0;
+                double accelerationAngle2 = 0.0;
+                double initialMass = 1.0;
+                createLowThrustInitialConditions(1, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, massParameter );
+            }
+
+            if (i ==8)
+            {
+                std::string orbitType = "horizontal";
+                int continuationIndex = 1; //1: Refine for T, 8: acceleration, 9: alpha, 10: beta
+                double accelerationMagnitude = 0.0;
+                double accelerationAngle = 0.0;
+                double accelerationAngle2 = 0.0;
+                double initialMass = 1.0;
+                createLowThrustInitialConditions(2, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, massParameter );
+            }
+            if (i ==9)
+            {
+                std::string orbitType = "horizontal";
+                int continuationIndex = 1; //1: Refine for T, 8: acceleration, 9: alpha, 10: beta
+                double accelerationMagnitude = 0.0001;
+                double accelerationAngle = 0.0;
+                double accelerationAngle2 = 0.0;
+                double initialMass = 1.0;
+                createLowThrustInitialConditions(2, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, massParameter );
+            }
+            if (i ==10)
+            {
+                std::string orbitType = "horizontal";
+                int continuationIndex = 1; //1: Refine for T, 8: acceleration, 9: alpha, 10: beta
+                double accelerationMagnitude = 0.0005;
+                double accelerationAngle = 0.0;
+                double accelerationAngle2 = 0.0;
+                double initialMass = 1.0;
+                createLowThrustInitialConditions(2, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, massParameter );
+            }
+            if (i ==11)
+            {
+                std::string orbitType = "horizontal";
+                int continuationIndex = 1; //1: Refine for T, 8: acceleration, 9: alpha, 10: beta
+                double accelerationMagnitude = 0.001;
+                double accelerationAngle = 0.0;
+                double accelerationAngle2 = 0.0;
+                double initialMass = 1.0;
+                createLowThrustInitialConditions(2, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, massParameter );
+            }
+            if (i ==12)
+            {
+                std::string orbitType = "horizontal";
+                int continuationIndex = 1; //1: Refine for T, 8: acceleration, 9: alpha, 10: beta
+                double accelerationMagnitude = 0.005;
+                double accelerationAngle = 0.0;
+                double accelerationAngle2 = 0.0;
+                double initialMass = 1.0;
+                createLowThrustInitialConditions(2, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, massParameter );
+            }
+            if (i ==13)
+           {
+                std::string orbitType = "horizontal";
+                int continuationIndex = 1; //1: Refine for T, 8: acceleration, 9: alpha, 10: beta
+                double accelerationMagnitude = 0.01;
+                double accelerationAngle = 0.0;
+                double accelerationAngle2 = 0.0;
+                double initialMass = 1.0;
+                createLowThrustInitialConditions(2, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, massParameter );
+            }
+
+            if (i ==14)
+           {
+                std::string orbitType = "horizontal";
+                int continuationIndex = 1; //1: Refine for T, 8: acceleration, 9: alpha, 10: beta
+                double accelerationMagnitude = 0.07;
+                double accelerationAngle = 0.0;
+                double accelerationAngle2 = 0.0;
+                double initialMass = 1.0;
+                createLowThrustInitialConditions(2, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, massParameter );
+            }
+
+
+        }
+    }
 
     // ================================
     // == Compute manifolds ==
