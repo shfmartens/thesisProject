@@ -37,18 +37,18 @@ int main (){
     // ================================
     // == Compute initial conditions ==
     // ================================
-        std::string orbitType = "horizontal";
-        int continuationIndex = 1; //1: Refine for T, 8: acceleration, 9: alpha, 10: beta
-        double accelerationMagnitude = 0.01;
-        double accelerationAngle = 0.0;
-        double accelerationAngle2 = 0.0;
-        double initialMass = 1.0;
-        createLowThrustInitialConditions(1, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, massParameter );
+        //std::string orbitType = "horizontal";
+        //int continuationIndex = 1; //1: Continuate for H, 8: acceleration, 9: alpha, 10: beta
+        //double accelerationMagnitude = 0.01;
+        //double accelerationAngle = 0.0;
+        //double accelerationAngle2 = 0.0;
+        //double initialMass = 1.0;
+        //createLowThrustInitialConditions(1, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, massParameter );
 
 
     // ================================
     // == Compute initial conditions ==
-    // ================================ 
+    // ================================
 
 
     #pragma omp parallel num_threads(14)
@@ -58,80 +58,81 @@ int main (){
             if (i ==1)
             {
 
-                createLowThrustInitialConditions(1, "horizontal", 1, 0.00001, 0.0, 0.0, 1.0, massParameter );
-            }
+                createLowThrustInitialConditions(1, "horizontal", 1, 0.00001, 0.0, 0.0, 1.0, -1.552, massParameter );
+
             if (i ==2)
             {
 
-                createLowThrustInitialConditions(1, "horizontal", 1, 0.0001, 0.0, 0.0, 1.0, massParameter );
+                createLowThrustInitialConditions(1, "horizontal", 1, 0.0001, 0.0, 0.0, 1.0, -1.552, massParameter );
             }
             if (i ==3)
             {
 
-                createLowThrustInitialConditions(1, "horizontal", 1, 0.0005, 0.0, 0.0, 1.0, massParameter );
+                createLowThrustInitialConditions(1, "horizontal", 1, 0.0005, 0.0, 0.0, 1.0, -1.552, massParameter );
             }
             if (i ==4)
             {
 
-                createLowThrustInitialConditions(1, "horizontal", 1, 0.001, 0.0, 0.0, 1.0, massParameter );
+                createLowThrustInitialConditions(1, "horizontal", 1, 0.001, 0.0, 0.0, 1.0, -1.552, massParameter );
             }
             if (i ==5)
             {
 
-                createLowThrustInitialConditions(1, "horizontal", 1, 0.005, 0.0, 0.0, 1.0, massParameter );
+                createLowThrustInitialConditions(1, "horizontal", 1, 0.005, 0.0, 0.0, 1.0, -1.552, massParameter );
             }
             if (i ==6)
            {
 
-                createLowThrustInitialConditions(1, "horizontal", 1, 0.01, 0.0, 0.0, 1.0, massParameter );
+                createLowThrustInitialConditions(1, "horizontal", 1, 0.01, 0.0, 0.0, 1.0, -1.552, massParameter );
             }
 
             if (i ==7)
            {
 
-                createLowThrustInitialConditions(1, "horizontal", 1, 0.07, 0.0, 0.0, 1.0, massParameter );
+                createLowThrustInitialConditions(1, "horizontal", 1, 0.07, 0.0, 0.0, 1.0, -1.552, massParameter );
             }
 
             if (i ==8)
             {
 
-                createLowThrustInitialConditions(2, "horizontal", 1, 0.00001, 0.0, 0.0, 1.0, massParameter );
+                createLowThrustInitialConditions(2, "horizontal", 1, 0.00001, 0.0, 0.0, 1.0, -1.552, massParameter );
             }
             if (i ==9)
             {
 
-                createLowThrustInitialConditions(2, "horizontal", 1, 0.0001, 0.0, 0.0, 1.0, massParameter );
+                createLowThrustInitialConditions(2, "horizontal", 1, 0.0001, 0.0, 0.0, 1.0, -1.552, massParameter );
             }
             if (i ==10)
             {
 
-                createLowThrustInitialConditions(2, "horizontal", 1, 0.0005, 0.0, 0.0, 1.0, massParameter );
+                createLowThrustInitialConditions(2, "horizontal", 1, 0.0005, 0.0, 0.0, 1.0, -1.552, massParameter );
             }
             if (i ==11)
             {
 
-                createLowThrustInitialConditions(2, "horizontal", 1, 0.001, 0.0, 0.0, 1.0, massParameter );
+                createLowThrustInitialConditions(2, "horizontal", 1, 0.001, 0.0, 0.0, 1.0, -1.552, massParameter );
             }
             if (i ==12)
             {
 
-                createLowThrustInitialConditions(2, "horizontal", 1, 0.005, 0.0, 0.0, 1.0, massParameter );
+                createLowThrustInitialConditions(2, "horizontal", 1, 0.005, 0.0, 0.0, 1.0, -1.552, massParameter );
             }
             if (i ==13)
            {
 
-                createLowThrustInitialConditions(2, "horizontal", 1, 0.01, 0.0, 0.0, 1.0, massParameter );
+                createLowThrustInitialConditions(2, "horizontal", 1, 0.01, 0.0, 0.0, 1.0, -1.552, massParameter );
             }
 
             if (i ==14)
            {
 
-                createLowThrustInitialConditions(2, "horizontal", 1, 0.07, 0.0, 0.0, 1.0, massParameter );
+                createLowThrustInitialConditions(2, "horizontal", 1, 0.07, 0.0, 0.0, 1.0, -1.552, massParameter );
             }
 
 
         }
     }
+ }
 
     // ================================
     // == Compute manifolds ==

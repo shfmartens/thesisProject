@@ -478,7 +478,7 @@ double computeHamiltonian (const double massParameter, const Eigen::VectorXd sta
 }
 
 Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initialStateGuess, double targetHamiltonian, const int orbitNumber,
-                                          const int librationPointNr, const double massParameter, const int numberOfPatchPoints, const bool hamiltonianConstraint,
+                                          const int librationPointNr, const std::string& orbitType, const double massParameter, const int numberOfPatchPoints, const bool hamiltonianConstraint,
                                           std::vector< Eigen::VectorXd >& initialConditions,
                                           std::vector< Eigen::VectorXd >& differentialCorrections,
                                           std::vector< Eigen::VectorXd >& statesContinuation,
@@ -500,7 +500,7 @@ Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initia
     std::map< double, Eigen::VectorXd > stateHistory;
     Eigen::MatrixXd stateVectorInclSTM = propagateOrbitAugmentedToFinalCondition(
                 getFullInitialStateAugmented( initialStateVector ), massParameter, orbitalPeriod, 1, stateHistory, 1000, 0.0 ).first;
-    writeStateHistoryToFileAugmented( stateHistory, initialStateVector(6), initialStateVector(7), orbitNumber, librationPointNr, 1000, false );
+    writeStateHistoryToFileAugmented( stateHistory, initialStateVector(6), initialStateVector(7), initialStateVector(8), differentialCorrectionResult(11), orbitNumber, librationPointNr, orbitType, 1000, false );
 
     // Save results
     double hamiltonianFullPeriod = computeHamiltonian( massParameter, stateVectorInclSTM.block(0,0,10,1));
@@ -513,33 +513,164 @@ Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initia
 return stateVectorInclSTM;
 }
 
-void writeFinalResultsToFilesAugmented( const int librationPointNr, const double accelerationMagnitude, const double accelerationAngle, const int numberOfPatchPoints,
+void writeFinalResultsToFilesAugmented( const int librationPointNr, const std::string& orbitType, const int continuationIndex, const double accelerationMagnitude, const double accelerationAngle, const double accelerationAngle2, const double familyHamiltonian, const int numberOfPatchPoints,
                                std::vector< Eigen::VectorXd > initialConditions,
                                std::vector< Eigen::VectorXd > differentialCorrections,
                                std::vector< Eigen::VectorXd > statesContinuation)
 {
-    // Prepare file for initial conditions
-    //remove(("/Users/Sjors/Documents/thesisSoftware/tudatBundle/tudatApplications/thesisProject/data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_initial_conditions.txt").c_str());
-    remove(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_initial_conditions.txt").c_str());
+    std::string directoryPath;
+    if (continuationIndex == 1) {
+        //directoryPath = "/Users/Sjors/Documents/thesisSoftware/tudatBundle/tudatApplications/thesisProject/data/raw/orbits/augmented/varying_energy/";
+        directoryPath = "../data/raw/orbits/augmented/varying_hamiltonian/";
+
+    } else if (continuationIndex == 6) {
+        //directoryPath = "/Users/Sjors/Documents/thesisSoftware/tudatBundle/tudatApplications/thesisProject/data/raw/orbits/augmented/varying_acceleration/";
+        directoryPath = "../data/raw/orbits/augmented/varying_acceleration/";
+
+    } else if (continuationIndex == 7) {
+        //directoryPath = "/Users/Sjors/Documents/thesisSoftware/tudatBundle/tudatApplications/thesisProject/data/raw/orbits/augmented/varying_alpha/";
+        directoryPath = "../data/raw/orbits/augmented/varying_alpha/";
+
+    } else {
+        //directoryPath = "/Users/Sjors/Documents/thesisSoftware/tudatBundle/tudatApplications/thesisProject/data/raw/orbits/augmented/varying_beta/";
+        directoryPath = "../data/raw/orbits/augmented/varying_beta/";
+
+    }
+
+    // Write variables to the right precision via ostringstream
+
+    std::ostringstream ssAccelerationMagnitude;
+    ssAccelerationMagnitude << std::fixed <<std::setprecision(13) << accelerationMagnitude;
+    std::string stringAccelerationMagnitude = ssAccelerationMagnitude.str();
+
+    std::ostringstream ssAccelerationAngle1;
+    ssAccelerationAngle1 << std::fixed <<  std::setprecision(13) << accelerationAngle;
+    std::string stringAccelerationAngle1 = ssAccelerationAngle1.str();
+
+    std::ostringstream ssAccelerationAngle2;
+    ssAccelerationAngle2 << std::fixed << std::setprecision(13) << accelerationAngle2;
+    std::string stringAccelerationAngle2 = ssAccelerationAngle2.str();
+
+    std::ostringstream ssHamiltonian;
+    ssHamiltonian << std::fixed << std::setprecision(13) << familyHamiltonian;
+    std::string stringHamiltonian = ssHamiltonian.str();
+
+    // remove initial Conditions file that already exist
+    if (continuationIndex == 1 ) {
+
+        remove((directoryPath + "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle1 + "_" + stringAccelerationAngle2 + "_initial_conditions.txt").c_str());
+
+    } else if ( continuationIndex == 6) {
+
+        remove((directoryPath + "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + stringAccelerationAngle1 + "_" + stringAccelerationAngle2 + "_" + stringHamiltonian + "_initial_conditions.txt").c_str());
+
+    } else if (continuationIndex == 7 ) {
+
+        remove((directoryPath + "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle2 + "_" + stringHamiltonian + "_initial_conditions.txt").c_str());
+
+    } else {
+
+        remove((directoryPath + "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle1 + "_" + stringHamiltonian + "_initial_conditions.txt").c_str());
+    }
+
+    // Create initial Conditions file that
     std::ofstream textFileInitialConditions;
-    //textFileInitialConditions.open(("/Users/Sjors/Documents/thesisSoftware/tudatBundle/tudatApplications/thesisProject/data/raw/orbits/data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_initial_conditions.txt"));
-    textFileInitialConditions.open(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_initial_conditions.txt"));
+
+    if (continuationIndex == 1 ) {
+
+        textFileInitialConditions.open((directoryPath + "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle1 + "_" + stringAccelerationAngle2 + "_initial_conditions.txt"));
+
+    } else if ( continuationIndex == 6) {
+
+        textFileInitialConditions.open((directoryPath + "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + stringAccelerationAngle1 + "_" + stringAccelerationAngle2 + "_" + stringHamiltonian + "_initial_conditions.txt"));
+
+    } else if (continuationIndex == 7 ) {
+
+        textFileInitialConditions.open((directoryPath + "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle2 + "_" + stringHamiltonian + "_initial_conditions.txt"));
+
+    } else {
+
+        textFileInitialConditions.open((directoryPath + "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle1 + "_" + stringHamiltonian + "_initial_conditions.txt"));
+    }
+
     textFileInitialConditions.precision(std::numeric_limits<double>::digits10);
 
-    // Prepare file for differential correction
-    //remove(("/Users/Sjors/Documents/thesisSoftware/tudatBundle/tudatApplications/thesisProject/data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_differential_correction.txt").c_str());
-    remove(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_differential_correction.txt").c_str());
+    // Remove differential Corrections file that already exist
+    if (continuationIndex == 1 ) {
+
+        remove((directoryPath + "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle1 + "_" + stringAccelerationAngle2 + "_differential_correction.txt").c_str());
+
+    } else if ( continuationIndex == 6) {
+
+        remove((directoryPath + "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + stringAccelerationAngle1 + "_" + stringAccelerationAngle2 + "_" + stringHamiltonian + "_differential_correction.txt").c_str());
+
+    } else if (continuationIndex == 7 ) {
+
+        remove((directoryPath + "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle2 + "_" + stringHamiltonian + "_differential_correction.txt").c_str());
+
+    } else {
+
+        remove((directoryPath + "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle1 + "_" + stringHamiltonian + "_differential_correction.txt").c_str());
+    }
+
     std::ofstream textFileDifferentialCorrection;
-    //textFileDifferentialCorrection.open(("/Users/Sjors/Documents/thesisSoftware/tudatBundle/tudatApplications/thesisProject/data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_differential_correction.txt"));
-    textFileDifferentialCorrection.open(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_differential_correction.txt"));
+
+    if (continuationIndex == 1 ) {
+
+        textFileDifferentialCorrection.open((directoryPath + "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle1 + "_" + stringAccelerationAngle2 + "_differential_correction.txt"));
+
+    } else if ( continuationIndex == 6) {
+
+        textFileDifferentialCorrection.open((directoryPath + "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + stringAccelerationAngle1 + "_" + stringAccelerationAngle2 + "_" + stringHamiltonian + "_differential_correctiontxt"));
+
+    } else if (continuationIndex == 7 ) {
+
+        textFileDifferentialCorrection.open((directoryPath + "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle2 + "_" + stringHamiltonian + "_differential_correction.txt"));
+
+    } else {
+
+        textFileDifferentialCorrection.open((directoryPath + "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle1 + "_" + stringHamiltonian + "_differential_correction.txt"));
+    }
+
     textFileDifferentialCorrection.precision(std::numeric_limits<double>::digits10);
 
-    // Prepare file for differential correction
-    //remove(("/Users/Sjors/Documents/thesisSoftware/tudatBundle/tudatApplications/thesisProject/data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_states_continuation.txt").c_str());
-    remove(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_differential_correction.txt").c_str());
+    // Remove states Continuation file that already exist
+    if (continuationIndex == 1 ) {
+
+        remove((directoryPath + "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle1 + "_" + stringAccelerationAngle2 + "_states_continuation.txt").c_str());
+
+    } else if ( continuationIndex == 6) {
+
+        remove((directoryPath + "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + stringAccelerationAngle1 + "_" + stringAccelerationAngle2 + "_" + stringHamiltonian + "_states_continuation.txt").c_str());
+
+    } else if (continuationIndex == 7 ) {
+
+        remove((directoryPath + "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle2 + "_" + stringHamiltonian + "_states_continuation.txt").c_str());
+
+    } else {
+
+        remove((directoryPath + "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle1 + "_" + stringHamiltonian + "_states_continuation.txt").c_str());
+    }
+
     std::ofstream textFileStatesContinuation;
-    textFileStatesContinuation.open(("/Users/Sjors/Documents/thesisSoftware/tudatBundle/tudatApplications/thesisProject/data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_states_continuation.txt"));
-    //textFileStatesContinuation.open(("../data/raw/orbits/L" + std::to_string(librationPointNr) + "_" + std::to_string( accelerationMagnitude) + "_" + std::to_string( accelerationAngle ) + "_states_continuation.txt"));
+
+    if (continuationIndex == 1 ) {
+
+        textFileStatesContinuation.open((directoryPath + "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle1 + "_" + stringAccelerationAngle2 + "_states_continuation.txt"));
+
+    } else if ( continuationIndex == 6) {
+
+        textFileStatesContinuation.open((directoryPath + "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + stringAccelerationAngle1 + "_" + stringAccelerationAngle2 + "_" + stringHamiltonian + "_states_continuation.txt"));
+
+    } else if (continuationIndex == 7 ) {
+
+        textFileStatesContinuation.open((directoryPath + "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle2 + "_" + stringHamiltonian + "_states_continuation.txt"));
+
+    } else {
+
+        textFileStatesContinuation.open((directoryPath + "L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle1 + "_" + stringHamiltonian + "_states_continuation.txt"));
+    }
+
     textFileStatesContinuation.precision(std::numeric_limits<double>::digits10);
 
     // Write initial conditions to file
@@ -660,7 +791,7 @@ bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differenti
 }
 
 void createLowThrustInitialConditions( const int librationPointNr, const std::string& orbitType, const int continuationIndex, const double accelerationMagnitude, const double accelerationAngle,
-                                       const double accelerationAngle2, const double initialMass,
+                                       const double accelerationAngle2, const double initialMass, const double familyHamiltonian,
                               const double massParameter, const int numberOfPatchPoints, const double maxPositionDeviationFromPeriodicOrbit, const double maxVelocityDeviationFromPeriodicOrbit, const double maxPeriodDeviationFromPeriodicOrbit, const double maxEigenvalueDeviation,
                               const boost::function< double( const Eigen::VectorXd&, const int ) > pseudoArcLengthFunctionAugmented ) {
 
@@ -688,19 +819,19 @@ void createLowThrustInitialConditions( const int librationPointNr, const std::st
 
     stateVectorInclSTM =  getCorrectedAugmentedInitialState(
                 linearApproximationResultIteration1, computeHamiltonian( massParameter, linearApproximationResultIteration1.segment(0,10)), 0,
-               librationPointNr, massParameter, numberOfPatchPoints, false, initialConditions, differentialCorrections, statesContinuation,
+               librationPointNr, orbitType, massParameter, numberOfPatchPoints, false, initialConditions, differentialCorrections, statesContinuation,
                 maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
 
     if ( continuationIndex == 1 ) {
 
         stateVectorInclSTM =  getCorrectedAugmentedInitialState(
                     linearApproximationResultIteration2, computeHamiltonian( massParameter, linearApproximationResultIteration1.segment(0,10)), 1,
-                   librationPointNr, massParameter, numberOfPatchPoints, false, initialConditions, differentialCorrections, statesContinuation,
+                   librationPointNr, orbitType, massParameter, numberOfPatchPoints, false, initialConditions, differentialCorrections, statesContinuation,
                     maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
     }
 
     // Set exit parameters of continuation procedure
-    int maximumNumberOfInitialConditions = 1000;
+    int maximumNumberOfInitialConditions = 2000;
     int numberOfInitialConditions;
     if ( continuationIndex == 1 ) {
 
@@ -762,10 +893,10 @@ void createLowThrustInitialConditions( const int librationPointNr, const std::st
 
 
 
-                stateVectorInclSTM =  getCorrectedAugmentedInitialState(
-                                initialStateVector, targetHamiltonian, numberOfInitialConditions,
-                            librationPointNr, massParameter, numberOfPatchPoints, false, initialConditions, differentialCorrections, statesContinuation,
-                            maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
+                stateVectorInclSTM =  getCorrectedAugmentedInitialState( initialStateVector, targetHamiltonian, numberOfInitialConditions,
+                                                                         librationPointNr, orbitType, massParameter, numberOfPatchPoints, false,
+                                                                         initialConditions, differentialCorrections, statesContinuation,
+                                                                         maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
 
                 numberOfInitialConditions += 1;
 
@@ -814,6 +945,6 @@ void createLowThrustInitialConditions( const int librationPointNr, const std::st
     }
 
 
-    writeFinalResultsToFilesAugmented( librationPointNr, accelerationMagnitude, accelerationAngle, numberOfPatchPoints, initialConditions, differentialCorrections, statesContinuation );
+    writeFinalResultsToFilesAugmented( librationPointNr, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, familyHamiltonian, numberOfPatchPoints, initialConditions, differentialCorrections, statesContinuation );
 
 }

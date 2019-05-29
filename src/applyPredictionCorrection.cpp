@@ -164,7 +164,7 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
 
     }
 
-    std::cout << "Test the hamiltonianDeviation Vector: " << hamiltonianDeviationVector << std::endl;
+    //std::cout << "Test the hamiltonianDeviation Vector: " << hamiltonianDeviationVector << std::endl;
 
     // compute deviations at the patch points
     Eigen::VectorXd deviationsFromPeriodicOrbit(5);
@@ -512,7 +512,7 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
 
                 }
 
-                std::cout << "Test the hamiltonianDeviation Vector: " << hamiltonianDeviationVector << std::endl;
+                //std::cout << "Test the hamiltonianDeviation Vector: " << hamiltonianDeviationVector << std::endl;
 
 
             applyLevel1Correction = true;

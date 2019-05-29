@@ -6,6 +6,9 @@
 #include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
 #include "Tudat/InputOutput/basicInputOutput.h"
 #include <cmath>
+#include <sstream>
+#include <iomanip>
+
 
 #include "propagateOrbitAugmented.h"
 #include "stateDerivativeModelAugmented.h"
@@ -46,33 +49,51 @@ void writeStateHistoryAndStateVectorsToFile ( const std::map< double, Eigen::Vec
 
 
 void writeStateHistoryToFileAugmented(
-        const std::map< double, Eigen::VectorXd >& stateHistory, const double accelerationMagnitude, const double accelerationAngle,
-        const int orbitId, const int librationPointNr,
+        const std::map< double, Eigen::VectorXd >& stateHistory, const double accelerationMagnitude, const double accelerationAngle, const double accelerationAngle2, const double initialHamiltonian,
+        const int orbitId, const int librationPointNr, const std::string& orbitType,
         const int saveEveryNthIntegrationStep, const bool completeInitialConditionsHaloFamily )
 {
+
+    std::ostringstream ssAccelerationMagnitude;
+    ssAccelerationMagnitude << std::fixed <<std::setprecision(13) << accelerationMagnitude;
+    std::string stringAccelerationMagnitude = ssAccelerationMagnitude.str();
+
+    std::ostringstream ssAccelerationAngle1;
+    ssAccelerationAngle1 << std::fixed <<  std::setprecision(13) << accelerationAngle;
+    std::string stringAccelerationAngle1 = ssAccelerationAngle1.str();
+
+    std::ostringstream ssAccelerationAngle2;
+    ssAccelerationAngle2 << std::fixed << std::setprecision(13) << accelerationAngle2;
+    std::string stringAccelerationAngle2 = ssAccelerationAngle2.str();
+
+    std::ostringstream ssHamiltonian;
+    ssHamiltonian << std::fixed << std::setprecision(13) << initialHamiltonian;
+    std::string stringHamiltonian = ssHamiltonian.str();
+
+
     std::string fileNameString;
-    std::string directoryString = "../data/raw/orbits/";
+    std::string directoryString = "../data/raw/orbits/augmented/";
     // Prepare output file
     if (saveEveryNthIntegrationStep != 1000)
     {
         if (completeInitialConditionsHaloFamily == false)
         {
-            fileNameString = ("L" + std::to_string(librationPointNr) + "_" + std::to_string(accelerationMagnitude) + "_" + std::to_string(accelerationAngle) + "_" + std::to_string(orbitId) + "_" + std::to_string(saveEveryNthIntegrationStep) + ".txt");
+            fileNameString = ("L_" + orbitType + "_" +std::to_string(librationPointNr) + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle1 + "_" + stringAccelerationAngle2 + "_" + stringHamiltonian + "_" + std::to_string(saveEveryNthIntegrationStep) + ".txt");
         }
         else
         {
-            fileNameString = ("L" + std::to_string(librationPointNr) + "_" + std::to_string(accelerationMagnitude) + "_" + std::to_string(accelerationAngle) + "_n_" + std::to_string(orbitId) + "_" + std::to_string(saveEveryNthIntegrationStep) + ".txt");
+            fileNameString = ("L_" + orbitType + "_" + std::to_string(librationPointNr) + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle1 + "_" + stringAccelerationAngle2 + "_" + stringHamiltonian + "_n_" + std::to_string(orbitId) + "_" + std::to_string(saveEveryNthIntegrationStep) + ".txt");
         }
     }
     else
     {
         if (completeInitialConditionsHaloFamily == false)
         {
-            fileNameString = ("L" + std::to_string(librationPointNr) + "_" + std::to_string(accelerationMagnitude) + "_" + std::to_string(accelerationAngle) + "_" + std::to_string(orbitId) + ".txt");
+            fileNameString = ("L_" + orbitType + "_" +std::to_string(librationPointNr) + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle1 + "_" + stringAccelerationAngle2 + "_" + stringHamiltonian + "_" + ".txt");
         }
         else
         {
-            fileNameString = ("L" + std::to_string(librationPointNr) + "_" + std::to_string(accelerationMagnitude) + "_" + std::to_string(accelerationAngle) + "_n_" + std::to_string(orbitId) + ".txt");
+            fileNameString = ("L_" + orbitType + "_" + std::to_string(librationPointNr) + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle1 + "_" + stringAccelerationAngle2 + "_" + stringHamiltonian + "_" + "_n_" + ".txt");
         }
     }
 

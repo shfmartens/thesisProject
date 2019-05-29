@@ -496,7 +496,7 @@ Eigen::VectorXd computeLevel2Correction( const Eigen::VectorXd deviationVector, 
     correctionsHamiltonian =  1.0*(updateMatrixHamiltonian.transpose())*(updateMatrixHamiltonian*(updateMatrixHamiltonian.transpose())).inverse()*constraintVectorHamiltonian;
     //correctionsHamiltonian =  updateMatrixHamiltonian.inverse()*constraintVectorHamiltonian;
 
-    std::cout << "correctionsHamiltonian: \n " << correctionsHamiltonian << std::endl;
+    //std::cout << "correctionsHamiltonian: \n " << correctionsHamiltonian << std::endl;
 
     // Store corrections in the differentialCorrection Vector
     for (int s = 0; s < numberOfPatchPoints; s++)
@@ -507,13 +507,13 @@ Eigen::VectorXd computeLevel2Correction( const Eigen::VectorXd deviationVector, 
             differentialCorrection.segment(s*11,3) = correctionsPeriodic.segment(s*4,3);
             differentialCorrection( s*11+10 ) = correctionsPeriodic( s*4+3 );
 
-            std::cout << "no constraint for energy " << std::endl;
+            //std::cout << "no constraint for energy " << std::endl;
         } else
         {
 
             differentialCorrection.segment(s*11,3) = correctionsHamiltonian.segment(s*4,3);
             differentialCorrection( s*11+10 ) = correctionsHamiltonian( s*4+3 );
-            std::cout << "CONSTRAINTS for energy INCLUDED " << std::endl;
+            //std::cout << "CONSTRAINTS for energy INCLUDED " << std::endl;
 
 
         }

@@ -13,7 +13,7 @@
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 
-void writeFinalResultsToFiles( const int librationPointNr, const double accelerationMagnitude, const double accelerationAngle, const int numberOfPatchPoints,
+void writeFinalResultsToFiles( const int librationPointNr, const std::string& orbitType, const int continuationIndex, const double accelerationMagnitude, const double accelerationAngle, const double accelerationAngle2, const double familyHamiltonian, const int numberOfPatchPoints,
                                std::vector< Eigen::VectorXd > initialConditions,
                                std::vector< Eigen::VectorXd > differentialCorrections, std::vector< Eigen::VectorXd > statesContinuation );
 
@@ -34,7 +34,7 @@ double getDefaultArcLengthAugmented(
 double computeHamiltonian ( const double massParameter, const Eigen::VectorXd stateVector );
 
 Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initialStateGuess, const double targetHamiltonian, const int orbitNumber,
-                                          const int librationPointNr, const double massParameter, const int numberOfPatchPoints, const bool hamiltonianConstraint,
+                                          const int librationPointNr, const std::string& orbitType, const double massParameter, const int numberOfPatchPoints, const bool hamiltonianConstraint,
                                           std::vector< Eigen::VectorXd >& initialConditions,
                                           std::vector< Eigen::VectorXd >& differentialCorrections,
                                           std::vector< Eigen::VectorXd >& statesContinuation,
@@ -54,7 +54,7 @@ bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differenti
                        const double maxEigenvalueDeviation = 1.0e-3 );
 
 void createLowThrustInitialConditions( const int librationPointNr, const std::string& orbitType, const int continuationIndex, const double accelerationMagnitude, const double accelerationAngle,
-                                       const double accelerationAngle2, const double initialMass,
+                                       const double accelerationAngle2, const double initialMass, const double familyHamiltonian,
                               const double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter(
             tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER,
             tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER ),
