@@ -58,7 +58,7 @@ int main (){
             if (i ==1)
             {
 
-                createLowThrustInitialConditions(1, "horizontal", 1, 0.00001, 0.0, 0.0, 1.0, -1.552, massParameter );
+                createLowThrustInitialConditions(1, "horizontal", 1, 0.00000, 0.0, 0.0, 1.0, -1.552, massParameter );
 
             if (i ==2)
             {
@@ -95,7 +95,7 @@ int main (){
             if (i ==8)
             {
 
-                createLowThrustInitialConditions(2, "horizontal", 1, 0.00001, 0.0, 0.0, 1.0, -1.552, massParameter );
+                createLowThrustInitialConditions(2, "horizontal", 1, 0.00000, 0.0, 0.0, 1.0, -1.552, massParameter );
             }
             if (i ==9)
             {
