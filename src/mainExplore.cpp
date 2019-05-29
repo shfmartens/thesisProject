@@ -59,7 +59,7 @@ int main (){
             {
 
                 createLowThrustInitialConditions(1, "horizontal", 1, 0.00000, 0.0, 0.0, 1.0, -1.552, massParameter );
-
+            }
             if (i ==2)
             {
 
