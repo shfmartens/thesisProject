@@ -227,8 +227,8 @@ Eigen::VectorXd morimotoFirstOrderApproximation(int librationPointNr,
 
     computeCenterEigenValues( statePropagationMatrix.block(0,1,6,6), minimumCenterEigenValue, stabilityType);
 
-    std::cout << "stabilityType:  " << stabilityType << std::endl;
-    std::cout << "minimumCenterEigenvalue:  " << minimumCenterEigenValue << std::endl;
+    //std::cout << "stabilityType:  " << stabilityType << std::endl;
+    //std::cout << "minimumCenterEigenvalue:  " << minimumCenterEigenValue << std::endl;
 
     // Compute the offset in position and velocity w.r.t to the equilibrium point for all patch points.
 
@@ -236,12 +236,12 @@ Eigen::VectorXd morimotoFirstOrderApproximation(int librationPointNr,
     Eigen::VectorXd stateAtCurrentPatchPoint = Eigen::VectorXd::Zero(11);
     Eigen::VectorXd lowThrustInitialStateVectorGuess = Eigen::VectorXd::Zero(11*numberOfPatchPoints);
 
-    double linearizedOrbitalPeriod = 2.0 * tudat::mathematical_constants::PI / (abs(minimumCenterEigenValue));
+    double linearizedOrbitalPeriod = 2.0 * tudat::mathematical_constants::PI / (std::abs(minimumCenterEigenValue));
 
-    std::cout << "2 * PI: " << 2.0 * tudat::mathematical_constants::PI << std::endl;
-    std::cout << "linearizedOrbitalPeriod: " << linearizedOrbitalPeriod << std::endl;
-    std::cout << "absMINIMUMCenterEigenValue: " <<  (abs(minimumCenterEigenValue)) << std::endl;
-    std::cout << "std::absMINIMUMCenterEigenValue: " <<  (std::abs(minimumCenterEigenValue)) << std::endl;
+    //std::cout << "2 * PI: " << 2.0 * tudat::mathematical_constants::PI << std::endl;
+    //std::cout << "linearizedOrbitalPeriod: " << linearizedOrbitalPeriod << std::endl;
+    //std::cout << "absMINIMUMCenterEigenValue: " <<  (abs(minimumCenterEigenValue)) << std::endl;
+    //std::cout << "std::absMINIMUMCenterEigenValue: " <<  (std::abs(minimumCenterEigenValue)) << std::endl;
 
 
 
