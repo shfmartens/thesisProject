@@ -226,7 +226,7 @@ Eigen::VectorXd morimotoFirstOrderApproximation(int librationPointNr,
     computeCenterEigenValues( statePropagationMatrix.block(0,1,6,6), minimumCenterEigenValue, stabilityType);
 
     std::cout << "stabilityType:  " << stabilityType << std::endl;
-//    std::cout << "minimumCenterEigenvalue:  " << minimumCenterEigenValue << std::endl;
+    std::cout << "minimumCenterEigenvalue:  " << minimumCenterEigenValue << std::endl;
 
     // Compute the offset in position and velocity w.r.t to the equilibrium point for all patch points.
 
@@ -247,12 +247,10 @@ Eigen::VectorXd morimotoFirstOrderApproximation(int librationPointNr,
         auto periodVariable2 = static_cast<double>(numberOfPatchPoints);
         double currentTime = periodVariable * linearizedOrbitalPeriod / (periodVariable2 - 1.0);
         int timeParameter;
-        double testVariable = 1.0;
 
-        std::cout << "testVariable: " << testVariable << std::endl;
-        std::cout << "periodVariable: " << periodVariable << std::endl;
-        std::cout << "periodVariable2: " << periodVariable2 << std::endl;
-        std::cout << "currentTime: " << currentTime << std::endl;
+        //std::cout << "periodVariable: " << periodVariable << std::endl;
+        //std::cout << "periodVariable2: " << periodVariable2 << std::endl;
+        //std::cout << "currentTime: " << currentTime << std::endl;
         //std::cout << "HALF PERIOD CHECK: " << tudat::mathematical_constants::PI - (linearizedOrbitalPeriod / 2.0 * abs(minimumCenterEigenValue) )<< std::endl;
         //std::cout << "HALF PERIOD CHECK: " << cos(tudat::mathematical_constants::PI - (linearizedOrbitalPeriod / 2.0 * abs(minimumCenterEigenValue) ))<< std::endl;
 
