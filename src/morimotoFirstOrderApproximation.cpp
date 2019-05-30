@@ -235,6 +235,7 @@ Eigen::VectorXd morimotoFirstOrderApproximation(int librationPointNr,
     Eigen::VectorXd lowThrustInitialStateVectorGuess = Eigen::VectorXd::Zero(11*numberOfPatchPoints);
 
     double linearizedOrbitalPeriod = 2.0 * tudat::mathematical_constants::PI / (abs(minimumCenterEigenValue));
+    std::cout << "linearizedOrbitalPeriod: " << linearizedOrbitalPeriod << std::endl;
 
     for (int i = 0; i < numberOfPatchPoints; i++){
 
