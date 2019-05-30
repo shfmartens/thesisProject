@@ -79,10 +79,10 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
                                             const int maxNumberOfIterations )
 {
     std::cout << "\nApply Prediction Correction:" << std::endl;
-    std::cout << "Initial guess from linearized dynamics: \n" << initialStateVector << std::endl;
+    //std::cout << "Initial guess from linearized dynamics: \n" << initialStateVector << std::endl;
 
-    std::cout << "TESTING TARGETHAMILTONIAN: " << targetHamiltonian << std::endl;
-    std::cout << "TESTING HAMILTONIANCONSTRAINT: " << hamiltonianConstraint << std::endl;
+    //std::cout << "TESTING TARGETHAMILTONIAN: " << targetHamiltonian << std::endl;
+    //std::cout << "TESTING HAMILTONIANCONSTRAINT: " << hamiltonianConstraint << std::endl;
 
 
     // Declare and/or initialize variables variables and matrices

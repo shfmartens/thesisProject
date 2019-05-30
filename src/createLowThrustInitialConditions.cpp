@@ -157,11 +157,8 @@ void appendDifferentialCorrectionResultsVectorAugmented(
         std::vector< Eigen::VectorXd >& differentialCorrections )
 {
 
-    std::cout << "TEST IF LOOP IS ENTERED " << std::endl;
-
     Eigen::VectorXd tempDifferentialCorrection = Eigen::VectorXd( 13 );
 
-    std::cout << "tempDifferentialCorrection: \n " << tempDifferentialCorrection << std::endl;
 
 
     tempDifferentialCorrection( 0 ) = differentialCorrectionResult( 24 );  // numberOfIterations
@@ -169,11 +166,9 @@ void appendDifferentialCorrectionResultsVectorAugmented(
     tempDifferentialCorrection( 2 ) = differentialCorrectionResult( 22 );  // currentTime
     for (int i = 12; i <= 21; i++)
     {
-        std::cout << "test i-: " << i - 9 << std::endl;
         tempDifferentialCorrection( i - 9 ) = differentialCorrectionResult( i );  // FullPeriodStateVector
     }
 
-    std::cout << "loop complete: " << tempDifferentialCorrection << std::endl;
 
 
     differentialCorrections.push_back(tempDifferentialCorrection);
@@ -515,17 +510,11 @@ Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initia
     // Save results
     double hamiltonianFullPeriod = computeHamiltonian( massParameter, stateVectorInclSTM.block(0,0,10,1));
 
-    std::cout << "appendDifferentialCorrectionsResultsVector" << std::endl;
     appendDifferentialCorrectionResultsVectorAugmented( hamiltonianFullPeriod, differentialCorrectionResult, differentialCorrections );
-    std::cout << "appendDifferentialCorrectionsResultsVector Completed" << std::endl;
 
-    std::cout << "appendContinuationStatesVectorAugmented" << std::endl;
     appendContinuationStatesVectorAugmented( orbitNumber, numberOfPatchPoints, differentialCorrectionResult(11), differentialCorrectionResult, statesContinuation);
-    std::cout << "appendContinuationStatesVectorAugmented Completed" << std::endl;
 
-    std::cout << "appendResultsVectorAugmented" << std::endl;
     appendResultsVectorAugmented( hamiltonianFullPeriod, orbitalPeriod, initialStateVector, stateVectorInclSTM, initialConditions );
-    std::cout << "appendResultsVectorAugmented completed" << std::endl;
 
 return stateVectorInclSTM;
 }
@@ -883,8 +872,8 @@ void createLowThrustInitialConditions( const int librationPointNr, const std::st
             //std::cout << "============" << std::endl
             //          << "X^{n}: \n" << statesContinuation[ statesContinuation.size( ) - 2 ].segment( 2, 11*numberOfPatchPoints ) << std::endl
             //          << "X^{n+1}: \n" << statesContinuation[ statesContinuation.size( ) - 1 ].segment( 2, 11*numberOfPatchPoints ) << std::endl;
-            std::cout << "Hamiltonian n: "  << statesContinuation[ statesContinuation.size( ) - 2 ](1) << std::endl;
-            std::cout << "Hamiltonian n+1: "  << statesContinuation[ statesContinuation.size( ) - 1 ](1) << std::endl;
+            //std::cout << "Hamiltonian n: "  << statesContinuation[ statesContinuation.size( ) - 2 ](1) << std::endl;
+            //std::cout << "Hamiltonian n+1: "  << statesContinuation[ statesContinuation.size( ) - 1 ](1) << std::endl;
 
 
             // Determine increments to state and time
@@ -893,12 +882,12 @@ void createLowThrustInitialConditions( const int librationPointNr, const std::st
             stateIncrement(0) = statesContinuation[ statesContinuation.size( ) - 1 ]( 1 ) -
                     statesContinuation[ statesContinuation.size( ) - 2 ]( 1 );
 
-            std::cout << "stateIncrement: \n" << stateIncrement << std::endl;
+            //std::cout << "stateIncrement: \n" << stateIncrement << std::endl;
 
             pseudoArcLengthCorrection =
                     pseudoArcLengthFunctionAugmented( stateIncrement, continuationIndex );
 
-            std::cout << "pseudoArcLengthCorrection: " << pseudoArcLengthCorrection << std::endl;
+            //std::cout << "pseudoArcLengthCorrection: " << pseudoArcLengthCorrection << std::endl;
 
             // Apply numerical continuation
             initialStateVector = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 2, 11*numberOfPatchPoints ) +
