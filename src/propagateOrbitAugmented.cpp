@@ -78,22 +78,22 @@ void writeStateHistoryToFileAugmented(
     {
         if (completeInitialConditionsHaloFamily == false)
         {
-            fileNameString = ("L_" + orbitType + "_" +std::to_string(librationPointNr) + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle1 + "_" + stringAccelerationAngle2 + "_" + stringHamiltonian + "_" + std::to_string(saveEveryNthIntegrationStep) + ".txt");
+            fileNameString = ("L_" +std::to_string(librationPointNr) + "_" + orbitType  + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle1 + "_" + stringAccelerationAngle2 + "_" + stringHamiltonian + "_" + std::to_string(saveEveryNthIntegrationStep) + ".txt");
         }
         else
         {
-            fileNameString = ("L_" + orbitType + "_" + std::to_string(librationPointNr) + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle1 + "_" + stringAccelerationAngle2 + "_" + stringHamiltonian + "_n_" + std::to_string(orbitId) + "_" + std::to_string(saveEveryNthIntegrationStep) + ".txt");
+            fileNameString = ("L_" +std::to_string(librationPointNr) + "_" + orbitType  + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle1 + "_" + stringAccelerationAngle2 + "_" + stringHamiltonian + "_n_" + std::to_string(orbitId) + "_" + std::to_string(saveEveryNthIntegrationStep) + ".txt");
         }
     }
     else
     {
         if (completeInitialConditionsHaloFamily == false)
         {
-            fileNameString = ("L_" + orbitType + "_" +std::to_string(librationPointNr) + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle1 + "_" + stringAccelerationAngle2 + "_" + stringHamiltonian + "_" + ".txt");
+            fileNameString = ("L_" +std::to_string(librationPointNr) + "_" + orbitType  + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle1 + "_" + stringAccelerationAngle2 + "_" + stringHamiltonian + "_" + ".txt");
         }
         else
         {
-            fileNameString = ("L_" + orbitType + "_" + std::to_string(librationPointNr) + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle1 + "_" + stringAccelerationAngle2 + "_" + stringHamiltonian + "_" + "_n_" + ".txt");
+            fileNameString = ("L_" +std::to_string(librationPointNr) + "_" + orbitType  + "_" + stringAccelerationMagnitude + "_" + stringAccelerationAngle1 + "_" + stringAccelerationAngle2 + "_" + stringHamiltonian + "_" + "_n_" + ".txt");
         }
     }
 
