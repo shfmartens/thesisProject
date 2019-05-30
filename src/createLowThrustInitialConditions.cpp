@@ -501,17 +501,22 @@ Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initia
     Eigen::MatrixXd stateVectorInclSTM = propagateOrbitAugmentedToFinalCondition(
                 getFullInitialStateAugmented( initialStateVector ), massParameter, orbitalPeriod, 1, stateHistory, 1000, 0.0 ).first;
 
-    std::cout << "start writing file" << std::endl;
     writeStateHistoryToFileAugmented( stateHistory, initialStateVector(6), initialStateVector(7), initialStateVector(8), differentialCorrectionResult(11), orbitNumber, librationPointNr, orbitType, 1000, false );
-    std::cout << " writing file complete" << std::endl;
 
     // Save results
     double hamiltonianFullPeriod = computeHamiltonian( massParameter, stateVectorInclSTM.block(0,0,10,1));
+
+    std::cout << "appendDifferentialCorrectionsResultsVector" << std::endl;
     appendDifferentialCorrectionResultsVectorAugmented( hamiltonianFullPeriod, differentialCorrectionResult, differentialCorrections );
+    std::cout << "appendDifferentialCorrectionsResultsVector Completed" << std::endl;
 
+    std::cout << "appendContinuationStatesVectorAugmented" << std::endl;
     appendContinuationStatesVectorAugmented( orbitNumber, numberOfPatchPoints, differentialCorrectionResult(11), differentialCorrectionResult, statesContinuation);
+    std::cout << "appendContinuationStatesVectorAugmented Completed" << std::endl;
 
+    std::cout << "appendResultsVectorAugmented" << std::endl;
     appendResultsVectorAugmented( hamiltonianFullPeriod, orbitalPeriod, initialStateVector, stateVectorInclSTM, initialConditions );
+    std::cout << "appendResultsVectorAugmented completed" << std::endl;
 
 return stateVectorInclSTM;
 }

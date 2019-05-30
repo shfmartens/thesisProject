@@ -350,7 +350,7 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
                 std::cout << "hamiltonianDeviation: " << "Orbit not refined for Hamiltonian value." << std::endl;
             } else
             {
-                std::cout << "hamiltonianDeviation: " << abs(hamiltonianDeviationFromDesiredValue) << std::endl;
+                std::cout << "hamiltonianDeviation: " << std::abs(hamiltonianDeviationFromDesiredValue) << std::endl;
 
             }
 
@@ -508,7 +508,7 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
                     std::cout << "hamiltonianDeviationAfterLII: " << "Orbit not refined for Hamiltonian value." << std::endl;
                 } else
                 {
-                    std::cout << "hamiltonianDeviationAfterLII: " << abs(hamiltonianDeviationFromDesiredValue) << std::endl;
+                    std::cout << "hamiltonianDeviationAfterLII: " << std::abs(hamiltonianDeviationFromDesiredValue) << std::endl;
 
                 }
 
