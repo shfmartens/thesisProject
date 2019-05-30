@@ -157,14 +157,23 @@ void appendDifferentialCorrectionResultsVectorAugmented(
         std::vector< Eigen::VectorXd >& differentialCorrections )
 {
 
+    std::cout << "TEST IF LOOP IS ENTERED " << std::endl;
+
     Eigen::VectorXd tempDifferentialCorrection = Eigen::VectorXd( 13 );
+
+    std::cout << "tempDifferentialCorrection: \n " << tempDifferentialCorrection << std::endl;
+
+
     tempDifferentialCorrection( 0 ) = differentialCorrectionResult( 24 );  // numberOfIterations
     tempDifferentialCorrection( 1 ) = hamiltonianFullPeriod;  // jacobiEnergyHalfPeriod
     tempDifferentialCorrection( 2 ) = differentialCorrectionResult( 22 );  // currentTime
     for (int i = 12; i <= 21; i++)
     {
+        std::cout << "test i-8: " << i - 8 << std::endl;
         tempDifferentialCorrection( i - 8 ) = differentialCorrectionResult( i );  // FullPeriodStateVector
     }
+
+    std::cout << "loop complete: " << tempDifferentialCorrection << std::endl;
 
 
     differentialCorrections.push_back(tempDifferentialCorrection);
