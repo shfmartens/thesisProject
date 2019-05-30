@@ -169,8 +169,8 @@ void appendDifferentialCorrectionResultsVectorAugmented(
     tempDifferentialCorrection( 2 ) = differentialCorrectionResult( 22 );  // currentTime
     for (int i = 12; i <= 21; i++)
     {
-        std::cout << "test i-8: " << i - 8 << std::endl;
-        tempDifferentialCorrection( i - 8 ) = differentialCorrectionResult( i );  // FullPeriodStateVector
+        std::cout << "test i-: " << i - 9 << std::endl;
+        tempDifferentialCorrection( i - 9 ) = differentialCorrectionResult( i );  // FullPeriodStateVector
     }
 
     std::cout << "loop complete: " << tempDifferentialCorrection << std::endl;
