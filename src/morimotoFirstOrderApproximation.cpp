@@ -238,6 +238,8 @@ Eigen::VectorXd morimotoFirstOrderApproximation(int librationPointNr,
 
     std::cout << "2 * PI: " << 2.0 * tudat::mathematical_constants::PI << std::endl;
     std::cout << "linearizedOrbitalPeriod: " << linearizedOrbitalPeriod << std::endl;
+    std::cout << "absMINIMUMCenterEigenValue: " <<  (abs(minimumCenterEigenValue)) << std::endl;
+
 
     for (int i = 0; i < numberOfPatchPoints; i++){
 
