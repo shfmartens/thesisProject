@@ -250,7 +250,7 @@ Eigen::VectorXd morimotoFirstOrderApproximation(int librationPointNr,
 
         std::cout << "testVariable: " << testVariable << std::endl;
         std::cout << "periodVariable: " << periodVariable << std::endl;
-        std::cout << "periodVariable2: " << periodVariable << std::endl;
+        std::cout << "periodVariable2: " << periodVariable2 << std::endl;
         std::cout << "currentTime: " << currentTime << std::endl;
         //std::cout << "HALF PERIOD CHECK: " << tudat::mathematical_constants::PI - (linearizedOrbitalPeriod / 2.0 * abs(minimumCenterEigenValue) )<< std::endl;
         //std::cout << "HALF PERIOD CHECK: " << cos(tudat::mathematical_constants::PI - (linearizedOrbitalPeriod / 2.0 * abs(minimumCenterEigenValue) ))<< std::endl;
