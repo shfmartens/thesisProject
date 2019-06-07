@@ -21,6 +21,23 @@ Eigen::MatrixXd getFullInitialStateAugmented( const Eigen::VectorXd& initialStat
     return fullInitialState;
 }
 
+void writeFloquetDataToFile (const std::map< double, Eigen::VectorXd >& stateHistory, const std::map< double, Eigen::VectorXd >& stateHistoryCorrected, const int librationPointNr, const std::string orbitType, const Eigen::VectorXd equilibriumStateVector, const int numberOfPatchPoints, const double amplitude )
+{
+    std::string fileNameString;
+    std::string fileNameStringCorrected;
+
+    std::string directoryString = "../data/raw/floquet_controller/";
+
+    fileNameString = ("L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(equilibriumStateVector(6)) + "_" + std::to_string(equilibriumStateVector(7)) + "_" + std::to_string( amplitude ) + "_" + std::to_string(numberOfPatchPoints) + "_initialGuess.txt");
+    fileNameStringCorrected = ("L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(equilibriumStateVector(6)) + "_" + std::to_string(equilibriumStateVector(7)) + "_" + std::to_string( amplitude ) + "_" + std::to_string(numberOfPatchPoints) + "_CorrectedGuess.txt");
+
+    tudat::input_output::writeDataMapToTextFile( stateHistory, fileNameString, directoryString );
+    tudat::input_output::writeDataMapToTextFile( stateHistoryCorrected, fileNameStringCorrected, directoryString );
+
+
+
+}
+
 void writeStateHistoryAndStateVectorsToFile ( const std::map< double, Eigen::VectorXd >& stateHistory, const Eigen::VectorXd stateVectors, const Eigen::VectorXd deviationVector, const Eigen::VectorXd deviationVectorFull,
                                               const int numberOfIterations, const int correctionLevel)
 {
@@ -31,6 +48,7 @@ void writeStateHistoryAndStateVectorsToFile ( const std::map< double, Eigen::Vec
     std::string fileNameStringDeviationsFull;
 
     std::string directoryString = "/Users/Sjors/Desktop/debuggingLII/stateHistory/";
+
 
     fileNameString = ("propagatedSolution_" + std::to_string(numberOfIterations) + "_" + std::to_string(correctionLevel) + ".txt");
     fileNameStringStateVectors = ("patchPoints_" + std::to_string(numberOfIterations) + "_" + std::to_string(correctionLevel) + ".txt");

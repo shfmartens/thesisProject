@@ -249,6 +249,7 @@ set(CR3BPLT_SOURCES
          "${SRCROOT}/src/stateDerivativeModelAugmented.cpp"
          "${SRCROOT}/src/richardsonThirdOrderApproximationMultiple.cpp"
          "${SRCROOT}/src/morimotoFirstOrderApproximation.cpp"
+         "${SRCROOT}/src/floquetApproximation.cpp"
          "${SRCROOT}/src/checkEigenvalues.cpp"
 
 
@@ -268,6 +269,7 @@ set(CR3BPLT_HEADERS
          "${SRCROOT}/src/stateDerivativeModelAugmented.h"
          "${SRCROOT}/src/richardsonThirdOrderApproximationMultiple.h"
          "${SRCROOT}/src/morimotoFirstOrderApproximation.h"
+         "${SRCROOT}/src/floquetApproximation.h"
          "${SRCROOT}/src/checkEigenvalues.h"
 
 

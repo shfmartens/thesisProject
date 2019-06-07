@@ -455,6 +455,7 @@ class ManifoldComparisonForVaryingC:
             ax31.grid(True, which='both', ls=':')
             ax32.grid(True, which='both', ls=':')
 
+
         fig.tight_layout()
         if self.orbitType == 'horizontal':
             fig.subplots_adjust(top=0.9)

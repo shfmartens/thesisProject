@@ -9,6 +9,8 @@
 
 Eigen::MatrixXd getFullInitialStateAugmented( const Eigen::VectorXd& initialState );
 
+void writeFloquetDataToFile (const std::map< double, Eigen::VectorXd >& stateHistory, const std::map< double, Eigen::VectorXd >& stateHistoryCorrected, const int librationPointNr, const std::string orbitType, const Eigen::VectorXd equilibriumStateVector, const int numberOfPatchPoints, const double amplitude );
+
 void writeStateHistoryAndStateVectorsToFile ( const std::map< double, Eigen::VectorXd >& stateHistory, const std::string orbitType, const Eigen::VectorXd stateVectors, const Eigen::VectorXd deviationVector, const Eigen::VectorXd deviationVectorFull,
                                               const int numberOfIterations, const int correctionLevel );
 

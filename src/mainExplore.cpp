@@ -31,8 +31,9 @@ int main (){
     // ================================
     // == Compute equilibria, comment out when computing low-thrust intial positions ==
     // ================================
-        //createEquilibriumLocations(1, thrustAcceleration, massParameter);
-        //createEquilibriumLocations(2, thrustAcceleration, massParameter);
+        double thrustAcceleration = 0.000;
+        createEquilibriumLocations(1, thrustAcceleration, massParameter);
+        createEquilibriumLocations(2, thrustAcceleration, massParameter);
 
     // ================================
     // == Compute initial conditions ==
@@ -51,14 +52,15 @@ int main (){
     // ================================
 
 
-    #pragma omp parallel num_threads(14)
+    #pragma omp parallel num_threads(1)
     {
         #pragma omp for
-        for (unsigned int i=1; i<=14; i++) {
+        for (unsigned int i=1; i<=1; i++) {
             if (i ==1)
             {
+
                 std::cout << "running thread 01" << std::endl;
-                createLowThrustInitialConditions(1, "horizontal", 1, 0.0, 0.0, 0.0, 1.0, -1.552, massParameter );
+                //createLowThrustInitialConditions(1, "horizontal", 1, 0.001, 30.0, 0.0, 1.0, -1.552, massParameter );
             }
             if (i ==2)
             {

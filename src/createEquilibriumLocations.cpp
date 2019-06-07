@@ -203,9 +203,10 @@ Eigen::Vector2d createEquilibriumLocations (const int librationPointNr, const do
 
     for (int i = 1; i <= 3600; i++ ) {
         auto alpha = static_cast< double > (i * 0.1);
-        equilibriumLocationWithIterations = applyMultivariateRootFinding(librationPointNr, equilibriumLocation, alpha, thrustAcceleration ,massParameter, 2.0e-15, maxIterations );
+        equilibriumLocationWithIterations = applyMultivariateRootFinding(librationPointNr, equilibriumLocation, alpha, thrustAcceleration ,massParameter, 5.0e-15, maxIterations );
         equilibriumLocation = equilibriumLocationWithIterations.block(0,0,2,1);
         linearizedStability = computeEquilibriaStability(equilibriumLocation, 0.0, thrustAcceleration, massParameter);
+
         equilibriaCatalog[ alpha * tudat::mathematical_constants::PI / 180.0 ] = equilibriumLocationWithIterations;
         stabilityCatalog [alpha * tudat::mathematical_constants::PI / 180.0 ] = linearizedStability;
 
