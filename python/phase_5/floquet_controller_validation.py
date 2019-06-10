@@ -1,0 +1,326 @@
+import numpy as np
+import pandas as pd
+import json
+import matplotlib
+from decimal import *
+matplotlib.use('Agg')  # Must be before importing matplotlib.pyplot or pylab!
+import matplotlib.pyplot as plt
+from matplotlib.gridspec import GridSpec
+from mpl_toolkits.mplot3d import Axes3D
+from mpl_toolkits.axes_grid.inset_locator import inset_axes
+from matplotlib2tikz import save as tikz_save
+import seaborn as sns
+sns.set_style("whitegrid")
+import time
+plt.rcParams['text.latex.preamble']=[r"\usepackage{lmodern}"]
+params = {'text.usetex': True,
+          'font.size': 11,
+          'font.family': 'lmodern',
+          'text.latex.unicode': True,
+          }
+plt.rcParams.update(params)
+import sys
+sys.path.append('../util')
+from load_data import load_orbit, load_bodies_location, load_lagrange_points_location, load_differential_corrections, \
+load_initial_conditions_incl_M, load_manifold
+
+from load_data_augmented import load_orbit_augmented, load_lagrange_points_location_augmented
+
+class floquetController:
+    def __init__(self, orbit_type, lagrange_point_nr, acceleration_magnitude, alpha, amplitude, number_of_points, low_dpi):
+        self.orbitType = orbit_type
+        self.lagrangePointNr = lagrange_point_nr
+        self. accelerationMagnitude = acceleration_magnitude
+        self.alpha = alpha
+        self.amplitude = amplitude
+        self.numberOfPatchPoints = number_of_points
+
+        self.numberOfAmplitudes = len(self.amplitude)
+        self.numberOfSolutions = 6
+        self.numberOfAxisTicks = 4
+
+
+
+
+
+
+
+
+        self.lowDpi = low_dpi
+        self.figSize = self.figSize = (7 * (1 + np.sqrt(5)) / 2, 7)
+        self.figureRatio = 7 / (7 * (1 + np.sqrt(5)) / 2)
+        blues = sns.color_palette('Blues', 100)
+        greens = sns.color_palette('BuGn', 100)
+        n_colors = 3
+        n_colors_l = 6
+        self.plottingColors = {'lambda1': sns.color_palette("viridis", n_colors_l)[0],
+                               'lambda2': sns.color_palette("viridis", n_colors_l)[2],
+                               'lambda3': sns.color_palette("viridis", n_colors_l)[4],
+                               'lambda4': sns.color_palette("viridis", n_colors_l)[5],
+                               'lambda5': sns.color_palette("viridis", n_colors_l)[3],
+                               'lambda6': sns.color_palette("viridis", n_colors_l)[1],
+                               # 'lambda1': blues[40],
+                               # 'lambda2': greens[50],
+                               # 'lambda3': blues[90],
+                               # 'lambda4': blues[90],
+                               # 'lambda5': greens[70],
+                               # 'lambda6': blues[60],
+                               # 'singleLine': blues[80],
+                               # 'doubleLine': [greens[50], blues[80]],
+                               # 'tripleLine': [blues[40], greens[50], blues[80]],
+                               'singleLine': sns.color_palette("viridis", n_colors)[0],
+                               'doubleLine': [sns.color_palette("viridis", n_colors)[n_colors - 1],
+                                              sns.color_palette("viridis", n_colors)[0]],
+                               'tripleLine': [sns.color_palette("viridis", n_colors)[n_colors - 1],
+                                              sns.color_palette("viridis", n_colors)[int((n_colors - 1) / 2)],
+                                              sns.color_palette("viridis", n_colors)[0]],
+                               'limit': 'black'}
+
+        self.suptitleSize = 20
+        self.dpi = 150
+
+    def plot_offset_effect(self):
+        fig = plt.figure(figsize=self.figSize)
+        ax1 = fig.add_subplot(2,2,1 )
+        ax2 = fig.add_subplot(2,2,2 )
+        ax3 = fig.add_subplot(2,2,3 )
+        ax4 = fig.add_subplot(2,2,4 )
+
+        # add libration point
+        lagrange_points_df = load_lagrange_points_location_augmented(self.accelerationMagnitude,self.alpha)
+        if self.lagrangePointNr == 1:
+            lagrange_point_nrs = ['L1']
+        if self.lagrangePointNr == 2:    
+            lagrange_point_nrs = ['L2']
+
+        for lagrange_point_nr in lagrange_point_nrs:
+            ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                    color='black', marker='x')
+            ax2.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                    color='black', marker='x')
+
+        # bodies_df = load_bodies_location()
+        # u = np.linspace(0, 2 * np.pi, 100)
+        # v = np.linspace(0, np.pi, 100)
+        # for body in ['Moon', 'Earth']:
+        #     x = bodies_df[body]['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df[body]['x']
+        #     y = bodies_df[body]['r'] * np.outer(np.sin(u), np.sin(v))
+        #     z = bodies_df[body]['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
+        #     ax1.contourf(x, y, z, colors='black')
+        #     ax2.contourf(x, y, z, colors='black')
+
+        ax1.set_xlabel('x [-]')
+        ax1.set_ylabel('y [-]')
+        ax1.grid(True, which='both', ls=':')
+
+        ax2.set_xlabel('x [-]')
+        ax2.set_ylabel('y [-]')
+        ax2.grid(True, which='both', ls=':')
+
+        ax3.set_xlabel('$|A|$ [-]')
+        ax3.set_ylabel('$ |\\Delta R|$ [-], $|\\Delta V|$ [-]')
+        ax3.grid(True, which='both', ls=':')
+
+        ax4.set_xlabel('$|A|$ [-]')
+        ax4.set_ylabel('$ |\\Delta R|$ [-], $|\\Delta V|$ [-]')
+        ax4.grid(True, which='both', ls=':')
+
+        orbitIdsPlot = list(range(0, len(self.amplitude), 1))
+
+        #deviation_df = pd.DataFrame({'Amplitude': [], 'DeltaR': [], 'DeltaV': []})
+        deviation_list = []
+        deviation_corrected_list = []
+
+        indexPlotlist = np.linspace(0,len(self.amplitude)-1,num=self.numberOfSolutions).tolist()
+        Indexlist = 0
+
+
+        for i in orbitIdsPlot:
+            df = load_orbit_augmented('../../data/raw/floquet_controller/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
+            + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str("{:7.6f}".format(self.alpha)) + '_' \
+            + str("{:7.6f}".format(self.amplitude[i])) + '_' \
+            + str(self.numberOfPatchPoints) + '_initialGuess.txt')
+
+
+
+            deviations = df.head(1).values[0] - df.tail(1).values[0]
+            deltaR = np.linalg.norm(deviations[1:4])
+            deltaV = np.linalg.norm(deviations[4:7])
+
+
+
+            deviation_list.append([self.amplitude[i], deltaR, deltaV])
+
+
+            if i == indexPlotlist[Indexlist]:
+                df_corrected = load_orbit_augmented(
+                    '../../data/raw/floquet_controller/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
+                    + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str("{:7.6f}".format(self.alpha)) + '_' \
+                    + str("{:7.6f}".format(self.amplitude[i])) + '_' \
+                    + str(self.numberOfPatchPoints) + '_CorrectedGuess.txt')
+
+                deviations_corrected = df_corrected.head(1).values[0] - df_corrected.tail(1).values[0]
+                deltaR_corrected = np.linalg.norm(deviations_corrected[1:4])
+                deltaV_corrected = np.linalg.norm(deviations_corrected[4:7])
+                deviation_corrected_list.append([self.amplitude[i], deltaR_corrected, deltaV_corrected])
+
+                legendString = '$A_{r} = $' + str("{:2.1e}".format(self.amplitude[i]))
+                ax1.plot(df['x'], df['y'], color=sns.color_palette('viridis', self.numberOfAmplitudes)[i], linewidth=1, label= legendString )
+                ax2.plot(df_corrected['x'], df_corrected['y'], color=sns.color_palette('viridis', self.numberOfAmplitudes)[i], linewidth=1, label=legendString )
+                Indexlist = Indexlist + 1
+
+
+        deviation_df=pd.DataFrame(deviation_list,columns=['amplitude','deltaR','deltaV'])
+        deviation_corrected_df=pd.DataFrame(deviation_corrected_list,columns=['amplitude','deltaR','deltaV'])
+
+
+        ax3.semilogx(deviation_df['amplitude'],deviation_df['deltaR'], color=sns.color_palette('viridis', 2)[0], linewidth=1)
+        ax3.semilogx(deviation_df['amplitude'],deviation_df['deltaV'], color=sns.color_palette('viridis', 2)[1], linewidth=1)
+        ax4.semilogx(deviation_corrected_df['amplitude'],deviation_corrected_df['deltaR'], color=sns.color_palette('viridis', 2)[0], linewidth=1, label='$| \\Delta R | [-]$ ')
+        ax4.semilogx(deviation_corrected_df['amplitude'],deviation_corrected_df['deltaV'], color=sns.color_palette('viridis', 2)[1], linewidth=1, label='$| \\Delta V | [-]$ ')
+
+        scaleDistance = max((max(df['x'])-min(df['x'])),(max(df['y'])-min(df['y'])), \
+                            (max(df_corrected['x']) - min(df_corrected['x'])), (max(df_corrected['y']) - min(df_corrected['y'])) )*1.05
+
+        minimumX = min(min(df['x']),min(df_corrected['x']))
+        minimumY = min(min(df['y']),min(df_corrected['y']))
+
+
+        ax1.set_xlim([minimumX, minimumX+scaleDistance*self.figureRatio])
+        ax1.set_ylim([minimumY, minimumY+scaleDistance])
+        ax2.set_xlim([minimumX, minimumX + scaleDistance * self.figureRatio])
+        ax2.set_ylim([minimumY, minimumY+scaleDistance])
+
+
+        ax3.set_xlim([ min(deviation_df['amplitude']), max(deviation_df['amplitude'])])
+        ax3.set_ylim([0, max(deviation_df['deltaV'])])
+        ax4.set_xlim([ min(deviation_corrected_df['amplitude']), max(deviation_df['amplitude'])])
+        ax4.set_ylim([0, max(deviation_corrected_df['deltaV'])])
+        fig.tight_layout()
+        fig.subplots_adjust(top=0.9,bottom= -0.1)
+
+        ax1.set_title('near-periodic solutions before correction')
+        ax2.set_title('near-periodic solutions after correction')
+        ax3.set_title('full-period deviations before correction') 
+        ax4.set_title('full-period deviations after correction')
+
+        #ax1.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+        ax1.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%.5f'))
+        xticks = (np.linspace(min(df['x']), min(df['x']) + scaleDistance*self.figureRatio, num=self.numberOfAxisTicks))
+        ax1.xaxis.set_ticks( xticks )
+
+        #ax2.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+        ax2.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%.5f'))
+        xticks = (np.linspace(min(df['x']), min(df['x']) + scaleDistance*self.figureRatio, num=self.numberOfAxisTicks))
+        ax2.xaxis.set_ticks( xticks )                                                                                    
+
+        lgd  = ax2.legend(frameon=True, loc='center left',  bbox_to_anchor=(1, 0.5))
+        lgd2 = ax4.legend(frameon=True, loc='center left',  bbox_to_anchor=(1, 0.5))
+
+        supttl = fig.suptitle('Initial guesses at L$_{'+ str(self.lagrangePointNr ) + '}$('+ str(self.accelerationMagnitude) \
+        +',' + str(self.alpha) + ') after ofsett in $\\lambda_3$ direction', size=self.suptitleSize)
+
+        if self.lowDpi:
+            fig.savefig('../../data/figures/floquet_controller/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
+                    + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str("{:7.6f}".format(self.alpha)) + \
+                        '_offset_effect.png', transparent=True, dpi=self.dpi, bbox_extra_artists=(lgd, lgd2, supttl), bbox_inches='tight')
+
+        else:
+            fig.savefig('../../data/figures/floquet_controller/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
+                    + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str("{:7.6f}".format(self.alpha)) + \
+                        '_offset_effect.pdf', transparent=True)
+        plt.close()
+        pass
+
+    def plot_correction_effect(self):
+        fig = plt.figure(figsize=self.figSize)
+        ax1 = fig.gca()
+
+        # add libration points
+        lagrange_points_df = load_lagrange_points_location_augmented(self.accelerationMagnitude, self.alpha)
+        if self.lagrangePointNr == 1:
+            lagrange_point_nrs = ['L1']
+        if self.lagrangePointNr == 2:
+            lagrange_point_nrs = ['L2']
+
+        for lagrange_point_nr in lagrange_point_nrs:
+            ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                        color='black', marker='x')
+
+        ax1.set_xlabel('x [-]')
+        ax1.set_ylabel('y [-]')
+        ax1.grid(True, which='both', ls=':')
+
+
+        df = load_orbit_augmented(
+            '../../data/raw/floquet_controller/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
+            + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str("{:7.6f}".format(self.alpha)) + '_' \
+            + str("{:7.6f}".format(self.amplitude[0])) + '_' + str(self.numberOfPatchPoints) + '_initialGuess.txt')
+
+        df_corrected = load_orbit_augmented(
+            '../../data/raw/floquet_controller/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
+            + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str("{:7.6f}".format(self.alpha)) + '_' \
+            + str("{:7.6f}".format(self.amplitude[0])) + '_' + str(self.numberOfPatchPoints) + '_CorrectedGuess.txt')
+
+        ax1.plot(df['x'], df['y'], color='red', linewidth=1,
+                 label='Uncorrected')
+        ax1.plot(df_corrected['x'], df_corrected['y'], color='blue', linewidth=1,
+                 label='Corrected')
+
+        scaleDistance = max((max(df['x']) - min(df['x'])), (max(df['y']) - min(df['y'])) \
+                            ,(max(df_corrected['x']) - min(df_corrected['x'])), (max(df_corrected['y']) - min(df_corrected['y'])) )
+
+        minXcoordinate = min(min(df_corrected['x']),min(df['x']))
+        minYcoordinate = min(min(df_corrected['y']),min(df['y']))
+
+        ax1.set_xlim([minXcoordinate, minXcoordinate + scaleDistance * self.figureRatio])
+        ax1.set_ylim([minYcoordinate, minYcoordinate + scaleDistance])
+
+        ax1.set_title(
+            'Correction at L$_{' + str(self.lagrangePointNr) + '}$(' + str(self.accelerationMagnitude) \
+            + ',' + str(self.alpha) + ') after offset in $\\lambda_3$ direction', size=self.suptitleSize)
+
+        if self.lowDpi:
+            fig.savefig(
+                '../../data/figures/floquet_controller/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
+                + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str("{:7.6f}".format(self.alpha)) + \
+                '_correction_effect.png', transparent=True, dpi=self.dpi)
+
+        else:
+            fig.savefig(
+                '../../data/figures/floquet_controller/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
+                + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str("{:7.6f}".format(self.alpha)) + \
+                '_correction_effect.pdf', transparent=True)
+        plt.close()
+
+
+
+        pass
+
+
+
+
+if __name__ == '__main__':
+    low_dpi = True
+    orbit_types = ['horizontal']
+    lagrange_points = [1]
+    acceleration_magnitudes = [0.001000]
+    alphas = [30.0]
+    amplitudes = np.linspace(1.0E-5,1.0E-4,num=91).tolist()
+    numbers_of_points = [8]
+
+    low_dpi = True
+
+
+    for orbit_type in orbit_types:
+        for lagrange_point in lagrange_points:
+            for acceleration_magnitude in acceleration_magnitudes:
+                for alpha in alphas:
+                    for number_of_points in numbers_of_points:
+                        floquet_controller = floquetController(orbit_type, lagrange_point, acceleration_magnitude, \
+                                        alpha, amplitudes, number_of_points, low_dpi)
+                        floquet_controller.plot_offset_effect()
+            del floquet_controller
+
+
+
