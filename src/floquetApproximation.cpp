@@ -215,22 +215,8 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
 
     std::map< double, Eigen::VectorXd > stateHistoryCorrectedGuess;
 
-//    if ( (amplitude  < 1.01E-5) or (amplitude > 2.7E-5 and amplitude < 2.9E-5) or  (amplitude > 4.5E-5 and amplitude < 4.7E-5)
-//         or (amplitude > 6.3E-5 and amplitude < 6.5E-5) or (amplitude > 8.1E-5 and amplitude < 8.3E-5) or amplitude > 9.99E-5)
-//    {
-
-//        Eigen::VectorXd differentialCorrectionResults = applyPredictionCorrection(librationPointNr, lowThrustInitialStateVectorGuess, 0.0, massParameter, numberOfPatchPoints,
-//                                                                                  false, 1.0E-12, 1.0E-12, 1.0E-12);
-
-//        std::pair< Eigen::MatrixXd, double > finalTimeState = propagateOrbitAugmentedToFinalCondition( getFullInitialStateAugmented( differentialCorrectionResults.segment(0,10)),
-//                                                                 massParameter, differentialCorrectionResults(10), 1, stateHistoryCorrectedGuess, 1000, initialTime);
-
-//    }
-
-    if ( (accelerationAngle  < 1.5) or (accelerationAngle  > 44.5 and accelerationAngle  < 45.5) or  (accelerationAngle  > 89.5 and accelerationAngle  < 90.5)
-         or (accelerationAngle  > 134.5 and accelerationAngle  < 135.5) or (accelerationAngle  > 179.5 and accelerationAngle  < 180.5)
-         or (accelerationAngle  > 224.5 and accelerationAngle  < 225.5) or (accelerationAngle  > 269.5 and accelerationAngle  < 270.5)
-         or (accelerationAngle  > 314.5 and accelerationAngle  < 315.5) )
+    if ( (amplitude  < 1.01E-5) or (amplitude > 2.7E-5 and amplitude < 2.9E-5) or  (amplitude > 4.5E-5 and amplitude < 4.7E-5)
+         or (amplitude > 6.3E-5 and amplitude < 6.5E-5) or (amplitude > 8.1E-5 and amplitude < 8.3E-5) or amplitude > 9.99E-5)
     {
 
         Eigen::VectorXd differentialCorrectionResults = applyPredictionCorrection(librationPointNr, lowThrustInitialStateVectorGuess, 0.0, massParameter, numberOfPatchPoints,
@@ -240,6 +226,20 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
                                                                  massParameter, differentialCorrectionResults(10), 1, stateHistoryCorrectedGuess, 1000, initialTime);
 
     }
+
+//    if ( (accelerationAngle  < 1.5) or (accelerationAngle  > 44.5 and accelerationAngle  < 45.5) or  (accelerationAngle  > 89.5 and accelerationAngle  < 90.5)
+//         or (accelerationAngle  > 134.5 and accelerationAngle  < 135.5) or (accelerationAngle  > 179.5 and accelerationAngle  < 180.5)
+//         or (accelerationAngle  > 224.5 and accelerationAngle  < 225.5) or (accelerationAngle  > 269.5 and accelerationAngle  < 270.5)
+//         or (accelerationAngle  > 314.5 and accelerationAngle  < 315.5) )
+//    {
+
+//        Eigen::VectorXd differentialCorrectionResults = applyPredictionCorrection(librationPointNr, lowThrustInitialStateVectorGuess, 0.0, massParameter, numberOfPatchPoints,
+//                                                                                  false, 1.0E-12, 1.0E-12, 1.0E-12);
+
+//        std::pair< Eigen::MatrixXd, double > finalTimeState = propagateOrbitAugmentedToFinalCondition( getFullInitialStateAugmented( differentialCorrectionResults.segment(0,10)),
+//                                                                 massParameter, differentialCorrectionResults(10), 1, stateHistoryCorrectedGuess, 1000, initialTime);
+
+//    }
 
     writeFloquetDataToFile( stateHistoryInitialGuess, stateHistoryCorrectedGuess, librationPointNr, orbitType, equilibriumStateVector, numberOfPatchPoints, amplitude);
 

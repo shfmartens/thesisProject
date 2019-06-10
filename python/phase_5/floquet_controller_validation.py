@@ -268,6 +268,13 @@ class floquetController:
         indexPlotlist = np.linspace(0, 315, num=self.numberOfSolutions).tolist()
         Indexlist = 0
 
+        minimumX = 0.0
+        minimumY = 0.0
+        maximumX = 0.0
+        maximumY = 0.0
+        maximumDevR = 0.0
+        maximumDevV = 0.0
+
         for i in orbitIdsPlot:
             df = load_orbit_augmented('../../data/raw/floquet_controller/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
             + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str("{:7.6f}".format(self.alpha[i])) + '_' \
@@ -281,6 +288,18 @@ class floquetController:
 
 
             deviation_list.append([self.alpha[i], deltaR, deltaV])
+
+            lagrange_points_df = load_lagrange_points_location_augmented(0.0, 0.0)
+            if self.lagrangePointNr == 1:
+                lagrange_point_nrs = ['L1']
+            if self.lagrangePointNr == 2:
+                lagrange_point_nrs = ['L2']
+
+            for lagrange_point_nr in lagrange_point_nrs:
+                ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                            color='black', marker='x')
+                ax2.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                            color='black', marker='x')
 
             if i == indexPlotlist[Indexlist]:
                 df_corrected = load_orbit_augmented(
@@ -310,8 +329,39 @@ class floquetController:
                     ax2.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
                                 color=sns.color_palette('viridis', self.numberOfAlphas)[i], marker='x')
 
+                if Indexlist == 0.0:
+                    minimumX = min(min(df['x']),min(df_corrected['x']))
+                    minimumY = min(min(df['y']),min(df_corrected['y']))
+
+                    maximumX = max(max(df['x']), max(df_corrected['x']))
+                    maximumY = max(max(df['y']), max(df_corrected['y']))
+
+                else:
+                    minimumX_temp = min(min(df['x']), min(df_corrected['x']))
+                    minimumY_temp = min(min(df['y']), min(df_corrected['y']))
+
+                    maximumX_temp = max(max(df['x']), max(df_corrected['x']))
+                    maximumY_temp = max(max(df['y']), max(df_corrected['y']))
+
+                    if minimumX_temp < minimumX:
+                        minimumX = minimumX_temp
+                    if minimumY_temp < minimumY:
+                        minimumY = minimumY_temp
+
+                    if maximumX_temp > maximumX:
+                        maximumX = maximumX_temp
+                    if maximumY_temp > maximumY:
+                        maximumY = maximumY_temp
+
                 if Indexlist < len(indexPlotlist)-1:
                     Indexlist = Indexlist + 1
+
+        scaleDistance = max((maximumY - minimumY), (maximumX - minimumX))
+
+        ax1.set_xlim([minimumX, minimumX + scaleDistance * self.figureRatio])
+        ax1.set_ylim([minimumY, minimumY + scaleDistance])
+        ax2.set_xlim([minimumX, minimumX + scaleDistance * self.figureRatio])
+        ax2.set_ylim([minimumY, minimumY + scaleDistance])
 
 
         deviation_df = pd.DataFrame(deviation_list, columns=['alpha', 'deltaR', 'deltaV'])
@@ -326,24 +376,6 @@ class floquetController:
         ax4.semilogx(deviation_corrected_df['alpha'], deviation_corrected_df['deltaV'],
                      color=sns.color_palette('viridis', 2)[1], linewidth=1, label='$| \\Delta V | [-]$ ')
 
-        scaleDistance = max((max(df['x']) - min(df['x'])), (max(df['y']) - min(df['y'])), \
-                            (max(df_corrected['x']) - min(df_corrected['x'])), \
-                            (max(df_corrected['y']) - min(df_corrected['y']))) * 1.05
-
-        minimumX = min(min(df['x']), min(df_corrected['x']))
-        minimumY = min(min(df['y']), min(df_corrected['y']))
-        maximumX = max(max(df['x']), max(df_corrected['x']))
-        maximumY = max(max(df['y']), max(df_corrected['y']))
-
-        # ax1.set_xlim([minimumX, minimumX + scaleDistance * self.figureRatio])
-        # ax1.set_ylim([minimumY, minimumY + scaleDistance])
-        # ax2.set_xlim([minimumX, minimumX + scaleDistance * self.figureRatio])
-        # ax2.set_ylim([minimumY, minimumY + scaleDistance])
-
-        ax1.set_xlim([minimumX, maximumX])
-        ax1.set_ylim([minimumY, maximumY])
-        ax2.set_xlim([minimumX, maximumX])
-        ax2.set_ylim([minimumY, maximumY])
 
         ax3.set_xlim([min(deviation_df['alpha']), max(deviation_df['alpha'])])
         ax3.set_ylim([0, max(deviation_df['deltaV'])])
