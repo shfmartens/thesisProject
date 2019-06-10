@@ -67,9 +67,12 @@ Eigen::MatrixXd computeEquilibriaStability(Eigen::Vector2d equilibriumLocation, 
 void writeResultsToFile (const int librationPointNr, const double thrustAcceleration, std::map< double, Eigen::Vector3d > equilibriaCatalog, std::map <double, Eigen::MatrixXd > stabilityCatalog ) {
 
     // Prepare file for initial conditions
-    remove(("/Users/Sjors/Documents/thesisSoftware/tudatBundle/tudatApplications/thesisProject/data/data/raw/equilibria/L" + std::to_string(librationPointNr) + "_" + std::to_string(thrustAcceleration) + "_equilibria.txt").c_str());
+    //remove(("/Users/Sjors/Documents/thesisSoftware/tudatBundle/tudatApplications/thesisProject/data/data/raw/equilibria/L" + std::to_string(librationPointNr) + "_" + std::to_string(thrustAcceleration) + "_equilibria.txt").c_str());
+    remove(("../data/data/raw/equilibria/L" + std::to_string(librationPointNr) + "_" + std::to_string(thrustAcceleration) + "_equilibria.txt").c_str());
+
     std::ofstream textFileInitialConditions;
-    textFileInitialConditions.open(("/Users/Sjors/Documents/thesisSoftware/tudatBundle/tudatApplications/thesisProject/data/raw/equilibria/L" + std::to_string(librationPointNr) + "_" + std::to_string(thrustAcceleration) + "_equilibria.txt"));
+    //textFileInitialConditions.open(("/Users/Sjors/Documents/thesisSoftware/tudatBundle/tudatApplications/thesisProject/data/raw/equilibria/L" + std::to_string(librationPointNr) + "_" + std::to_string(thrustAcceleration) + "_equilibria.txt"));
+    textFileInitialConditions.open(("../data/raw/equilibria/L" + std::to_string(librationPointNr) + "_" + std::to_string(thrustAcceleration) + "_equilibria.txt"));
     textFileInitialConditions.precision(std::numeric_limits<double>::digits10);
 
     for(auto ic = equilibriaCatalog.cbegin(); ic != equilibriaCatalog.cend(); ++ic) {
@@ -78,9 +81,13 @@ void writeResultsToFile (const int librationPointNr, const double thrustAccelera
 
     }
 
-    remove(("/Users/Sjors/Documents/thesisSoftware/tudatBundle/tudatApplications/thesisProject/data/data/raw/equilibria/L" + std::to_string(librationPointNr) + "_" + std::to_string(thrustAcceleration) + "_equilibria_stability.txt").c_str());
+    //remove(("/Users/Sjors/Documents/thesisSoftware/tudatBundle/tudatApplications/thesisProject/data/data/raw/equilibria/L" + std::to_string(librationPointNr) + "_" + std::to_string(thrustAcceleration) + "_equilibria_stability.txt").c_str());
+    remove(("../data/data/raw/equilibria/L" + std::to_string(librationPointNr) + "_" + std::to_string(thrustAcceleration) + "_equilibria_stability.txt").c_str());
+
     std::ofstream textFileInitialConditionsStability;
-    textFileInitialConditionsStability.open(("/Users/Sjors/Documents/thesisSoftware/tudatBundle/tudatApplications/thesisProject/data/raw/equilibria/L" + std::to_string(librationPointNr) + "_" + std::to_string(thrustAcceleration) + "_equilibria_stability.txt"));
+    //textFileInitialConditionsStability.open(("/Users/Sjors/Documents/thesisSoftware/tudatBundle/tudatApplications/thesisProject/data/raw/equilibria/L" + std::to_string(librationPointNr) + "_" + std::to_string(thrustAcceleration) + "_equilibria_stability.txt"));
+    textFileInitialConditionsStability.open(("../data/raw/equilibria/L" + std::to_string(librationPointNr) + "_" + std::to_string(thrustAcceleration) + "_equilibria_stability.txt"));
+
     textFileInitialConditionsStability.precision(std::numeric_limits<double>::digits10);
 
         for(auto ic = stabilityCatalog.cbegin(); ic != stabilityCatalog.cend(); ++ic) {
