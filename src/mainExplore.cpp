@@ -57,10 +57,10 @@ int main (){
     // ================================
 
 
-    #pragma omp parallel num_threads(1)
+    #pragma omp parallel num_threads(9)
     {
         #pragma omp for
-        for (unsigned int i=1; i<=1; i++) {
+        for (unsigned int i=1; i<=9; i++) {
             if (i ==1)
             {
 
