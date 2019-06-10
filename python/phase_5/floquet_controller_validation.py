@@ -38,14 +38,16 @@ class floquetController:
         if isinstance(self.amplitude, list):
             self.numberOfSolutions = 6
             self.numberOfAmplitudes = len(self.amplitude)
+            self.numberOfAxisTicks = 4
         elif isinstance(self.alpha, list):
             self.numberOfSolutions = 8
             self.numberOfAlphas = len(self.alpha)
+            self.numberOfAxisTicks = 9
+
         else:
             self.numberOfSolutions = 8
             self.numberOfAccelerations = len(self.accelerationMagnitude)
 
-        self.numberOfAxisTicks = 4
 
 
         self.lowDpi = low_dpi
@@ -278,7 +280,7 @@ class floquetController:
             deltaV = np.linalg.norm(deviations[4:7])
 
 
-            deviation_list.append([self.amplitude[i], deltaR, deltaV])
+            deviation_list.append([self.alpha[i], deltaR, deltaV])
 
             if i == indexPlotlist[Indexlist]:
                 df_corrected = load_orbit_augmented(
@@ -292,7 +294,7 @@ class floquetController:
                 deltaV_corrected = np.linalg.norm(deviations_corrected[4:7])
                 deviation_corrected_list.append([self.alpha[i], deltaR_corrected, deltaV_corrected])
 
-                legendString = '$\\alpha = $' + str("{:2.1e}".format(self.alpha[i]))
+                legendString = '$\\alpha = $' + str("{:4.1f}".format(self.alpha[i]))
                 ax1.plot(df['x'], df['y'], color=sns.color_palette('viridis', self.numberOfAlphas)[i], linewidth=1, label= legendString )
                 ax2.plot(df_corrected['x'], df_corrected['y'], color=sns.color_palette('viridis', self.numberOfAlphas)[i], linewidth=1, label=legendString )
 
@@ -307,7 +309,10 @@ class floquetController:
                                 color=sns.color_palette('viridis', self.numberOfAlphas)[i], marker='x')
                     ax2.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
                                 color=sns.color_palette('viridis', self.numberOfAlphas)[i], marker='x')
-                Indexlist = Indexlist + 1
+
+                if Indexlist < len(indexPlotlist)-1:
+                    Indexlist = Indexlist + 1
+
 
         deviation_df = pd.DataFrame(deviation_list, columns=['alpha', 'deltaR', 'deltaV'])
         deviation_corrected_df = pd.DataFrame(deviation_corrected_list, columns=['alpha', 'deltaR', 'deltaV'])
@@ -322,16 +327,23 @@ class floquetController:
                      color=sns.color_palette('viridis', 2)[1], linewidth=1, label='$| \\Delta V | [-]$ ')
 
         scaleDistance = max((max(df['x']) - min(df['x'])), (max(df['y']) - min(df['y'])), \
-                            (max(df_corrected['x']) - min(df_corrected['x'])),
+                            (max(df_corrected['x']) - min(df_corrected['x'])), \
                             (max(df_corrected['y']) - min(df_corrected['y']))) * 1.05
 
         minimumX = min(min(df['x']), min(df_corrected['x']))
         minimumY = min(min(df['y']), min(df_corrected['y']))
+        maximumX = max(max(df['x']), max(df_corrected['x']))
+        maximumY = max(max(df['y']), max(df_corrected['y']))
 
-        ax1.set_xlim([minimumX, minimumX + scaleDistance * self.figureRatio])
-        ax1.set_ylim([minimumY, minimumY + scaleDistance])
-        ax2.set_xlim([minimumX, minimumX + scaleDistance * self.figureRatio])
-        ax2.set_ylim([minimumY, minimumY + scaleDistance])
+        # ax1.set_xlim([minimumX, minimumX + scaleDistance * self.figureRatio])
+        # ax1.set_ylim([minimumY, minimumY + scaleDistance])
+        # ax2.set_xlim([minimumX, minimumX + scaleDistance * self.figureRatio])
+        # ax2.set_ylim([minimumY, minimumY + scaleDistance])
+
+        ax1.set_xlim([minimumX, maximumX])
+        ax1.set_ylim([minimumY, maximumY])
+        ax2.set_xlim([minimumX, maximumX])
+        ax2.set_ylim([minimumY, maximumY])
 
         ax3.set_xlim([min(deviation_df['alpha']), max(deviation_df['alpha'])])
         ax3.set_ylim([0, max(deviation_df['deltaV'])])
@@ -347,15 +359,24 @@ class floquetController:
 
         # ax1.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
         ax1.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%.5f'))
-        xticks = (
-            np.linspace(min(df['x']), min(df['x']) + scaleDistance * self.figureRatio, num=self.numberOfAxisTicks))
+        xticks = (np.linspace(min(df['x']), min(df['x']) + scaleDistance * self.figureRatio, num=self.numberOfAxisTicks))
         ax1.xaxis.set_ticks(xticks)
 
         # ax2.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
         ax2.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%.5f'))
-        xticks = (
-            np.linspace(min(df['x']), min(df['x']) + scaleDistance * self.figureRatio, num=self.numberOfAxisTicks))
+        xticks = (np.linspace(min(df['x']), min(df['x']) + scaleDistance * self.figureRatio, num=self.numberOfAxisTicks))
         ax2.xaxis.set_ticks(xticks)
+
+
+        # ax2.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+        #ax3.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%.5f'))
+        #xticks = (np.linspace(0, 360, num=self.numberOfAxisTicks))
+        #ax3.xaxis.set_ticks(xticks)
+        #
+        # ax4.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%.1f'))
+        # xticks = (
+        #     np.linspace(min(deviation_corrected_df['alpha']), max(deviation_corrected_df['alpha']), num=self.numberOfAxisTicks))
+        # ax4.xaxis.set_ticks(xticks)
 
         lgd = ax2.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5))
         lgd2 = ax4.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5))
@@ -369,8 +390,7 @@ class floquetController:
             fig.savefig(
                 '../../data/figures/floquet_controller/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
                 + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str("{:7.6f}".format(self.amplitude)) + \
-                '_alpha_effect.png', transparent=True, dpi=self.dpi, bbox_extra_artists=(lgd, lgd2, supttl),
-                bbox_inches='tight')
+                '_alpha_effect.png', transparent=True, dpi=self.dpi, bbox_extra_artists=(lgd, lgd2, supttl), bbox_inches='tight')
 
         else:
             fig.savefig(
@@ -541,15 +561,15 @@ if __name__ == '__main__':
     low_dpi = True
 
 
-    # for orbit_type in orbit_types:
-    #     for lagrange_point in lagrange_points:
-    #         for acceleration_magnitude in acceleration_magnitudes:
-    #             for alpha in alphas:
-    #                 for number_of_points in numbers_of_points:
-    #                     floquet_controller = floquetController(orbit_type, lagrange_point, acceleration_magnitude, \
-    #                                     alpha, amplitudes, number_of_points, low_dpi)
-    #                     floquet_controller.plot_offset_effect()
-    #         del floquet_controller
+    for orbit_type in orbit_types:
+        for lagrange_point in lagrange_points:
+            for acceleration_magnitude in acceleration_magnitudes:
+                for alpha in alphas:
+                    for number_of_points in numbers_of_points:
+                        floquet_controller = floquetController(orbit_type, lagrange_point, acceleration_magnitude, \
+                                        alpha, amplitudes, number_of_points, low_dpi)
+                        floquet_controller.plot_offset_effect()
+            del floquet_controller
 
     orbit_types = ['horizontal']
     lagrange_points = [1]
