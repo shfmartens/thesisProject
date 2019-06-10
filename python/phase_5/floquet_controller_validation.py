@@ -36,15 +36,17 @@ class floquetController:
         self.numberOfPatchPoints = number_of_points
 
         self.numberOfAmplitudes = len(self.amplitude)
-        self.numberOfSolutions = 6
-        self.numberOfAxisTicks = 4
+        self.numberOfAlphas = len(self.alpha)
+        self.numberOfAccelerations = len(self.alpha)
 
 
 
-
-
-
-
+        if self.numberOfAmplitudes > 1:
+            self.numberOfSolutions = 6
+        elif self.numberOfAlphas > 1:
+            self.numberOfSolutions = 8
+        else:
+            self.numberOfSolutions = 8
 
         self.lowDpi = low_dpi
         self.figSize = self.figSize = (7 * (1 + np.sqrt(5)) / 2, 7)
@@ -232,68 +234,8 @@ class floquetController:
         plt.close()
         pass
 
-    def plot_correction_effect(self):
-        fig = plt.figure(figsize=self.figSize)
-        ax1 = fig.gca()
-
-        # add libration points
-        lagrange_points_df = load_lagrange_points_location_augmented(self.accelerationMagnitude, self.alpha)
-        if self.lagrangePointNr == 1:
-            lagrange_point_nrs = ['L1']
-        if self.lagrangePointNr == 2:
-            lagrange_point_nrs = ['L2']
-
-        for lagrange_point_nr in lagrange_point_nrs:
-            ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
-                        color='black', marker='x')
-
-        ax1.set_xlabel('x [-]')
-        ax1.set_ylabel('y [-]')
-        ax1.grid(True, which='both', ls=':')
-
-
-        df = load_orbit_augmented(
-            '../../data/raw/floquet_controller/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
-            + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str("{:7.6f}".format(self.alpha)) + '_' \
-            + str("{:7.6f}".format(self.amplitude[0])) + '_' + str(self.numberOfPatchPoints) + '_initialGuess.txt')
-
-        df_corrected = load_orbit_augmented(
-            '../../data/raw/floquet_controller/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
-            + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str("{:7.6f}".format(self.alpha)) + '_' \
-            + str("{:7.6f}".format(self.amplitude[0])) + '_' + str(self.numberOfPatchPoints) + '_CorrectedGuess.txt')
-
-        ax1.plot(df['x'], df['y'], color='red', linewidth=1,
-                 label='Uncorrected')
-        ax1.plot(df_corrected['x'], df_corrected['y'], color='blue', linewidth=1,
-                 label='Corrected')
-
-        scaleDistance = max((max(df['x']) - min(df['x'])), (max(df['y']) - min(df['y'])) \
-                            ,(max(df_corrected['x']) - min(df_corrected['x'])), (max(df_corrected['y']) - min(df_corrected['y'])) )
-
-        minXcoordinate = min(min(df_corrected['x']),min(df['x']))
-        minYcoordinate = min(min(df_corrected['y']),min(df['y']))
-
-        ax1.set_xlim([minXcoordinate, minXcoordinate + scaleDistance * self.figureRatio])
-        ax1.set_ylim([minYcoordinate, minYcoordinate + scaleDistance])
-
-        ax1.set_title(
-            'Correction at L$_{' + str(self.lagrangePointNr) + '}$(' + str(self.accelerationMagnitude) \
-            + ',' + str(self.alpha) + ') after offset in $\\lambda_3$ direction', size=self.suptitleSize)
-
-        if self.lowDpi:
-            fig.savefig(
-                '../../data/figures/floquet_controller/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
-                + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str("{:7.6f}".format(self.alpha)) + \
-                '_correction_effect.png', transparent=True, dpi=self.dpi)
-
-        else:
-            fig.savefig(
-                '../../data/figures/floquet_controller/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
-                + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str("{:7.6f}".format(self.alpha)) + \
-                '_correction_effect.pdf', transparent=True)
-        plt.close()
-
-
+    def plot_alpha_effect(self):
+        
 
         pass
 
@@ -301,7 +243,6 @@ class floquetController:
 
 
 if __name__ == '__main__':
-    low_dpi = True
     orbit_types = ['horizontal']
     lagrange_points = [1]
     acceleration_magnitudes = [0.001000]
@@ -321,6 +262,27 @@ if __name__ == '__main__':
                                         alpha, amplitudes, number_of_points, low_dpi)
                         floquet_controller.plot_offset_effect()
             del floquet_controller
+
+    orbit_types = ['horizontal']
+    lagrange_points = [1]
+    acceleration_magnitudes = [0.010000]
+    alphas = np.linspace(0,359,num=360).tolist()
+    amplitudes = [0.000100]
+    numbers_of_points = [8]
+
+    for orbit_type in orbit_types:
+        for lagrange_point in lagrange_points:
+            for acceleration_magnitude in acceleration_magnitudes:
+                for amplitude in amplitudes:
+                    for number_of_points in numbers_of_points:
+                        floquet_controller = floquetController(orbit_type, lagrange_point, acceleration_magnitude, \
+                                        alphas, amplitude, number_of_points, low_dpi)
+                        floquet_controller.plot_alpha_effect()
+            del floquet_controller
+
+    low_dpi = True
+
+
 
 
 
