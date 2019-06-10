@@ -64,7 +64,7 @@ int main (){
             if (i ==1)
             {
 
-                std::cout << "running thread 01" << std::endl;
+                std::cout << "running thread 01 " << std::endl;
                 createLowThrustInitialConditions(2, "horizontal", 1, 0.01, 0.0, 0.0, 1.0, -1.552, massParameter );
             }
             if (i ==2)
