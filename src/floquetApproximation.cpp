@@ -241,6 +241,18 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
 
 //    }
 
+//    if ( (thrustMagnitude  < 1.01E-2) or (thrustMagnitude > 2.7E-2 and thrustMagnitude < 2.9E-2) or  (thrustMagnitude > 4.5E-2 and thrustMagnitude < 4.7E-2)
+//         or (thrustMagnitude > 6.3E-2 and thrustMagnitude < 6.5E-2) or (thrustMagnitude > 8.1E-2 and thrustMagnitude < 8.3E-2) or thrustMagnitude > 9.99E-2)
+//    {
+
+//        Eigen::VectorXd differentialCorrectionResults = applyPredictionCorrection(librationPointNr, lowThrustInitialStateVectorGuess, 0.0, massParameter, numberOfPatchPoints,
+//                                                                                  false, 1.0E-12, 1.0E-12, 1.0E-12);
+
+//        std::pair< Eigen::MatrixXd, double > finalTimeState = propagateOrbitAugmentedToFinalCondition( getFullInitialStateAugmented( differentialCorrectionResults.segment(0,10)),
+//                                                                 massParameter, differentialCorrectionResults(10), 1, stateHistoryCorrectedGuess, 1000, initialTime);
+
+//    }
+
     writeFloquetDataToFile( stateHistoryInitialGuess, stateHistoryCorrectedGuess, librationPointNr, orbitType, equilibriumStateVector, numberOfPatchPoints, amplitude);
 
 
