@@ -31,7 +31,7 @@ int main (){
     // ================================
     // == Compute equilibria, comment out when computing low-thrust intial positions ==
     // ================================
-        Eigen::ArrayXd accelerationArray = Eigen::ArrayXd::LinSpaced( 91, 1.0E-5, 1.0E-4);
+        Eigen::ArrayXd accelerationArray = Eigen::ArrayXd::LinSpaced( 91, 1.0E-4, 1.0E-3);
         for (int k = 0; k < 91; k ++)
         {
             double thrustAcceleration = accelerationArray(k);
