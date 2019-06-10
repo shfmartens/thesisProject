@@ -13,6 +13,7 @@ import seaborn as sns
 sns.set_style("whitegrid")
 import time
 plt.rcParams['text.latex.preamble']=[r"\usepackage{lmodern}"]
+plt.rcParams['text.latex.preamble']=[r"\usepackage{gensymb}"]
 params = {'text.usetex': True,
           'font.size': 11,
           'font.family': 'lmodern',
@@ -53,6 +54,7 @@ class floquetController:
         self.lowDpi = low_dpi
         self.figSize = self.figSize = (7 * (1 + np.sqrt(5)) / 2, 7)
         self.figureRatio = 7 / (7 * (1 + np.sqrt(5)) / 2)
+        self.spacingFactor = 1.05
         blues = sns.color_palette('Blues', 100)
         greens = sns.color_palette('BuGn', 100)
         n_colors = 3
@@ -178,28 +180,28 @@ class floquetController:
         deviation_corrected_df=pd.DataFrame(deviation_corrected_list,columns=['amplitude','deltaR','deltaV'])
 
 
-        ax3.semilogx(deviation_df['amplitude'],deviation_df['deltaR'], color=sns.color_palette('viridis', 2)[0], linewidth=1)
-        ax3.semilogx(deviation_df['amplitude'],deviation_df['deltaV'], color=sns.color_palette('viridis', 2)[1], linewidth=1)
-        ax4.semilogx(deviation_corrected_df['amplitude'],deviation_corrected_df['deltaR'], color=sns.color_palette('viridis', 2)[0], linewidth=1, label='$| \\Delta R | [-]$ ')
-        ax4.semilogx(deviation_corrected_df['amplitude'],deviation_corrected_df['deltaV'], color=sns.color_palette('viridis', 2)[1], linewidth=1, label='$| \\Delta V | [-]$ ')
+        ax3.plot(deviation_df['amplitude'],deviation_df['deltaR'], color=sns.color_palette('viridis', 2)[0], linewidth=1)
+        ax3.plot(deviation_df['amplitude'],deviation_df['deltaV'], color=sns.color_palette('viridis', 2)[1], linewidth=1)
+        ax4.plot(deviation_corrected_df['amplitude'],deviation_corrected_df['deltaR'], color=sns.color_palette('viridis', 2)[0], linewidth=1, label='$| \\Delta R | [-]$ ')
+        ax4.plot(deviation_corrected_df['amplitude'],deviation_corrected_df['deltaV'], color=sns.color_palette('viridis', 2)[1], linewidth=1, label='$| \\Delta V | [-]$ ')
 
         scaleDistance = max((max(df['x'])-min(df['x'])),(max(df['y'])-min(df['y'])), \
-                            (max(df_corrected['x']) - min(df_corrected['x'])), (max(df_corrected['y']) - min(df_corrected['y'])) )*1.05
+                            (max(df_corrected['x']) - min(df_corrected['x'])), (max(df_corrected['y']) - min(df_corrected['y'])))
 
         minimumX = min(min(df['x']),min(df_corrected['x']))
         minimumY = min(min(df['y']),min(df_corrected['y']))
 
 
-        ax1.set_xlim([minimumX, minimumX+scaleDistance*self.figureRatio])
-        ax1.set_ylim([minimumY, minimumY+scaleDistance])
-        ax2.set_xlim([minimumX, minimumX + scaleDistance * self.figureRatio])
-        ax2.set_ylim([minimumY, minimumY+scaleDistance])
+        ax1.set_xlim([minimumX - scaleDistance*self.figureRatio* (self.spacingFactor - 1) , minimumX+scaleDistance*self.figureRatio* self.spacingFactor])
+        ax1.set_ylim([minimumY - scaleDistance*(self.spacingFactor - 1), minimumY  +scaleDistance*self.spacingFactor])
+        ax2.set_xlim([minimumX - scaleDistance*self.figureRatio* (self.spacingFactor - 1) , minimumX+scaleDistance*self.figureRatio* self.spacingFactor])
+        ax2.set_ylim([minimumY - scaleDistance*(self.spacingFactor - 1), minimumY  +scaleDistance*self.spacingFactor])
 
 
         ax3.set_xlim([ min(deviation_df['amplitude']), max(deviation_df['amplitude'])])
-        ax3.set_ylim([0, max(deviation_df['deltaV'])])
+        ax3.set_ylim([0, max(deviation_df['deltaV'])*self.spacingFactor])
         ax4.set_xlim([ min(deviation_corrected_df['amplitude']), max(deviation_df['amplitude'])])
-        ax4.set_ylim([0, max(deviation_corrected_df['deltaV'])])
+        ax4.set_ylim([0, max(deviation_corrected_df['deltaV'])*self.spacingFactor])
         fig.tight_layout()
         fig.subplots_adjust(top=0.9,bottom= -0.1)
 
@@ -208,21 +210,29 @@ class floquetController:
         ax3.set_title('full-period deviations before correction') 
         ax4.set_title('full-period deviations after correction')
 
-        #ax1.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
         ax1.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%.5f'))
-        xticks = (np.linspace(min(df['x']), min(df['x']) + scaleDistance*self.figureRatio, num=self.numberOfAxisTicks))
+        xticks = (np.linspace(minimumX- scaleDistance*self.figureRatio*(self.spacingFactor - 1), minimumX +scaleDistance*self.figureRatio * self.spacingFactor, num=self.numberOfAxisTicks))
         ax1.xaxis.set_ticks( xticks )
+        ax2.xaxis.set_ticks( xticks )
 
-        #ax2.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+        ax1.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%.5f'))
         ax2.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%.5f'))
-        xticks = (np.linspace(min(df['x']), min(df['x']) + scaleDistance*self.figureRatio, num=self.numberOfAxisTicks))
-        ax2.xaxis.set_ticks( xticks )                                                                                    
+        yticks = (np.linspace(minimumY- scaleDistance*(self.spacingFactor - 1), minimumY +scaleDistance * self.spacingFactor, num=self.numberOfAxisTicks))
+        #ax1.yaxis.set_ticks( yticks )
+        #ax2.yaxis.set_ticks( yticks )
+
+        ax3.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%2.1e'))
+        ax4.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%2.1e'))
+
+        xticks = (np.linspace(min(deviation_df['amplitude']), max(deviation_df['amplitude']), num=self.numberOfAxisTicks))
+        ax3.xaxis.set_ticks( xticks )                                                                                                                                                       
+        ax4.xaxis.set_ticks( xticks )
 
         lgd  = ax2.legend(frameon=True, loc='center left',  bbox_to_anchor=(1, 0.5))
         lgd2 = ax4.legend(frameon=True, loc='center left',  bbox_to_anchor=(1, 0.5))
 
-        supttl = fig.suptitle('Initial guesses at L$_{'+ str(self.lagrangePointNr ) + '}$('+ str(self.accelerationMagnitude) \
-        +',' + str(self.alpha) + ') after ofsett in $\\lambda_3$ direction', size=self.suptitleSize)
+        supttl = fig.suptitle('Initial guesses at L$_{'+ str(self.lagrangePointNr ) + '}$(a$_{lt}$ = '+ str("{:2.1e}".format(self.accelerationMagnitude)) \
+        +', $\\alpha$ = ' + str("{:2.1f}".format(self.alpha)) + '$^{\\circ}$) after ofsett in $\\lambda_3$ direction', size=self.suptitleSize)
 
         if self.lowDpi:
             fig.savefig('../../data/figures/floquet_controller/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
@@ -358,29 +368,28 @@ class floquetController:
 
         scaleDistance = max((maximumY - minimumY), (maximumX - minimumX))
 
-        ax1.set_xlim([minimumX, minimumX + scaleDistance * self.figureRatio])
-        ax1.set_ylim([minimumY, minimumY + scaleDistance])
-        ax2.set_xlim([minimumX, minimumX + scaleDistance * self.figureRatio])
-        ax2.set_ylim([minimumY, minimumY + scaleDistance])
+        ax1.set_xlim([minimumX - scaleDistance*self.figureRatio* (self.spacingFactor - 1) , minimumX+scaleDistance*self.figureRatio* self.spacingFactor])
+        ax1.set_ylim([minimumY - scaleDistance* (self.spacingFactor - 1) , minimumY+scaleDistance* self.spacingFactor])
+        ax2.set_xlim([minimumX - scaleDistance*self.figureRatio* (self.spacingFactor - 1) , minimumX+scaleDistance*self.figureRatio* self.spacingFactor])
+        ax2.set_ylim([minimumY - scaleDistance* (self.spacingFactor - 1) , minimumY+scaleDistance* self.spacingFactor])
 
 
         deviation_df = pd.DataFrame(deviation_list, columns=['alpha', 'deltaR', 'deltaV'])
         deviation_corrected_df = pd.DataFrame(deviation_corrected_list, columns=['alpha', 'deltaR', 'deltaV'])
 
-        ax3.semilogx(deviation_df['alpha'], deviation_df['deltaR'], color=sns.color_palette('viridis', 2)[0],
+        ax3.plot(deviation_df['alpha'], deviation_df['deltaR'], color=sns.color_palette('viridis', 2)[0],
                      linewidth=1)
-        ax3.semilogx(deviation_df['alpha'], deviation_df['deltaV'], color=sns.color_palette('viridis', 2)[1],
+        ax3.plot(deviation_df['alpha'], deviation_df['deltaV'], color=sns.color_palette('viridis', 2)[1],
                      linewidth=1)
-        ax4.semilogx(deviation_corrected_df['alpha'], deviation_corrected_df['deltaR'],
+        ax4.plot(deviation_corrected_df['alpha'], deviation_corrected_df['deltaR'],
                      color=sns.color_palette('viridis', 2)[0], linewidth=1, label='$| \\Delta R | [-]$ ')
-        ax4.semilogx(deviation_corrected_df['alpha'], deviation_corrected_df['deltaV'],
+        ax4.plot(deviation_corrected_df['alpha'], deviation_corrected_df['deltaV'],
                      color=sns.color_palette('viridis', 2)[1], linewidth=1, label='$| \\Delta V | [-]$ ')
 
-
-        ax3.set_xlim([min(deviation_df['alpha']), max(deviation_df['alpha'])])
-        ax3.set_ylim([0, max(deviation_df['deltaV'])])
-        ax4.set_xlim([min(deviation_corrected_df['alpha']), max(deviation_df['alpha'])])
-        ax4.set_ylim([0, max(deviation_corrected_df['deltaV'])])
+        ax3.set_xlim([min(deviation_df['alpha']), 360])
+        ax3.set_ylim([0, max(deviation_df['deltaV'])*1.01])
+        ax4.set_xlim([min(deviation_corrected_df['alpha']), 360])
+        ax4.set_ylim([0, max(deviation_corrected_df['deltaV'])*1.01])
         fig.tight_layout()
         fig.subplots_adjust(top=0.9, bottom=-0.1)
 
@@ -399,16 +408,13 @@ class floquetController:
         xticks = (np.linspace(min(df['x']), min(df['x']) + scaleDistance * self.figureRatio, num=self.numberOfAxisTicks))
         ax2.xaxis.set_ticks(xticks)
 
+        ax3.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%3.1f'))
+        xticks = (np.linspace(0, 360, num=self.numberOfAxisTicks))
+        ax3.xaxis.set_ticks(xticks)
 
-        # ax2.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
-        #ax3.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%.5f'))
-        #xticks = (np.linspace(0, 360, num=self.numberOfAxisTicks))
-        #ax3.xaxis.set_ticks(xticks)
-        #
-        # ax4.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%.1f'))
-        # xticks = (
-        #     np.linspace(min(deviation_corrected_df['alpha']), max(deviation_corrected_df['alpha']), num=self.numberOfAxisTicks))
-        # ax4.xaxis.set_ticks(xticks)
+        ax4.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%3.1f'))
+        xticks = ( np.linspace(0, 360, num=self.numberOfAxisTicks))
+        ax4.xaxis.set_ticks(xticks)
 
         lgd = ax2.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5))
         lgd2 = ax4.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5))
