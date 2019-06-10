@@ -31,7 +31,7 @@ int main (){
     // ================================
     // == Compute equilibria, comment out when computing low-thrust intial positions ==
     // ================================
-        double thrustAcceleration = 0.05;
+        double thrustAcceleration = 0.1;
         createEquilibriumLocations(1, thrustAcceleration, massParameter);
         createEquilibriumLocations(2, thrustAcceleration, massParameter);
 
