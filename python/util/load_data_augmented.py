@@ -39,5 +39,11 @@ def load_lagrange_points_location_augmented(a_lt,alpha):
     location_lagrange_points.index = ['x', 'y', 'z']
     return location_lagrange_points
 
+def load_states_continuation(file_path):
+    data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(2)))
+    data.columns = ['orbitID', 'hlt']
+    return data
+
+
 if __name__ == '__main__':
     load_lagrange_points_location(0.001,60.0)

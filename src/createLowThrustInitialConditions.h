@@ -62,7 +62,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const std::st
                               const double maxPositionDeviationFromPeriodicOrbit = 1.0e-12, const double maxVelocityDeviationFromPeriodicOrbit = 1.0e-12, const double maxPeriodDeviationFromPeriodicOrbit = 1.0e-12,
                               const double maxEigenvalueDeviation = 1.0e-3,
                               const boost::function< double( const Eigen::VectorXd&, const int ) > pseudoArcLengthFunctionAugmented =
-        boost::bind( &getDefaultArcLengthAugmented, 5.0E-7, _1, _2 ) );
+        boost::bind( &getDefaultArcLengthAugmented, 5.0E-5, _1, _2 ) );
 
 
 #endif  // TUDATBUNDLE_CREATELOWTHRUSTINITIALCONDITIONS_H
