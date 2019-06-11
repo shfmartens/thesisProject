@@ -692,7 +692,7 @@ if __name__ == '__main__':
     amplitudes = [0.000100]
     numbers_of_points = [8]
 
-    
+
 
     for orbit_type in orbit_types:
         for lagrange_point in lagrange_points:
