@@ -490,6 +490,39 @@ class floquetController:
         maximumDevR = 0.0
         maximumDevV = 0.0
 
+        df = load_orbit_augmented(
+            '../../data/raw/floquet_controller/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
+            + str("{:7.6f}".format(0.000000)) + '_' + str("{:7.6f}".format(0.000000)) + '_' \
+            + str("{:7.6f}".format(self.amplitude)) + '_' \
+            + str(self.numberOfPatchPoints) + '_initialGuess.txt')
+
+        deviations = df.head(1).values[0] - df.tail(1).values[0]
+        deltaR = np.linalg.norm(deviations[1:4])
+        deltaV = np.linalg.norm(deviations[4:7])
+
+        deviation_list.append([0.000000, deltaR, deltaV])
+
+        df_corrected = load_orbit_augmented(
+            '../../data/raw/floquet_controller/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
+            + str("{:7.6f}".format(0.000000)) + '_' + str("{:7.6f}".format(0.000000)) + '_' \
+            + str("{:7.6f}".format(self.amplitude)) + '_' \
+            + str(self.numberOfPatchPoints) + '_CorrectedGuess.txt')
+
+        deviations_corrected = df_corrected.head(1).values[0] - df_corrected.tail(1).values[0]
+        deltaR_corrected = np.linalg.norm(deviations_corrected[1:4])
+        deltaV_corrected = np.linalg.norm(deviations_corrected[4:7])
+        deviation_corrected_list.append([0.000000, deltaR_corrected, deltaV_corrected])
+
+        legendString = 'a$_{lt} = $' + str("{:2.1e}".format(0.000000))
+        ax1.plot(df['x'], df['y'], color='black', linewidth=1, label=legendString)
+        ax2.plot(df_corrected['x'], df_corrected['y'], color='black', linewidth=1, label=legendString)
+
+        minimumX = min(min(df['x']), min(df_corrected['x']))
+        minimumY = min(min(df['y']), min(df_corrected['y']))
+
+        maximumX = max(max(df['x']), max(df_corrected['x']))
+        maximumY = max(max(df['y']), max(df_corrected['y']))
+
         for i in orbitIdsPlot:
             df = load_orbit_augmented('../../data/raw/floquet_controller/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
             + str("{:7.6f}".format(self.accelerationMagnitude[i])) + '_' + str("{:7.6f}".format(self.alpha)) + '_' \
@@ -503,7 +536,6 @@ class floquetController:
 
 
             deviation_list.append([self.accelerationMagnitude[i], deltaR, deltaV])
-
 
             if i == indexPlotlist[Indexlist]:
 
@@ -535,15 +567,7 @@ class floquetController:
                     ax2.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
                                 color=sns.color_palette('viridis', self.numberOfAccelerations)[i], marker='x')
 
-                if Indexlist == 0:
-                    minimumX = min(min(df['x']),min(df_corrected['x']))
-                    minimumY = min(min(df['y']),min(df_corrected['y']))
 
-                    maximumX = max(max(df['x']), max(df_corrected['x']))
-                    maximumY = max(max(df['y']), max(df_corrected['y']))
-
-
-                else:
                     minimumX_temp = min(min(df['x']), min(df_corrected['x']))
                     minimumY_temp = min(min(df['y']), min(df_corrected['y']))
 
@@ -642,9 +666,9 @@ class floquetController:
 
 if __name__ == '__main__':
     orbit_types = ['horizontal']
-    lagrange_points = [1]
-    acceleration_magnitudes = [0.01000]
-    alphas = [180.0]
+    lagrange_points = [1,2]
+    acceleration_magnitudes = [0.001000,0.010000,0.100000]
+    alphas = [0.0,45.0,90.0,135.0,180.0,225.0,270.0,315.0]
     amplitudes = np.linspace(1.0E-5,1.0E-4,num=91).tolist()
     numbers_of_points = [8]
 
@@ -662,8 +686,8 @@ if __name__ == '__main__':
             del floquet_controller
 
     orbit_types = ['horizontal']
-    lagrange_points = [1]
-    acceleration_magnitudes = [0.010000]
+    lagrange_points = [1,2]
+    acceleration_magnitudes = [0.001000,0.010000,0.100000]
     alphas = np.linspace(0,359,num=360).tolist()
     amplitudes = [0.000100]
     numbers_of_points = [8]
@@ -680,9 +704,9 @@ if __name__ == '__main__':
 
 
     orbit_types = ['horizontal']
-    lagrange_points = [1]
+    lagrange_points = [1,2]
     acceleration_magnitudes = np.linspace(1.0E-2,1.0E-1,num=91).tolist()
-    alphas = [0.000000]
+    alphas = [0.000000,60.000000,120.000000,180.000000,240.000000,300.000000]
     amplitudes = [0.000100]
     numbers_of_points = [8]
 
