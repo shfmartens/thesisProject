@@ -50,13 +50,10 @@ class floquetController:
             self.numberOfAccelerations = len(self.accelerationMagnitude)
             self.numberOfAxisTicks = 4
 
-
-
-
+        self.spacingFactor = 1.05
         self.lowDpi = low_dpi
-        self.figSize = self.figSize = (7 * (1 + np.sqrt(5)) / 2, 7)
-        self.figureRatio = 7 / (7 * (1 + np.sqrt(5)) / 2)
-        self.spacingFactor = 2
+        self.figSize = (7 * (1 + np.sqrt(5)) / 2, 7)
+        self.figureRatio =  (7 * (1 + np.sqrt(5)) / 2) / 7
         blues = sns.color_palette('Blues', 100)
         greens = sns.color_palette('BuGn', 100)
         n_colors = 3
@@ -193,11 +190,25 @@ class floquetController:
         minimumX = min(min(df['x']),min(df_corrected['x']))
         minimumY = min(min(df['y']),min(df_corrected['y']))
 
+        maximumX = max(max(df['x']), max(df_corrected['x']))
+        maximumY = max(max(df['y']), max(df_corrected['y']))
 
-        ax1.set_xlim([minimumX - scaleDistance*self.figureRatio* (self.spacingFactor - 1) , minimumX+scaleDistance*self.figureRatio* self.spacingFactor])
-        ax1.set_ylim([minimumY - scaleDistance*(self.spacingFactor - 1), minimumY  +scaleDistance*self.spacingFactor])
-        ax2.set_xlim([minimumX - scaleDistance*self.figureRatio* (self.spacingFactor - 1) , minimumX+scaleDistance*self.figureRatio* self.spacingFactor])
-        ax2.set_ylim([minimumY - scaleDistance*(self.spacingFactor - 1), minimumY  +scaleDistance*self.spacingFactor])
+        Xmiddle = minimumX + (maximumX-minimumX)/2
+        Ymiddle = minimumY + (maximumY-minimumY)/2
+
+        ax1.set_xlim([(Xmiddle - 0.5*scaleDistance*self.figureRatio*self.spacingFactor), (Xmiddle + 0.5*scaleDistance*self.figureRatio*self.spacingFactor) ])
+        ax1.set_ylim([Ymiddle - 0.5 * scaleDistance*self.spacingFactor, Ymiddle  + 0.5 * scaleDistance*self.spacingFactor])
+        ax2.set_xlim([(Xmiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(Xmiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
+        ax2.set_ylim([Ymiddle - 0.5 * scaleDistance * self.spacingFactor, Ymiddle + 0.5 * scaleDistance * self.spacingFactor])
+
+
+        # ax1.set_xlim([(minimumX - scaleDistance*(self.spacingFactor-1.0)*self.figureRatio), (minimumX + scaleDistance*self.figureRatio*self.spacingFactor) ])
+        # ax1.set_ylim([minimumY - scaleDistance*(self.spacingFactor - 1), minimumY  + scaleDistance*self.spacingFactor])
+        # ax2.set_xlim([(minimumX - scaleDistance*(self.spacingFactor-1.0)*self.figureRatio), (minimumX + scaleDistance*self.figureRatio*self.spacingFactor) ])
+        # ax2.set_ylim([minimumY - scaleDistance * (self.spacingFactor - 1), minimumY + scaleDistance * self.spacingFactor])
+
+
+
 
 
         ax3.set_xlim([ min(deviation_df['amplitude']), max(deviation_df['amplitude'])])
@@ -213,7 +224,7 @@ class floquetController:
         ax4.set_title('Full-period deviations after correction')
 
         ax1.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%.5f'))
-        xticks = (np.linspace(minimumX- scaleDistance*self.figureRatio*(self.spacingFactor - 1), minimumX +scaleDistance*self.figureRatio * self.spacingFactor, num=self.numberOfAxisTicks))
+        xticks = (np.linspace((Xmiddle - 0.5*scaleDistance*self.figureRatio*self.spacingFactor), (Xmiddle + 0.5*scaleDistance*self.figureRatio*self.spacingFactor), num=self.numberOfAxisTicks))
         ax1.xaxis.set_ticks( xticks )
         ax2.xaxis.set_ticks( xticks )
 
@@ -368,15 +379,19 @@ class floquetController:
                 if Indexlist < len(indexPlotlist)-1:
                     Indexlist = Indexlist + 1
 
+        Xmiddle = minimumX + (maximumX - minimumX)/2.0
+        Ymiddle = minimumY + (maximumY - minimumY)/2.0
+
         scaleDistance = max((maximumY - minimumY), (maximumX - minimumX))
 
-        ax1.set_xlim([minimumX - scaleDistance*self.figureRatio* (self.spacingFactor - 1) , minimumX+scaleDistance*self.figureRatio* self.spacingFactor])
-        ax1.set_ylim([minimumY - scaleDistance* (self.spacingFactor - 1) , minimumY+scaleDistance* self.spacingFactor])
-        ax2.set_xlim([minimumX - scaleDistance*self.figureRatio* (self.spacingFactor - 1) , minimumX+scaleDistance*self.figureRatio* self.spacingFactor])
-        ax2.set_ylim([minimumY - scaleDistance* (self.spacingFactor - 1) , minimumY+scaleDistance* self.spacingFactor])
+        ax1.set_xlim([(Xmiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(Xmiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
+        ax1.set_ylim([Ymiddle - 0.5 * scaleDistance * self.spacingFactor, Ymiddle + 0.5 * scaleDistance * self.spacingFactor])
+        ax2.set_xlim([(Xmiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(Xmiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
+        ax2.set_ylim([Ymiddle - 0.5 * scaleDistance * self.spacingFactor, Ymiddle + 0.5 * scaleDistance * self.spacingFactor])
+
 
         ax1.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%.5f'))
-        xticks = (np.linspace(minimumX- scaleDistance*self.figureRatio*(self.spacingFactor - 1), minimumX +scaleDistance*self.figureRatio * self.spacingFactor, num=self.numberOfAxisTicksOrtho))
+        xticks = (np.linspace((Xmiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor), (Xmiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor), num=self.numberOfAxisTicksOrtho))
         ax1.xaxis.set_ticks( xticks )                                                                                                                                                       
         ax2.xaxis.set_ticks( xticks )
 
@@ -491,7 +506,6 @@ class floquetController:
 
 
             if i == indexPlotlist[Indexlist]:
-                print('test: ' +str(i))
 
 
                 df_corrected = load_orbit_augmented(
@@ -528,7 +542,6 @@ class floquetController:
                     maximumX = max(max(df['x']), max(df_corrected['x']))
                     maximumY = max(max(df['y']), max(df_corrected['y']))
 
-                    print(maximumX)
 
                 else:
                     minimumX_temp = min(min(df['x']), min(df_corrected['x']))
@@ -560,18 +573,24 @@ class floquetController:
             ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'], color='black', marker='x')
             ax2.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'], color='black', marker='x')
 
+        Xmiddle = minimumX + (maximumX - minimumX) / 2.0
+        Ymiddle = minimumY + (maximumY - minimumY) / 2.0
 
         scaleDistance = max((maximumY - minimumY), (maximumX - minimumX))
 
-        ax1.set_xlim([minimumX - scaleDistance*self.figureRatio* (self.spacingFactor - 1) , minimumX+scaleDistance*self.figureRatio*self.spacingFactor])
-        ax1.set_ylim([minimumY - scaleDistance* (self.spacingFactor - 1) , minimumY+scaleDistance* self.spacingFactor])
-        ax2.set_xlim([minimumX - scaleDistance*self.figureRatio* (self.spacingFactor - 1) , minimumX+scaleDistance*self.figureRatio*self.spacingFactor])
-        ax2.set_ylim([minimumY - scaleDistance* (self.spacingFactor - 1) , minimumY+scaleDistance* self.spacingFactor])
+        ax1.set_xlim([(Xmiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(Xmiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
+        ax1.set_ylim([Ymiddle - 0.5 * scaleDistance * self.spacingFactor, Ymiddle + 0.5 * scaleDistance * self.spacingFactor])
+        ax2.set_xlim([(Xmiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(Xmiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
+        ax2.set_ylim([Ymiddle - 0.5 * scaleDistance * self.spacingFactor, Ymiddle + 0.5 * scaleDistance * self.spacingFactor])
 
         ax1.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%.5f'))
-        xticks = (np.linspace(minimumX- scaleDistance*self.figureRatio*(self.spacingFactor - 1), minimumX +scaleDistance*self.figureRatio * self.spacingFactor, num=self.numberOfAxisTicks))
-        ax1.xaxis.set_ticks( xticks )
-        ax2.xaxis.set_ticks( xticks )
+        xticks = (np.linspace((Xmiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(Xmiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),num=self.numberOfAxisTicks))
+        ax1.xaxis.set_ticks(xticks)
+        ax2.xaxis.set_ticks(xticks)
+
+
+
+
 
         deviation_df = pd.DataFrame(deviation_list, columns=['acceleration', 'deltaR', 'deltaV'])
         deviation_corrected_df = pd.DataFrame(deviation_corrected_list, columns=['acceleration', 'deltaR', 'deltaV'])
@@ -666,8 +685,6 @@ if __name__ == '__main__':
     alphas = [0.000000]
     amplitudes = [0.000100]
     numbers_of_points = [8]
-
-    print(acceleration_magnitudes)
 
     for orbit_type in orbit_types:
         for lagrange_point in lagrange_points:
