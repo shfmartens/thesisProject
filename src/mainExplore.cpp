@@ -65,7 +65,7 @@ int main (){
             {
 
                 std::cout << "running thread 01 " << std::endl;
-                createLowThrustInitialConditions(1, "horizontal", 1, 0.01, 0.0, 0.0, 1.0, -1.552, massParameter );
+                createLowThrustInitialConditions(1, "horizontal", 1, 0.001, 0.0, 0.0, 1.0, -1.552, massParameter );
             }
             if (i ==2)
             {
@@ -75,22 +75,22 @@ int main (){
             if (i ==3)
             {
                 std::cout << "running thread 03" << std::endl;
-                createLowThrustInitialConditions(1, "horizontal", 1, 0.01, 120.0, 0.0, 1.0, -1.552, massParameter );
+                createLowThrustInitialConditions(1, "horizontal", 1, 0.1, 120.0, 0.0, 1.0, -1.552, massParameter );
             }
             if (i ==4)
             {
                 std::cout << "running thread 04" << std::endl;
-                createLowThrustInitialConditions(1, "horizontal", 1, 0.01, 180.0, 0.0, 1.0, -1.552, massParameter );
+                createLowThrustInitialConditions(2, "horizontal", 1, 0.001, 180.0, 0.0, 1.0, -1.552, massParameter );
             }
             if (i ==5)
             {
                 std::cout << "running thread 05" << std::endl;
-                createLowThrustInitialConditions(1, "horizontal", 1, 0.01, 240.0, 0.0, 1.0, -1.552, massParameter );
+                createLowThrustInitialConditions(2, "horizontal", 1, 0.01, 240.0, 0.0, 1.0, -1.552, massParameter );
             }
             if (i ==6)
            {
                 std::cout << "running thread 06" << std::endl;
-                createLowThrustInitialConditions(1, "horizontal", 1, 0.01, 300.0, 0.0, 1.0, -1.552, massParameter );
+                createLowThrustInitialConditions(2, "horizontal", 1, 0.1, 300.0, 0.0, 1.0, -1.552, massParameter );
             }
 
             if (i ==7)
