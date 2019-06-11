@@ -643,8 +643,8 @@ class floquetController:
 if __name__ == '__main__':
     orbit_types = ['horizontal']
     lagrange_points = [1]
-    acceleration_magnitudes = [0.001000]
-    alphas = [30.0]
+    acceleration_magnitudes = [0.01000]
+    alphas = [180.0]
     amplitudes = np.linspace(1.0E-5,1.0E-4,num=91).tolist()
     numbers_of_points = [8]
 

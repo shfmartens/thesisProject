@@ -89,6 +89,8 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
     Eigen::VectorXcd centerEigenVector = Eigen::VectorXd::Zero(6);
     Eigen::VectorXd centerEigenVectorModulus = Eigen::VectorXd::Zero(6);
     Eigen::VectorXd centerEigenVectorReal = Eigen::VectorXd::Zero(6);
+    Eigen::VectorXd centerEigenVectorSign = Eigen::VectorXd::Zero(6);
+
 
 
     for (int i = 0; i < 6; i++ )
@@ -108,9 +110,23 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
                 {
                      centerEigenVectorModulus(k) = std::abs( eigSPM.eigenvectors()(k,i))   ;
                      centerEigenVectorReal(k) = eigSPM.eigenvectors()(k,i).real()   ;
+
+                     if (eigSPM.eigenvectors()(k,i).real() >= 0)
+                     {
+                         centerEigenVectorSign(k) = 1.0;
+                     } else
+                     {
+
+                         centerEigenVectorSign(k) = -1.0;
+
+                     }
+
                      if (k ==2 or k==5)
                      {
                         centerEigenVectorReal(k) = 0.0;
+                        centerEigenVectorModulus(k) = 0.0;
+                        centerEigenVectorSign(k) = 1.0;
+
                      }
 
 
@@ -136,6 +152,12 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
         }
 
     }
+
+    //std::cout << "centerEigenVectorReal: \n" << centerEigenVectorReal << std::endl;
+    //std::cout << "centerEigenVectorModulus: \n" << centerEigenVectorModulus << std::endl;
+    //std::cout << "centerEigenVectorSign: \n" << centerEigenVectorSign << std::endl;
+
+
 
     Eigen::VectorXd initialStateAfterOffset = Eigen::VectorXd::Zero(10);
     double normalizationFactor;
