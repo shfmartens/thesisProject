@@ -56,7 +56,7 @@ class floquetController:
         self.lowDpi = low_dpi
         self.figSize = self.figSize = (7 * (1 + np.sqrt(5)) / 2, 7)
         self.figureRatio = 7 / (7 * (1 + np.sqrt(5)) / 2)
-        self.spacingFactor = 1.05
+        self.spacingFactor = 2
         blues = sns.color_palette('Blues', 100)
         greens = sns.color_palette('BuGn', 100)
         n_colors = 3
@@ -450,11 +450,11 @@ class floquetController:
         ax2.set_ylabel('y [-]')
         ax2.grid(True, which='both', ls=':')
 
-        ax3.set_xlabel('$\\alpha$ [-]')
+        ax3.set_xlabel('a$_{lt}$ [-]')
         ax3.set_ylabel('$ |\\Delta R|$ [-], $|\\Delta V|$ [-]')
         ax3.grid(True, which='both', ls=':')
 
-        ax4.set_xlabel('$\\alpha$ [-]')
+        ax4.set_xlabel('a$_{lt}$ [-]')
         ax4.set_ylabel('$ |\\Delta R|$ [-], $|\\Delta V|$ [-]')
         ax4.grid(True, which='both', ls=':')
 
@@ -464,7 +464,8 @@ class floquetController:
         deviation_list = []
         deviation_corrected_list = []
 
-        indexPlotlist = np.linspace(np.round(min(self.accelerationMagnitude),3), np.round(max(self.accelerationMagnitude),3), num=self.numberOfSolutions).tolist()
+        indexPlotlist = np.linspace(0,len(self.accelerationMagnitude)-1,num=self.numberOfSolutions).tolist()
+
         Indexlist = 0
 
         minimumX = 0.0
@@ -473,9 +474,6 @@ class floquetController:
         maximumY = 0.0
         maximumDevR = 0.0
         maximumDevV = 0.0
-
-        print(indexPlotlist)
-
 
         for i in orbitIdsPlot:
             df = load_orbit_augmented('../../data/raw/floquet_controller/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
@@ -491,22 +489,10 @@ class floquetController:
 
             deviation_list.append([self.accelerationMagnitude[i], deltaR, deltaV])
 
-            lagrange_points_df = load_lagrange_points_location_augmented(0.0, 0.0)
-            if self.lagrangePointNr == 1:
-                lagrange_point_nrs = ['L1']
-            if self.lagrangePointNr == 2:
-                lagrange_point_nrs = ['L2']
-
-            for lagrange_point_nr in lagrange_point_nrs:
-                ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
-                            color='black', marker='x')
-                ax2.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
-                            color='black', marker='x')
 
             if i == indexPlotlist[Indexlist]:
-                print(self.accelerationMagnitude[i])
-                print(i)
-                print(indexPlotlist[Indexlist])
+                print('test: ' +str(i))
+
 
                 df_corrected = load_orbit_augmented(
                     '../../data/raw/floquet_controller/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
@@ -519,7 +505,7 @@ class floquetController:
                 deltaV_corrected = np.linalg.norm(deviations_corrected[4:7])
                 deviation_corrected_list.append([self.accelerationMagnitude[i], deltaR_corrected, deltaV_corrected])
 
-                legendString = 'a$_{lt} = $' + str("{:4.1f}".format(self.accelerationMagnitude[i]))
+                legendString = 'a$_{lt} = $' + str("{:2.1e}".format(self.accelerationMagnitude[i]))
                 ax1.plot(df['x'], df['y'], color=sns.color_palette('viridis', self.numberOfAccelerations)[i], linewidth=1, label= legendString )
                 ax2.plot(df_corrected['x'], df_corrected['y'], color=sns.color_palette('viridis', self.numberOfAccelerations)[i], linewidth=1, label=legendString )
 
@@ -535,12 +521,14 @@ class floquetController:
                     ax2.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
                                 color=sns.color_palette('viridis', self.numberOfAccelerations)[i], marker='x')
 
-                if Indexlist == 0.0:
+                if Indexlist == 0:
                     minimumX = min(min(df['x']),min(df_corrected['x']))
                     minimumY = min(min(df['y']),min(df_corrected['y']))
 
                     maximumX = max(max(df['x']), max(df_corrected['x']))
                     maximumY = max(max(df['y']), max(df_corrected['y']))
+
+                    print(maximumX)
 
                 else:
                     minimumX_temp = min(min(df['x']), min(df_corrected['x']))
@@ -562,11 +550,22 @@ class floquetController:
                 if Indexlist < len(indexPlotlist)-1:
                     Indexlist = Indexlist + 1
 
+        lagrange_points_df = load_lagrange_points_location_augmented(0.0, 0.0)
+        if self.lagrangePointNr == 1:
+            lagrange_point_nrs = ['L1']
+        if self.lagrangePointNr == 2:
+            lagrange_point_nrs = ['L2']
+
+        for lagrange_point_nr in lagrange_point_nrs:
+            ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'], color='black', marker='x')
+            ax2.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'], color='black', marker='x')
+
+
         scaleDistance = max((maximumY - minimumY), (maximumX - minimumX))
 
-        ax1.set_xlim([minimumX - scaleDistance*self.figureRatio* (self.spacingFactor - 1) , minimumX+scaleDistance*self.figureRatio* self.spacingFactor])
+        ax1.set_xlim([minimumX - scaleDistance*self.figureRatio* (self.spacingFactor - 1) , minimumX+scaleDistance*self.figureRatio*self.spacingFactor])
         ax1.set_ylim([minimumY - scaleDistance* (self.spacingFactor - 1) , minimumY+scaleDistance* self.spacingFactor])
-        ax2.set_xlim([minimumX - scaleDistance*self.figureRatio* (self.spacingFactor - 1) , minimumX+scaleDistance*self.figureRatio* self.spacingFactor])
+        ax2.set_xlim([minimumX - scaleDistance*self.figureRatio* (self.spacingFactor - 1) , minimumX+scaleDistance*self.figureRatio*self.spacingFactor])
         ax2.set_ylim([minimumY - scaleDistance* (self.spacingFactor - 1) , minimumY+scaleDistance* self.spacingFactor])
 
         ax1.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%.5f'))
@@ -577,10 +576,9 @@ class floquetController:
         deviation_df = pd.DataFrame(deviation_list, columns=['acceleration', 'deltaR', 'deltaV'])
         deviation_corrected_df = pd.DataFrame(deviation_corrected_list, columns=['acceleration', 'deltaR', 'deltaV'])
 
-        ax3.plot(deviation_df['acceleration'], deviation_df['deltaR'], color=sns.color_palette('viridis', 2)[0],
-                     linewidth=1)
-        ax3.plot(deviation_df['acceleration'], deviation_df['deltaV'], color=sns.color_palette('viridis', 2)[1],
-                     linewidth=1)
+        ax3.plot(deviation_df['acceleration'], deviation_df['deltaR'], color=sns.color_palette('viridis', 2)[0], linewidth=1)
+        ax3.plot(deviation_df['acceleration'], deviation_df['deltaV'], color=sns.color_palette('viridis', 2)[1], linewidth=1)
+
         ax4.plot(deviation_corrected_df['acceleration'], deviation_corrected_df['deltaR'], color=sns.color_palette('viridis', 2)[0], linewidth=1, label='$| \\Delta R | [-]$ ')
         ax4.plot(deviation_corrected_df['acceleration'], deviation_corrected_df['deltaV'], color=sns.color_palette('viridis', 2)[1], linewidth=1, label='$| \\Delta V | [-]$ ')
 
@@ -600,7 +598,7 @@ class floquetController:
         lgd2 = ax4.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5))
 
 
-        supttl = fig.suptitle('Initial guesses at L$_{'+ str(self.lagrangePointNr ) + '}$(a$_{lt}$ = '+ str("{:3.1f}".format(self.alpha)) \
+        supttl = fig.suptitle('Initial guesses at L$_{'+ str(self.lagrangePointNr ) + '}$($\\alpha$ = '+ str("{:3.1f}".format(self.alpha)) \
         +', $|$A$_{r}$$|$ = ' + str("{:2.1e}".format(self.amplitude)) + ') after offset in $\\lambda_3$ direction', size=self.suptitleSize)
 
 
@@ -668,6 +666,8 @@ if __name__ == '__main__':
     alphas = [0.000000]
     amplitudes = [0.000100]
     numbers_of_points = [8]
+
+    print(acceleration_magnitudes)
 
     for orbit_type in orbit_types:
         for lagrange_point in lagrange_points:

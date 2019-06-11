@@ -31,13 +31,13 @@ int main (){
     // ================================
     // == Compute equilibria, comment out when computing low-thrust intial positions ==
     // ================================
-//        Eigen::ArrayXd accelerationArray = Eigen::ArrayXd::LinSpaced( 91, 1.0E-1, 1.0);
-//        for (int k = 0; k < 91; k ++)
-//        {
-//            double thrustAcceleration = accelerationArray(k);
-//            createEquilibriumLocations(1, thrustAcceleration, massParameter);
-//            createEquilibriumLocations(2, thrustAcceleration, massParameter);
-//        }
+        Eigen::ArrayXd accelerationArray = Eigen::ArrayXd::LinSpaced( 91, 1.0E-2, 1.0E-1);
+        for (int k = 0; k < 91; k ++)
+        {
+            double thrustAcceleration = accelerationArray(k);
+            createEquilibriumLocations(1, thrustAcceleration, massParameter);
+            createEquilibriumLocations(2, thrustAcceleration, massParameter);
+        }
 
 
     // ================================
@@ -65,44 +65,44 @@ int main (){
             {
 
                 std::cout << "running thread 01 " << std::endl;
-                createLowThrustInitialConditions(1, "horizontal", 1, 0.1, 0.0, 0.0, 1.0, -1.552, massParameter );
+                createLowThrustInitialConditions(2, "horizontal", 1, 0.1, 0.0, 0.0, 1.0, -1.552, massParameter );
             }
             if (i ==2)
             {
                 std::cout << "running thread 02" << std::endl;
-                createLowThrustInitialConditions(1, "horizontal", 1, 0.1, 45.0, 0.0, 1.0, -1.552, massParameter );
+                createLowThrustInitialConditions(2, "horizontal", 1, 0.1, 45.0, 0.0, 1.0, -1.552, massParameter );
             }
             if (i ==3)
             {
                 std::cout << "running thread 03" << std::endl;
-                createLowThrustInitialConditions(1, "horizontal", 1, 0.1, 90.0, 0.0, 1.0, -1.552, massParameter );
+                createLowThrustInitialConditions(2, "horizontal", 1, 0.1, 90.0, 0.0, 1.0, -1.552, massParameter );
             }
             if (i ==4)
             {
                 std::cout << "running thread 04" << std::endl;
-                createLowThrustInitialConditions(1, "horizontal", 1, 0.1, 135.0, 0.0, 1.0, -1.552, massParameter );
+                createLowThrustInitialConditions(2, "horizontal", 1, 0.1, 135.0, 0.0, 1.0, -1.552, massParameter );
             }
             if (i ==5)
             {
                 std::cout << "running thread 05" << std::endl;
-                createLowThrustInitialConditions(1, "horizontal", 1, 0.1, 180.0, 0.0, 1.0, -1.552, massParameter );
+                createLowThrustInitialConditions(2, "horizontal", 1, 0.1, 180.0, 0.0, 1.0, -1.552, massParameter );
             }
             if (i ==6)
            {
                 std::cout << "running thread 06" << std::endl;
-                createLowThrustInitialConditions(1, "horizontal", 1, 0.1, 225.0, 0.0, 1.0, -1.552, massParameter );
+                createLowThrustInitialConditions(2, "horizontal", 1, 0.1, 225.0, 0.0, 1.0, -1.552, massParameter );
             }
 
             if (i ==7)
            {
                 std::cout << "running thread 07" << std::endl;
-                createLowThrustInitialConditions(1, "horizontal", 1, 0.1, 270.0, 0.0, 1.0, -1.552, massParameter );
+                createLowThrustInitialConditions(2, "horizontal", 1, 0.1, 270.0, 0.0, 1.0, -1.552, massParameter );
             }
 
             if (i ==8)
             {
                 std::cout << "running thread 08" << std::endl;
-                createLowThrustInitialConditions(1, "horizontal", 1, 0.1, 315.0, 0.0, 1.0, -1.552, massParameter );
+                createLowThrustInitialConditions(2, "horizontal", 1, 0.1, 315.0, 0.0, 1.0, -1.552, massParameter );
             }
             if (i ==9)
             {
