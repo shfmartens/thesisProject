@@ -213,11 +213,11 @@ Eigen::VectorXd getEarthMoonInitialGuessParameters ( const int librationPointNr,
             {
                 if (librationPointNr == 1)
                 {
-                    initialGuessParameters(0) = 1.0e-4;
+                    initialGuessParameters(0) = 1.0e-5;
                 }
                 else if (librationPointNr == 2)
                 {
-                    initialGuessParameters(0) = 1.0e-4;
+                    initialGuessParameters(0) = 1.0e-5;
                 }
             }
             else if (orbitType == "vertical")
@@ -250,11 +250,11 @@ Eigen::VectorXd getEarthMoonInitialGuessParameters ( const int librationPointNr,
             {
                 if (librationPointNr == 1)
                 {
-                    initialGuessParameters(0) = 1.0e-3;
+                    initialGuessParameters(0) = 1.0e-4;
                 }
                 else if (librationPointNr == 2)
                 {
-                    initialGuessParameters(0) = 1.0e-3;
+                    initialGuessParameters(0) = 1.0e-4;
                 }
             }
             else if (orbitType == "vertical")
