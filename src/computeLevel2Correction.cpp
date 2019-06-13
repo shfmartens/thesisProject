@@ -478,12 +478,12 @@ Eigen::VectorXd computeLevel2Correction( const Eigen::VectorXd deviationVector, 
 
     if (hamiltonianConstraint == true)
     {
-        std::cout << "constraintVectorPeriodic: \n" << constraintVectorPeriodic << std::endl;
-        std::cout << "constraintVectorHamiltonian: \n" << constraintVectorHamiltonian << std::endl;
+        //std::cout << "constraintVectorPeriodic: \n" << constraintVectorPeriodic << std::endl;
+        //std::cout << "constraintVectorHamiltonian: \n" << constraintVectorHamiltonian << std::endl;
 
         //std::cout.precision(3);
-        std::cout << "updateMatrixPeriodic: \n" << updateMatrixPeriodic << std::endl;
-        std::cout << "updateMatrixHamiltonian: \n" << updateMatrixHamiltonian << std::endl;
+        //std::cout << "updateMatrixPeriodic: \n" << updateMatrixPeriodic << std::endl;
+        //std::cout << "updateMatrixHamiltonian: \n" << updateMatrixHamiltonian << std::endl;
 
     }
 

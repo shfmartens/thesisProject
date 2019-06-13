@@ -40,8 +40,13 @@ def load_lagrange_points_location_augmented(a_lt,alpha):
     return location_lagrange_points
 
 def load_states_continuation(file_path):
-    data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(2)))
-    data.columns = ['orbitID', 'hlt']
+    data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(12)))
+    data.columns = ['orbitID', 'hlt','x','y','z','xdot','ydot','zdot','alt','alpha','beta','m']
+    return data
+
+def load_differential_correction(file_path):
+    data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(11)))
+    data.columns = ['iterations', 'hlt','period','x','y','z','xdot','ydot','zdot','alt','alpha']
     return data
 
 

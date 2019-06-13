@@ -25,7 +25,7 @@ sys.path.append('../util')
 from load_data import load_orbit, load_bodies_location, load_lagrange_points_location, load_differential_corrections, \
 load_initial_conditions_incl_M, load_manifold
 
-from load_data_augmented import load_orbit_augmented, load_lagrange_points_location_augmented
+from load_data_augmented import load_orbit_augmented, load_lagrange_points_location_augmented, load_differential_correction
 
 class floquetController:
     def __init__(self, orbit_type, lagrange_point_nr, acceleration_magnitude, alpha, amplitude, number_of_points, low_dpi):
@@ -611,10 +611,6 @@ class floquetController:
         xticks = (np.linspace((Xmiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(Xmiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),num=self.numberOfAxisTicks))
         ax1.xaxis.set_ticks(xticks)
         ax2.xaxis.set_ticks(xticks)
-
-
-
-
 
         deviation_df = pd.DataFrame(deviation_list, columns=['acceleration', 'deltaR', 'deltaV'])
         deviation_corrected_df = pd.DataFrame(deviation_corrected_list, columns=['acceleration', 'deltaR', 'deltaV'])

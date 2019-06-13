@@ -215,7 +215,7 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
         if( numberOfIterations > maxNumberOfIterations )
         {
             std::cout << "Predictor Corrector did not converge within maxNumberOfIterations" << std::endl;
-            return outputVector = Eigen::VectorXd::Zero(23);
+            return outputVector = Eigen::VectorXd::Zero(25+11*numberOfPatchPoints);
         }
 
         int numberOfIterationsLevel1 = 0;
@@ -226,7 +226,7 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
             if( numberOfIterationsLevel1 > maxNumberOfIterations )
             {
                 std::cout << "Level I dit not converger within maxNumberOfIterations" << std::endl;
-                return outputVector = Eigen::VectorXd::Zero(23);
+                return outputVector = Eigen::VectorXd::Zero(25+11*numberOfPatchPoints);
             }
 
             // compute the Level 1 corrections and apply them to obtain an updatedEquation
@@ -373,7 +373,7 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
 
         }
 
-        ( stateHistory, initialStateVectors, deviationsFromPeriodicOrbit, deviationVector, numberOfIterations, 1);
+        //( stateHistory, initialStateVectors, deviationsFromPeriodicOrbit, deviationVector, numberOfIterations, 1);
 
         // ========= CHECK IF LI OUTPUT MEETS THE DESIRED CRITERIA ==== //
         if (positionDeviationFromPeriodicOrbit < maxPeriodDeviationFromPeriodicOrbit
