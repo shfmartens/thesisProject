@@ -65,31 +65,35 @@ class numericalContinuation:
         ax4.grid(True, which='both', ls=':')
 
 
-        df = load_states_continuation('../../data/raw/orbits/augmented/varying_hamiltonian/L' + str(self.lagrangePointNr) + \
+        df = load_states_continuation('../../data/raw/orbits/augmented/varying_alpha/single_arc/L' + str(self.lagrangePointNr) + \
                                       '_' + str(self.orbitType) + '_' + str("{:14.13f}".format(self.accelerationMagnitude)) + '_' + \
                                       str("{:14.13f}".format(self.alpha)) + '_' + str("{:14.13f}".format(self.beta)) + '_states_continuation.txt')
 
-        df_corrections = load_differential_correction('../../data/raw/orbits/augmented/varying_hamiltonian/L' + str(self.lagrangePointNr) + \
+        df_corrections = load_differential_correction('../../data/raw/orbits/augmented/varying_alpha/single_arc/L' + str(self.lagrangePointNr) + \
                                       '_' + str(self.orbitType) + '_' + str("{:14.13f}".format(self.accelerationMagnitude)) + '_' + \
                                       str("{:14.13f}".format(self.alpha)) + '_' + str("{:14.13f}".format(self.beta)) + '_differential_correction.txt')
 
-        ax1.plot(df['orbitID'],df['hlt'],color='blue', linewidth=1, label='energy')
-        ax2.semilogy(df['orbitID'],df_corrections['alt'],color='blue', linewidth=1, label='energy')
-        ax3.plot(df['orbitID'],df_corrections['alpha'],color='blue', linewidth=1, label='energy')
-        ax4.plot(df['orbitID'],df_corrections['iterations'],color='blue', linewidth=1, label='energy')
-
-
+        ax1.plot(df['orbitID'].head(5),df['hlt'].head(5),color='blue', linewidth=1, label='energy')
+        ax2.plot(df['orbitID'].head(5),df_corrections['alt'].head(5),color='blue', linewidth=1, label='energy')
+        ax3.plot(df['orbitID'].head(5),df_corrections['alpha'].head(5),color='blue', linewidth=1, label='energy')
+        ax4.plot(df['orbitID'].head(5),df_corrections['iterations'].head(5),color='blue', linewidth=1, label='energy')
 
         ax1.set_xlim([0, len(df['orbitID'])])
-        ax1.set_ylim([min(df['hlt']), max(df['hlt'])])
+        ax1.set_ylim([df['hlt'].head(1).values[0]-1.0E-5, df['hlt'].head(1).values[0]+1.0E-5])
 
-        ax2.set_xlim([0, len(df['orbitID'])])
+        #print(str("{:14.13f}".format(df['hlt'].head(1).values(0))) )
+        print((df['hlt'].head(1).values[0]-df['hlt'].tail(1).values[0]))
+
+        print (-1.586080101523794 - -1.586080101523794 )
+        print(df['alpha'])
+
+        ax2.set_xlim([0, len(df['orbitID'].head(5))])
         ax2.set_ylim([1.0e-5,5.0e-1])
 
-        ax3.set_xlim([0, len(df['orbitID'])])
-        ax3.set_ylim([0, 360])
+        ax3.set_xlim([0, len(df['orbitID'].head(5))])
+        ax3.set_ylim([min(df['alpha'].head(5))*0.999, max(df['alpha'].head(5))*1.001])
 
-        ax4.set_xlim([0, len(df['orbitID'])])        
+        ax4.set_xlim([0, len(df['orbitID'].head(5))])
         ax4.set_ylim([0, max(df_corrections['iterations']*2)])
 
 
@@ -110,17 +114,18 @@ class numericalContinuation:
 
         fig.savefig('../../data/figures/orbits/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
                     + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str("{:7.6f}".format(self.alpha)) + \
-                    '_spacing_verification.png', transparent=True, dpi=self.dpi)
+                    '_spacing_verification_alpha_single.png', transparent=True, dpi=self.dpi)
 
         pass
 
 
 if __name__ == '__main__':
     orbit_types = ['horizontal']
-    lagrange_points = [1,2]
-    acceleration_magnitudes = [0.001000]
-    alphas = [0.0, 60.0, 120.0, 180.0, 240.0, 300.0]
-    betas = [0.0]
+    lagrange_points = [2]
+    acceleration_magnitudes = [0.000000, 0.001000]
+    alphas = [0.0]
+    betas = [-1.552]
+
 
     low_dpi = True
 
