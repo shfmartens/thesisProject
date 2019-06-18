@@ -523,6 +523,8 @@ Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initia
 
     initialStateVector = differentialCorrectionResult.segment( 0, 10 );
     double orbitalPeriod = differentialCorrectionResult( 10 );
+    double hamiltonianFullPeriodDiffCorr = differentialCorrectionResult( 23 );
+
 
     // Propagate the initialStateVector for a full period and write output to file.
     std::map< double, Eigen::VectorXd > stateHistory;
@@ -534,7 +536,7 @@ Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initia
     // Save results
     double hamiltonianFullPeriod = computeHamiltonian( massParameter, stateVectorInclSTM.block(0,0,10,1));
 
-    appendDifferentialCorrectionResultsVectorAugmented( hamiltonianFullPeriod, differentialCorrectionResult, differentialCorrections );
+    appendDifferentialCorrectionResultsVectorAugmented( hamiltonianFullPeriodDiffCorr, differentialCorrectionResult, differentialCorrections );
 
     appendContinuationStatesVectorAugmented( orbitNumber, numberOfPatchPoints, differentialCorrectionResult(11), differentialCorrectionResult, statesContinuation);
 
