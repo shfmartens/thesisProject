@@ -1074,6 +1074,8 @@ void createLowThrustInitialConditions( const int librationPointNr, const std::st
 
                 continueNumericalContinuation = checkTerminationAugmented(differentialCorrections, stateVectorInclSTM, orbitType, librationPointNr, maxEigenvalueDeviation );
 
+                std::cout << "continueNumericalContinuation: " << continueNumericalContinuation << std::endl;
+
                  if ( continuationIndex != 1 && continueNumericalContinuation == false && orderOfMagnitude > minimumIncrementOrderOfMagnitude )
                    {
                              orderOfMagnitude = orderOfMagnitude + 1;
