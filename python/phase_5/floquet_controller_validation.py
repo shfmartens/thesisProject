@@ -661,52 +661,54 @@ class floquetController:
 
 
 if __name__ == '__main__':
+    # orbit_types = ['horizontal']
+    # lagrange_points = [1,2]
+    # acceleration_magnitudes = [0.001000,0.010000,0.100000]
+    # alphas = [0.0,45.0,90.0,135.0,180.0,225.0,270.0,315.0]
+    # amplitudes = np.linspace(1.0E-5,1.0E-4,num=91).tolist()
+    # numbers_of_points = [8]
+    #
+    # low_dpi = True
+    #
+    #
+    # for orbit_type in orbit_types:
+    #     for lagrange_point in lagrange_points:
+    #         for acceleration_magnitude in acceleration_magnitudes:
+    #             for alpha in alphas:
+    #                 for number_of_points in numbers_of_points:
+    #                     floquet_controller = floquetController(orbit_type, lagrange_point, acceleration_magnitude, \
+    #                                     alpha, amplitudes, number_of_points, low_dpi)
+    #                     floquet_controller.plot_offset_effect()
+    #         del floquet_controller
+    #
+    # orbit_types = ['horizontal']
+    # lagrange_points = [1,2]
+    # acceleration_magnitudes = [0.001000,0.010000,0.100000]
+    # alphas = np.linspace(0,359,num=360).tolist()
+    # amplitudes = [0.000100]
+    # numbers_of_points = [8]
+    #
+    #
+    #
+    # for orbit_type in orbit_types:
+    #     for lagrange_point in lagrange_points:
+    #         for acceleration_magnitude in acceleration_magnitudes:
+    #             for amplitude in amplitudes:
+    #                 for number_of_points in numbers_of_points:
+    #                     floquet_controller = floquetController(orbit_type, lagrange_point, acceleration_magnitude, \
+    #                                     alphas, amplitude, number_of_points, low_dpi)
+    #                     floquet_controller.plot_alpha_effect()
+    #         del floquet_controller
+
+
     orbit_types = ['horizontal']
-    lagrange_points = [1,2]
-    acceleration_magnitudes = [0.001000,0.010000,0.100000]
-    alphas = [0.0,45.0,90.0,135.0,180.0,225.0,270.0,315.0]
-    amplitudes = np.linspace(1.0E-5,1.0E-4,num=91).tolist()
+    lagrange_points = [1]
+    acceleration_magnitudes = np.linspace(1.0E-2,1.0E-1,num=91).tolist()
+    alphas = [0.000000]
+    amplitudes = [0.000100]
     numbers_of_points = [8]
 
     low_dpi = True
-
-
-    for orbit_type in orbit_types:
-        for lagrange_point in lagrange_points:
-            for acceleration_magnitude in acceleration_magnitudes:
-                for alpha in alphas:
-                    for number_of_points in numbers_of_points:
-                        floquet_controller = floquetController(orbit_type, lagrange_point, acceleration_magnitude, \
-                                        alpha, amplitudes, number_of_points, low_dpi)
-                        floquet_controller.plot_offset_effect()
-            del floquet_controller
-
-    orbit_types = ['horizontal']
-    lagrange_points = [1,2]
-    acceleration_magnitudes = [0.001000,0.010000,0.100000]
-    alphas = np.linspace(0,359,num=360).tolist()
-    amplitudes = [0.000100]
-    numbers_of_points = [8]
-
-
-
-    for orbit_type in orbit_types:
-        for lagrange_point in lagrange_points:
-            for acceleration_magnitude in acceleration_magnitudes:
-                for amplitude in amplitudes:
-                    for number_of_points in numbers_of_points:
-                        floquet_controller = floquetController(orbit_type, lagrange_point, acceleration_magnitude, \
-                                        alphas, amplitude, number_of_points, low_dpi)
-                        floquet_controller.plot_alpha_effect()
-            del floquet_controller
-
-
-    orbit_types = ['horizontal']
-    lagrange_points = [1,2]
-    acceleration_magnitudes = np.linspace(1.0E-2,1.0E-1,num=91).tolist()
-    alphas = [0.000000,60.000000,120.000000,180.000000,240.000000,300.000000]
-    amplitudes = [0.000100]
-    numbers_of_points = [8]
 
     for orbit_type in orbit_types:
         for lagrange_point in lagrange_points:

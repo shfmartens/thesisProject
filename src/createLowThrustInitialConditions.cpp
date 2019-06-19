@@ -458,12 +458,12 @@ Eigen::VectorXd getLowThrustInitialStateVectorGuess( const int librationPointNr,
     //lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, orbitType, initialGuessParameters(0), initialGuessParameters(1), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
 
     //lowThrustInitialStateVectorGuess =  morimotoFirstOrderApproximation(librationPointNr, initialGuessParameters(0), initialGuessParameters(1), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
-//    Eigen::ArrayXd amplitudeArray = Eigen::ArrayXd::LinSpaced( 91, 1.0E-5, 1.0E-4);
+    Eigen::ArrayXd amplitudeArray = Eigen::ArrayXd::LinSpaced( 91, 1.0E-5, 1.0E-4);
 
-//    for(int k =0;  k < 91; k++)
-//    {
-//        lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, orbitType, amplitudeArray(k), initialGuessParameters(1), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
-//    }
+    for(int k =0;  k < 91; k++)
+    {
+        lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, orbitType, amplitudeArray(k), initialGuessParameters(1), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
+    }
 
 //    Eigen::ArrayXd alphaArray = Eigen::ArrayXd::LinSpaced( 360, 0, 359);
 
@@ -474,14 +474,14 @@ Eigen::VectorXd getLowThrustInitialStateVectorGuess( const int librationPointNr,
 
 
 
-    Eigen::ArrayXd accArray = Eigen::ArrayXd::LinSpaced( 91, 0.01, 0.1);
+    //Eigen::ArrayXd accArray = Eigen::ArrayXd::LinSpaced( 91, 0.01, 0.1);
 
 
 
-    for(int k =0;  k < 91; k++)
-    {
-        lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, orbitType, 1.0E-4, accArray(k), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
-    }
+//    for(int k =0;  k < 91; k++)
+//    {
+//        lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, orbitType, 1.0E-4, accArray(k), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
+//    }
 
     return lowThrustInitialStateVectorGuess;
 }
@@ -871,11 +871,11 @@ void createLowThrustInitialConditions( const int librationPointNr, const std::st
     // Obtain ballistic initial guesses and refine them
     linearApproximationResultIteration1 = getLowThrustInitialStateVectorGuess(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 0);
 
-    if ( continuationIndex == 1)
-    {
-        linearApproximationResultIteration2 = getLowThrustInitialStateVectorGuess(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 1);
+//    if ( continuationIndex == 1)
+//    {
+//        linearApproximationResultIteration2 = getLowThrustInitialStateVectorGuess(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 1);
 
-    }
+//    }
 
 //    if ( continuationIndex == 6)
 //    {

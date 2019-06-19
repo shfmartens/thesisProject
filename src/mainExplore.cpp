@@ -57,15 +57,15 @@ int main (){
     // ================================
 
 
-    #pragma omp parallel num_threads(1)
+    #pragma omp parallel num_threads(12)
     {
         #pragma omp for
-        for (unsigned int i=1; i<=1; i++) {
+        for (unsigned int i=1; i<=12; i++) {
             if (i ==1)
             {
 
                 std::cout << "running thread 01 " << std::endl;
-                createLowThrustInitialConditions(1, "horizontal", 1, 0.1, 0.0, 0.0, 1.0, -1.552, massParameter );
+                createLowThrustInitialConditions(1, "horizontal", 1, 0.0, 0.0, 0.0, 1.0, -1.552, massParameter );
             }
             if (i ==2)
             {

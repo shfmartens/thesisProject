@@ -184,7 +184,6 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
     //initialStateAfterOffset.segment(0,6) = equilibriumStateVector.segment(0,6) + normalizationFactor * amplitude * centerEigenVectorReal;
 
     initialStateAfterOffset.segment(0,6) = equilibriumStateVector.segment(0,6) +  amplitude * ( centerEigenVectorReal.normalized() );
-
     initialStateAfterOffset.segment(6,4) = equilibriumStateVector.segment(6,4);
 
     std::cout << "\ninitialStateAfterOffset: \n"<<  initialStateAfterOffset << std::endl;
