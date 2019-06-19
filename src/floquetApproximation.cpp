@@ -175,7 +175,16 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
 
     }
 
-    initialStateAfterOffset.segment(0,6) = equilibriumStateVector.segment(0,6) + normalizationFactor * amplitude * centerEigenVectorReal;
+    std::cout << "\n==== TESTING OFFSET VERACITY ==== " << std::endl
+              << "current implementation of normalization: \n" << normalizationFactor * amplitude * centerEigenVectorReal << std::endl
+              << ".normalized(): \n" << centerEigenVectorReal.normalized() * amplitude << std::endl
+              << "eigenVectorReal / norm : \n" << centerEigenVectorReal / (centerEigenVectorReal.norm()) * amplitude  << std::endl
+              << "==== COMPLETED TESTING OFFSET VERACITY ==== " << std::endl;
+
+    //initialStateAfterOffset.segment(0,6) = equilibriumStateVector.segment(0,6) + normalizationFactor * amplitude * centerEigenVectorReal;
+
+    initialStateAfterOffset.segment(0,6) = equilibriumStateVector.segment(0,6) +  amplitude * ( centerEigenVectorReal.normalized() );
+
     initialStateAfterOffset.segment(6,4) = equilibriumStateVector.segment(6,4);
 
     std::cout << "\ninitialStateAfterOffset: \n"<<  initialStateAfterOffset << std::endl;
@@ -235,7 +244,7 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
 
     }
 
-//    std::map< double, Eigen::VectorXd > stateHistoryCorrectedGuess;
+    std::map< double, Eigen::VectorXd > stateHistoryCorrectedGuess;
 
 //    if ( (amplitude  < 1.01E-5) or (amplitude > 2.7E-5 and amplitude < 2.9E-5) or  (amplitude > 4.5E-5 and amplitude < 4.7E-5)
 //         or (amplitude > 6.3E-5 and amplitude < 6.5E-5) or (amplitude > 8.1E-5 and amplitude < 8.3E-5) or amplitude > 9.99E-5)
@@ -263,17 +272,17 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
 
 //    }
 
-//    if ( (thrustMagnitude  < 1.01E-2) or (thrustMagnitude > 2.7E-2 and thrustMagnitude < 2.9E-2) or  (thrustMagnitude > 4.5E-2 and thrustMagnitude < 4.7E-2)
-//         or (thrustMagnitude > 6.3E-2 and thrustMagnitude < 6.5E-2) or (thrustMagnitude > 8.1E-2 and thrustMagnitude < 8.3E-2) or thrustMagnitude > 9.99E-2)
-//    {
+    if ( (thrustMagnitude  < 1.01E-2) or (thrustMagnitude > 2.7E-2 and thrustMagnitude < 2.9E-2) or  (thrustMagnitude > 4.5E-2 and thrustMagnitude < 4.7E-2)
+         or (thrustMagnitude > 6.3E-2 and thrustMagnitude < 6.5E-2) or (thrustMagnitude > 8.1E-2 and thrustMagnitude < 8.3E-2) or thrustMagnitude > 9.99E-2)
+    {
 
-//        Eigen::VectorXd differentialCorrectionResults = applyPredictionCorrection(librationPointNr, lowThrustInitialStateVectorGuess, 0.0, massParameter, numberOfPatchPoints,
-//                                                                                  false, 1.0E-12, 1.0E-12, 1.0E-12);
+        Eigen::VectorXd differentialCorrectionResults = applyPredictionCorrection(librationPointNr, lowThrustInitialStateVectorGuess, 0.0, massParameter, numberOfPatchPoints,
+                                                                                  false, 1.0E-12, 1.0E-12, 1.0E-12);
 
-//        std::pair< Eigen::MatrixXd, double > finalTimeState = propagateOrbitAugmentedToFinalCondition( getFullInitialStateAugmented( differentialCorrectionResults.segment(0,10)),
-//                                                                 massParameter, differentialCorrectionResults(10), 1, stateHistoryCorrectedGuess, 1000, initialTime);
+        std::pair< Eigen::MatrixXd, double > finalTimeState = propagateOrbitAugmentedToFinalCondition( getFullInitialStateAugmented( differentialCorrectionResults.segment(0,10)),
+                                                                 massParameter, differentialCorrectionResults(10), 1, stateHistoryCorrectedGuess, 1000, initialTime);
 
-//    }
+    }
 
     //writeFloquetDataToFile( stateHistoryInitialGuess, stateHistoryCorrectedGuess, librationPointNr, orbitType, equilibriumStateVector, numberOfPatchPoints, amplitude);
 

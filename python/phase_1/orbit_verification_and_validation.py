@@ -696,7 +696,9 @@ class DisplayPeriodicityValidation:
         plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' - Orthographic projection',
                      size=self.suptitleSize)
 
+
         fig1.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ': family', size=self.suptitleSize)
+
 
         if self.lowDPI:
             fig2.savefig('../../data/figures/orbits/L' + str(

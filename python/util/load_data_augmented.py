@@ -49,6 +49,10 @@ def load_differential_correction(file_path):
     data.columns = ['iterations', 'hlt','period','x','y','z','xdot','ydot','zdot','alt','alpha']
     return data
 
+def load_initial_conditions(file_path):
+    data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(11)))
+    data.columns = ['iterations', 'hlt','period','x','y','z','xdot','ydot','zdot','alt','alpha']
+    return data
 
 if __name__ == '__main__':
     load_lagrange_points_location(0.001,60.0)
