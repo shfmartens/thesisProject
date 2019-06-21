@@ -702,9 +702,9 @@ if __name__ == '__main__':
 
 
     orbit_types = ['horizontal']
-    lagrange_points = [1]
+    lagrange_points = [1,2]
     acceleration_magnitudes = np.linspace(1.0E-2,1.0E-1,num=91).tolist()
-    alphas = [0.000000]
+    alphas = [0.000000, 60.0, 120.0, 180.0, 240.0, 300.0]
     amplitudes = [0.000100]
     numbers_of_points = [8]
 

@@ -175,13 +175,28 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
 
     }
 
-    std::cout << "\n==== TESTING OFFSET VERACITY ==== " << std::endl
-              << "current implementation of normalization: \n" << normalizationFactor * amplitude * centerEigenVectorReal << std::endl
-              << ".normalized(): \n" << centerEigenVectorReal.normalized() * amplitude << std::endl
-              << "eigenVectorReal / norm : \n" << centerEigenVectorReal / (centerEigenVectorReal.norm()) * amplitude  << std::endl
-              << "==== COMPLETED TESTING OFFSET VERACITY ==== " << std::endl;
+
+
+//    std::cout << "eigen values SPM: \n" << eigSPM.eigenvalues() << std::endl;
+//    std::cout << "eigen vectors SPM: \n" << eigSPM.eigenvectors() << std::endl;
+
+
+
+//    std::cout << "eigenvalue: " << centerEigenValue << std::endl;
+//    std::cout << "eigenvector: \n" << centerEigenVector << std::endl;
+//    std::cout << "eigenvector: \n" << centerEigenVectorReal << std::endl;
+
+
+
+//    std::cout << "\n==== TESTING OFFSET VERACITY ==== " << std::endl
+//              //<< "current implementation of normalization: \n" << normalizationFactor * amplitude * centerEigenVectorReal << std::endl
+//              << ".normalized(): \n" << centerEigenVectorReal.normalized() * amplitude << std::endl
+//              //<< "eigenVectorReal / norm : \n" << centerEigenVectorReal / (centerEigenVectorReal.norm()) * amplitude  << std::endl
+//              << "==== COMPLETED TESTING OFFSET VERACITY ==== " << std::endl;
 
     //initialStateAfterOffset.segment(0,6) = equilibriumStateVector.segment(0,6) + normalizationFactor * amplitude * centerEigenVectorReal;
+
+
 
     initialStateAfterOffset.segment(0,6) = equilibriumStateVector.segment(0,6) +  amplitude * ( centerEigenVectorReal.normalized() );
     initialStateAfterOffset.segment(6,4) = equilibriumStateVector.segment(6,4);
