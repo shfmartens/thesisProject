@@ -655,6 +655,7 @@ if __name__ == '__main__':
     lagrange_point_nrs = [1]
     acceleration_magnitudes = [0.07]
     alphas = [0.0]
+    print(np.linspace(0.01.1,num=3))
 
     display_initial_guess_construction = initialGuessConstruction(lagrange_point_nrs, acceleration_magnitudes, alphas, low_dpi=low_dpi)
     #display_initial_guess_construction.plot_center_eigenvalues()
