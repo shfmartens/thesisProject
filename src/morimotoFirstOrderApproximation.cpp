@@ -207,7 +207,7 @@ Eigen::VectorXd morimotoFirstOrderApproximation(int librationPointNr,
     const double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( primaryGravitationalParameter, secondaryGravitationalParameter );
 
     // Compute location of the artificial equilibrium point
-    Eigen::Vector2d equilibriumLocation = createEquilibriumLocations( librationPointNr, thrustMagnitude, accelerationAngle );
+    Eigen::Vector2d equilibriumLocation = createEquilibriumLocations( librationPointNr, thrustMagnitude, accelerationAngle, "acceleration", massParameter );
     //Eigen::Vector2d equilibriumLocation = Eigen::Vector2d::Zero(2);
     std::cout << "equilibriumLocation: \n" << equilibriumLocation << std::endl;
 

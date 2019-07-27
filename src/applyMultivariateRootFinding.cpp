@@ -1,6 +1,7 @@
 #include <cmath>
 #include <iostream>
 #include <Eigen/Core>
+#include <Eigen/Dense>
 
 #include "Tudat/Astrodynamics/BasicAstrodynamics/celestialBodyConstants.h"
 #include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
@@ -10,125 +11,143 @@
 #include "computeDifferentialCorrection.h"
 #include "propagateOrbit.h"
 
-Eigen::Vector2d computeDeviation(const int librationPointNr, const Eigen::Vector2d currentLocation, const double alpha, const double thrustAcceleration, const double massParameter){
+Eigen::MatrixXd computeJacobian(Eigen::Vector2d currentGuess, const double massParameter)
+{
+    Eigen::MatrixXd jacobianMatrix(2,2);
+    jacobianMatrix.setZero();
 
-Eigen::Vector2d currentDeviation;
+    double xDistancePrimary = currentGuess(0) + massParameter;
+    double xDistanceSecondary = currentGuess(0) -1.0 + massParameter;
+    double yDistance = currentGuess(1);
 
-//Compute Distances from primaries to satellite
-double xDistancePrimarySquared = (currentLocation(0)+massParameter)*(currentLocation(0)+massParameter);
-double yDistancePrimarySquared = currentLocation(1)*currentLocation(1);
-double xDistanceSecondarySquared = (currentLocation(0)-1.0+massParameter)*(currentLocation(0)-1.0+massParameter);
-double yDistanceSecondarySquared = currentLocation(1)*currentLocation(1);
+    double r13 = sqrt(xDistancePrimary*xDistancePrimary + yDistance*yDistance);
+    double r23 = sqrt(xDistanceSecondary*xDistanceSecondary+ yDistance*yDistance);
 
-double distanceToPrimary = sqrt(xDistancePrimarySquared + yDistancePrimarySquared);
-double distanceToPrimaryCubed = distanceToPrimary * distanceToPrimary * distanceToPrimary;
-double distanceToSecondary = sqrt(xDistanceSecondarySquared + yDistanceSecondarySquared);
-double distanceToSecondaryCubed = distanceToSecondary * distanceToSecondary * distanceToSecondary;
+    double r13Cubed = r13*r13*r13;
+    double r23Cubed = r23*r23*r23;
 
-// Compute potential terms
-double termRelatedToPrimary = (1.0 - massParameter)/distanceToPrimaryCubed;
-double termRelatedToSecondary = massParameter/distanceToSecondaryCubed;
-double recurringTerm = (1.0-termRelatedToPrimary-termRelatedToSecondary);
-double recurringTerm2 = (-termRelatedToPrimary-termRelatedToSecondary);
+    double r13Fifth = r13Cubed*r13*r13;
+    double r23Fifth = r23Cubed*r23*r23;
 
-currentDeviation(0) = currentLocation(0)*recurringTerm
-        +massParameter*recurringTerm2+termRelatedToSecondary
-        +thrustAcceleration*std::cos(alpha * tudat::mathematical_constants::PI /180.0);
+    double primaryTerm = (1.0 - massParameter)/r13Cubed;
+    double secondaryTerm = massParameter/r23Cubed;
 
-currentDeviation(1) = currentLocation(1)*recurringTerm
-        +thrustAcceleration*std::sin(alpha * tudat::mathematical_constants::PI /180.0);
+    double primaryTermDerivative = 3.0 * (1.0-massParameter)/r13Fifth;
+    double secondaryTermDerivative = 3.0 * (massParameter)/r23Fifth;
 
-return currentDeviation;
+    double partialf1partialX = (1.0 - primaryTerm - secondaryTerm)
+            + (currentGuess(0) + massParameter) * (primaryTermDerivative * xDistancePrimary + secondaryTermDerivative * xDistanceSecondary)
+            - secondaryTermDerivative * xDistanceSecondary;
+
+    double partialf1partialY =  (currentGuess(0) + massParameter) * (primaryTermDerivative * yDistance + secondaryTermDerivative * yDistance)
+            - secondaryTermDerivative * yDistance;
+
+    double partialf2partialX = currentGuess(1)*(primaryTermDerivative*xDistancePrimary + secondaryTermDerivative*xDistanceSecondary);
+
+    double partialf2partialY =  (1.0 - primaryTerm - secondaryTerm) +
+                                + currentGuess(1)*(primaryTermDerivative*yDistance + secondaryTermDerivative*yDistance);
+
+    jacobianMatrix(0.0) = partialf1partialX;
+    jacobianMatrix(0,1) = partialf1partialY;
+    jacobianMatrix(1,0) = partialf2partialX;
+    jacobianMatrix(1,1) = partialf2partialY;
+
+    return jacobianMatrix;
+
+
 }
 
-Eigen::MatrixXd computeJacobian (const int librationPointNr, const Eigen::Vector2d currentLocation, const double massParameter){
+Eigen::Vector2d computeConstraintVector(Eigen::Vector2d currentGuess, const double thrustAcceleration, const double alpha, const double massParameter)
+{
+    Eigen::Vector2d constraintVector;
+    constraintVector.setZero();
 
-    Eigen::MatrixXd inverseJacobian = Eigen::MatrixXd::Zero(2,2);
-    Eigen::MatrixXd Jacobian = Eigen::MatrixXd::Zero(2,2);
+    double xDistancePrimary = currentGuess(0) + massParameter;
+    double xDistanceSecondary = currentGuess(0) -1.0 + massParameter;
+    double yDistance = currentGuess(1);
 
-    //Compute Distances from primaries to satellite
-    double xDistancePrimarySquared = (currentLocation(0)+massParameter)*(currentLocation(0)+massParameter);
-    double yDistancePrimarySquared = currentLocation(1)*currentLocation(1);
-    double xDistanceSecondarySquared = (currentLocation(0)-1.0+massParameter)*(currentLocation(0)-1.0+massParameter);
-    double yDistanceSecondarySquared = currentLocation(1)*currentLocation(1);
+    double r13 = sqrt(xDistancePrimary*xDistancePrimary + yDistance*yDistance);
+    double r23 = sqrt(xDistanceSecondary*xDistanceSecondary+ yDistance*yDistance);
 
-    double distanceToPrimary = sqrt(xDistancePrimarySquared + yDistancePrimarySquared);
-    double distanceToPrimaryCubed = distanceToPrimary * distanceToPrimary * distanceToPrimary;
-    double distanceToPrimaryToTheFifth = distanceToPrimaryCubed * distanceToPrimary * distanceToPrimary;
-    double distanceToSecondary = sqrt(xDistanceSecondarySquared + yDistanceSecondarySquared);
-    double distanceToSecondaryCubed = distanceToSecondary * distanceToSecondary * distanceToSecondary;
-    double distanceToSecondaryToTheFifth = distanceToSecondaryCubed * distanceToSecondary * distanceToSecondary;
+    double r13Cubed = r13*r13*r13;
+    double r23Cubed = r23*r23*r23;
 
-    double termRelatedToPrimary = (1.0 - massParameter)/distanceToPrimaryCubed;
-    double termRelatedToSecondary = massParameter/distanceToSecondaryCubed;
-    double xDerivativePrimaryTerm = (-3.0*(1.0-massParameter)*(currentLocation(0)+massParameter))/(distanceToPrimaryToTheFifth);
-    double yDerivativePrimaryTerm = (-3.0*(1.0-massParameter)*currentLocation(1))/(distanceToPrimaryToTheFifth);
-    double xDerivativeSecondaryTerm = (-3.0*massParameter*(currentLocation(0)-1.0+massParameter))/(distanceToSecondaryToTheFifth);
-    double yDerivativeSecondaryTerm = (-3.0*massParameter*currentLocation(1))/(distanceToSecondaryToTheFifth);
+    double primaryTerm = (1.0 - massParameter)/r13Cubed;
+    double secondaryTerm = massParameter/r23Cubed;
 
 
-    double xEquilibriumPartialX = (1.0 -termRelatedToPrimary - termRelatedToSecondary)
-            + currentLocation(0) * (-xDerivativePrimaryTerm - xDerivativeSecondaryTerm)
-            + massParameter * ( -xDerivativePrimaryTerm - xDerivativeSecondaryTerm) + xDerivativeSecondaryTerm;
-    double xEquilibriumPartialY = currentLocation(0)*(-yDerivativePrimaryTerm - yDerivativeSecondaryTerm)
-            + massParameter * (-yDerivativePrimaryTerm - yDerivativeSecondaryTerm) + yDerivativeSecondaryTerm;
-    double yEquilibriumPartialX = currentLocation(1) * (-xDerivativePrimaryTerm - xDerivativeSecondaryTerm);
-    double yEquilibriumPartialY = (1.0 -termRelatedToPrimary - termRelatedToSecondary)
-            + currentLocation(1)*(-yDerivativePrimaryTerm - yDerivativeSecondaryTerm);
-    double inverseDeterminant = 1.0 /(xEquilibriumPartialX*yEquilibriumPartialY-xEquilibriumPartialY*yEquilibriumPartialX);
-    Eigen::MatrixXd inverseJacobianMatrix (2,2);
-    inverseJacobianMatrix << yEquilibriumPartialY, -1.0* xEquilibriumPartialY,
-                             -1.0*yEquilibriumPartialX, xEquilibriumPartialX;
+    double f1 = currentGuess(0)*(1.0 - primaryTerm - secondaryTerm ) + massParameter * (-primaryTerm - secondaryTerm)
+                + secondaryTerm + thrustAcceleration * std::cos(alpha * tudat::mathematical_constants::PI/180.0);
+    double f2 = currentGuess(1)*(1.0 - primaryTerm - secondaryTerm ) + thrustAcceleration * std::sin(alpha * tudat::mathematical_constants::PI/180.0);
 
-    inverseJacobian = inverseDeterminant * inverseJacobianMatrix;
+    constraintVector(0) = -f1;
+    constraintVector(1) = -f2;
 
-    return inverseJacobian;
+    return constraintVector;
+
 }
 
-Eigen::Vector3d applyMultivariateRootFinding( const int librationPointNr, const Eigen::Vector2d initialEquilibrium,
-                                              const double alpha, const double thrustAcceleration, const double massParameter, double maxDeviationFromEquilibrium,
-                                              const int maxNumberOfIterations) {
+Eigen::Vector3d applyMultivariateRootFinding( const Eigen::Vector2d initialEquilibrium,
+                                              const double thrustAcceleration, const double alpha, const double massParameter, const double relaxationParameter, const double maxDeviationFromEquilibrium,
+                                              const int maxNumberOfIterations)
+{
 
+    Eigen::Vector3d ConvergedGuessWithIterations;
+
+    Eigen::Vector2d correctedGuess;
+    correctedGuess.setZero();
+
+    Eigen::Vector2d constraintVector = computeConstraintVector(initialEquilibrium, thrustAcceleration, alpha, massParameter);
     Eigen::Vector2d currentGuess = initialEquilibrium;
-    Eigen::Vector2d deviationFromEquilibrium = computeDeviation(librationPointNr, initialEquilibrium, alpha, thrustAcceleration, massParameter );
-    double deviationNormFromEquilibrium = sqrt(deviationFromEquilibrium(0)*deviationFromEquilibrium(0) + deviationFromEquilibrium(1)*deviationFromEquilibrium(1));
-    Eigen::MatrixXd inverseJacobian = Eigen::MatrixXd::Zero(2,2);
-    Eigen::Vector2d updateVector;
-    Eigen::Vector2d updatedGuess;
-    int numberOfIterations = 1;
-    Eigen::Vector2d currentDeviation;
 
-    while (deviationNormFromEquilibrium > maxDeviationFromEquilibrium ) {
+    ConvergedGuessWithIterations.setZero();
 
-        if (numberOfIterations > maxNumberOfIterations) {
-            std::cout << "Maximum number of iterations exceeded" << std::endl;
-            Eigen::Vector3d endResult;
-            endResult.block(0,0,2,1) = currentGuess;
-            endResult(2)= numberOfIterations -1.0;
-            return endResult;
+    int numberOfIterations = 0;
+
+    while( constraintVector.norm() > maxDeviationFromEquilibrium )
+    {
+        if (numberOfIterations > maxNumberOfIterations)
+        {
+            std::cout << "MaxNumberOfIterations Reached, MV rootfinder did not converge within maxNumberOfIterations!" << std::endl;
+            ConvergedGuessWithIterations.segment(0,2) = Eigen::Vector2d::Zero();
+            ConvergedGuessWithIterations(2) = maxNumberOfIterations+999;
+            return ConvergedGuessWithIterations;
         }
 
-        currentDeviation = computeDeviation(librationPointNr, currentGuess, alpha, thrustAcceleration, massParameter);
-        inverseJacobian  = computeJacobian(librationPointNr, currentGuess, massParameter);
-        updateVector     = -1.0*inverseJacobian*currentDeviation;
-        updatedGuess     = currentGuess + updateVector;
+        Eigen::MatrixXd updateMatrix = computeJacobian( currentGuess, massParameter);
 
-        //std::cout << "Inverse Jacobian " << inverseJacobian << std::endl;
 
-        //Update the equilibrium solution
-        deviationFromEquilibrium = computeDeviation(librationPointNr, updatedGuess, alpha, thrustAcceleration, massParameter);
-        deviationNormFromEquilibrium = sqrt(deviationFromEquilibrium(0)*deviationFromEquilibrium(0) + deviationFromEquilibrium(1)*deviationFromEquilibrium(1));
-        //std::cout << "Position deviation from equilibrium: " << deviationNormFromEquilibrium << std::endl;
 
-        numberOfIterations += 1;
-        //std::cout << "Number of Iterations" << numberOfIterations << std::endl;
-        currentGuess = updatedGuess;
+        Eigen::Vector2d correction = updateMatrix.inverse() * constraintVector;
 
+        correctedGuess = currentGuess + relaxationParameter * correction;
+
+//        if (std::abs(alpha) < 0.2 && numberOfIterations < 3)
+//        {
+//            std::cout << "currentGuess: \n" << currentGuess << std::endl
+//                      << "\nupdateMatrix \n" << updateMatrix << std::endl
+//                      << "updateMatrix.inverse(): \n" << updateMatrix.inverse() << std::endl
+//                      << "correctionApplied: \n " << correction << std::endl;
+//        }
+
+        constraintVector = computeConstraintVector(correctedGuess, thrustAcceleration, alpha, massParameter);
+
+        currentGuess = correctedGuess;
+
+        numberOfIterations++;
     }
-    Eigen::Vector3d endResult;
-    endResult.block(0,0,2,1) = currentGuess;
-    endResult(2)= numberOfIterations;
-    return endResult;
+
+//    if (std::abs(alpha) < 0.2 )
+//    {
+
+//                  std::cout << "\ncorrectedGuess: \n" << correctedGuess << std::endl
+//                  << "iterations: " << numberOfIterations << std::endl;
+//    }
+
+    ConvergedGuessWithIterations.segment(0,2) = currentGuess;
+    ConvergedGuessWithIterations(2) = numberOfIterations;
+
+    return ConvergedGuessWithIterations;
 
 
 }

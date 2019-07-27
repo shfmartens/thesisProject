@@ -5,10 +5,12 @@
 
 #include "Eigen/Core"
 
-Eigen::Vector2d computeDeviation(const int librationPointNr, const Eigen::Vector2d currentLocation, const double alpha, const double massParameter);
+Eigen::MatrixXd computeJacobian(Eigen::Vector2d currentGuess, const double massParameter);
 
-Eigen::Vector3d applyMultivariateRootFinding( const int librationPointNr, const Eigen::Vector2d initialEquilibrium,
-                                              const double alpha, const double thrustAcceleration, const double massParameter, double maxDeviationFromEquilibrium = 1.0e-14,
+Eigen::Vector2d computeConstraintVector(Eigen::Vector2d currentGuess, const double thrustAcceleration, const double alpha, const double massParameter);
+
+Eigen::Vector3d applyMultivariateRootFinding( const Eigen::Vector2d initialEquilibrium,
+                                              const double thrustAcceleration, const double alpha, const double massParameter, double relaxationParameter, const double maxDeviationFromEquilibrium = 1.0e-13,
                                              const int maxNumberOfIterations = 100000 );
 
 #endif  // TUDATBUNDLE_APPLYMULTIVARIATEROOTFINDING_H

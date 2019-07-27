@@ -36,26 +36,12 @@
 Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType,
                                                   double amplitude, double thrustMagnitude, double accelerationAngle, double accelerationAngle2, const double initialMass, const int numberOfPatchPoints, const double maxEigenValueDeviation )
 {
-    std::cout << "\nCreate initial conditions:" << std::endl
-              << "Ax: " << amplitude << std::endl;
 
     Eigen::VectorXd lowThrustInitialStateVectorGuess(11*numberOfPatchPoints);
     lowThrustInitialStateVectorGuess.setZero();
 
-//    std::cout << "\n===check inputs ===" << std::endl
-//              << "libPointNr: " << librationPointNr << std::endl
-//              << "orbitType: " << orbitType << std::endl
-//              << "amplitude: " << amplitude << std::endl
-//              << "thrustMagnitude: " << thrustMagnitude << std::endl
-//              << "alpha: " << accelerationAngle << std::endl
-//              << "beta: " << accelerationAngle2 << std::endl
-//              << "initialMass: " << initialMass << std::endl
-//              << "patchpoints: " << numberOfPatchPoints << std::endl
-//              << "maxEigenValueDeviation: " << maxEigenValueDeviation << std::endl
-//              << " === check inputs completed === \n" << std::endl;
-
     // Set output precision and clear screen.
-    std::cout.precision(14);
+    std::cout.precision(6);
 
     // Compute the mass parameter of the Earth-Moon system
     const double primaryGravitationalParameter = tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER;
@@ -63,13 +49,23 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
     const double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( primaryGravitationalParameter, secondaryGravitationalParameter );
 
     // Compute location of the artificial equilibrium point
-    Eigen::Vector2d equilibriumLocation = createEquilibriumLocations( librationPointNr, thrustMagnitude, accelerationAngle );
+    Eigen::Vector2d equilibriumLocation = createEquilibriumLocations( librationPointNr, thrustMagnitude, accelerationAngle, "acceleration", massParameter );
+
     Eigen::VectorXd equilibriumStateVector =   Eigen::VectorXd::Zero( 10 );
     equilibriumStateVector.segment(0,2) = equilibriumLocation;
     equilibriumStateVector(6) = thrustMagnitude;
     equilibriumStateVector(7) = accelerationAngle;
     equilibriumStateVector(8) = accelerationAngle2;
     equilibriumStateVector(9) = initialMass;
+
+    Eigen::VectorXd testVector = Eigen::VectorXd::Zero(10);
+    testVector.segment(0,2) = equilibriumLocation;
+
+    //testVector(0) = 0.83;
+    //testVector(1) = 0.0;
+
+    std::cout << "EqTestLocation: \n" << equilibriumLocation << std::endl;
+    std::cout << "testSPM: \n" <<computeStateDerivativeAugmented( 0.0, getFullInitialStateAugmented( testVector) ).block(0,1,6,6) << std::endl;
 
     std::cout << "fullStateVectorEquilibirum: \n" << equilibriumStateVector << std::endl;
 
@@ -90,7 +86,6 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
     Eigen::VectorXd centerEigenVectorModulus = Eigen::VectorXd::Zero(6);
     Eigen::VectorXd centerEigenVectorReal = Eigen::VectorXd::Zero(6);
     Eigen::VectorXd centerEigenVectorSign = Eigen::VectorXd::Zero(6);
-
 
 
     for (int i = 0; i < 6; i++ )
@@ -153,6 +148,8 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
 
     }
 
+    //std::cout  << "eigenValues: \n"<< eigSPM.eigenvalues() << std::endl;
+    //std::cout  << "eigenVectors: \n"<< eigSPM.eigenvectors() << std::endl;
     //std::cout << "centerEigenVectorReal: \n" << centerEigenVectorReal << std::endl;
     //std::cout << "centerEigenVectorModulus: \n" << centerEigenVectorModulus << std::endl;
     //std::cout << "centerEigenVectorSign: \n" << centerEigenVectorSign << std::endl;
@@ -198,8 +195,11 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
 
 
 
-    initialStateAfterOffset.segment(0,6) = equilibriumStateVector.segment(0,6) +  amplitude * ( centerEigenVectorReal.normalized() );
+    initialStateAfterOffset.segment(0,6) = equilibriumStateVector.segment(0,6) +  amplitude * ( centerEigenVectorModulus.normalized() );
     initialStateAfterOffset.segment(6,4) = equilibriumStateVector.segment(6,4);
+
+//    initialStateAfterOffset.segment(0,6) = equilibriumStateVector.segment(0,6) +  amplitude * ( centerEigenVectorReal.normalized() );
+//    initialStateAfterOffset.segment(6,4) = equilibriumStateVector.segment(6,4);
 
     std::cout << "\ninitialStateAfterOffset: \n"<<  initialStateAfterOffset << std::endl;
 
@@ -260,17 +260,17 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
 
     std::map< double, Eigen::VectorXd > stateHistoryCorrectedGuess;
 
-//    if ( (amplitude  < 1.01E-5) or (amplitude > 2.7E-5 and amplitude < 2.9E-5) or  (amplitude > 4.5E-5 and amplitude < 4.7E-5)
-//         or (amplitude > 6.3E-5 and amplitude < 6.5E-5) or (amplitude > 8.1E-5 and amplitude < 8.3E-5) or amplitude > 9.99E-5)
-//    {
+    if ( (amplitude  < 1.01E-5) or (amplitude > 2.7E-5 and amplitude < 2.9E-5) or  (amplitude > 4.5E-5 and amplitude < 4.7E-5)
+         or (amplitude > 6.3E-5 and amplitude < 6.5E-5) or (amplitude > 8.1E-5 and amplitude < 8.3E-5) or amplitude > 9.99E-5)
+    {
 
-//        Eigen::VectorXd differentialCorrectionResults = applyPredictionCorrection(librationPointNr, lowThrustInitialStateVectorGuess, 0.0, massParameter, numberOfPatchPoints,
-//                                                                                  false, 1.0E-12, 1.0E-12, 1.0E-12);
+        Eigen::VectorXd differentialCorrectionResults = applyPredictionCorrection(librationPointNr, lowThrustInitialStateVectorGuess, 0.0, massParameter, numberOfPatchPoints,
+                                                                                  false, 1.0E-12, 1.0E-12, 1.0E-12);
 
-//        std::pair< Eigen::MatrixXd, double > finalTimeState = propagateOrbitAugmentedToFinalCondition( getFullInitialStateAugmented( differentialCorrectionResults.segment(0,10)),
-//                                                                 massParameter, differentialCorrectionResults(10), 1, stateHistoryCorrectedGuess, 1000, initialTime);
+        std::pair< Eigen::MatrixXd, double > finalTimeState = propagateOrbitAugmentedToFinalCondition( getFullInitialStateAugmented( differentialCorrectionResults.segment(0,10)),
+                                                                 massParameter, differentialCorrectionResults(10), 1, stateHistoryCorrectedGuess, 1000, initialTime);
 
-//    }
+    }
 
 //    if ( (accelerationAngle  < 1.5) or (accelerationAngle  > 44.5 and accelerationAngle  < 45.5) or  (accelerationAngle  > 89.5 and accelerationAngle  < 90.5)
 //         or (accelerationAngle  > 134.5 and accelerationAngle  < 135.5) or (accelerationAngle  > 179.5 and accelerationAngle  < 180.5)

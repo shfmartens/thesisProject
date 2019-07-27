@@ -457,12 +457,12 @@ Eigen::VectorXd getLowThrustInitialStateVectorGuess( const int librationPointNr,
 
     lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, orbitType, initialGuessParameters(0), initialGuessParameters(1), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
 
-//    Eigen::ArrayXd amplitudeArray = Eigen::ArrayXd::LinSpaced( 91, 1.0E-5, 1.0E-4);
+    Eigen::ArrayXd amplitudeArray = Eigen::ArrayXd::LinSpaced( 91, 1.0E-5, 1.0E-4);
 
-//    for(int k =0;  k < 91; k++)
-//    {
-//        lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, orbitType, amplitudeArray(k), initialGuessParameters(1), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
-//    }
+    for(int k =0;  k < 91; k++)
+    {
+        lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, orbitType, amplitudeArray(k), initialGuessParameters(1), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
+    }
 
 //    Eigen::ArrayXd alphaArray = Eigen::ArrayXd::LinSpaced( 360, 0, 359);
 
@@ -870,11 +870,11 @@ void createLowThrustInitialConditions( const int librationPointNr, const std::st
     // Obtain ballistic initial guesses and refine them
     linearApproximationResultIteration1 = getLowThrustInitialStateVectorGuess(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 0);
 
-    if ( continuationIndex == 1)
-    {
-        linearApproximationResultIteration2 = getLowThrustInitialStateVectorGuess(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 1);
+//    if ( continuationIndex == 1)
+//    {
+//        linearApproximationResultIteration2 = getLowThrustInitialStateVectorGuess(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 1);
 
-    }
+//    }
 
 //    if ( continuationIndex == 6)
 //    {
@@ -889,18 +889,18 @@ void createLowThrustInitialConditions( const int librationPointNr, const std::st
 //    }
 
 
-    stateVectorInclSTM =  getCorrectedAugmentedInitialState(
-                linearApproximationResultIteration1, computeHamiltonian( massParameter, linearApproximationResultIteration1.segment(0,10)), 0,
-               librationPointNr, orbitType, massParameter, numberOfPatchPoints, false, initialConditions, differentialCorrections, statesContinuation,
-                maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
+//    stateVectorInclSTM =  getCorrectedAugmentedInitialState(
+//                linearApproximationResultIteration1, computeHamiltonian( massParameter, linearApproximationResultIteration1.segment(0,10)), 0,
+//               librationPointNr, orbitType, massParameter, numberOfPatchPoints, false, initialConditions, differentialCorrections, statesContinuation,
+//                maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
 
-    if ( continuationIndex == 1 ) {
+//    if ( continuationIndex == 1 ) {
 
-        stateVectorInclSTM =  getCorrectedAugmentedInitialState(
-                    linearApproximationResultIteration2, computeHamiltonian( massParameter, linearApproximationResultIteration2.segment(0,10)), 1,
-                   librationPointNr, orbitType, massParameter, numberOfPatchPoints, false, initialConditions, differentialCorrections, statesContinuation,
-                    maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
-    }
+//        stateVectorInclSTM =  getCorrectedAugmentedInitialState(
+//                    linearApproximationResultIteration2, computeHamiltonian( massParameter, linearApproximationResultIteration2.segment(0,10)), 1,
+//                   librationPointNr, orbitType, massParameter, numberOfPatchPoints, false, initialConditions, differentialCorrections, statesContinuation,
+//                    maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
+//    }
 
 //    if ( continuationIndex == 6 ) {
 
@@ -918,164 +918,164 @@ void createLowThrustInitialConditions( const int librationPointNr, const std::st
 //                    maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
 //    }
 
-    // Set exit parameters of continuation procedure
-    int maximumNumberOfInitialConditions = 2500;
-    int numberOfInitialConditions;
-    if ( continuationIndex == 1 ) {
+//    // Set exit parameters of continuation procedure
+//    int maximumNumberOfInitialConditions = 2500;
+//    int numberOfInitialConditions;
+//    if ( continuationIndex == 1 ) {
 
-        numberOfInitialConditions = 2;
-    } else {
+//        numberOfInitialConditions = 2;
+//    } else {
 
-        numberOfInitialConditions = 2;
-    }
+//        numberOfInitialConditions = 2;
+//    }
 
-    // Generate periodic orbits until termination
-    double orbitalPeriod  = 0.0, periodIncrement = 0.0;
-    int orderOfMagnitude, minimumIncrementOrderOfMagnitude;
-    if (continuationIndex == 6)
-    {
-        orderOfMagnitude = 4;
-        minimumIncrementOrderOfMagnitude = 7;
+//    // Generate periodic orbits until termination
+//    double orbitalPeriod  = 0.0, periodIncrement = 0.0;
+//    int orderOfMagnitude, minimumIncrementOrderOfMagnitude;
+//    if (continuationIndex == 6)
+//    {
+//        orderOfMagnitude = 4;
+//        minimumIncrementOrderOfMagnitude = 7;
 
-    }
+//    }
 
-    if (continuationIndex == 7)
-    {
-        orderOfMagnitude = 1;
-        minimumIncrementOrderOfMagnitude = 3;
+//    if (continuationIndex == 7)
+//    {
+//        orderOfMagnitude = 1;
+//        minimumIncrementOrderOfMagnitude = 3;
 
-    }
+//    }
 
-    double pseudoArcLengthCorrection = 0.0;
-    bool continueNumericalContinuation = true;
-    Eigen::VectorXd stateIncrement(11*numberOfPatchPoints+1);
-    stateIncrement.setZero();
-    double targetHamiltonian;
+//    double pseudoArcLengthCorrection = 0.0;
+//    bool continueNumericalContinuation = true;
+//    Eigen::VectorXd stateIncrement(11*numberOfPatchPoints+1);
+//    stateIncrement.setZero();
+//    double targetHamiltonian;
 
-    while( ( numberOfInitialConditions < maximumNumberOfInitialConditions ) && continueNumericalContinuation)
-    {
+//    while( ( numberOfInitialConditions < maximumNumberOfInitialConditions ) && continueNumericalContinuation)
+//    {
 
-        std::cout << "========== Numerical continuation Status Update ========== "<< std::endl
-                << "Creating initial guess number "  << numberOfInitialConditions + 1 << std::endl
-                << "Continuating along continuation index "  << continuationIndex << std::endl
-                << "============================================================ " << std::endl;
+//        std::cout << "========== Numerical continuation Status Update ========== "<< std::endl
+//                << "Creating initial guess number "  << numberOfInitialConditions + 1 << std::endl
+//                << "Continuating along continuation index "  << continuationIndex << std::endl
+//                << "============================================================ " << std::endl;
 
-         double incrementContinuationParameter =  pow(10,(static_cast<float>(-orderOfMagnitude)));
-
-
-
-            if (continuationIndex == 1)
-
-            {
-
-                std::cout << "============" << std::endl
-                          << "X^{n}: \n" << statesContinuation[ statesContinuation.size( ) - 2 ].segment( 2, 11*numberOfPatchPoints ) << std::endl
-                          << "X^{n+1}: \n" << statesContinuation[ statesContinuation.size( ) - 1 ].segment( 2, 11*numberOfPatchPoints ) << std::endl;
-               std::cout << "Hamiltonian n: "  << statesContinuation[ statesContinuation.size( ) - 2 ](1) << std::endl;
-                std::cout << "Hamiltonian n+1: "  << statesContinuation[ statesContinuation.size( ) - 1 ](1) << std::endl;
-
-
-                // Determine increments to state and time
-                stateIncrement.segment(1,11*numberOfPatchPoints) = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 2, 11*numberOfPatchPoints ) -
-                        statesContinuation[ statesContinuation.size( ) - 2 ].segment( 2, 11*numberOfPatchPoints );
-                stateIncrement(0) = statesContinuation[ statesContinuation.size( ) - 1 ]( 1 ) -
-                        statesContinuation[ statesContinuation.size( ) - 2 ]( 1 );
-
-                //std::cout << "stateIncrement: \n" << stateIncrement << std::endl;
-
-                pseudoArcLengthCorrection =
-                        pseudoArcLengthFunctionAugmented( stateIncrement, continuationIndex );
-
-                //std::cout << "pseudoArcLengthCorrection: " << pseudoArcLengthCorrection << std::endl;
-
-                // Apply numerical continuation
-                initialStateVector = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 2, 11*numberOfPatchPoints ) +
-                        stateIncrement.segment(1,11*numberOfPatchPoints) * pseudoArcLengthCorrection;
-
-               targetHamiltonian = statesContinuation[ statesContinuation.size( ) - 1 ](1) + stateIncrement(0) * pseudoArcLengthCorrection;
-
-               stateVectorInclSTM =  getCorrectedAugmentedInitialState( initialStateVector, targetHamiltonian, numberOfInitialConditions,
-                                                                             librationPointNr, orbitType, massParameter, numberOfPatchPoints, false,
-                                                                             initialConditions, differentialCorrections, statesContinuation,
-                                                                             maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
-
-            }
-
-            if (continuationIndex == 6)
-
-            {
-
-                // Take the most recent initialGuess
-                initialStateVector = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 2, 11*numberOfPatchPoints );
-
-                // Take the hamiltonian
-                targetHamiltonian = statesContinuation[ statesContinuation.size( ) - 1 ](1);
-
-                // Add the single arc length continuation step to each acceleration state of the initialState Vector
-
-                std::cout << "intialStateVector: " << initialStateVector << std::endl;
-
-                for (int k =0; k < numberOfPatchPoints; k ++)
-                {
-                    initialStateVector((11*k)+6) = initialStateVector((11*k)+6) + incrementContinuationParameter;
-                }
-
-                std::cout << "intialStateVector adapted: " << initialStateVector << std::endl;
-
-                stateVectorInclSTM =  getCorrectedAugmentedInitialState( initialStateVector, targetHamiltonian, numberOfInitialConditions,
-                                                                         librationPointNr, orbitType, massParameter, numberOfPatchPoints, false,
-                                                                         initialConditions, differentialCorrections, statesContinuation,
-                                                                         maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
+//         double incrementContinuationParameter =  pow(10,(static_cast<float>(-orderOfMagnitude)));
 
 
 
-            }
+//            if (continuationIndex == 1)
+
+//            {
+
+//                std::cout << "============" << std::endl
+//                          << "X^{n}: \n" << statesContinuation[ statesContinuation.size( ) - 2 ].segment( 2, 11*numberOfPatchPoints ) << std::endl
+//                          << "X^{n+1}: \n" << statesContinuation[ statesContinuation.size( ) - 1 ].segment( 2, 11*numberOfPatchPoints ) << std::endl;
+//               std::cout << "Hamiltonian n: "  << statesContinuation[ statesContinuation.size( ) - 2 ](1) << std::endl;
+//                std::cout << "Hamiltonian n+1: "  << statesContinuation[ statesContinuation.size( ) - 1 ](1) << std::endl;
 
 
-            if (continuationIndex == 7)
+//                // Determine increments to state and time
+//                stateIncrement.segment(1,11*numberOfPatchPoints) = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 2, 11*numberOfPatchPoints ) -
+//                        statesContinuation[ statesContinuation.size( ) - 2 ].segment( 2, 11*numberOfPatchPoints );
+//                stateIncrement(0) = statesContinuation[ statesContinuation.size( ) - 1 ]( 1 ) -
+//                        statesContinuation[ statesContinuation.size( ) - 2 ]( 1 );
 
-            {
+//                //std::cout << "stateIncrement: \n" << stateIncrement << std::endl;
 
-                // Take the most recent initialGuess
-                initialStateVector = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 2, 11*numberOfPatchPoints );
+//                pseudoArcLengthCorrection =
+//                        pseudoArcLengthFunctionAugmented( stateIncrement, continuationIndex );
 
-                // Take the hamiltonian
-                targetHamiltonian = statesContinuation[ statesContinuation.size( ) - 1 ](1);
+//                //std::cout << "pseudoArcLengthCorrection: " << pseudoArcLengthCorrection << std::endl;
 
-                // Add the single arc length continuation step to each acceleration state of the initialState Vector
+//                // Apply numerical continuation
+//                initialStateVector = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 2, 11*numberOfPatchPoints ) +
+//                        stateIncrement.segment(1,11*numberOfPatchPoints) * pseudoArcLengthCorrection;
 
-                std::cout << "intialStateVector: " << initialStateVector << std::endl;
+//               targetHamiltonian = statesContinuation[ statesContinuation.size( ) - 1 ](1) + stateIncrement(0) * pseudoArcLengthCorrection;
 
-                for (int k =0; k < numberOfPatchPoints; k ++)
-                {
-                    initialStateVector((11*k)+7) = initialStateVector((11*k)+7) + incrementContinuationParameter;
-                }
+//               stateVectorInclSTM =  getCorrectedAugmentedInitialState( initialStateVector, targetHamiltonian, numberOfInitialConditions,
+//                                                                             librationPointNr, orbitType, massParameter, numberOfPatchPoints, false,
+//                                                                             initialConditions, differentialCorrections, statesContinuation,
+//                                                                             maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
 
-                std::cout << "intialStateVector adapted: " << initialStateVector << std::endl;
+//            }
 
-                stateVectorInclSTM =  getCorrectedAugmentedInitialState( initialStateVector, targetHamiltonian, numberOfInitialConditions,
-                                                                         librationPointNr, orbitType, massParameter, numberOfPatchPoints, false,
-                                                                         initialConditions, differentialCorrections, statesContinuation,
-                                                                         maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
+//            if (continuationIndex == 6)
+
+//            {
+
+//                // Take the most recent initialGuess
+//                initialStateVector = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 2, 11*numberOfPatchPoints );
+
+//                // Take the hamiltonian
+//                targetHamiltonian = statesContinuation[ statesContinuation.size( ) - 1 ](1);
+
+//                // Add the single arc length continuation step to each acceleration state of the initialState Vector
+
+//                std::cout << "intialStateVector: " << initialStateVector << std::endl;
+
+//                for (int k =0; k < numberOfPatchPoints; k ++)
+//                {
+//                    initialStateVector((11*k)+6) = initialStateVector((11*k)+6) + incrementContinuationParameter;
+//                }
+
+//                std::cout << "intialStateVector adapted: " << initialStateVector << std::endl;
+
+//                stateVectorInclSTM =  getCorrectedAugmentedInitialState( initialStateVector, targetHamiltonian, numberOfInitialConditions,
+//                                                                         librationPointNr, orbitType, massParameter, numberOfPatchPoints, false,
+//                                                                         initialConditions, differentialCorrections, statesContinuation,
+//                                                                         maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
 
 
 
-            }
+//            }
 
 
-                numberOfInitialConditions += 1;
+//            if (continuationIndex == 7)
 
-                continueNumericalContinuation = checkTerminationAugmented(differentialCorrections, stateVectorInclSTM, orbitType, librationPointNr, maxEigenvalueDeviation );
+//            {
 
-                std::cout << "continueNumericalContinuation: " << continueNumericalContinuation << std::endl;
+//                // Take the most recent initialGuess
+//                initialStateVector = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 2, 11*numberOfPatchPoints );
 
-                 if ( continuationIndex != 1 && continueNumericalContinuation == false && orderOfMagnitude > minimumIncrementOrderOfMagnitude )
-                   {
-                             orderOfMagnitude = orderOfMagnitude + 1;
-                             continueNumericalContinuation = true;
-                         }
+//                // Take the hamiltonian
+//                targetHamiltonian = statesContinuation[ statesContinuation.size( ) - 1 ](1);
 
-    }
+//                // Add the single arc length continuation step to each acceleration state of the initialState Vector
+
+//                std::cout << "intialStateVector: " << initialStateVector << std::endl;
+
+//                for (int k =0; k < numberOfPatchPoints; k ++)
+//                {
+//                    initialStateVector((11*k)+7) = initialStateVector((11*k)+7) + incrementContinuationParameter;
+//                }
+
+//                std::cout << "intialStateVector adapted: " << initialStateVector << std::endl;
+
+//                stateVectorInclSTM =  getCorrectedAugmentedInitialState( initialStateVector, targetHamiltonian, numberOfInitialConditions,
+//                                                                         librationPointNr, orbitType, massParameter, numberOfPatchPoints, false,
+//                                                                         initialConditions, differentialCorrections, statesContinuation,
+//                                                                         maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
+
+
+
+//            }
+
+
+//                numberOfInitialConditions += 1;
+
+//                continueNumericalContinuation = checkTerminationAugmented(differentialCorrections, stateVectorInclSTM, orbitType, librationPointNr, maxEigenvalueDeviation );
+
+//                std::cout << "continueNumericalContinuation: " << continueNumericalContinuation << std::endl;
+
+//                 if ( continuationIndex != 1 && continueNumericalContinuation == false && orderOfMagnitude > minimumIncrementOrderOfMagnitude )
+//                   {
+//                             orderOfMagnitude = orderOfMagnitude + 1;
+//                             continueNumericalContinuation = true;
+//                         }
+
+//    }
 
 
     writeFinalResultsToFilesAugmented( librationPointNr, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, familyHamiltonian, numberOfPatchPoints, initialConditions, differentialCorrections, statesContinuation );

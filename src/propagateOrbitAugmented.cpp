@@ -26,7 +26,7 @@ void writeFloquetDataToFile (const std::map< double, Eigen::VectorXd >& stateHis
     std::string fileNameString;
     std::string fileNameStringCorrected;
 
-    std::string directoryString = "../data/raw/floquet_controller/";
+    std::string directoryString = "../data/raw/initial_guess/";
 
     fileNameString = ("L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(equilibriumStateVector(6)) + "_" + std::to_string(equilibriumStateVector(7)) + "_" + std::to_string( amplitude ) + "_" + std::to_string(numberOfPatchPoints) + "_initialGuess.txt");
     fileNameStringCorrected = ("L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(equilibriumStateVector(6)) + "_" + std::to_string(equilibriumStateVector(7)) + "_" + std::to_string( amplitude ) + "_" + std::to_string(numberOfPatchPoints) + "_CorrectedGuess.txt");

@@ -87,7 +87,8 @@ class DisplayPeriodicSolutions:
 
         for row in statesContinuation_df.iterrows():
             self.orbitsId.append(row[0])
-            self.Hlt.append(row[1][1])
+            if row[1][1] < 0:
+                self.Hlt.append(row[1][1])
 
         for row in differentialCorrections_df.iterrows():
             self.T.append(row[1][2])
@@ -156,7 +157,6 @@ class DisplayPeriodicSolutions:
 
         scaleDistance = 0.13
         figureRatio = self.figSize[0]/ (self.figSize[1]/2) *0.5
-
 
 
         self.spacingFactor
@@ -242,9 +242,9 @@ class DisplayPeriodicSolutions:
 
 if __name__ == '__main__':
     orbit_types = ['horizontal']
-    lagrange_points = [1]
-    acceleration_magnitudes = [0.001]
-    alphas = [120.0]
+    lagrange_points = [2]
+    acceleration_magnitudes = [0.1]
+    alphas = [0.0]
     betas = [0.0]
 
 

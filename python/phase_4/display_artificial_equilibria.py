@@ -422,7 +422,7 @@ class DisplayEquilibriaValidation:
 if __name__ == '__main__':
     low_dpi = False
     lagrange_point_nrs = [1,2]
-    acceleration_magnitudes = [0.200000]
+    acceleration_magnitudes = [0.100000]
 
     for lagrange_point_nr in lagrange_point_nrs:
         for acceleration_magnitude in acceleration_magnitudes:

@@ -45,7 +45,7 @@ struct ArtificialLibrationPointLocationFunction1 : public ArtificialLibrationPoi
     {
         extern double massParameter;
         // Define Mathematical function: f(x) =
-
+        std::cout << "thrustAcceleration: " << thrustAcceleration_ << std::endl;
         return inputValue - (1.0 - massParameter) * (inputValue + massParameter) / (signfunction(inputValue + massParameter) * pow(inputValue+massParameter,3.0))
                 -1.0 * massParameter * (inputValue - 1.0 + massParameter)/(signfunction(inputValue -1.0 + massParameter)*pow(inputValue-1.0+massParameter,3.0)) + thrustAcceleration_;
 
@@ -123,7 +123,7 @@ struct ArtificialLibrationPointLocationFunction1 : public ArtificialLibrationPoi
      *
      * \return Accuracy of the true location of the root.
      */
-    double getTrueRootAccuracy( ) { return 1.0e-3; }
+    double getTrueRootAccuracy( ) { return 1.0e-1; }
 
     //! Get a reasonable initial guess of the root location.
     /*!
