@@ -64,10 +64,10 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
     //testVector(0) = 0.83;
     //testVector(1) = 0.0;
 
-    std::cout << "EqTestLocation: \n" << equilibriumLocation << std::endl;
-    std::cout << "testSPM: \n" <<computeStateDerivativeAugmented( 0.0, getFullInitialStateAugmented( testVector) ).block(0,1,6,6) << std::endl;
+//    std::cout << "EqTestLocation: \n" << equilibriumLocation << std::endl;
+//    std::cout << "testSPM: \n" <<computeStateDerivativeAugmented( 0.0, getFullInitialStateAugmented( testVector) ).block(0,1,6,6) << std::endl;
 
-    std::cout << "fullStateVectorEquilibirum: \n" << equilibriumStateVector << std::endl;
+//    std::cout << "fullStateVectorEquilibirum: \n" << equilibriumStateVector << std::endl;
 
     // Provide an offset in the direction of the minimum in-plane center eigenvalue of the state propagation matrix
     Eigen::MatrixXd stateDerivativeInclSPM = Eigen::MatrixXd::Zero(10,11);
@@ -201,7 +201,7 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
 //    initialStateAfterOffset.segment(0,6) = equilibriumStateVector.segment(0,6) +  amplitude * ( centerEigenVectorReal.normalized() );
 //    initialStateAfterOffset.segment(6,4) = equilibriumStateVector.segment(6,4);
 
-    std::cout << "\ninitialStateAfterOffset: \n"<<  initialStateAfterOffset << std::endl;
+    //std::cout << "\ninitialStateAfterOffset: \n"<<  initialStateAfterOffset << std::endl;
 
     double linearizedOrbitalPeriod = 2.0 * tudat::mathematical_constants::PI / (std::abs(centerEigenValue));
 
@@ -263,7 +263,7 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
     if ( (amplitude  < 1.01E-5) or (amplitude > 2.7E-5 and amplitude < 2.9E-5) or  (amplitude > 4.5E-5 and amplitude < 4.7E-5)
          or (amplitude > 6.3E-5 and amplitude < 6.5E-5) or (amplitude > 8.1E-5 and amplitude < 8.3E-5) or amplitude > 9.99E-5)
     {
-
+        std::cout << "Amplitude is: " << amplitude << ". start refinement of Orbit" << std::endl;
         Eigen::VectorXd differentialCorrectionResults = applyPredictionCorrection(librationPointNr, lowThrustInitialStateVectorGuess, 0.0, massParameter, numberOfPatchPoints,
                                                                                   false, 1.0E-12, 1.0E-12, 1.0E-12);
 
@@ -278,6 +278,8 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
 //         or (accelerationAngle  > 314.5 and accelerationAngle  < 315.5) )
 //    {
 
+//          std::cout << "alpha is: " << accelerationAngle << ". start refinement of Orbit" << std::endl;
+
 //        Eigen::VectorXd differentialCorrectionResults = applyPredictionCorrection(librationPointNr, lowThrustInitialStateVectorGuess, 0.0, massParameter, numberOfPatchPoints,
 //                                                                                  false, 1.0E-12, 1.0E-12, 1.0E-12);
 
@@ -289,6 +291,9 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
 //    if ( (thrustMagnitude  < 1.01E-2) or (thrustMagnitude > 2.7E-2 and thrustMagnitude < 2.9E-2) or  (thrustMagnitude > 4.5E-2 and thrustMagnitude < 4.7E-2)
 //         or (thrustMagnitude > 6.3E-2 and thrustMagnitude < 6.5E-2) or (thrustMagnitude > 8.1E-2 and thrustMagnitude < 8.3E-2) or thrustMagnitude > 9.99E-2)
 //    {
+
+//          std::cout << "alt is: " << thrustMagnitude << ". start refinement of Orbit" << std::endl;
+
 
 //        Eigen::VectorXd differentialCorrectionResults = applyPredictionCorrection(librationPointNr, lowThrustInitialStateVectorGuess, 0.0, massParameter, numberOfPatchPoints,
 //                                                                                  false, 1.0E-12, 1.0E-12, 1.0E-12);
