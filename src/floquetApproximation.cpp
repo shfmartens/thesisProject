@@ -36,7 +36,6 @@
 Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType,
                                                   double amplitude, double thrustMagnitude, double accelerationAngle, double accelerationAngle2, const double initialMass, const int numberOfPatchPoints, const double maxEigenValueDeviation )
 {
-
     Eigen::VectorXd lowThrustInitialStateVectorGuess(11*numberOfPatchPoints);
     lowThrustInitialStateVectorGuess.setZero();
 
@@ -48,6 +47,7 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
     const double secondaryGravitationalParameter = tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER;
     const double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( primaryGravitationalParameter, secondaryGravitationalParameter );
 
+
     // Compute location of the artificial equilibrium point
     Eigen::Vector2d equilibriumLocation = createEquilibriumLocations( librationPointNr, thrustMagnitude, accelerationAngle, "acceleration", massParameter );
 
@@ -58,16 +58,7 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
     equilibriumStateVector(8) = accelerationAngle2;
     equilibriumStateVector(9) = initialMass;
 
-    Eigen::VectorXd testVector = Eigen::VectorXd::Zero(10);
-    testVector.segment(0,2) = equilibriumLocation;
-
-    //testVector(0) = 0.83;
-    //testVector(1) = 0.0;
-
-//    std::cout << "EqTestLocation: \n" << equilibriumLocation << std::endl;
-//    std::cout << "testSPM: \n" <<computeStateDerivativeAugmented( 0.0, getFullInitialStateAugmented( testVector) ).block(0,1,6,6) << std::endl;
-
-//    std::cout << "fullStateVectorEquilibirum: \n" << equilibriumStateVector << std::endl;
+    std::cout << "fullStateVectorEquilibirum: \n" << equilibriumStateVector << std::endl;
 
     // Provide an offset in the direction of the minimum in-plane center eigenvalue of the state propagation matrix
     Eigen::MatrixXd stateDerivativeInclSPM = Eigen::MatrixXd::Zero(10,11);
@@ -76,9 +67,13 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
     stateDerivativeInclSPM = computeStateDerivativeAugmented( 0.0, getFullInitialStateAugmented( equilibriumStateVector) );
     statePropagationMatrix = stateDerivativeInclSPM.block(0,1,6,6);
 
+    std::cout << "statePropagationMatrix: \n" << statePropagationMatrix << std::endl;
+
+
     Eigen::EigenSolver< Eigen::MatrixXd > eigSPM( statePropagationMatrix );
-    //std::cout << "\neigenvalues SPM: \n" << eigSPM.eigenvalues() << std::endl;
-    //std::cout << "eigenvectors SPM: \n" << eigSPM.eigenvectors() << std::endl;
+    std::cout << "\neigenvalues SPM: \n" << eigSPM.eigenvalues() << std::endl;
+    std::cout << "eigenvectors SPM: \n" << eigSPM.eigenvectors() << std::endl;
+
 
     int indexEigenValue;
     std::complex<double> centerEigenValue;
@@ -148,69 +143,67 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
 
     }
 
-    //std::cout  << "eigenValues: \n"<< eigSPM.eigenvalues() << std::endl;
-    //std::cout  << "eigenVectors: \n"<< eigSPM.eigenvectors() << std::endl;
-    //std::cout << "centerEigenVectorReal: \n" << centerEigenVectorReal << std::endl;
-    //std::cout << "centerEigenVectorModulus: \n" << centerEigenVectorModulus << std::endl;
-    //std::cout << "centerEigenVectorSign: \n" << centerEigenVectorSign << std::endl;
 
+    double finalPeriodicTime = 2.0 * tudat::mathematical_constants::PI / centerEigenValue.imag();
+    std::cout << "finalPeriodicTime: " << finalPeriodicTime << std::endl;
+    std::map< double, Eigen::VectorXd > stateHistoryInitialGuessMono;
 
+    std::pair< Eigen::MatrixXd, double > finalTimeState = propagateOrbitAugmentedToFinalCondition( getFullInitialStateAugmented( equilibriumStateVector),
+    massParameter, finalPeriodicTime, 1, stateHistoryInitialGuessMono, 1000, 0.0);
 
-    Eigen::VectorXd initialStateAfterOffset = Eigen::VectorXd::Zero(10);
-    double normalizationFactor;
+    Eigen::MatrixXd stateVectorInclSTMMono       = finalTimeState.first;
+    double currentTimeMono             = finalTimeState.second;
+    Eigen::VectorXd stateVectorOnlyMono  = stateVectorInclSTMMono.block( 0, 0, 10, 1 );
+    Eigen::MatrixXd monodromyMatrix  = stateVectorInclSTMMono.block(0,1,6,6);
 
-    if (orbitType == "horizontal")
+    //            std::cout << "===== Results of Integration ====="<< std::endl
+    //                      << "targetTime: " << finalPeriodicTime << std::endl
+    //                      << "currentTime: " << currentTime << std::endl
+    //                      << "finalState: \n" << stateVectorOnly << std::endl
+    //                      << "difference between final and initial state: \n" << equilibriumStateVector - stateVectorOnly << std::endl
+    //                      << "Monodromy Matrix: \n" << monodromyMatrix << std::endl
+    //                      << "=================="<< std::endl;
+
+    Eigen::EigenSolver< Eigen::MatrixXd > eigMonodromy( monodromyMatrix );
+
+    // Select the real part of the  Monodromy MAtrix center EigenVector corresponding to the lambda 3 vector
+
+    Eigen::Vector6d monodromyCenterEigenVector = Eigen::Vector6d::Zero();
+
+    std::cout << "indexEigenvalue "<< indexEigenValue << std::endl;
+
+    for (int i = 0; i < 6; i++ )
     {
+        if (i == 2 or i == 5)
+        {
+            monodromyCenterEigenVector(i) = 0.0;
+        } else
+        {
+            monodromyCenterEigenVector(i) = eigMonodromy.eigenvectors()(i,indexEigenValue).real();
 
-        normalizationFactor = std::abs( 1.0 /(centerEigenVectorReal.segment(0,3).norm()) );
-
-
-    } else
-    {
-        normalizationFactor = std::abs( 1.0 /(centerEigenVectorReal.segment(0,3).norm()) );
-
-
+        }
     }
 
+    std::cout << "monodromyMatrix  values: \n" << eigMonodromy.eigenvalues() << std::endl;
+
+    std::cout.precision(8);
+    std::cout << "monodromyMatrix  Vectors: \n" << eigMonodromy.eigenvectors() << std::endl;
+    std::cout << "monodromyMatrix Eigenvector Center Real: \n" << monodromyCenterEigenVector << std::endl;
+
+    Eigen::VectorXd initialStateAfterOffset = Eigen::VectorXd::Zero(10);
 
 
-//    std::cout << "eigen values SPM: \n" << eigSPM.eigenvalues() << std::endl;
-//    std::cout << "eigen vectors SPM: \n" << eigSPM.eigenvectors() << std::endl;
-
-
-
-//    std::cout << "eigenvalue: " << centerEigenValue << std::endl;
-//    std::cout << "eigenvector: \n" << centerEigenVector << std::endl;
-//    std::cout << "eigenvector: \n" << centerEigenVectorReal << std::endl;
-
-
-
-//    std::cout << "\n==== TESTING OFFSET VERACITY ==== " << std::endl
-//              //<< "current implementation of normalization: \n" << normalizationFactor * amplitude * centerEigenVectorReal << std::endl
-//              << ".normalized(): \n" << centerEigenVectorReal.normalized() * amplitude << std::endl
-//              //<< "eigenVectorReal / norm : \n" << centerEigenVectorReal / (centerEigenVectorReal.norm()) * amplitude  << std::endl
-//              << "==== COMPLETED TESTING OFFSET VERACITY ==== " << std::endl;
-
-    //initialStateAfterOffset.segment(0,6) = equilibriumStateVector.segment(0,6) + normalizationFactor * amplitude * centerEigenVectorReal;
-
-
-
-    initialStateAfterOffset.segment(0,6) = equilibriumStateVector.segment(0,6) +  amplitude * ( centerEigenVectorModulus.normalized() );
+    initialStateAfterOffset.segment(0,6) = equilibriumStateVector.segment(0,6) +  amplitude * ( monodromyCenterEigenVector.normalized() );
     initialStateAfterOffset.segment(6,4) = equilibriumStateVector.segment(6,4);
 
-//    initialStateAfterOffset.segment(0,6) = equilibriumStateVector.segment(0,6) +  amplitude * ( centerEigenVectorReal.normalized() );
-//    initialStateAfterOffset.segment(6,4) = equilibriumStateVector.segment(6,4);
+    std::cout << "\ninitialStateAfterOffset: \n"<<  initialStateAfterOffset << std::endl;
 
-    //std::cout << "\ninitialStateAfterOffset: \n"<<  initialStateAfterOffset << std::endl;
 
-    double linearizedOrbitalPeriod = 2.0 * tudat::mathematical_constants::PI / (std::abs(centerEigenValue));
-
-    std::cout << "linearizedOrbitalPeriod: " << linearizedOrbitalPeriod << std::endl;
 
     double initialTime = 0.0;
     double finalTime = 0.0;
     double currentTime = 0.0;
-    Eigen::VectorXd initialStateVector = initialStateAfterOffset;
+   Eigen::VectorXd initialStateVector = initialStateAfterOffset;
 
     std::map< double, Eigen::VectorXd > stateHistoryInitialGuess;
     for (int i = 0; i <= (numberOfPatchPoints -2); i++){
@@ -219,8 +212,8 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
         auto periodVariable = static_cast<double>(i);
         auto periodVariableFinal = static_cast<double>(i+1);
         auto periodVariable2 = static_cast<double>(numberOfPatchPoints);
-        double initialTime = periodVariable * linearizedOrbitalPeriod / (periodVariable2 - 1.0);
-        double currentfinalTime =   periodVariableFinal * linearizedOrbitalPeriod / (periodVariable2 - 1.0);
+        double initialTime = periodVariable * finalPeriodicTime / (periodVariable2 - 1.0);
+        double currentfinalTime =   periodVariableFinal * finalPeriodicTime / (periodVariable2 - 1.0);
 
         // create final Time
         finalTime = currentfinalTime;
@@ -238,7 +231,7 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
         initialStateVector = stateVectorOnly;
 
         if (i == 0  )
-        {
+       {
 
             lowThrustInitialStateVectorGuess.segment(0,10) = initialStateAfterOffset;
             lowThrustInitialStateVectorGuess(10) = 0.0;
@@ -248,7 +241,7 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
             lowThrustInitialStateVectorGuess.segment(11*(i+1),10) = initialStateAfterOffset;
             lowThrustInitialStateVectorGuess((11*(i+1))+10) = currentTime;
 
-        }
+        } else
         {
 
             lowThrustInitialStateVectorGuess.segment(11*(i+1),10) = stateVectorOnly;
