@@ -6,7 +6,8 @@
 #include <string>
 #include <Eigen/Core>
 
-//Eigen::VectorXd floquetCorrection (Eigen::MatrixXcd perturbationComponents);
+
+Eigen::VectorXd computeVelocityCorrection(const int librationPointNr, const std::string orbitType, Eigen::MatrixXd statePropagationMatrix, Eigen::MatrixXd stateTransitionMatrix, Eigen::VectorXd initialPerturbationVector, const double perturbationTime, const double numericalThreshold = 1.0E-13 );
 
 
 Eigen::VectorXd floquetApproximation( int librationPointNr, std::string orbitType,

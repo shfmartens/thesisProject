@@ -32,6 +32,127 @@
 #include "createEquilibriumLocations.h"
 #include "propagateOrbitAugmented.h"
 
+Eigen::VectorXd computeVelocityCorrection(const int librationPointNr, const std::string orbitType, Eigen::MatrixXd statePropagationMatrix, Eigen::MatrixXd stateTransitionMatrix, Eigen::VectorXd initialPerturbationVector, const double perturbationTime, const double numericalThreshold )
+{
+    Eigen::VectorXd computedCorrection = Eigen::VectorXd::Zero(3);
+
+    //  ==== Decompose the motion into the six modes ==== //
+
+    // Compute the modal matrix
+    Eigen::MatrixXcd modalMatrix = Eigen::MatrixXcd::Zero(6,6);
+    Eigen::EigenSolver< Eigen::MatrixXd > eigSPM( statePropagationMatrix );
+    Eigen::MatrixXcd eigenVectorsMatrix = eigSPM.eigenvectors();
+    Eigen::VectorXcd  eigenValues = eigSPM.eigenvalues();
+    Eigen::MatrixXcd floquetExponentMatrix = Eigen::MatrixXcd::Zero(6,6);
+
+    for (int i = 0; i < 6; i++)
+    {
+        floquetExponentMatrix(i,i) = std::exp(eigenValues(i) * perturbationTime);
+    }
+
+    modalMatrix = stateTransitionMatrix * eigenVectorsMatrix * floquetExponentMatrix;
+
+    // Compute current perturbations
+    Eigen::VectorXd perturbationVector = stateTransitionMatrix*initialPerturbationVector;
+
+    for (int i = 0; i < 6; i++)
+    {
+        for (int j = 0; j < 6;  j++)
+        {
+            if (std::abs(modalMatrix(i,j).real()) < numericalThreshold)
+            {
+                std::complex<double> replacement(0,modalMatrix(i,j).imag());
+                modalMatrix(i,j) = replacement;
+            }
+
+            if (std::abs(modalMatrix(i,j).imag()) < numericalThreshold)
+            {
+                std::complex<double> replacement(modalMatrix(i,j).real(),0);
+            modalMatrix(i,j) = replacement;
+            }
+        }
+    }
+
+    Eigen::VectorXcd perturbationCoefficients = modalMatrix.inverse() * perturbationVector;
+
+    for (int i = 0; i < 6; i++)
+    {
+        for (int j = 0; j < 6;  j++)
+        {
+            if (std::abs(perturbationCoefficients(i,j).real()) < numericalThreshold)
+            {
+                std::complex<double> replacement(0,perturbationCoefficients(i,j).imag());
+                perturbationCoefficients(i,j) = replacement;
+            }
+
+            if (std::abs(perturbationCoefficients(i,j).imag()) < numericalThreshold)
+            {
+                std::complex<double> replacement(perturbationCoefficients(i,j).real(),0);
+            perturbationCoefficients(i,j) = replacement;
+            }
+        }
+    }
+
+    Eigen::MatrixXcd perturbationDecomposition(6,6);
+
+    for (int i = 0; i < 6; i ++)
+    {
+        perturbationDecomposition.block(0,i,6,1) = perturbationCoefficients(i) * modalMatrix.block(0,i,6,1);
+    }
+
+    if (orbitType == "horizontal")
+    {
+
+        // Compute the required corrections
+        Eigen::MatrixXcd updateMatrix(4,4);
+        Eigen::VectorXcd deviationVector(4,1);
+        Eigen::MatrixXcd correctionVector(4,1);
+
+        updateMatrix.setZero();
+        deviationVector.setZero();
+        correctionVector.setZero();
+
+
+        updateMatrix.block(0,0,2,1) = perturbationDecomposition.block(0,2,2,1);
+        updateMatrix.block(2,0,2,1) = perturbationDecomposition.block(3,2,2,1);
+        updateMatrix.block(0,1,2,1) = perturbationDecomposition.block(0,3,2,1);
+        updateMatrix.block(2,1,2,1) = perturbationDecomposition.block(3,3,2,1);
+        updateMatrix(2,2) = -1.0;
+        updateMatrix(3,3) = -1.0;
+
+        deviationVector(0) = perturbationDecomposition(0,0) + perturbationDecomposition(0,1);
+        deviationVector(1) = perturbationDecomposition(1,0) + perturbationDecomposition(1,1);
+        deviationVector(2) = perturbationDecomposition(3,0) + perturbationDecomposition(3,1);
+        deviationVector(3) = perturbationDecomposition(4,0) + perturbationDecomposition(4,1);
+
+        correctionVector = updateMatrix.inverse()*deviationVector;
+
+        for (int i = 0; i < 4; i++)
+        {
+
+           if (std::abs(correctionVector(i).real()) < numericalThreshold)
+              {
+                 std::complex<double> replacement(0,correctionVector(i).imag());
+                 correctionVector(i) = replacement;
+              }
+
+           if (std::abs(correctionVector(i).imag()) < numericalThreshold)
+              {
+                  std::complex<double> replacement(correctionVector(i).real(),0);
+                  correctionVector(i) = replacement;
+              }
+        }
+
+        // Fill the output vector
+        computedCorrection(0) = correctionVector(2).real();
+        computedCorrection(1) = correctionVector(3).real();
+
+    }
+
+
+    return computedCorrection;
+}
+
 
 Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType,
                                                   double amplitude, double thrustMagnitude, double accelerationAngle, double accelerationAngle2, const double initialMass, const int numberOfPatchPoints, const double maxEigenValueDeviation )
@@ -39,14 +160,14 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
     Eigen::VectorXd lowThrustInitialStateVectorGuess(11*numberOfPatchPoints);
     lowThrustInitialStateVectorGuess.setZero();
 
-    // Set output precision and clear screen.
     std::cout.precision(6);
+
+    // ====  1. Compute the full equilibrium State Vector ==== //
 
     // Compute the mass parameter of the Earth-Moon system
     const double primaryGravitationalParameter = tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER;
     const double secondaryGravitationalParameter = tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER;
     const double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( primaryGravitationalParameter, secondaryGravitationalParameter );
-
 
     // Compute location of the artificial equilibrium point
     Eigen::Vector2d equilibriumLocation = createEquilibriumLocations( librationPointNr, thrustMagnitude, accelerationAngle, "acceleration", massParameter );
@@ -60,6 +181,35 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
 
     std::cout << "fullStateVectorEquilibirum: \n" << equilibriumStateVector << std::endl;
 
+    // ====  1. Compute the initial uncorrected state ==== //
+    Eigen::VectorXd initialStateVectorUncorrected =   Eigen::VectorXd::Zero( 10 );
+    Eigen::VectorXd initialPerturbationVector = Eigen::VectorXd::Zero( 10 );
+    initialStateVectorUncorrected = equilibriumStateVector;
+    double xArgument = 0.0;
+    double yArgument = 0.0;
+    double offsetAngle = 0.0;
+
+    if (librationPointNr == 1 or librationPointNr == 2)
+       {
+            xArgument = equilibriumStateVector(0) - (1.0 - massParameter);
+
+        } else
+        {
+            xArgument = equilibriumStateVector(0) - ( - massParameter);
+        }
+
+    yArgument = equilibriumStateVector(1);
+    offsetAngle = atan2(yArgument, xArgument);
+
+    initialPerturbationVector(0) = amplitude * cos(offsetAngle);
+    initialPerturbationVector(1) = amplitude * sin(offsetAngle);
+
+    initialStateVectorUncorrected = equilibriumStateVector + initialPerturbationVector;
+
+
+
+    //  3. Compute the State Propagation Matrix
+
     // Provide an offset in the direction of the minimum in-plane center eigenvalue of the state propagation matrix
     Eigen::MatrixXd stateDerivativeInclSPM = Eigen::MatrixXd::Zero(10,11);
     Eigen::MatrixXd statePropagationMatrix = Eigen::MatrixXd::Zero(6,6);
@@ -67,143 +217,33 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
     stateDerivativeInclSPM = computeStateDerivativeAugmented( 0.0, getFullInitialStateAugmented( equilibriumStateVector) );
     statePropagationMatrix = stateDerivativeInclSPM.block(0,1,6,6);
 
-    std::cout << "statePropagationMatrix: \n" << statePropagationMatrix << std::endl;
+    //std::cout << "statePropagationMatrix: \n" << statePropagationMatrix << std::endl;
 
+    Eigen::VectorXd correctionVelocity = computeVelocityCorrection(librationPointNr, orbitType, statePropagationMatrix, Eigen::MatrixXd::Identity(6,6), initialPerturbationVector, 0.0);
 
-    Eigen::EigenSolver< Eigen::MatrixXd > eigSPM( statePropagationMatrix );
-    std::cout << "\neigenvalues SPM: \n" << eigSPM.eigenvalues() << std::endl;
-    std::cout << "eigenvectors SPM: \n" << eigSPM.eigenvectors() << std::endl;
+    // Check if the entry 3 and 4 of the vector are real! otherwise show the magnitude of the elements
+    Eigen::VectorXd initialStateVectorCorrected = initialStateVectorUncorrected;
+    initialStateVectorCorrected.segment(3,3) = initialStateVectorCorrected.segment(3,3) + correctionVelocity;
 
+    //std::cout << "initialStateVector Corrected: \n" << initialStateVectorCorrected << std::endl;
 
-    int indexEigenValue;
-    std::complex<double> centerEigenValue;
-    Eigen::VectorXcd centerEigenVector = Eigen::VectorXd::Zero(6);
-    Eigen::VectorXd centerEigenVectorModulus = Eigen::VectorXd::Zero(6);
-    Eigen::VectorXd centerEigenVectorReal = Eigen::VectorXd::Zero(6);
-    Eigen::VectorXd centerEigenVectorSign = Eigen::VectorXd::Zero(6);
+    // 5. Estimate the approximate period via propagataToFinalThetaCorrection
 
+    std::map< double, Eigen::VectorXd > stateHistoryPeriodGuess;
 
-    for (int i = 0; i < 6; i++ )
-    {
-        // check if eigen value is imaginary
-        if (std::abs(eigSPM.eigenvalues()(i).real()) < maxEigenValueDeviation and std::abs(eigSPM.eigenvalues()(i).imag()) > maxEigenValueDeviation )
-        {
+    std::pair< Eigen::MatrixXd, double > finalTimeStateTheta = propagateOrbitAugmentedToFinalThetaCondition(getFullInitialStateAugmented( initialStateVectorCorrected), massParameter,
+                                                                                                            1, stateHistoryPeriodGuess, -1, 0.0);
+    Eigen::MatrixXd stateVectorInclSTMTheta      = finalTimeStateTheta.first;
+    double currentTimeTheta             = finalTimeStateTheta.second;
+    Eigen::VectorXd stateVectorOnly = stateVectorInclSTMTheta.block( 0, 0, 10, 1 );
 
-            // depending on orbitType, select the in-plane or out-of-plane eigenVector corresponding to the positive eigenvalue
-            if (orbitType == "horizontal" && std::abs( eigSPM.eigenvectors()(2,i) + eigSPM.eigenvectors()(5,i) ) < maxEigenValueDeviation && eigSPM.eigenvalues()(i).imag() > 0)
-            {
-                indexEigenValue = i;
-                centerEigenValue = eigSPM.eigenvalues()(i);
-                centerEigenVector= eigSPM.eigenvectors().block(0,i,6,1);
+   // std::cout << "Time for 360 degrees rotation at A = "  << amplitude << ": " << currentTimeTheta << std::endl;
 
-                for (int k = 0; k < 6; k++)
-                {
-                     centerEigenVectorModulus(k) = std::abs( eigSPM.eigenvectors()(k,i))   ;
-                     centerEigenVectorReal(k) = eigSPM.eigenvectors()(k,i).real()   ;
+    // 6. Discretize the trajectory in specified number of patch points
 
-                     if (eigSPM.eigenvectors()(k,i).real() >= 0)
-                     {
-                         centerEigenVectorSign(k) = 1.0;
-                     } else
-                     {
-
-                         centerEigenVectorSign(k) = -1.0;
-
-                     }
-
-                     if (k ==2 or k==5)
-                     {
-                        centerEigenVectorReal(k) = 0.0;
-                        centerEigenVectorModulus(k) = 0.0;
-                        centerEigenVectorSign(k) = 1.0;
-
-                     }
-
-
-                }
-            }
-
-            if (orbitType == "vertical" && std::abs( eigSPM.eigenvectors()(2,i) + eigSPM.eigenvectors()(5,i) ) > maxEigenValueDeviation && eigSPM.eigenvalues()(i).imag() > 0)
-            {
-                indexEigenValue = i;
-                centerEigenValue = eigSPM.eigenvalues()(i);
-                centerEigenVector= eigSPM.eigenvectors().block(0,i,6,1);
-
-
-                for (int k = 0; k < 6; k++)
-                {
-                     centerEigenVectorReal(k) = eigSPM.eigenvectors()(k,i).real();
-
-                }
-
-            }
-
-
-        }
-
-    }
-
-
-    double finalPeriodicTime = 2.0 * tudat::mathematical_constants::PI / centerEigenValue.imag();
-    std::cout << "finalPeriodicTime: " << finalPeriodicTime << std::endl;
-    std::map< double, Eigen::VectorXd > stateHistoryInitialGuessMono;
-
-    std::pair< Eigen::MatrixXd, double > finalTimeState = propagateOrbitAugmentedToFinalCondition( getFullInitialStateAugmented( equilibriumStateVector),
-    massParameter, finalPeriodicTime, 1, stateHistoryInitialGuessMono, 1000, 0.0);
-
-    Eigen::MatrixXd stateVectorInclSTMMono       = finalTimeState.first;
-    double currentTimeMono             = finalTimeState.second;
-    Eigen::VectorXd stateVectorOnlyMono  = stateVectorInclSTMMono.block( 0, 0, 10, 1 );
-    Eigen::MatrixXd monodromyMatrix  = stateVectorInclSTMMono.block(0,1,6,6);
-
-    //            std::cout << "===== Results of Integration ====="<< std::endl
-    //                      << "targetTime: " << finalPeriodicTime << std::endl
-    //                      << "currentTime: " << currentTime << std::endl
-    //                      << "finalState: \n" << stateVectorOnly << std::endl
-    //                      << "difference between final and initial state: \n" << equilibriumStateVector - stateVectorOnly << std::endl
-    //                      << "Monodromy Matrix: \n" << monodromyMatrix << std::endl
-    //                      << "=================="<< std::endl;
-
-    Eigen::EigenSolver< Eigen::MatrixXd > eigMonodromy( monodromyMatrix );
-
-    // Select the real part of the  Monodromy MAtrix center EigenVector corresponding to the lambda 3 vector
-
-    Eigen::Vector6d monodromyCenterEigenVector = Eigen::Vector6d::Zero();
-
-    std::cout << "indexEigenvalue "<< indexEigenValue << std::endl;
-
-    for (int i = 0; i < 6; i++ )
-    {
-        if (i == 2 or i == 5)
-        {
-            monodromyCenterEigenVector(i) = 0.0;
-        } else
-        {
-            monodromyCenterEigenVector(i) = eigMonodromy.eigenvectors()(i,indexEigenValue).real();
-
-        }
-    }
-
-    std::cout << "monodromyMatrix  values: \n" << eigMonodromy.eigenvalues() << std::endl;
-
-    std::cout.precision(8);
-    std::cout << "monodromyMatrix  Vectors: \n" << eigMonodromy.eigenvectors() << std::endl;
-    std::cout << "monodromyMatrix Eigenvector Center Real: \n" << monodromyCenterEigenVector << std::endl;
-
-    Eigen::VectorXd initialStateAfterOffset = Eigen::VectorXd::Zero(10);
-
-
-    initialStateAfterOffset.segment(0,6) = equilibriumStateVector.segment(0,6) +  amplitude * ( monodromyCenterEigenVector.normalized() );
-    initialStateAfterOffset.segment(6,4) = equilibriumStateVector.segment(6,4);
-
-    std::cout << "\ninitialStateAfterOffset: \n"<<  initialStateAfterOffset << std::endl;
-
-
-
-    double initialTime = 0.0;
     double finalTime = 0.0;
-    double currentTime = 0.0;
-   Eigen::VectorXd initialStateVector = initialStateAfterOffset;
+    double finalPeriodicTime = currentTimeTheta;
+   Eigen::VectorXd initialStateVector = initialStateVectorCorrected;
 
     std::map< double, Eigen::VectorXd > stateHistoryInitialGuess;
     for (int i = 0; i <= (numberOfPatchPoints -2); i++){
@@ -215,7 +255,7 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
         double initialTime = periodVariable * finalPeriodicTime / (periodVariable2 - 1.0);
         double currentfinalTime =   periodVariableFinal * finalPeriodicTime / (periodVariable2 - 1.0);
 
-        // create final Time
+        // create state at segment end-time
         finalTime = currentfinalTime;
 
         std::pair< Eigen::MatrixXd, double > finalTimeState = propagateOrbitAugmentedToFinalCondition( getFullInitialStateAugmented( initialStateVector),
@@ -225,20 +265,29 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
         double currentTime             = finalTimeState.second;
         Eigen::VectorXd stateVectorOnly = stateVectorInclSTM.block( 0, 0, 10, 1 );
 
+        //Eigen::VectorXd intermediateVelocityCorrection = Eigen::VectorXd::Zero(3);
+        //Eigen::VectorXd intermediatePerturbationVector = Eigen::VectorXd::Zero(10);
+        //intermediatePerturbationVector.segment(0,6) = equilibriumStateVector - stateVectorOnly.segment(0,6);
+
+        //intermediateVelocityCorrection = computeVelocityCorrection(librationPointNr, orbitType, statePropagationMatrix, Eigen::MatrixXd::Identity(6,6), intermediatePerturbationVector, 0,0 );
+
         initialTime = currentTime;
 
 
         initialStateVector = stateVectorOnly;
-
+        //initialStateVector.segment(3,3) = initialStateVector.segment(3,3) + intermediateVelocityCorrection;
         if (i == 0  )
        {
 
-            lowThrustInitialStateVectorGuess.segment(0,10) = initialStateAfterOffset;
+            lowThrustInitialStateVectorGuess.segment(0,10) = initialStateVectorCorrected;
             lowThrustInitialStateVectorGuess(10) = 0.0;
+
+            lowThrustInitialStateVectorGuess.segment(11*(i+1),10) = stateVectorOnly;
+            lowThrustInitialStateVectorGuess((11*(i+1))+10) = currentTime;
 
         } else if (i == ( numberOfPatchPoints - 2 ) )
         {
-            lowThrustInitialStateVectorGuess.segment(11*(i+1),10) = initialStateAfterOffset;
+            lowThrustInitialStateVectorGuess.segment(11*(i+1),10) = stateVectorOnly;
             lowThrustInitialStateVectorGuess((11*(i+1))+10) = currentTime;
 
         } else
@@ -251,53 +300,8 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
 
     }
 
-    std::map< double, Eigen::VectorXd > stateHistoryCorrectedGuess;
 
-    if ( (amplitude  < 1.01E-5) or (amplitude > 2.7E-5 and amplitude < 2.9E-5) or  (amplitude > 4.5E-5 and amplitude < 4.7E-5)
-         or (amplitude > 6.3E-5 and amplitude < 6.5E-5) or (amplitude > 8.1E-5 and amplitude < 8.3E-5) or amplitude > 9.99E-5)
-    {
-        std::cout << "Amplitude is: " << amplitude << ". start refinement of Orbit" << std::endl;
-        Eigen::VectorXd differentialCorrectionResults = applyPredictionCorrection(librationPointNr, lowThrustInitialStateVectorGuess, 0.0, massParameter, numberOfPatchPoints,
-                                                                                  false, 1.0E-12, 1.0E-12, 1.0E-12);
-
-        std::pair< Eigen::MatrixXd, double > finalTimeState = propagateOrbitAugmentedToFinalCondition( getFullInitialStateAugmented( differentialCorrectionResults.segment(0,10)),
-                                                                 massParameter, differentialCorrectionResults(10), 1, stateHistoryCorrectedGuess, 1000, initialTime);
-
-    }
-
-//    if ( (accelerationAngle  < 1.5) or (accelerationAngle  > 44.5 and accelerationAngle  < 45.5) or  (accelerationAngle  > 89.5 and accelerationAngle  < 90.5)
-//         or (accelerationAngle  > 134.5 and accelerationAngle  < 135.5) or (accelerationAngle  > 179.5 and accelerationAngle  < 180.5)
-//         or (accelerationAngle  > 224.5 and accelerationAngle  < 225.5) or (accelerationAngle  > 269.5 and accelerationAngle  < 270.5)
-//         or (accelerationAngle  > 314.5 and accelerationAngle  < 315.5) )
-//    {
-
-//          std::cout << "alpha is: " << accelerationAngle << ". start refinement of Orbit" << std::endl;
-
-//        Eigen::VectorXd differentialCorrectionResults = applyPredictionCorrection(librationPointNr, lowThrustInitialStateVectorGuess, 0.0, massParameter, numberOfPatchPoints,
-//                                                                                  false, 1.0E-12, 1.0E-12, 1.0E-12);
-
-//        std::pair< Eigen::MatrixXd, double > finalTimeState = propagateOrbitAugmentedToFinalCondition( getFullInitialStateAugmented( differentialCorrectionResults.segment(0,10)),
-//                                                                 massParameter, differentialCorrectionResults(10), 1, stateHistoryCorrectedGuess, 1000, initialTime);
-
-//    }
-
-//    if ( (thrustMagnitude  < 1.01E-2) or (thrustMagnitude > 2.7E-2 and thrustMagnitude < 2.9E-2) or  (thrustMagnitude > 4.5E-2 and thrustMagnitude < 4.7E-2)
-//         or (thrustMagnitude > 6.3E-2 and thrustMagnitude < 6.5E-2) or (thrustMagnitude > 8.1E-2 and thrustMagnitude < 8.3E-2) or thrustMagnitude > 9.99E-2)
-//    {
-
-//          std::cout << "alt is: " << thrustMagnitude << ". start refinement of Orbit" << std::endl;
-
-
-//        Eigen::VectorXd differentialCorrectionResults = applyPredictionCorrection(librationPointNr, lowThrustInitialStateVectorGuess, 0.0, massParameter, numberOfPatchPoints,
-//                                                                                  false, 1.0E-12, 1.0E-12, 1.0E-12);
-
-//        std::pair< Eigen::MatrixXd, double > finalTimeState = propagateOrbitAugmentedToFinalCondition( getFullInitialStateAugmented( differentialCorrectionResults.segment(0,10)),
-//                                                                 massParameter, differentialCorrectionResults(10), 1, stateHistoryCorrectedGuess, 1000, initialTime);
-
-//    }
-
-    writeFloquetDataToFile( stateHistoryInitialGuess, stateHistoryCorrectedGuess, librationPointNr, orbitType, equilibriumStateVector, numberOfPatchPoints, amplitude);
-
+    std::cout << "lowThrustInitialStateVectorGuess: \n" << lowThrustInitialStateVectorGuess << std::endl;
 
     return lowThrustInitialStateVectorGuess;
 }
