@@ -300,6 +300,22 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
 
     }
 
+    std::map< double, Eigen::VectorXd > stateHistoryCorrectedGuess;
+
+
+    if ( (amplitude  < 1.01E-5) or (amplitude > 2.7E-5 and amplitude < 2.9E-5) or  (amplitude > 4.5E-5 and amplitude < 4.7E-5)
+         or (amplitude > 6.3E-5 and amplitude < 6.5E-5) or (amplitude > 8.1E-5 and amplitude < 8.3E-5) or amplitude > 9.99E-5)
+      {
+          std::cout << "Amplitude is: " << amplitude << ". start refinement of Orbit" << std::endl;
+          Eigen::VectorXd differentialCorrectionResults = applyPredictionCorrection(librationPointNr, lowThrustInitialStateVectorGuess, 0.0, massParameter, numberOfPatchPoints,
+                                                                                      false, 1.0E-12, 1.0E-12, 1.0E-12);
+
+                  std::pair< Eigen::MatrixXd, double > finalTimeState = propagateOrbitAugmentedToFinalCondition( getFullInitialStateAugmented( differentialCorrectionResults.segment(0,10)),
+                                                                           massParameter, differentialCorrectionResults(10), 1, stateHistoryCorrectedGuess, 1000, 0.0);
+      }
+
+        writeFloquetDataToFile( stateHistoryInitialGuess, stateHistoryCorrectedGuess, librationPointNr, orbitType, equilibriumStateVector, numberOfPatchPoints, amplitude);
+
 
     std::cout << "lowThrustInitialStateVectorGuess: \n" << lowThrustInitialStateVectorGuess << std::endl;
 

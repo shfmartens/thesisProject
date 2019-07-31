@@ -127,8 +127,8 @@ std::pair< Eigen::MatrixXd, double > propagateOrbitAugmented(
     double stepSize = initialStepSize;
 
     double minimumStepSize   = std::numeric_limits<double>::epsilon( ); // 2.22044604925031e-16
-    //double minimumStepSize   = 0.99E-13;
     const double relativeErrorTolerance = 100.0 * std::numeric_limits<double>::epsilon( ); // 2.22044604925031e-14
+
     const double absoluteErrorTolerance = 1.0e-24;
 
     // Create integrator to be used for propagating.
@@ -174,7 +174,7 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFinalCondition(
     double currentTime = currentState.second;
     int stepCounter = 1;
     // Perform integration steps until end of target time of half orbital period
-    for (int i = 5; i <= 13; i++)
+    for (int i = 5; i <= 12; i++)
     {
 
         double initialStepSize = pow(10,(static_cast<float>(-i)));
@@ -284,7 +284,7 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFinalThetaConditi
     int stepCounter = 1;
 
     // Perform integration steps until end of half orbital period
-    for (int i = 5; i <= 12; i++)
+    for (int i = 5; i <= 13; i++)
     {
         double initialStepSize = pow(10,(static_cast<float>(-i)));
         double maximumStepSize = initialStepSize;
@@ -338,7 +338,7 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFinalThetaConditi
         stateHistoryMinimized[ currentTime ] = currentState.first.block( 0, 0, 10, 1 );
     }
     stateVectorInclSTM = currentState.first;
-    std::cout << "||delta theta|| = " << abs(initialAngleOfOrbit - currentAngleOfOrbit) << ", at end of iterative procedure" << std::endl;
+    //std::cout << "||delta theta|| = " << abs(initialAngleOfOrbit - currentAngleOfOrbit) << ", at end of iterative procedure" << std::endl;
     return currentState;
 
 }

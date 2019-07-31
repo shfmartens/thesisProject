@@ -274,6 +274,7 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
                     double currentTime             = finalTimeState.second;
                     Eigen::VectorXd stateVectorOnly = stateVectorInclSTM.block( 0, 0, 10, 1 );
 
+
                     // compute the state, STM and time the next patch point and set as initial conditions for next loop
                     initialStateVectorInclSTM.block(0,0,10,1) = initialStateVectors.segment(11*(i+1),10);
                     initialStateVectorInclSTM.block(0,1,10,10).setIdentity();
