@@ -179,7 +179,7 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
     equilibriumStateVector(8) = accelerationAngle2;
     equilibriumStateVector(9) = initialMass;
 
-    std::cout << "fullStateVectorEquilibirum: \n" << equilibriumStateVector << std::endl;
+    //std::cout << "fullStateVectorEquilibirum: \n" << equilibriumStateVector << std::endl;
 
     // ====  1. Compute the initial uncorrected state ==== //
     Eigen::VectorXd initialStateVectorUncorrected =   Eigen::VectorXd::Zero( 10 );
@@ -246,7 +246,7 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
    Eigen::VectorXd initialStateVector = initialStateVectorCorrected;
 
     std::map< double, Eigen::VectorXd > stateHistoryInitialGuess;
-    for (int i = 0; i <= (numberOfPatchPoints -2); i++){
+    for (int i = 0; i < (numberOfPatchPoints - 1); i++){
 
         // compute current time at patch point
         auto periodVariable = static_cast<double>(i);
@@ -264,6 +264,17 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
         Eigen::MatrixXd stateVectorInclSTM      = finalTimeState.first;
         double currentTime             = finalTimeState.second;
         Eigen::VectorXd stateVectorOnly = stateVectorInclSTM.block( 0, 0, 10, 1 );
+
+//        std::cout << "====== CHECKING INPUT INTO THE ALGORITHM ========= " << std::endl
+//                  << "initialStateVector: \n" << initialStateVector << std::endl
+//                  << "initialTime: " <<  initialTime << std::endl
+//                  << "finalTime: " << finalTime << std::endl
+//                  << "resultingTime: " << currentTime << std::endl
+//                  << "stateVectorOnly: \n" << stateVectorOnly << std::endl
+//                  << "================================================== " << std::endl;
+
+
+
 
         //Eigen::VectorXd intermediateVelocityCorrection = Eigen::VectorXd::Zero(3);
         //Eigen::VectorXd intermediatePerturbationVector = Eigen::VectorXd::Zero(10);
@@ -287,7 +298,7 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
 
         } else if (i == ( numberOfPatchPoints - 2 ) )
         {
-            lowThrustInitialStateVectorGuess.segment(11*(i+1),10) = stateVectorOnly;
+            lowThrustInitialStateVectorGuess.segment(11*(i+1),10) = initialStateVectorCorrected;
             lowThrustInitialStateVectorGuess((11*(i+1))+10) = currentTime;
 
         } else
@@ -300,24 +311,29 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
 
     }
 
+    //std::cout << "==== input into DC algorithm ==="<< std::endl;
+    //std::cout << "lowThrustInitialStateVectorGuess " << lowThrustInitialStateVectorGuess << std::endl;
+
+
+
     std::map< double, Eigen::VectorXd > stateHistoryCorrectedGuess;
+    stateHistoryCorrectedGuess.clear();
 
 
-    if ( (amplitude  < 1.01E-5) or (amplitude > 2.7E-5 and amplitude < 2.9E-5) or  (amplitude > 4.5E-5 and amplitude < 4.7E-5)
-         or (amplitude > 6.3E-5 and amplitude < 6.5E-5) or (amplitude > 8.1E-5 and amplitude < 8.3E-5) or amplitude > 9.99E-5)
-      {
-          std::cout << "Amplitude is: " << amplitude << ". start refinement of Orbit" << std::endl;
-          Eigen::VectorXd differentialCorrectionResults = applyPredictionCorrection(librationPointNr, lowThrustInitialStateVectorGuess, 0.0, massParameter, numberOfPatchPoints,
-                                                                                      false, 1.0E-12, 1.0E-12, 1.0E-12);
+//    if ( (amplitude  < 1.01E-5) or (amplitude > 2.7E-5 and amplitude < 2.9E-5) or  (amplitude > 4.5E-5 and amplitude < 4.7E-5)
+//         or (amplitude > 6.3E-5 and amplitude < 6.5E-5) or (amplitude > 8.1E-5 and amplitude < 8.3E-5) or amplitude > 9.99E-5)
+//      {
+//          std::cout << "Amplitude is: " << amplitude << ". start refinement of Orbit" << std::endl;
+//          Eigen::VectorXd differentialCorrectionResults = applyPredictionCorrection(librationPointNr, lowThrustInitialStateVectorGuess, massParameter, numberOfPatchPoints, 1.0E-12, 1.0E-12, 1.0E-12);
 
-                  std::pair< Eigen::MatrixXd, double > finalTimeState = propagateOrbitAugmentedToFinalCondition( getFullInitialStateAugmented( differentialCorrectionResults.segment(0,10)),
-                                                                           massParameter, differentialCorrectionResults(10), 1, stateHistoryCorrectedGuess, 1000, 0.0);
-      }
+//                  std::pair< Eigen::MatrixXd, double > finalTimeState = propagateOrbitAugmentedToFinalCondition( getFullInitialStateAugmented( differentialCorrectionResults.segment(0,10)),
+//                                                                           massParameter, differentialCorrectionResults(10), 1, stateHistoryCorrectedGuess, 1000, 0.0);
+//      }
 
         writeFloquetDataToFile( stateHistoryInitialGuess, stateHistoryCorrectedGuess, librationPointNr, orbitType, equilibriumStateVector, numberOfPatchPoints, amplitude);
 
 
-    std::cout << "lowThrustInitialStateVectorGuess: \n" << lowThrustInitialStateVectorGuess << std::endl;
+    //std::cout << "lowThrustInitialStateVectorGuess: \n" << lowThrustInitialStateVectorGuess << std::endl;
 
     return lowThrustInitialStateVectorGuess;
 }

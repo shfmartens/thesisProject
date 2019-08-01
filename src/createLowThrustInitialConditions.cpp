@@ -19,10 +19,7 @@
 #include "checkEigenvalues.h"
 #include "propagateOrbit.h"
 #include "propagateOrbitAugmented.h"
-#include "morimotoFirstOrderApproximation.h"
 #include "floquetApproximation.h"
-//#include "richardsonThirdOrderApproximationMultiple.h"
-#include "applyDifferentialCorrectionAugmented.h"
 
 void appendResultsVectorAugmented(const double hamiltonian, const double orbitalPeriod, const Eigen::VectorXd& initialStateVector,
         const Eigen::MatrixXd& stateVectorInclSTM, std::vector< Eigen::VectorXd >& initialConditions )
@@ -455,58 +452,72 @@ Eigen::VectorXd getLowThrustInitialStateVectorGuess( const int librationPointNr,
 
     initialGuessParameters = getInitialGuessParameters(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, continuationIndex, guessIteration );
 
-    //lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, orbitType, 1.0E-4, initialGuessParameters(1), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
+    lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, orbitType, 1.0E-5, initialGuessParameters(1), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
     //lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, orbitType, initialGuessParameters(0), initialGuessParameters(1), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
 
+    Eigen::ArrayXd amplitudeArrayAcc(3);
+    amplitudeArrayAcc << 0.001, 0.01, 0.1;
 
-    Eigen::ArrayXd amplitudeArray = Eigen::ArrayXd::LinSpaced( 91, 1.0E-5, 1.0E-4);
+
+    for (int s = 0; s < 3; s++){
+
+        Eigen::ArrayXd amplitudeArrayAngle = Eigen::ArrayXd::LinSpaced( 6, 0, 300);
 
 
-    for(int k =0;  k < 91; k++)
-    {
-                std::cout << "========= Offset Orbit ======" << std::endl
-                          <<   "Thrust: " << initialGuessParameters(1) << std::endl
-                          <<   "Angle: " << initialGuessParameters(2) << std::endl
-                          <<   "Amplitude: " << amplitudeArray(k) << std::endl;
+        for(int j = 0; j < 6; j++ ){
 
-                lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, orbitType, amplitudeArray(k), initialGuessParameters(1), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
+            Eigen::ArrayXd amplitudeArray = Eigen::ArrayXd::LinSpaced( 91, 1.0E-5, 1.0E-4);
+
+
+            for(int k =0;  k < 91; k++)
+            {
+                    std::cout << "========= Offset Orbit ======" << std::endl
+                              <<   "Thrust: " << initialGuessParameters(1) << std::endl
+                              <<   "Angle: " << initialGuessParameters(2) << std::endl
+                              <<   "Amplitude: " << amplitudeArray(k) << std::endl;
+
+                    lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, orbitType, amplitudeArray(k), amplitudeArrayAcc(s), amplitudeArrayAngle(j), initialGuessParameters(3), initialMass, numberOfPatchPoints );
+            }
+
     }
 
-//    Eigen::ArrayXd alphaArrayThrust =  Eigen::ArrayXd::Zero(3);
-//    amplitudeArrayThrust << 0.001, 0.01, 0.1;
+    }
 
-//    Eigen::ArrayXd alphaArray = Eigen::ArrayXd::LinSpaced( 360, 0, 359);
+    Eigen::ArrayXd alphaArrayThrust =  Eigen::ArrayXd::Zero(3);
+    alphaArrayThrust << 0.001, 0.01, 0.1;
 
-//    for (int l = 0; l < 3; l++)
-//    {
-//        for(int k =0;  k < 360; k++)
-//        {
-//            std::cout << "========= Offset Orbit ======" << std::endl
-//                      <<   "Thrust: " << alphaArrayThrust(l) << std::endl
-//                      <<   "Angle: " << alphaArray(k) << std::endl
-//                      <<   "Amplitude: " << 0.0001 << std::endl;
-//            lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, orbitType, 1.0E-4, alphaArrayThrust(l), alphaArray(k), initialGuessParameters(3), initialMass, numberOfPatchPoints );
-//        }
-//    }
+    Eigen::ArrayXd alphaArray = Eigen::ArrayXd::LinSpaced( 360, 0, 359);
+
+    for (int l = 0; l < 3; l++)
+    {
+        for(int k =0;  k < 360; k++)
+        {
+            std::cout << "========= Offset Orbit ======" << std::endl
+                      <<   "Thrust: " << alphaArrayThrust(l) << std::endl
+                      <<   "Angle: " << alphaArray(k) << std::endl
+                      <<   "Amplitude: " << 0.0001 << std::endl;
+            lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, orbitType, 1.0E-4, alphaArrayThrust(l), alphaArray(k), initialGuessParameters(3), initialMass, numberOfPatchPoints );
+        }
+    }
 
 
 
 
 
-//    Eigen::ArrayXd accArray = Eigen::ArrayXd::LinSpaced( 91, 0.01, 0.1);
-//    Eigen::ArrayXd accArrayAlpha = Eigen::ArrayXd::LinSpaced( 6, 0, 300);
+    Eigen::ArrayXd accArray = Eigen::ArrayXd::LinSpaced( 91, 0.01, 0.1);
+    Eigen::ArrayXd accArrayAlpha = Eigen::ArrayXd::LinSpaced( 6, 0, 300);
 
-//    for (int s = 0; s < 6; s++)
-//    {
-//        for(int k =0;  k < 91; k++)
-//        {
-                            //std::cout << "========= Offset Orbit ======" << std::endl
-    //                      <<   "Thrust: " << accArray(k) << std::endl
-    //                      <<   "Angle: " << accArrayAlpha(s) << std::endl
-    //                      <<   "Amplitude: " << 0.0001 << std::endl;
-//            lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, orbitType, 1.0E-4, accArray(k), accArrayAlpha(s), initialGuessParameters(3), initialMass, numberOfPatchPoints );
-//        }
-//    }
+    for (int s = 0; s < 6; s++)
+    {
+        for(int k =0;  k < 91; k++)
+        {
+                            std::cout << "========= Offset Orbit ======" << std::endl
+                          <<   "Thrust: " << accArray(k) << std::endl
+                          <<   "Angle: " << accArrayAlpha(s) << std::endl
+                          <<   "Amplitude: " << 0.0001 << std::endl;
+            lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, orbitType, 1.0E-4, accArray(k), accArrayAlpha(s), initialGuessParameters(3), initialMass, numberOfPatchPoints );
+        }
+    }
 
 
 
@@ -544,7 +555,7 @@ Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initia
 
     // Correct state vector guess
     Eigen::VectorXd differentialCorrectionResult = applyPredictionCorrection(
-                librationPointNr, initialStateGuess, targetHamiltonian, massParameter, numberOfPatchPoints, hamiltonianConstraint,
+                librationPointNr, initialStateGuess, massParameter, numberOfPatchPoints,
                 maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit );
     //std::cout << "DC result: " << differentialCorrectionResult << std::endl;
 

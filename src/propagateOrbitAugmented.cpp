@@ -174,7 +174,7 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFinalCondition(
     double currentTime = currentState.second;
     int stepCounter = 1;
     // Perform integration steps until end of target time of half orbital period
-    for (int i = 5; i <= 12; i++)
+    for (int i = 5; i <= 13; i++)
     {
 
         double initialStepSize = pow(10,(static_cast<float>(-i)));

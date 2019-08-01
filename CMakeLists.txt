@@ -217,7 +217,6 @@ list(APPEND TUDAT_APPLICATION_PROPAGATION_LIBRARIES tudat_simulation_setup tudat
  # Set the header files.
  set(CR3BP_HEADERS
          "${SRCROOT}/src/applyDifferentialCorrection.h"
-         #"${SRCROOT}/src/applyDifferentialCorrectionAugmented.h"
          #"${SRCROOT}/src/applyMultivariateRootFinding.h"
          "${SRCROOT}/src/checkEigenvalues.h"
          #"${SRCROOT}/src/completeInitialConditionsHaloFamily.h"
@@ -237,7 +236,6 @@ list(APPEND TUDAT_APPLICATION_PROPAGATION_LIBRARIES tudat_simulation_setup tudat
 
 set(CR3BPLT_SOURCES
 
-         "${SRCROOT}/src/applyDifferentialCorrectionAugmented.cpp"
          "${SRCROOT}/src/applyPredictionCorrection.cpp"
          "${SRCROOT}/src/computeLevel1Correction.cpp"
          "${SRCROOT}/src/computeLevel2Correction.cpp"
@@ -257,7 +255,6 @@ set(CR3BPLT_SOURCES
              )
 
 set(CR3BPLT_HEADERS
-         "${SRCROOT}/src/applyDifferentialCorrectionAugmented.h"
          "${SRCROOT}/src/applyPredictionCorrection.h"
          "${SRCROOT}/src/computeLevel1Correction.h"
          "${SRCROOT}/src/computeLevel2Correction.h"
