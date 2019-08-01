@@ -492,7 +492,7 @@ Eigen::VectorXd getLowThrustInitialStateVectorGuess( const int librationPointNr,
     {
         for(int k =0;  k < 360; k++)
         {
-            std::cout << "========= Offset Orbit ======" << std::endl
+            std::cout << "========= Angle Orbit ======" << std::endl
                       <<   "Thrust: " << alphaArrayThrust(l) << std::endl
                       <<   "Angle: " << alphaArray(k) << std::endl
                       <<   "Amplitude: " << 0.0001 << std::endl;
@@ -511,7 +511,7 @@ Eigen::VectorXd getLowThrustInitialStateVectorGuess( const int librationPointNr,
     {
         for(int k =0;  k < 91; k++)
         {
-                            std::cout << "========= Offset Orbit ======" << std::endl
+                            std::cout << "========= Acc Orbit ======" << std::endl
                           <<   "Thrust: " << accArray(k) << std::endl
                           <<   "Angle: " << accArrayAlpha(s) << std::endl
                           <<   "Amplitude: " << 0.0001 << std::endl;
