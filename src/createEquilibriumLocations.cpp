@@ -424,7 +424,7 @@ Eigen::Vector2d createEquilibriumLocations (const int librationPointNr, const do
 
                          }
 
-                         //writeResultsToFile(librationPointNr, thrustAcceleration, "acceleration", seedAngle, continuationDirection,  equilibriaCatalog, stabilityCatalog);
+                         writeResultsToFile(librationPointNr, thrustAcceleration, "acceleration", seedAngle, continuationDirection,  equilibriaCatalog, stabilityCatalog);
 
 
                 }
@@ -450,7 +450,7 @@ Eigen::Vector2d createEquilibriumLocations (const int librationPointNr, const do
                      equilibriaCatalog[ 0.0 ] = Eigen::VectorXd::Zero(3);
                      stabilityCatalog[ 0.0 ] = Eigen::MatrixXd::Zero(6,6);
 
-                     //writeResultsToFile(librationPointNr, thrustAcceleration, "acceleration", seedAngle, continuationDirection, equilibriaCatalog, stabilityCatalog);
+                     writeResultsToFile(librationPointNr, thrustAcceleration, "acceleration", seedAngle, continuationDirection, equilibriaCatalog, stabilityCatalog);
 
                 }
 

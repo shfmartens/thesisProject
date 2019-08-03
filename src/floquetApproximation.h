@@ -11,7 +11,7 @@ Eigen::VectorXd computeVelocityCorrection(const int librationPointNr, const std:
 
 
 Eigen::VectorXd floquetApproximation( int librationPointNr, std::string orbitType,
-                                                   double amplitude, double thrustMagnitude, double accelerationAngle, double accelerationAngle2, const double initialMass, const int numberOfPatchPoints, const double maxEigenValueDeviation = 1.0E-6 );
+                                                   double amplitude, double thrustMagnitude, double accelerationAngle, double accelerationAngle2, const double initialMass, const int numberOfPatchPoints, const int numberOfCorrections = 1, const double maxEigenValueDeviation = 1.0E-6 );
 
 
 

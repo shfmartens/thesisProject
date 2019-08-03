@@ -155,7 +155,7 @@ Eigen::VectorXd computeVelocityCorrection(const int librationPointNr, const std:
 
 
 Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType,
-                                                  double amplitude, double thrustMagnitude, double accelerationAngle, double accelerationAngle2, const double initialMass, const int numberOfPatchPoints, const double maxEigenValueDeviation )
+                                                  double amplitude, double thrustMagnitude, double accelerationAngle, double accelerationAngle2, const double initialMass, const int numberOfPatchPoints, const int numberOfCorrections, const double maxEigenValueDeviation )
 {
     Eigen::VectorXd lowThrustInitialStateVectorGuess(11*numberOfPatchPoints);
     lowThrustInitialStateVectorGuess.setZero();
@@ -324,13 +324,13 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
 //         or (amplitude > 6.3E-5 and amplitude < 6.5E-5) or (amplitude > 8.1E-5 and amplitude < 8.3E-5) or amplitude > 9.99E-5)
 //      {
 //          std::cout << "Amplitude is: " << amplitude << ". start refinement of Orbit" << std::endl;
-//          Eigen::VectorXd differentialCorrectionResults = applyPredictionCorrection(librationPointNr, lowThrustInitialStateVectorGuess, massParameter, numberOfPatchPoints, 1.0E-12, 1.0E-12, 1.0E-12);
+//          Eigen::VectorXd differentialCorrectionResults = applyPredictionCorrection(librationPointNr, lowThrustInitialStateVectorGuess, -1.6, massParameter, numberOfPatchPoints, false, 1.0E-12, 1.0E-12, 1.0E-12);
 
 //                  std::pair< Eigen::MatrixXd, double > finalTimeState = propagateOrbitAugmentedToFinalCondition( getFullInitialStateAugmented( differentialCorrectionResults.segment(0,10)),
 //                                                                           massParameter, differentialCorrectionResults(10), 1, stateHistoryCorrectedGuess, 1000, 0.0);
 //      }
 
-        writeFloquetDataToFile( stateHistoryInitialGuess, stateHistoryCorrectedGuess, librationPointNr, orbitType, equilibriumStateVector, numberOfPatchPoints, amplitude);
+        writeFloquetDataToFile( stateHistoryInitialGuess, stateHistoryCorrectedGuess, librationPointNr, orbitType, equilibriumStateVector, numberOfCorrections, amplitude);
 
 
     //std::cout << "lowThrustInitialStateVectorGuess: \n" << lowThrustInitialStateVectorGuess << std::endl;
