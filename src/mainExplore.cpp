@@ -29,10 +29,9 @@ double massParameter = tudat::gravitation::circular_restricted_three_body_proble
 
 int main (){
 
-
-    // ================================
-    // == Compute equilibria, comment out when computing low-thrust intial positions ==
-    // ================================
+//     //================================
+//     //== Compute equilibria, comment out when computing low-thrust intial positions ==
+//     //================================
 //    double accelerationMagnitude = 0.0;
 //    double alpha = 0;
 //    for (int i = 1; i < 6 ; i++)
@@ -54,8 +53,8 @@ int main (){
     // ================================
         std::string orbitType = "horizontal";
         int continuationIndex = 1; //1: Continuate for H, 8: acceleration, 9: alpha, 10: beta
-        double accelerationMagnitude = 0.0;
-        double accelerationAngle = 0.0;
+        double accelerationMagnitude = 0.1;
+        double accelerationAngle = 90.0;
         double accelerationAngle2 = 0.0;
         double initialMass = 1.0;
         createLowThrustInitialConditions(1, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, massParameter );
