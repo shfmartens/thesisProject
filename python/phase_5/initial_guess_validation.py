@@ -893,7 +893,7 @@ if __name__ == '__main__':
     amplitudes.append(amplitudeList2)
     amplitudes.append(amplitudeList3)
     amplitudes.append(amplitudeList4)
-    numbers_of_points = [8]
+    numbers_of_points = [0]
     low_dpi = True
 
     for lagrange_point_nr in lagrange_point_nrs:
