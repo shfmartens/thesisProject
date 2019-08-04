@@ -884,15 +884,15 @@ if __name__ == '__main__':
     orbit_type = 'horizontal'
     alt_values = [0.1]
     angles = [90.0]
-    amplitudes = []
-    amplitudeList = np.linspace(1.0E-5,1.0E-4,num=91).tolist()
-    amplitudeList2 = np.linspace(1.0E-4,1.0E-3,num=91).tolist()
-    amplitudeList3 = np.linspace(1.0E-3,1.0E-2,num=91).tolist()
-    amplitudeList4 = np.linspace(1.0E-2,1.0E-1,num=91).tolist()
-    amplitudes.append(amplitudeList)
-    amplitudes.append(amplitudeList2)
-    amplitudes.append(amplitudeList3)
-    amplitudes.append(amplitudeList4)
+    amplitudes = np.linspace(1.0E-5,1.0E-4,num=91).tolist()
+    # amplitudeList = np.linspace(1.0E-5,1.0E-4,num=91).tolist()
+    # amplitudeList2 = np.linspace(1.0E-4,1.0E-3,num=91).tolist()
+    # amplitudeList3 = np.linspace(1.0E-3,1.0E-2,num=91).tolist()
+    # amplitudeList4 = np.linspace(1.0E-2,1.0E-1,num=91).tolist()
+    # amplitudes.append(amplitudeList)
+    # amplitudes.append(amplitudeList2)
+    # amplitudes.append(amplitudeList3)
+    # amplitudes.append(amplitudeList4)
     numbers_of_points = [0]
     low_dpi = True
 
