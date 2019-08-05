@@ -883,7 +883,7 @@ if __name__ == '__main__':
     lagrange_point_nrs = [1]
     orbit_type = 'horizontal'
     alt_values = [0.1]
-    angles = [90.0]
+    angles = [180.0]
     amplitudeArray = np.linspace(1.0E-5,1.0E-4,num=91)
     amplitudeArray2 = np.linspace(1.0E-4, 1.0E-3, num=91)
     amplitudeArray3 = np.linspace(1.0E-3, 1.0E-2, num=91)
@@ -899,16 +899,9 @@ if __name__ == '__main__':
 
     amplitudes = newArray3.tolist()
 
-    # amplitudes = np.linspace(1.0E-5,1.0E-4,num=91).tolist()
-    #  amplitudeList = np.linspace(1.0E-5,1.0E-4,num=91).tolist()
-    # amplitudeList2 = np.linspace(1.0E-4,1.0E-3,num=91).tolist()
-    # amplitudeList3 = np.linspace(1.0E-3,1.0E-2,num=91).tolist()
-    # amplitudeList4 = np.linspace(1.0E-2,1.0E-1,num=91).tolist()
-    # amplitudes.append(amplitudeList)
-    # amplitudes.append(amplitudeList2)
-    # amplitudes.append(amplitudeList3)
-    # amplitudes.append(amplitudeList4)
-    numbers_of_points = [0]
+    amplitudes = np.linspace(1.0E-5,1.0E-4,num=91).tolist()
+
+    numbers_of_points = [8]
     low_dpi = True
 
     for lagrange_point_nr in lagrange_point_nrs:
@@ -923,75 +916,75 @@ if __name__ == '__main__':
 
                     del initial_guess_validation
 
-    # alt_values = [0.001,0.1]
-    # angles = np.linspace(0, 359, num=360).tolist()
-    # amplitudes = [0.0001]
-    # numbers_of_points = [8]
-    # low_dpi = True
-    #
-    # for lagrange_point_nr in lagrange_point_nrs:
-    #     for alt_value in alt_values:
-    #         for amplitude in amplitudes:
-    #             for number_of_points in numbers_of_points:
-    #                 initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_value, \
-    #                                                                   angles, amplitude, number_of_points, low_dpi)
-    #
-    #                 initial_guess_validation.plot_angle_effect()
-    #
-    #                 del initial_guess_validation
-    #
-    #
-    # alt_values = np.linspace(1.0E-2,1.0E-1,num=91).tolist()
-    # angles = [180]
-    # amplitudes = [0.0001]
-    # numbers_of_points = [8]
-    # low_dpi = True
-    #
-    # for lagrange_point_nr in lagrange_point_nrs:
-    #     for angle in angles:
-    #         for amplitude in amplitudes:
-    #             for number_of_points in numbers_of_points:
-    #                 initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_values, \
-    #                                                                   angle, amplitude, number_of_points, low_dpi)
-    #
-    #                 initial_guess_validation.plot_acceleration_effect()
-    #
-    #                 del initial_guess_validation
-    #
-    # numbers_of_corrections = [0,2,3,4,5,6]
-    # alt_values = [0.0]
-    # angles = [0.0]
-    # amplitudes = [1.0E-3]
-    #
-    #
-    # for lagrange_point_nr in lagrange_point_nrs:
-    #     for angle in angles:
-    #         for amplitude in amplitudes:
-    #             for alt_value in alt_values:
-    #                 initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_value, \
-    #                                                                   angle, amplitude, numbers_of_corrections, low_dpi)
-    #
-    #                 initial_guess_validation.plot_corrections_effect()
-    #
-    #                 del initial_guess_validation
-    #
-    # lagrange_point_nrs = [1]
-    # orbit_type = 'vertical'
-    # alt_values = [0.0]
-    # angles = [0.0]
-    # amplitudes = np.linspace(1.0E-5, 1.0E-4, num=10).tolist()
-    # numbers_of_corrections = 0
-    # low_dpi = True
-    #
-    # for lagrange_point_nr in lagrange_point_nrs:
-    #     for angle in angles:
-    #         for alt_value in alt_values:
-    #             initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_value, \
-    #                                                                angle, amplitudes, numbers_of_corrections, low_dpi)
-    #
-    #             initial_guess_validation.plot_vertical_capability()
-    #
-    #             del initial_guess_validation
+    alt_values = [0.001,0.1]
+    angles = np.linspace(0, 359, num=360).tolist()
+    amplitudes = [0.0001]
+    numbers_of_points = [8]
+    low_dpi = True
+
+    for lagrange_point_nr in lagrange_point_nrs:
+        for alt_value in alt_values:
+            for amplitude in amplitudes:
+                for number_of_points in numbers_of_points:
+                    initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_value, \
+                                                                      angles, amplitude, number_of_points, low_dpi)
+
+                    initial_guess_validation.plot_angle_effect()
+
+                    del initial_guess_validation
+
+
+    alt_values = np.linspace(1.0E-2,1.0E-1,num=91).tolist()
+    angles = [180]
+    amplitudes = [0.0001]
+    numbers_of_points = [8]
+    low_dpi = True
+
+    for lagrange_point_nr in lagrange_point_nrs:
+        for angle in angles:
+            for amplitude in amplitudes:
+                for number_of_points in numbers_of_points:
+                    initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_values, \
+                                                                      angle, amplitude, number_of_points, low_dpi)
+
+                    initial_guess_validation.plot_acceleration_effect()
+
+                    del initial_guess_validation
+
+    numbers_of_corrections = [0,2,3,4,5,6,7,8,9,10]
+    alt_values = [0.0]
+    angles = [0.0]
+    amplitudes = [1.0E-3]
+
+
+    for lagrange_point_nr in lagrange_point_nrs:
+        for angle in angles:
+            for amplitude in amplitudes:
+                for alt_value in alt_values:
+                    initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_value, \
+                                                                      angle, amplitude, numbers_of_corrections, low_dpi)
+
+                    initial_guess_validation.plot_corrections_effect()
+
+                    del initial_guess_validation
+
+    lagrange_point_nrs = [1]
+    orbit_type = 'vertical'
+    alt_values = [0.0]
+    angles = [0.0]
+    amplitudes = np.linspace(1.0E-5, 1.0E-4, num=10).tolist()
+    numbers_of_corrections = 0
+    low_dpi = True
+
+    for lagrange_point_nr in lagrange_point_nrs:
+        for angle in angles:
+            for alt_value in alt_values:
+                initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_value, \
+                                                                   angle, amplitudes, numbers_of_corrections, low_dpi)
+
+                initial_guess_validation.plot_vertical_capability()
+
+                del initial_guess_validation
 
 
 
