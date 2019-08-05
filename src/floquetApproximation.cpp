@@ -492,7 +492,7 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
       writeFloquetDataToFile( stateHistoryInitialGuess, stateHistoryCorrectedGuess, librationPointNr, orbitType, equilibriumStateVector, numberOfCorrections, amplitude, interiorManeuverVector);
 
 
-    std::cout << "\nResulting initial guess: \n" << lowThrustInitialStateVectorGuess << std::endl;
+    //std::cout << "\nResulting initial guess: \n" << lowThrustInitialStateVectorGuess << std::endl;
 
     return lowThrustInitialStateVectorGuess;
 }

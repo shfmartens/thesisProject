@@ -25,37 +25,37 @@ Eigen::VectorXd computeDeviationNorms (const Eigen::VectorXd defectVector, const
 
     Eigen::VectorXd outputVector = Eigen::VectorXd::Zero(5);
     Eigen::VectorXd defectVectorAtPatchPoint = Eigen::VectorXd::Zero(11);
-    double positionDeviationTotal = 0.0;
-    double velocityDeviationTotal = 0.0;
-    double velocityInteriorDeviationTotal = 0.0;
-    double velocityExteriorDeviationTotal = 0.0;
-    double timeDeviationTotal = 0.0;
+    Eigen::VectorXd positionDeviations(3*(numberOfPatchPoints-1));
+    Eigen::VectorXd velocityDeviations(3*(numberOfPatchPoints-1));
+    Eigen::VectorXd velocityInteriorDeviations(3*(numberOfPatchPoints-2));
+    Eigen::VectorXd velocityExteriorDeviations(3);
+    Eigen::VectorXd periodDeviations(numberOfPatchPoints-1);
+
 
     for (int i = 0; i < (numberOfPatchPoints - 1); i++ ){
 
         defectVectorAtPatchPoint = defectVector.segment(i*11,11);
 
-        positionDeviationTotal = positionDeviationTotal + ((defectVectorAtPatchPoint.segment(0,3)).norm());
-        velocityDeviationTotal = velocityDeviationTotal + ((defectVectorAtPatchPoint.segment(3,3)).norm());
-        timeDeviationTotal = timeDeviationTotal + defectVectorAtPatchPoint(10);
+        positionDeviations.segment(i*3,3) = defectVectorAtPatchPoint.segment(0,3);
+        velocityDeviations.segment(i*3,3) = defectVectorAtPatchPoint.segment(3,3);
+        periodDeviations(i) =defectVectorAtPatchPoint(10);
 
-        if (i < (numberOfPatchPoints - 2) ){
-                    velocityInteriorDeviationTotal = velocityInteriorDeviationTotal + ((defectVectorAtPatchPoint.segment(3,3)).norm());
-           } else{
-
-                    velocityExteriorDeviationTotal = velocityExteriorDeviationTotal + ((defectVectorAtPatchPoint.segment(3,3)).norm());
-
+        if (i < (numberOfPatchPoints - 2) )
+        {
+                    velocityInteriorDeviations.segment(i*3,3) = defectVectorAtPatchPoint.segment(3,3);
+           } else
+        {
+                    velocityExteriorDeviations = defectVectorAtPatchPoint.segment(3,3);
                 }
+
 
     }
 
-
-
-    outputVector(0) = positionDeviationTotal;
-    outputVector(1) = velocityDeviationTotal;
-    outputVector(2) = velocityInteriorDeviationTotal;
-    outputVector(3) = velocityExteriorDeviationTotal;
-    outputVector(4) = timeDeviationTotal;
+    outputVector(0) = positionDeviations.norm();
+    outputVector(1) = velocityDeviations.norm();
+    outputVector(2) = velocityInteriorDeviations.norm();
+    outputVector(3) = velocityExteriorDeviations.norm();
+    outputVector(4) = periodDeviations.norm();
 
     return outputVector;
 
@@ -98,8 +98,7 @@ void computeOrbitDeviations(Eigen::VectorXd inputStateVector, const int numberOf
         } else
         {
 
-            std::cout  <<  "comparing to final state on trajectory: \n "<< inputStateVector.segment(11*(i+1),10) - stateVectorOnly << std::endl; // state difference
-            std::cout  <<  "comparing to initial state on trajectory: \n "<< inputStateVector.segment(0,10) - stateVectorOnly << std::endl; // state difference
+            // inputStateVector.segment(11*(i+1),10) - stateVectorOnly << std::endl; state difference w.r.t terminal state:D
 
             // Compare the final state of propagated trajectory to initial patch point to have periodicity!
             defectVector.segment(i*11,10) = inputStateVector.segment(0,10) - stateVectorOnly;
@@ -136,8 +135,6 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
     // ========= Compute current defects deviations by propagating the initialStateVector in CR3BPLT  ======= //
     computeOrbitDeviations(currentTrajectoryGuess, numberOfPatchPoints, propagatedStatesInclSTM, defectVector, massParameter);
 
-    std::cout << "defectVector new" << defectVector << std::endl;
-
     deviationNorms = computeDeviationNorms(defectVector, numberOfPatchPoints);
 
     double positionDeviationNorm = deviationNorms(0);
@@ -146,21 +143,22 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
     double velocityExteriorDeviationNorm = deviationNorms(3);
     double timeDeviationNorm = deviationNorms(4);
 
-    std::cout << "==== CHECKING DEVIATION NORMS =====" << std::endl
-              << "positionDeviationNorm: " << positionDeviationNorm << std::endl
-              << "velocityTotalDeviationNorm: " << velocityTotalDeviationNorm << std::endl
-              << "velocityInteriorDeviationNorm: " << velocityInteriorDeviationNorm << std::endl
-              << "velocityExteriorDeviationNorm: " << velocityExteriorDeviationNorm << std::endl
-              << "timeDeviationNorm: " << timeDeviationNorm << std::endl
-              << "===================================" << std::endl;
+    std::cout << "\nDeviations at the start of correction procedure" << std::endl
+              << "Position deviation: " << positionDeviationNorm << std::endl
+              << "Velocity deviation: " << velocityTotalDeviationNorm << std::endl
+              << "Velocity int. deviation: " << velocityInteriorDeviationNorm << std::endl
+              << "Velocity ext. deviation: " << velocityExteriorDeviationNorm << std::endl
+              << "Time deviation: " << timeDeviationNorm << std::endl;
 
 
-    int numberOfIterations = 0;
+    int numberOfCorrections = 0;
     while (positionDeviationNorm > maxPositionDeviationFromPeriodicOrbit or
            velocityTotalDeviationNorm > maxVelocityDeviationFromPeriodicOrbit or
            timeDeviationNorm > maxPeriodDeviationFromPeriodicOrbit ){
 
-        if( numberOfIterations > maxNumberOfIterations ){
+        std::cout << "\nSTART TLT CORRECTION CYCLE " << numberOfCorrections + 1 << "." << std::endl;
+
+        if( numberOfCorrections > maxNumberOfIterations ){
 
             std::cout << "Predictor Corrector did not converge within maxNumberOfIterations" << std::endl;
             return outputVector = Eigen::VectorXd::Zero(25+11*numberOfPatchPoints);
@@ -168,7 +166,7 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
 
         // ==== Apply Level 1 Correction ==== //
 
-        int numberOfIterationsLevel1 = 0;
+        int numberOfCorrectionsLevel1 = 0;
         bool applyLevel1Correction = false;
 
         while (positionDeviationNorm > maxPositionDeviationFromPeriodicOrbit or applyLevel1Correction){
@@ -193,21 +191,20 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
             velocityExteriorDeviationNorm = deviationNorms(3);
             timeDeviationNorm = deviationNorms(4);
 
-            std::cout << "==== Level I Correction Status Update =====" << std::endl
-                      << "numberOfIterationsLevel1: " << numberOfIterationsLevel1 << std::endl
-                      << "positionDeviationNorm: " << positionDeviationNorm << std::endl
-                      << "velocityTotalDeviationNorm: " << velocityTotalDeviationNorm << std::endl
-                      << "velocityInteriorDeviationNorm: " << velocityInteriorDeviationNorm << std::endl
-                      << "velocityExteriorDeviationNorm: " << velocityExteriorDeviationNorm << std::endl
-                      << "timeDeviationNorm: " << timeDeviationNorm << std::endl
-                      << "===================================" << std::endl;
+            std::cout << "\nLevel I Correction applied, remaining deviations are: " << std::endl
+                      << "Level 1 Corrections: " << numberOfCorrectionsLevel1 + 1 << std::endl
+                      << "Position deviation: " << positionDeviationNorm << std::endl
+                      << "Velocity deviation: " << velocityTotalDeviationNorm << std::endl
+                      << "Velocity int. deviation: " << velocityInteriorDeviationNorm << std::endl
+                      << "Velocity ext. deviation: " << velocityExteriorDeviationNorm << std::endl
+                      << "Time deviation: " << timeDeviationNorm << std::endl;
 
-            numberOfIterationsLevel1++;
+            numberOfCorrectionsLevel1++;
             applyLevel1Correction = false;
 
         }
 
-        std::cout << "Level I Converged after" << numberOfIterationsLevel1 << " iterations" << std::endl;
+        std::cout << "\nLevel I Converged after " << numberOfCorrectionsLevel1 << " corrections" << std::endl;
 
         // ========= Apply Level II correction if all constraints are not met  ======= //
 
@@ -234,13 +231,12 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
             velocityExteriorDeviationNorm = deviationNorms(3);
             timeDeviationNorm = deviationNorms(4);
 
-            std::cout << "==== Level II Status Update =====" << std::endl
-                      << "positionDeviationNorm: " << positionDeviationNorm << std::endl
-                      << "velocityTotalDeviationNorm: " << velocityTotalDeviationNorm << std::endl
-                      << "velocityInteriorDeviationNorm: " << velocityInteriorDeviationNorm << std::endl
-                      << "velocityExteriorDeviationNorm: " << velocityExteriorDeviationNorm << std::endl
-                      << "timeDeviationNorm: " << timeDeviationNorm << std::endl
-                      << "===================================" << std::endl;
+            std::cout << "\nLevel II Correction applied, remaining deviations are: " << std::endl
+                      << "Position deviation: " << positionDeviationNorm << std::endl
+                      << "Velocity deviation: " << velocityTotalDeviationNorm << std::endl
+                      << "Velocity int. deviation: " << velocityInteriorDeviationNorm << std::endl
+                      << "Velocity ext. deviation: " << velocityExteriorDeviationNorm << std::endl
+                      << "Time deviation: " << timeDeviationNorm << std::endl;
 
             if (positionDeviationNorm < maxPositionDeviationFromPeriodicOrbit)
             {
@@ -248,10 +244,15 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
             }
         }
 
-        numberOfIterations++;
+        numberOfCorrections++;
     }
 
-    std::cout << "trajectory converged after " << numberOfIterations << " cycles" << std::endl;
+    std::cout << "\nTRAJECTORY CONVERGED AFTER " << numberOfCorrections << " TLT CORRECTION CYCLES, REMAINING DEVIATIONS: "<< std::endl
+              << "Position deviation: " << positionDeviationNorm << std::endl
+              << "Velocity deviation: " << velocityTotalDeviationNorm << std::endl
+              << "Velocity int. deviation: " << velocityInteriorDeviationNorm << std::endl
+              << "Velocity ext. deviation: " << velocityExteriorDeviationNorm << std::endl
+              << "Time deviation: " << timeDeviationNorm << std::endl;
 
 
 

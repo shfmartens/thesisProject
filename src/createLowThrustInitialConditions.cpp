@@ -488,7 +488,7 @@ Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initia
 
     // Correct state vector guess
     Eigen::VectorXd differentialCorrectionResult = applyPredictionCorrection(
-                librationPointNr, initialStateGuess, massParameter, numberOfPatchPoints,
+                librationPointNr, initialStateGuess, massParameter,  numberOfPatchPoints,
                 maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit );
     //std::cout << "DC result: " << differentialCorrectionResult << std::endl;
 
