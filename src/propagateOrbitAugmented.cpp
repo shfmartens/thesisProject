@@ -638,7 +638,7 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionOrF
                     currentState = previousState;
                     currentTime = currentState.second;
 
-                    if (i > 13)
+                    if (i < 13)
                     {
                         thetaSignChanges--;
                         thetaSign = thetaSign*-1.0;
