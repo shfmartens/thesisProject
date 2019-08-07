@@ -532,8 +532,6 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
 
    }
 
-        stateHistoryPeriodGuess.clear();
-
       writeFloquetDataToFile( stateHistoryPeriodGuess, librationPointNr, orbitType, equilibriumStateVector, correctionTime, amplitude, interiorManeuverVector);
 
 
