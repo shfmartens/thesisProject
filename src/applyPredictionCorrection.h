@@ -3,6 +3,10 @@
 
 
 #include "Eigen/Core"
+#include <map>
+
+void writeCorrectorDataToFile(const int librationPointNr, const double accelerationMagnitude, const double alpha, const double amplitude, const int numberOfPatchPoints, const int numberOfFloquetCorrections, const std::map< double, Eigen::VectorXd > stateHistory, const Eigen::VectorXd stateVector, Eigen::VectorXd deviations,
+                              const Eigen::MatrixXd propagatedStatesInclSTM, const int cycleNumber, const int correctorLevel, const int numberOfCorrections, const double correctionDuration );
 
 Eigen::VectorXd computeDeviationNorms (const Eigen::VectorXd defectVector, const int numberOfPatchPoints );
 

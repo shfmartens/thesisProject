@@ -426,6 +426,16 @@ def load_differential_correction(file_path):
     data.columns = ['iterations', 'hlt','period','x','y','z','xdot','ydot','zdot','alt','alpha']
     return data
 
+def load_patch_points(file_path, numberOfPatchPoints):
+
+
+    arrayVectors = np.loadtxt(file_path)
+    arrayVectors = arrayVectors.reshape(numberOfPatchPoints,11)
+    data = pd.DataFrame(arrayVectors)
+    data.columns = ['x', 'y','z','xdot','ydot','zdot','alt','alpha','beta','m','time']
+    return data
+
+
 def load_initial_conditions(file_path):
     data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(11)))
     data.columns = ['iterations', 'hlt','period','x','y','z','xdot','ydot','zdot','alt','alpha']

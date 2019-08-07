@@ -9,7 +9,7 @@
 
 Eigen::MatrixXd getFullInitialStateAugmented( const Eigen::VectorXd& initialState );
 
-void writeFloquetDataToFile (const std::map< double, Eigen::VectorXd >& stateHistory, const std::map< double, Eigen::VectorXd >& stateHistoryCorrected, const int librationPointNr, const std::string orbitType, const Eigen::VectorXd equilibriumStateVector, const int numberOfPatchPoints, const double amplitude, Eigen::VectorXd interiorManeuverCorrector );
+void writeFloquetDataToFile (const std::map< double, Eigen::VectorXd >& stateHistoryCorrected, const int librationPointNr, const std::string orbitType, const Eigen::VectorXd equilibriumStateVector, const double correctionTime, const double amplitude, Eigen::VectorXd interiorManeuverCorrector );
 
 void writeStateHistoryAndStateVectorsToFile ( const std::map< double, Eigen::VectorXd >& stateHistory, const std::string orbitType, const Eigen::VectorXd stateVectors, const Eigen::VectorXd deviationVector, const Eigen::VectorXd deviationVectorFull,
                                               const int numberOfIterations, const int correctionLevel );
@@ -34,6 +34,10 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFinalThetaConditi
 std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionCondition(
         const Eigen::MatrixXd fullInitialState, const int librationPointNr, const double massParameter, const double finalAngle, int direction,
         std::map< double, Eigen::VectorXd >& stateHistoryMinimized, const int saveFrequency = -1, const double initialTime = 0.0 );
+
+std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionOrFinalTime(
+        const Eigen::MatrixXd fullInitialState, const int librationPointNr, const double massParameter, const double finalAngle, double finalTime,
+        int direction, int& thetaSignChanges, double& thetaSign, bool& fullRevolution, std::map< double, Eigen::VectorXd >& stateHistoryMinimized, const int saveFrequency, const double initialTime );
 
 std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFinalSpatialCondition(
         const Eigen::MatrixXd fullInitialState, const double massParameter, const int stateIndex, int direction,

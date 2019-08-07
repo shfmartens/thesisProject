@@ -21,21 +21,17 @@ Eigen::MatrixXd getFullInitialStateAugmented( const Eigen::VectorXd& initialStat
     return fullInitialState;
 }
 
-void writeFloquetDataToFile (const std::map< double, Eigen::VectorXd >& stateHistory, const std::map< double, Eigen::VectorXd >& stateHistoryCorrected, const int librationPointNr, const std::string orbitType, const Eigen::VectorXd equilibriumStateVector, const int numberOfCorrections, const double amplitude, Eigen::VectorXd interiorManeuverCorrection )
+void writeFloquetDataToFile ( const std::map< double, Eigen::VectorXd >& stateHistoryPeriodGuess, const int librationPointNr, const std::string orbitType, const Eigen::VectorXd equilibriumStateVector, const double correctionTime, const double amplitude, Eigen::VectorXd interiorManeuverCorrection )
 {
-    std::string fileNameString;
     std::string fileNameStringCorrected;
     std::string fileNameStringManeuvers;
 
-
     std::string directoryString = "../data/raw/initial_guess/";
 
-    fileNameString = ("L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(equilibriumStateVector(6)) + "_" + std::to_string(equilibriumStateVector(7)) + "_" + std::to_string( amplitude ) + "_" + std::to_string(numberOfCorrections) + "_initialGuess.txt");
-    fileNameStringCorrected = ("L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(equilibriumStateVector(6)) + "_" + std::to_string(equilibriumStateVector(7)) + "_" + std::to_string( amplitude ) + "_" + std::to_string(numberOfCorrections) + "_CorrectedGuess.txt");
-    fileNameStringManeuvers = ("L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(equilibriumStateVector(6)) + "_" + std::to_string(equilibriumStateVector(7)) + "_" + std::to_string( amplitude ) + "_" + std::to_string(numberOfCorrections) + "_Maneuvers.txt");
+    fileNameStringCorrected = ("L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(equilibriumStateVector(6)) + "_" + std::to_string(equilibriumStateVector(7)) + "_" + std::to_string( amplitude ) + "_" + std::to_string(correctionTime) + "_PeriodGuess.txt");
+    fileNameStringManeuvers = ("L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(equilibriumStateVector(6)) + "_" + std::to_string(equilibriumStateVector(7)) + "_" + std::to_string( amplitude ) + "_" + std::to_string(correctionTime) + "_Maneuvers.txt");
 
-    tudat::input_output::writeDataMapToTextFile( stateHistory, fileNameString, directoryString );
-    tudat::input_output::writeDataMapToTextFile( stateHistoryCorrected, fileNameStringCorrected, directoryString );
+    tudat::input_output::writeDataMapToTextFile( stateHistoryPeriodGuess, fileNameStringCorrected, directoryString );
     tudat::input_output::writeMatrixToFile( interiorManeuverCorrection, fileNameStringManeuvers, 16, directoryString);
 
 }
@@ -501,6 +497,219 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionCon
 
 }
 
+std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionOrFinalTime(
+        const Eigen::MatrixXd fullInitialState, const int librationPointNr, const double massParameter, const double finalAngle, double finalTime,
+        int direction, int& thetaSignChanges, double& thetaSign, bool& fullRevolution, std::map< double, Eigen::VectorXd >& stateHistoryMinimized, const int saveFrequency, const double initialTime )
+{
+    // save first state
+    if( saveFrequency >= 0 )
+    {
+        stateHistoryMinimized[ initialTime ] = fullInitialState.block( 0, 0, 10, 1 );
+    }
+
+    // compute theta of initial state w.r.t. secondary body (L1, L2) or primary body (L3,4,5)
+    double currentAngleOfOrbit;
+    if (librationPointNr < 3)
+    {
+        currentAngleOfOrbit = atan2( fullInitialState(1,0), fullInitialState(0,0) - (1.0 - massParameter) ) * 180.0 / tudat::mathematical_constants::PI;
+        if (currentAngleOfOrbit < 0.0 ) {
+            currentAngleOfOrbit = currentAngleOfOrbit + 360.0;
+        }
+    } else
+    {
+        currentAngleOfOrbit = atan2( fullInitialState(1,0), fullInitialState(0,0) - ( - massParameter) ) * 180.0 / tudat::mathematical_constants::PI;
+        if (currentAngleOfOrbit < 0.0 ) {
+            currentAngleOfOrbit = currentAngleOfOrbit + 360.0;
+        }
+    }
+
+    // Convert reference angle in [0,360 domain]
+    double referenceAngle  = finalAngle * 180.0 / tudat::mathematical_constants::PI;
+    if (referenceAngle < 0.0 ) {
+        referenceAngle = referenceAngle + 360.0;
+    }
+
+    // Determine sign change after first propagation step if thetasign absolute value lower than 0.5
+    // Perform first integration step
+    std::pair< Eigen::MatrixXd, double > previousState;
+    std::pair< Eigen::MatrixXd, double > currentState;
+    Eigen::MatrixXd stateVectorInclSTM;
+    Eigen::MatrixXd stateVectorOnly;
+    double currentTime = initialTime;
+
+    // perform first propagation step
+    currentState = propagateOrbitAugmented(fullInitialState, massParameter, initialTime, direction, 1.0E-5, 1.0E-5 );
+    stateVectorInclSTM = currentState.first;
+    stateVectorOnly = stateVectorInclSTM.block(0,0,10,1);
+    currentTime = currentState.second;
+
+    if (std::abs(thetaSign) < 0.5)
+    {
+        // compute theta of initial state w.r.t. secondary body (L1, L2) or primary body (L3,4,5)
+        if (librationPointNr < 3)
+        {
+            currentAngleOfOrbit = atan2( stateVectorOnly(1,0), stateVectorOnly(0,0) - (1.0 - massParameter) ) * 180.0 / tudat::mathematical_constants::PI;
+            if (currentAngleOfOrbit < 0.0 ) {
+                currentAngleOfOrbit = currentAngleOfOrbit + 360.0;
+            }
+        } else
+        {
+            currentAngleOfOrbit = atan2( stateVectorOnly(1,0), stateVectorOnly(0,0) - ( - massParameter) ) * 180.0 / tudat::mathematical_constants::PI;
+            if (currentAngleOfOrbit < 0.0 ) {
+                currentAngleOfOrbit = currentAngleOfOrbit + 360.0;
+            }
+        }
+
+//        std::cout << "\n referenceAngle: " << referenceAngle << std::endl
+//                  << "currentAngle: " << currentAngleOfOrbit <<std::endl
+//                  << "current - referenceAngle: " << currentAngleOfOrbit - referenceAngle << std::endl;
+        if (currentAngleOfOrbit - referenceAngle > 0.0 ) {
+            thetaSign = 1.0;
+        } else {
+            thetaSign = -1.0;
+        }
+
+        //std::cout << "thetaSign: " << thetaSign << std::endl;
+
+    }
+
+    // check if the angle condition is met!
+    if ( ( currentAngleOfOrbit - referenceAngle) * thetaSign < 0.0 )
+    {
+        //std::cout << "The sign of angle has changed "<< std::endl;
+        thetaSignChanges++;
+        thetaSign = thetaSign*-1.0;
+    }
+
+//    std::cout << "\nentering the propagation loop: " << std::endl
+//              << "currentTime: " << currentTime << std::endl
+//              << "finalTime: " << finalTime << std::endl
+//              << "thetaSign: " << thetaSign << std::endl
+//              << "thetaSignChanges: " << thetaSignChanges << std::endl;
+
+
+    int stepCounter = 1;
+    for (int i = 5; i <= 13; i++)
+    {
+        double initialStepSize = pow(10,(static_cast<float>(-i)));
+        double maximumStepSize = initialStepSize;
+        //std::cout << "Step size maximum: " << initialStepSize << std::endl;
+
+        while (thetaSignChanges < 2 and currentTime <= finalTime )
+        {
+            // Write every nth integration step to file.
+            if ( saveFrequency > 0 && ( stepCounter % saveFrequency == 0 ) )
+            {
+                stateHistoryMinimized[ currentTime ] = currentState.first.block( 0, 0, 10, 1 );
+            }
+                // propagate orbit and compute new angle
+                currentTime = currentState.second;
+                stateVectorInclSTM = currentState.first;
+                previousState = currentState;
+                currentState = propagateOrbitAugmented(currentState.first, massParameter, currentTime, 1, initialStepSize, maximumStepSize);
+                stateVectorInclSTM = currentState.first;
+                stateVectorOnly = stateVectorInclSTM.block(0,0,10,1);
+
+                if (librationPointNr < 3)
+                {
+                    currentAngleOfOrbit = atan2( stateVectorOnly(1,0), stateVectorOnly(0,0) - (1.0 - massParameter) ) * 180.0 / tudat::mathematical_constants::PI;
+                    if (currentAngleOfOrbit < 0.0 ) {
+                        currentAngleOfOrbit = currentAngleOfOrbit + 360.0;
+                    }
+                } else
+                {
+                    currentAngleOfOrbit = atan2( stateVectorOnly(1,0), stateVectorOnly(0,0) - ( - massParameter) ) * 180.0 / tudat::mathematical_constants::PI;
+                    if (currentAngleOfOrbit < 0.0 ) {
+                        currentAngleOfOrbit = currentAngleOfOrbit + 360.0;
+                    }
+                }
+
+                // check if if a sign change occured, break and roll back if signChanges greater than 1
+                stepCounter++;
+                if ( ( currentAngleOfOrbit - referenceAngle) * thetaSign < 0.0 )
+                {
+                    //std::cout << "The sign of angle has changed "<< std::endl;
+                    thetaSignChanges++;
+                    thetaSign = thetaSign*-1.0;
+                }
+
+                if (thetaSignChanges > 1 )
+                {
+                    currentState = previousState;
+                    currentTime = currentState.second;
+                    thetaSignChanges--;
+                    thetaSign = thetaSign*-1.0;
+
+                    stateVectorInclSTM = currentState.first;
+                    stateVectorOnly = stateVectorInclSTM.block(0,0,10,1);
+
+                    //std::cout << "2 thetaSignChanges Happened "<< std::endl;
+
+                    if (librationPointNr < 3)
+                    {
+                        currentAngleOfOrbit = atan2( stateVectorOnly(1,0), stateVectorOnly(0,0) - (1.0 - massParameter) ) * 180.0 / tudat::mathematical_constants::PI;
+                        if (currentAngleOfOrbit < 0.0 ) {
+                            currentAngleOfOrbit = currentAngleOfOrbit + 360.0;
+                        }
+                    } else
+                    {
+                        currentAngleOfOrbit = atan2( stateVectorOnly(1,0), stateVectorOnly(0,0) - ( - massParameter) ) * 180.0 / tudat::mathematical_constants::PI;
+                        if (currentAngleOfOrbit < 0.0 ) {
+                            currentAngleOfOrbit = currentAngleOfOrbit + 360.0;
+                        }
+                    }
+
+                    break;
+                }
+
+                // check if final time is exceeded, break and roll back
+                if (currentState.second > finalTime )
+                {
+                    currentState = previousState;
+                    currentTime = currentState.second;
+                    stateVectorInclSTM = currentState.first;
+                    stateVectorOnly = stateVectorInclSTM.block(0,0,10,1);
+
+                    //std::cout << "final time exceeded "<< std::endl;
+
+
+                    if (librationPointNr < 3)
+                    {
+                        currentAngleOfOrbit = atan2( stateVectorOnly(1,0), stateVectorOnly(0,0) - (1.0 - massParameter) ) * 180.0 / tudat::mathematical_constants::PI;
+                        if (currentAngleOfOrbit < 0.0 ) {
+                            currentAngleOfOrbit = currentAngleOfOrbit + 360.0;
+                        }
+                    } else
+                    {
+                        currentAngleOfOrbit = atan2( stateVectorOnly(1,0), stateVectorOnly(0,0) - ( - massParameter) ) * 180.0 / tudat::mathematical_constants::PI;
+                        if (currentAngleOfOrbit < 0.0 ) {
+                            currentAngleOfOrbit = currentAngleOfOrbit + 360.0;
+                        }
+                    }
+
+
+                    break;
+                }
+        }
+
+
+    }
+
+    // Add final state after minimizing overshoot
+    if ( saveFrequency > 0 )
+    {
+        stateHistoryMinimized[ currentTime ] = currentState.first.block( 0, 0, 10, 1 );
+    }
+
+    if (thetaSignChanges > 1)
+    {
+        fullRevolution = true;
+    }
+
+    return currentState;
+
+}
+
 std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFinalSpatialCondition(
         const Eigen::MatrixXd fullInitialState, const double massParameter, const int stateIndex, int direction,
         std::map< double, Eigen::VectorXd >& stateHistoryMinimized, const int saveFrequency, const double initialTime )
@@ -627,6 +836,13 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedWithStateTransition
             stepCounter++;
 
             if (currentState.second > finalTime )
+            {
+                currentState = previousState;
+                currentTime = currentState.second;
+                break;
+            }
+
+            if (currentState.second < finalTime )
             {
                 currentState = previousState;
                 currentTime = currentState.second;
