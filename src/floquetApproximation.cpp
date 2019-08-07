@@ -361,7 +361,6 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
     // 5. Estimate the approximate period via propagataToFinalThetaCorrection
 
     std::map< double, Eigen::VectorXd > stateHistoryPeriodGuess;
-    stateHistoryPeriodGuess.clear();
 
     std::pair< Eigen::MatrixXd, double > finalTimeStateRev;
     double currentTimeRev;
@@ -443,7 +442,6 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
     interiorManeuverVector.setZero();
 
    std::map< double, Eigen::VectorXd > stateHistoryInitialGuess;
-   stateHistoryInitialGuess.clear();
 
    numberOfCorrections = 0;
 
