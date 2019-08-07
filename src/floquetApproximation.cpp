@@ -527,6 +527,7 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
 
        numberOfCorrections++;
 
+
    }
 
       //writeFloquetDataToFile( stateHistoryPeriodGuess, librationPointNr, orbitType, equilibriumStateVector, correctionTime, amplitude, interiorManeuverVector);
