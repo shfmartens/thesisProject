@@ -638,6 +638,8 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionOrF
                     currentState = previousState;
                     currentTime = currentState.second;
 
+                    // ensure that the fullRevolution boolean is set to true if overshoot procedure keeps getting activated
+                    // by a change in sign
                     if (i < 13)
                     {
                         thetaSignChanges--;
