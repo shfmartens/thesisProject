@@ -455,7 +455,7 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
    {
        double finalTime = initialTime + correctionTime;
 
-//       if ( (patchPointTime > initialTime) and (patchPointTime < finalTime) )
+//       if ( (patchPointTime > initialTime) and (patchPointTime < finalTime) and finalTime < RevolutionTime  )
 //       {
 //           std::cout << "=== TESTING PATCH POINT CONDITIONS === " << std::endl
 //                      << "initialTime: " << initialTime << std::endl
@@ -500,13 +500,19 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
 
        std::pair< Eigen::MatrixXd, double > finalTimeStateRev = propagateOrbitAugmentedToFullRevolutionOrFinalTime( getFullInitialStateAugmented(initialStateVector), librationPointNr, massParameter, offsetAngle,
                                                                                                              finalTime, 1, thetaSignChanges,  thetaSign, fullRevolutionCompleted, stateHistoryPeriodGuess, -1, initialTime);
-
        Eigen::MatrixXd stateVectorInclSTMRev     = finalTimeStateRev.first;
-       currentTimeRev            = finalTimeStateRev.second;
+       double currentTime            = finalTimeStateRev.second;
        Eigen::VectorXd stateVectorOnly = stateVectorInclSTMRev.block( 0, 0, 10, 1 );
 
+       std::cout << " \n=== propagationCheck after prop function ===" << std::endl
+                 << "finalState: \n" << stateVectorOnly << std::endl
+                 << "finalTime: \n" << currentTime << std::endl
+                 << "fullRevolutionCompleted: " << fullRevolutionCompleted << std::endl;
+
+
+
        // Set the initial Time to the next correction point
-       initialTime = currentTimeRev;
+       initialTime = currentTime;
 
        // Correct the stateVector
        Eigen::VectorXd intermediateVelocityCorrection = Eigen::VectorXd::Zero(3);
