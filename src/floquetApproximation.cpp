@@ -537,6 +537,7 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
        // LIKELY TO BE ERROR! AT LEAST SLOPPY PROGRAMMING
        if (numberOfCorrections > 0)
        {
+           std::cout << "Store intMVec" << std::endl;
            interiorManeuverVector.segment((numberOfCorrections)*3,3) = intermediateVelocityCorrection;
        }
 
