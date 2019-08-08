@@ -21,18 +21,25 @@ Eigen::MatrixXd getFullInitialStateAugmented( const Eigen::VectorXd& initialStat
     return fullInitialState;
 }
 
-void writeFloquetDataToFile ( const std::map< double, Eigen::VectorXd >& stateHistoryPeriodGuess, const int librationPointNr, const std::string orbitType, const Eigen::VectorXd equilibriumStateVector, const double correctionTime, const double amplitude, Eigen::VectorXd interiorManeuverCorrection )
+void writeFloquetDataToFile ( const std::map< double, Eigen::VectorXd >& stateHistoryPeriodGuess, Eigen::VectorXd lowThrustInitialStateVectorGuess, const int librationPointNr, const std::string orbitType, const Eigen::VectorXd equilibriumStateVector, const double correctionTime, const double amplitude, Eigen::VectorXd interiorManeuverCorrection )
 {
-    std::string fileNameStringCorrected;
+    std::string fileNameStringStateHistory;
     std::string fileNameStringManeuvers;
+    std::string fileNameStringResultingGuess;
+
 
     std::string directoryString = "../data/raw/initial_guess/";
 
-    fileNameStringCorrected = ("L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(equilibriumStateVector(6)) + "_" + std::to_string(equilibriumStateVector(7)) + "_" + std::to_string( amplitude ) + "_" + std::to_string(correctionTime) + "_PeriodGuess.txt");
+    fileNameStringStateHistory = ("L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(equilibriumStateVector(6)) + "_" + std::to_string(equilibriumStateVector(7)) + "_" + std::to_string( amplitude ) + "_" + std::to_string(correctionTime) + "_stateHistory.txt");
     fileNameStringManeuvers = ("L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(equilibriumStateVector(6)) + "_" + std::to_string(equilibriumStateVector(7)) + "_" + std::to_string( amplitude ) + "_" + std::to_string(correctionTime) + "_Maneuvers.txt");
+    fileNameStringResultingGuess = ("L" + std::to_string(librationPointNr) + "_" + orbitType + "_" + std::to_string(equilibriumStateVector(6)) + "_" + std::to_string(equilibriumStateVector(7)) + "_" + std::to_string( amplitude ) + "_" + std::to_string(correctionTime) + "_resultingGuess.txt");
 
-    tudat::input_output::writeDataMapToTextFile( stateHistoryPeriodGuess, fileNameStringCorrected, directoryString );
+
+    tudat::input_output::writeDataMapToTextFile( stateHistoryPeriodGuess, fileNameStringStateHistory, directoryString );
     tudat::input_output::writeMatrixToFile( interiorManeuverCorrection, fileNameStringManeuvers, 16, directoryString);
+    tudat::input_output::writeMatrixToFile( lowThrustInitialStateVectorGuess, fileNameStringResultingGuess, 16, directoryString);
+
+
 
 }
 

@@ -413,6 +413,8 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
     }
 
     std::cout << "estimated period: " << currentTimeRev << std::endl;
+    std::cout << "numberOfCorrections: " << numberOfCorrections << std::endl;
+
 
     // 6. Discretize the trajectory in specified number of patch points
         // determine the patch point spacing interval in time
@@ -422,7 +424,6 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
     thetaSignChanges = 0;
 
     initialStateVector = initialStateVectorCorrected;
-    numberOfCorrections = 0;
     thetaSign = 0.0;
 
     double RevolutionTime = currentTimeRev;
@@ -430,6 +431,8 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
     double patchPointInterval = RevolutionTime / (patchPointVariable -1.0);
 
     //std::cout << "patchPointInterval: " << patchPointInterval << std::endl;
+    std::cout << "numberOfCorrections: " << numberOfCorrections << std::endl;
+
     Eigen::VectorXd interiorManeuverVector;
     if (numberOfCorrections > 0)
     {
@@ -439,6 +442,9 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
         interiorManeuverVector = Eigen::VectorXd::Zero(3);
     }
     interiorManeuverVector.setZero();
+
+    std::cout << "interiorManeuverCorrector Size: " << interiorManeuverVector.size() << std::endl;
+
 
    std::map< double, Eigen::VectorXd > stateHistoryInitialGuess;
 
@@ -455,7 +461,7 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
    {
        double finalTime = initialTime + correctionTime;
 
-       if ( (patchPointTime > initialTime) and (patchPointTime < finalTime) and (patchPointTime < RevolutionTime)  )
+       while ( (patchPointTime > initialTime) and (patchPointTime < finalTime) and (patchPointTime < RevolutionTime)  )
        {
            std::cout << "=== TESTING PATCH POINT CONDITIONS === " << std::endl
                       << "initialTime: " << initialTime << std::endl
@@ -484,7 +490,7 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
 
                numberOfPatchPointsStored++;
 
-               fullRevolutionCompleted = true;
+               //fullRevolutionCompleted = true;
            }
 
        }
@@ -526,10 +532,10 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
        initialStateVector.segment(3,3) = initialStateVector.segment(3,3)-intermediateVelocityCorrection;
 
        // LIKELY TO BE ERROR! AT LEAST SLOPPY PROGRAMMING
-//       if (numberOfCorrections > 0)
-//       {
-//           interiorManeuverVector.segment((numberOfCorrections)*3,3) = intermediateVelocityCorrection;
-//       }
+       if (numberOfCorrections > 0)
+       {
+           interiorManeuverVector.segment((numberOfCorrections)*3,3) = intermediateVelocityCorrection;
+       }
 
 
        numberOfCorrections++;
@@ -537,10 +543,10 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
 
    }
 
-      writeFloquetDataToFile( stateHistoryPeriodGuess, librationPointNr, orbitType, equilibriumStateVector, correctionTime, amplitude, interiorManeuverVector);
+      writeFloquetDataToFile( stateHistoryPeriodGuess, lowThrustInitialStateVectorGuess, librationPointNr, orbitType, equilibriumStateVector, correctionTime, amplitude, interiorManeuverVector);
 
 
-     //std::cout << "lowThrustInitialStateVectorGuess: \n" << lowThrustInitialStateVectorGuess << std::endl;
+     std::cout << "lowThrustInitialStateVectorGuess: \n" << lowThrustInitialStateVectorGuess << std::endl;
 
      return lowThrustInitialStateVectorGuess;
 }
