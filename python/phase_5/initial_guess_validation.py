@@ -753,6 +753,19 @@ class initialGuessValidation:
             ax4.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
                         color='black', marker='x')
 
+            bodies_df = load_bodies_location()
+            u = np.linspace(0, 2 * np.pi, 100)
+            v = np.linspace(0, np.pi, 100)
+            x = bodies_df['Moon']['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df['Moon']['x']
+            y = bodies_df['Moon']['r'] * np.outer(np.sin(u), np.sin(v))
+            z = bodies_df['Moon']['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
+
+            ax1.contourf(x, y, z, colors='black')
+            ax2.contourf(x, y, z, colors='black')
+            ax3.contourf(x, y, z, colors='black')
+            ax4.contourf(x, y, z, colors='black')
+
+
             # initialize the min and max x and y values
             min_x = 1000
             min_y = 1000
@@ -768,6 +781,7 @@ class initialGuessValidation:
 
                 if i == 0:
                   ax1.scatter(orbit_df['x'],orbit_df['y'],color='green',s = 0.1)
+                  ax1.set_title('$\\Delta t_{correction} = ' + str(self.correctionTime[i]) + '$')
 
                   if min_x > min(orbit_df['x']):
                         min_x = min(orbit_df['x'])
@@ -780,6 +794,7 @@ class initialGuessValidation:
 
                 if i == 1:
                   ax2.scatter(orbit_df['x'],orbit_df['y'],color='green',s = 0.1)
+                  ax2.set_title('$\\Delta t_{correction} = ' + str(self.correctionTime[i]) + '$')
 
                   if min_x > min(orbit_df['x']):
                         min_x = min(orbit_df['x'])
@@ -792,6 +807,7 @@ class initialGuessValidation:
 
                 if i == 2:
                   ax3.scatter(orbit_df['x'],orbit_df['y'],color='green',s = 0.1)
+                  ax3.set_title('$\\Delta t_{correction} = ' + str(self.correctionTime[i]) + '$')
 
                   if min_x > min(orbit_df['x']):
                         min_x = min(orbit_df['x'])
@@ -804,6 +820,7 @@ class initialGuessValidation:
 
                 if i == 3:
                   ax4.scatter(orbit_df['x'],orbit_df['y'],color='green',s = 0.1)
+                  ax4.set_title('$\\Delta t_{correction} = ' + str(self.correctionTime[i]) + '$')
 
                   if min_x > min(orbit_df['x']):
                         min_x = min(orbit_df['x'])
@@ -830,6 +847,14 @@ class initialGuessValidation:
 
             ax4.set_xlim([(Xmiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(Xmiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
             ax4.set_ylim([Ymiddle - 0.5 * scaleDistance * self.spacingFactor,Ymiddle + 0.5 * scaleDistance * self.spacingFactor])
+
+            suptitle = fig.suptitle('$L_{' + str(self.lagrangePointNr) + '}$ ($a_{lt} = ' + str(
+                "{:2.1e}".format(self.accelerationMagnitude)) + ' $, $\\alpha =' + str(
+                "{:3.1f}".format(self.alpha)) + '$ $|A| = ' + str(
+                "{:2.1e}".format(self.amplitude)) + ' $) Correction time influence ', size=self.suptitleSize)
+
+            fig.tight_layout()
+            fig.subplots_adjust(top=0.9)
 
 
         if self.lowDpi:
