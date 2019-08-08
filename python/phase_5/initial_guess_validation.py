@@ -29,14 +29,14 @@ load_initial_conditions_incl_M, load_manifold
 from load_data_augmented import load_orbit_augmented, load_lagrange_points_location_augmented, load_differential_correction
 
 class initialGuessValidation:
-    def __init__(self, lagrange_point_nr, orbit_type, acceleration_magnitude, alpha, amplitude, number_of_corrections, low_dpi):
+    def __init__(self, lagrange_point_nr, orbit_type, acceleration_magnitude, alpha, amplitude, correction_time, low_dpi):
 
         self.orbitType = orbit_type
         self.lagrangePointNr = lagrange_point_nr
         self.accelerationMagnitude = acceleration_magnitude
         self.alpha = alpha
         self.amplitude = amplitude
-        self.numberOfCorrections = number_of_corrections
+        self.correctionTime = correction_time
 
         ## Check which effect is calculated
         if isinstance(self.amplitude, list):
@@ -60,7 +60,6 @@ class initialGuessValidation:
             self.numberOfAxisTicksOrtho = 5
         else:
             self.numberOfSolutions = 6
-            self.numberOfCorrectionPlots = len(self.numberOfCorrections)
             self.numberOfAxisTicks = 4
             self.numberOfAxisTicksOrtho = 5
 
@@ -127,7 +126,7 @@ class initialGuessValidation:
             df = load_orbit_augmented('../../data/raw/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
             + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str("{:7.6f}".format(self.alpha)) + '_' \
             + str("{:7.6f}".format(self.amplitude[i])) + '_' \
-            + str(self.numberOfCorrections) + '_initialGuess.txt')
+            + str("{:7.6f}".format(self.correctionTime)) + '_stateHistory.txt')
 
 
 
@@ -261,7 +260,7 @@ class initialGuessValidation:
             df = load_orbit_augmented('../../data/raw/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
                 + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str("{:7.6f}".format(self.alpha[i])) + '_' \
                 + str("{:7.6f}".format(self.amplitude)) + '_' \
-                + str(self.numberOfCorrections) + '_initialGuess.txt')
+                + str("{:7.6f}".format(self.correctionTime)) + '_stateHistory.txt')
 
 
             deviations = df.head(1).values[0] - df.tail(1).values[0]
@@ -421,7 +420,7 @@ class initialGuessValidation:
             '../../data/raw/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
             + str("{:7.6f}".format(0.000000)) + '_' + str("{:7.6f}".format(0.000000)) + '_' \
             + str("{:7.6f}".format(self.amplitude)) + '_' \
-            + str(self.numberOfCorrections) + '_initialGuess.txt')
+            + str("{:7.6f}".format(self.correctionTime)) + '_stateHistory.txt')
 
         deviations = df.head(1).values[0] - df.tail(1).values[0]
         deltaR = np.linalg.norm(deviations[1:4])
@@ -443,7 +442,7 @@ class initialGuessValidation:
                 '../../data/raw/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
                 + str("{:7.6f}".format(self.accelerationMagnitude[i])) + '_' + str("{:7.6f}".format(self.alpha)) + '_' \
                 + str("{:7.6f}".format(self.amplitude)) + '_' \
-                + str(self.numberOfCorrections) + '_initialGuess.txt')
+                + str("{:7.6f}".format(self.correctionTime)) + '_stateHistory.txt')
 
             deviations = df.head(1).values[0] - df.tail(1).values[0]
             deltaR = np.linalg.norm(deviations[1:4])
@@ -565,7 +564,7 @@ class initialGuessValidation:
         ax1.set_title('Initial guesses')
         ax2.set_title('State deviations at full period')
 
-        orbitIdsPlot = list(range(0, len(self.numberOfCorrections), 1))
+        orbitIdsPlot = list(range(0, len(self.correctionTime), 1))
 
         deviation_list = []
 
@@ -585,13 +584,13 @@ class initialGuessValidation:
                 '../../data/raw/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
                 + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str("{:7.6f}".format(self.alpha)) + '_' \
                 + str("{:7.6f}".format(self.amplitude)) + '_' \
-                + str(self.numberOfCorrections[i]) + '_initialGuess.txt')
+                + str("{:7.6f}".format(self.correctionTime[i])) + '_stateHistory.txt')
 
             maneuver_array = np.loadtxt('../../data/raw/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
                 + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str("{:7.6f}".format(self.alpha)) + '_' \
                 + str("{:7.6f}".format(self.amplitude)) + '_' \
-                + str(self.numberOfCorrections[i]) + '_Maneuvers.txt')
-            print(self.numberOfCorrections[i])
+                + str("{:7.6f}".format(self.correctionTime[i])) + '_Maneuvers.txt')
+            print(self.correctionTime[i])
             print(np.linalg.norm(maneuver_array))
 
             deltaVCORR = np.linalg.norm(maneuver_array)
@@ -602,7 +601,7 @@ class initialGuessValidation:
             deltaVTOT  = np.sqrt(deltaVCORR ** 2 + deltaV**2 )
 
 
-            deviation_list.append([self.numberOfCorrections[i], deltaR, deltaV, deltaVCORR, deltaVTOT])
+            deviation_list.append([self.correctionTime[i], deltaR, deltaV, deltaVCORR, deltaVTOT])
 
             if i == indexPlotlist[Indexlist]:
                 legendString = 'corr = ' + str("{:2.1e}".format(indexPlot[Indexlist]))
@@ -713,6 +712,141 @@ class initialGuessValidation:
         plt.close()
         pass
 
+    def plot_correction_time_effect(self):
+        fig = plt.figure(figsize=self.figSize)
+
+        ax1 = fig.add_subplot(2, 2, 1)
+        ax2 = fig.add_subplot(2, 2, 2)
+        ax3 = fig.add_subplot(2, 2, 3)
+        ax4 = fig.add_subplot(2, 2, 4)
+
+        ax1.set_xlabel('x [-]')
+        ax1.set_ylabel('y [-]')
+        ax1.grid(True, which='both', ls=':')
+
+        ax2.set_xlabel('x [-]')
+        ax2.set_ylabel('y [-]')
+        ax2.grid(True, which='both', ls=':')
+
+        ax3.set_xlabel('x [-]')
+        ax3.set_ylabel('y [-]')
+        ax3.grid(True, which='both', ls=':')
+
+        ax4.set_xlabel('x [-]')
+        ax4.set_ylabel('y [-]')
+        ax4.grid(True, which='both', ls=':')
+
+        lagrange_points_df = load_lagrange_points_location()
+
+        if self.lagrangePointNr == 1:
+            lagrange_point_nrs = ['L1']
+        if self.lagrangePointNr == 2:
+            lagrange_point_nrs = ['L2']
+
+        for lagrange_point_nr in lagrange_point_nrs:
+            ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                        color='black', marker='x')
+            ax2.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                        color='black', marker='x')
+            ax3.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                        color='black', marker='x')
+            ax4.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                        color='black', marker='x')
+
+            # initialize the min and max x and y values
+            min_x = 1000
+            min_y = 1000
+            max_x = -1000
+            max_y = -1000
+
+            for i in range(4):
+                orbit_df = load_orbit_augmented('../../data/raw/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_'\
+                                            + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' \
+                                            + str("{:7.6f}".format(self.alpha)) + '_' + str("{:7.6f}".format(self.amplitude)) \
+                                            + '_' + str("{:7.6f}".format(self.correctionTime[i])) \
+                                            + '_stateHistory.txt')
+
+                if i == 0:
+                  ax1.scatter(orbit_df['x'],orbit_df['y'],color='green',s = 0.1)
+
+                  if min_x > min(orbit_df['x']):
+                        min_x = min(orbit_df['x'])
+                  if min_y > min(orbit_df['y']):
+                      min_y = min(orbit_df['y'])
+                  if max_x < max(orbit_df['x']):
+                      max_x = max(orbit_df['x'])
+                  if max_y < max(orbit_df['y']):
+                      max_y = max(orbit_df['y'])
+
+                if i == 1:
+                  ax2.scatter(orbit_df['x'],orbit_df['y'],color='green',s = 0.1)
+
+                  if min_x > min(orbit_df['x']):
+                        min_x = min(orbit_df['x'])
+                  if min_y > min(orbit_df['y']):
+                      min_y = min(orbit_df['y'])
+                  if max_x < max(orbit_df['x']):
+                      max_x = max(orbit_df['x'])
+                  if max_y < max(orbit_df['y']):
+                      max_y = max(orbit_df['y'])
+
+                if i == 2:
+                  ax3.scatter(orbit_df['x'],orbit_df['y'],color='green',s = 0.1)
+
+                  if min_x > min(orbit_df['x']):
+                        min_x = min(orbit_df['x'])
+                  if min_y > min(orbit_df['y']):
+                      min_y = min(orbit_df['y'])
+                  if max_x < max(orbit_df['x']):
+                      max_x = max(orbit_df['x'])
+                  if max_y < max(orbit_df['y']):
+                      max_y = max(orbit_df['y'])
+
+                if i == 3:
+                  ax4.scatter(orbit_df['x'],orbit_df['y'],color='green',s = 0.1)
+
+                  if min_x > min(orbit_df['x']):
+                        min_x = min(orbit_df['x'])
+                  if min_y > min(orbit_df['y']):
+                      min_y = min(orbit_df['y'])
+                  if max_x < max(orbit_df['x']):
+                      max_x = max(orbit_df['x'])
+                  if max_y < max(orbit_df['y']):
+                      max_y = max(orbit_df['y'])
+
+            Xmiddle = min_x + (max_x - min_x) / 2.0
+            Ymiddle = min_y + (max_y - min_y) / 2.0
+
+            scaleDistance = max((max_y - min_y), (max_x - min_x))
+
+            ax1.set_xlim([(Xmiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(Xmiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
+            ax1.set_ylim([Ymiddle - 0.5 * scaleDistance * self.spacingFactor,Ymiddle + 0.5 * scaleDistance * self.spacingFactor])
+
+            ax2.set_xlim([(Xmiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(Xmiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
+            ax2.set_ylim([Ymiddle - 0.5 * scaleDistance * self.spacingFactor,Ymiddle + 0.5 * scaleDistance * self.spacingFactor])
+
+            ax3.set_xlim([(Xmiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(Xmiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
+            ax3.set_ylim([Ymiddle - 0.5 * scaleDistance * self.spacingFactor,Ymiddle + 0.5 * scaleDistance * self.spacingFactor])
+
+            ax4.set_xlim([(Xmiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(Xmiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
+            ax4.set_ylim([Ymiddle - 0.5 * scaleDistance * self.spacingFactor,Ymiddle + 0.5 * scaleDistance * self.spacingFactor])
+
+
+        if self.lowDpi:
+            fig.savefig('../../data/figures/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
+                        + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' \
+                        + str("{:7.6f}".format(self.alpha)) + '_'  \
+                        + str("{:7.6f}".format(self.amplitude)) + \
+                        '_correctionTime_effect.png', transparent=True, dpi=self.dpi)
+
+        else:
+            fig.savefig('../../data/figures/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
+                        + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' \
+                        + str("{:7.6f}".format(self.alpha)) + '_' + str("{:7.6f}".format(self.amplitude)) + '_correctionTime_effect.png', transparent=True)
+
+
+        pass
+
     def plot_vertical_capability(self):
         fig = plt.figure(figsize=self.figSize)
         ax1 = fig.add_subplot(2, 2, 1)
@@ -775,7 +909,7 @@ class initialGuessValidation:
             df = load_orbit_augmented('../../data/raw/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
             + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str("{:7.6f}".format(self.alpha)) + '_' \
             + str("{:7.6f}".format(self.amplitude[i])) + '_' \
-            + str(self.numberOfCorrections) + '_initialGuess.txt')
+            + str("{:7.6f}".format(self.correctionTime[i])) + '_initialGuess.txt')
 
 
 
@@ -879,112 +1013,132 @@ class initialGuessValidation:
     pass
 
 if __name__ == '__main__':
-
     lagrange_point_nrs = [1]
     orbit_type = 'horizontal'
     alt_values = [0.1]
-    angles = [180.0]
-    # amplitudeArray = np.linspace(1.0E-5,1.0E-4,num=91)
-    # amplitudeArray2 = np.linspace(1.0E-4, 1.0E-3, num=91)
-    # amplitudeArray3 = np.linspace(1.0E-3, 1.0E-2, num=91)
-    # amplitudeArray4 = np.linspace(1.0E-2, 1.0E-1, num=91)
-    #
-    # amplitudeArray1 = amplitudeArray[:-1]
-    # amplitudeArray2 = amplitudeArray2[:-1]
-    # amplitudeArray3 = amplitudeArray3[:-1]
-    #
-    # newArray = np.append(amplitudeArray, amplitudeArray2)
-    # newArray2 = np.append(newArray, amplitudeArray3)
-    # newArray3 = np.append(newArray2, amplitudeArray4)
-    #
-    # amplitudes = newArray3.tolist()
-
-    amplitudes = np.linspace(1.0E-5,1.0E-4,num=91).tolist()
-
-    numbers_of_points = [8]
+    angles = [90.0]
+    amplitudes = [0.1]
+    correction_times = [0.1,0.3,0.6,0.9]
     low_dpi = True
 
     for lagrange_point_nr in lagrange_point_nrs:
         for alt_value in alt_values:
             for angle in angles:
-                for number_of_points in numbers_of_points:
+                for amplitude in amplitudes:
                     initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_value, \
-                                                                         angle, amplitudes, number_of_points, low_dpi)
+                                                                         angle, amplitude, correction_times, low_dpi)
 
-                    initial_guess_validation.plot_amplitude_effect()
+                    initial_guess_validation.plot_correction_time_effect()
 
 
                     del initial_guess_validation
 
-    alt_values = [0.001,0.1]
-    angles = np.linspace(0, 359, num=360).tolist()
-    amplitudes = [0.0001]
-    numbers_of_points = [8]
-    low_dpi = True
 
-    for lagrange_point_nr in lagrange_point_nrs:
-        for alt_value in alt_values:
-            for amplitude in amplitudes:
-                for number_of_points in numbers_of_points:
-                    initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_value, \
-                                                                      angles, amplitude, number_of_points, low_dpi)
-
-                    initial_guess_validation.plot_angle_effect()
-
-                    del initial_guess_validation
-
-
-    alt_values = np.linspace(1.0E-2,1.0E-1,num=91).tolist()
-    angles = [180]
-    amplitudes = [0.0001]
-    numbers_of_points = [8]
-    low_dpi = True
-
-    for lagrange_point_nr in lagrange_point_nrs:
-        for angle in angles:
-            for amplitude in amplitudes:
-                for number_of_points in numbers_of_points:
-                    initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_values, \
-                                                                      angle, amplitude, number_of_points, low_dpi)
-
-                    initial_guess_validation.plot_acceleration_effect()
-
-                    del initial_guess_validation
-
-    numbers_of_corrections = [0,2,3,4,5,6,7,8,9,10]
-    alt_values = [0.0]
-    angles = [0.0]
-    amplitudes = [1.0E-3]
-
-
-    for lagrange_point_nr in lagrange_point_nrs:
-        for angle in angles:
-            for amplitude in amplitudes:
-                for alt_value in alt_values:
-                    initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_value, \
-                                                                      angle, amplitude, numbers_of_corrections, low_dpi)
-
-                    initial_guess_validation.plot_corrections_effect()
-
-                    del initial_guess_validation
-
-    lagrange_point_nrs = [1]
-    orbit_type = 'vertical'
-    alt_values = [0.0]
-    angles = [0.0]
-    amplitudes = np.linspace(1.0E-5, 1.0E-4, num=10).tolist()
-    numbers_of_corrections = 0
-    low_dpi = True
-
-    for lagrange_point_nr in lagrange_point_nrs:
-        for angle in angles:
-            for alt_value in alt_values:
-                initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_value, \
-                                                                   angle, amplitudes, numbers_of_corrections, low_dpi)
-
-                initial_guess_validation.plot_vertical_capability()
-
-                del initial_guess_validation
+    # lagrange_point_nrs = [1]
+    # orbit_type = 'horizontal'
+    # alt_values = [0.1]
+    # angles = [180.0]
+    # # amplitudeArray = np.linspace(1.0E-5,1.0E-4,num=91)
+    # # amplitudeArray2 = np.linspace(1.0E-4, 1.0E-3, num=91)
+    # # amplitudeArray3 = np.linspace(1.0E-3, 1.0E-2, num=91)
+    # # amplitudeArray4 = np.linspace(1.0E-2, 1.0E-1, num=91)
+    # #
+    # # amplitudeArray1 = amplitudeArray[:-1]
+    # # amplitudeArray2 = amplitudeArray2[:-1]
+    # # amplitudeArray3 = amplitudeArray3[:-1]
+    # #
+    # # newArray = np.append(amplitudeArray, amplitudeArray2)
+    # # newArray2 = np.append(newArray, amplitudeArray3)
+    # # newArray3 = np.append(newArray2, amplitudeArray4)
+    # #
+    # # amplitudes = newArray3.tolist()
+    #
+    # amplitudes = np.linspace(1.0E-5,1.0E-4,num=91).tolist()
+    #
+    # numbers_of_points = [8]
+    # low_dpi = True
+    #
+    # for lagrange_point_nr in lagrange_point_nrs:
+    #     for alt_value in alt_values:
+    #         for angle in angles:
+    #             for number_of_points in numbers_of_points:
+    #                 initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_value, \
+    #                                                                      angle, amplitudes, number_of_points, low_dpi)
+    #
+    #                 initial_guess_validation.plot_amplitude_effect()
+    #
+    #
+    #                 del initial_guess_validation
+    #
+    # alt_values = [0.001,0.1]
+    # angles = np.linspace(0, 359, num=360).tolist()
+    # amplitudes = [0.0001]
+    # numbers_of_points = [8]
+    # low_dpi = True
+    #
+    # for lagrange_point_nr in lagrange_point_nrs:
+    #     for alt_value in alt_values:
+    #         for amplitude in amplitudes:
+    #             for number_of_points in numbers_of_points:
+    #                 initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_value, \
+    #                                                                   angles, amplitude, number_of_points, low_dpi)
+    #
+    #                 initial_guess_validation.plot_angle_effect()
+    #
+    #                 del initial_guess_validation
+    #
+    #
+    # alt_values = np.linspace(1.0E-2,1.0E-1,num=91).tolist()
+    # angles = [180]
+    # amplitudes = [0.0001]
+    # numbers_of_points = [8]
+    # low_dpi = True
+    #
+    # for lagrange_point_nr in lagrange_point_nrs:
+    #     for angle in angles:
+    #         for amplitude in amplitudes:
+    #             for number_of_points in numbers_of_points:
+    #                 initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_values, \
+    #                                                                   angle, amplitude, number_of_points, low_dpi)
+    #
+    #                 initial_guess_validation.plot_acceleration_effect()
+    #
+    #                 del initial_guess_validation
+    #
+    # numbers_of_corrections = [0,2,3,4,5,6,7,8,9,10]
+    # alt_values = [0.0]
+    # angles = [0.0]
+    # amplitudes = [1.0E-3]
+    #
+    #
+    # for lagrange_point_nr in lagrange_point_nrs:
+    #     for angle in angles:
+    #         for amplitude in amplitudes:
+    #             for alt_value in alt_values:
+    #                 initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_value, \
+    #                                                                   angle, amplitude, numbers_of_corrections, low_dpi)
+    #
+    #                 initial_guess_validation.plot_corrections_effect()
+    #
+    #                 del initial_guess_validation
+    #
+    # lagrange_point_nrs = [1]
+    # orbit_type = 'vertical'
+    # alt_values = [0.0]
+    # angles = [0.0]
+    # amplitudes = np.linspace(1.0E-5, 1.0E-4, num=10).tolist()
+    # numbers_of_corrections = 0
+    # low_dpi = True
+    #
+    # for lagrange_point_nr in lagrange_point_nrs:
+    #     for angle in angles:
+    #         for alt_value in alt_values:
+    #             initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_value, \
+    #                                                                angle, amplitudes, numbers_of_corrections, low_dpi)
+    #
+    #             initial_guess_validation.plot_vertical_capability()
+    #
+    #             del initial_guess_validation
 
 
 

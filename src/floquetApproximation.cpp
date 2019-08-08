@@ -371,7 +371,7 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
 
     Eigen::VectorXd initialStateVector = Eigen::VectorXd::Zero(10);
     initialStateVector = initialStateVectorCorrected;
-    int numberOfCorrections = 0;
+    int numberOfCorrections = -1;
     double thetaSign = 0.0;
 
     if (orbitType == "horizontal")
@@ -448,7 +448,7 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
 
    std::map< double, Eigen::VectorXd > stateHistoryInitialGuess;
 
-   numberOfCorrections = 0;
+   numberOfCorrections = -1;
 
    // Store the initial patch point and define patch point variables
    lowThrustInitialStateVectorGuess.segment(0,10) = initialStateVectorCorrected;
@@ -476,11 +476,14 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
            double currentTimePatchPoint         = finalTimeStatePatchPoint.second;
            Eigen::VectorXd stateVectorOnlyPatchPoint = stateVectorInclSTMPatchPoint.block( 0, 0, 10, 1 );
 
-           lowThrustInitialStateVectorGuess.segment(numberOfPatchPointsStored*11,10) = stateVectorOnlyPatchPoint;
-           lowThrustInitialStateVectorGuess(numberOfPatchPointsStored*11+10) = currentTimePatchPoint;
+           if(numberOfPatchPointsStored < (numberOfPatchPoints - 1))
+           {
+               lowThrustInitialStateVectorGuess.segment(numberOfPatchPointsStored*11,10) = stateVectorOnlyPatchPoint;
+               lowThrustInitialStateVectorGuess(numberOfPatchPointsStored*11+10) = currentTimePatchPoint;
 
-           patchPointTime = patchPointTime + patchPointInterval;
-           numberOfPatchPointsStored++;
+               patchPointTime = patchPointTime + patchPointInterval;
+               numberOfPatchPointsStored++;
+           }
 
            if(numberOfPatchPointsStored == (numberOfPatchPoints - 1))
            {
