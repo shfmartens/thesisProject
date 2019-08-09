@@ -461,42 +461,42 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
    {
        double finalTime = initialTime + correctionTime;
 
-//       while ( (patchPointTime > initialTime) and (patchPointTime < finalTime) and (patchPointTime < RevolutionTime) and numberOfPatchPointsStored < numberOfPatchPoints  )
-//       {
+       while ( (patchPointTime > initialTime) and (patchPointTime < finalTime) and (patchPointTime < RevolutionTime) and numberOfPatchPointsStored < numberOfPatchPoints  )
+       {
 //           std::cout << "=== TESTING PATCH POINT CONDITIONS === " << std::endl
 //                      << "initialTime: " << initialTime << std::endl
 //                      << "patchPointTime: " << patchPointTime << std::endl
 //                      << "finalTime: " << finalTime << std::endl;
 
 
-//           std::pair< Eigen::MatrixXd, double >finalTimeStatePatchPoint = propagateOrbitAugmentedToFinalCondition( getFullInitialStateAugmented( initialStateVector),
-//                                                                                        massParameter, patchPointTime, 1, stateHistoryInitialGuess, 1000, initialTime);
+           std::pair< Eigen::MatrixXd, double >finalTimeStatePatchPoint = propagateOrbitAugmentedToFinalCondition( getFullInitialStateAugmented( initialStateVector),
+                                                                                        massParameter, patchPointTime, 1, stateHistoryInitialGuess, 1000, initialTime);
 
-//           Eigen::MatrixXd stateVectorInclSTMPatchPoint    = finalTimeStatePatchPoint.first;
-//           double currentTimePatchPoint         = finalTimeStatePatchPoint.second;
-//           Eigen::VectorXd stateVectorOnlyPatchPoint = stateVectorInclSTMPatchPoint.block( 0, 0, 10, 1 );
+           Eigen::MatrixXd stateVectorInclSTMPatchPoint    = finalTimeStatePatchPoint.first;
+           double currentTimePatchPoint         = finalTimeStatePatchPoint.second;
+           Eigen::VectorXd stateVectorOnlyPatchPoint = stateVectorInclSTMPatchPoint.block( 0, 0, 10, 1 );
 
-//           if(numberOfPatchPointsStored < (numberOfPatchPoints - 1))
-//           {
-//               lowThrustInitialStateVectorGuess.segment(numberOfPatchPointsStored*11,10) = stateVectorOnlyPatchPoint;
-//               lowThrustInitialStateVectorGuess(numberOfPatchPointsStored*11+10) = currentTimePatchPoint;
+           if(numberOfPatchPointsStored < (numberOfPatchPoints - 1))
+           {
+               lowThrustInitialStateVectorGuess.segment(numberOfPatchPointsStored*11,10) = stateVectorOnlyPatchPoint;
+               lowThrustInitialStateVectorGuess(numberOfPatchPointsStored*11+10) = currentTimePatchPoint;
 
-//               patchPointTime = patchPointTime + patchPointInterval;
-//               numberOfPatchPointsStored++;
-//           }
+               patchPointTime = patchPointTime + patchPointInterval;
+               numberOfPatchPointsStored++;
+           }
 
-//           if(numberOfPatchPointsStored == (numberOfPatchPoints - 1))
-//           {
-//               lowThrustInitialStateVectorGuess.segment(numberOfPatchPointsStored*11,10) = initialStateVectorCorrected;
-//               lowThrustInitialStateVectorGuess(numberOfPatchPointsStored*11+10) = RevolutionTime;
+           if(numberOfPatchPointsStored == (numberOfPatchPoints - 1))
+           {
+               lowThrustInitialStateVectorGuess.segment(numberOfPatchPointsStored*11,10) = initialStateVectorCorrected;
+               lowThrustInitialStateVectorGuess(numberOfPatchPointsStored*11+10) = RevolutionTime;
 
 
-//               numberOfPatchPointsStored++;
+               numberOfPatchPointsStored++;
 
-//               //fullRevolutionCompleted = true;
-//           }
+               //fullRevolutionCompleted = true;
+           }
 
-       //}
+       }
 
 //      std::cout << " \n=== propagationCheck SECOND ROUND ===" << std::endl
 //                << "referenceAngle: " << offsetAngle * 180.0 / tudat::mathematical_constants::PI << std::endl
