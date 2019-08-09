@@ -463,10 +463,10 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
 
 //       while ( (patchPointTime > initialTime) and (patchPointTime < finalTime) and (patchPointTime < RevolutionTime) and numberOfPatchPointsStored < numberOfPatchPoints  )
 //       {
-////           std::cout << "=== TESTING PATCH POINT CONDITIONS === " << std::endl
-////                      << "initialTime: " << initialTime << std::endl
-////                      << "patchPointTime: " << patchPointTime << std::endl
-////                      << "finalTime: " << finalTime << std::endl;
+//           std::cout << "=== TESTING PATCH POINT CONDITIONS === " << std::endl
+//                      << "initialTime: " << initialTime << std::endl
+//                      << "patchPointTime: " << patchPointTime << std::endl
+//                      << "finalTime: " << finalTime << std::endl;
 
 
 //           std::pair< Eigen::MatrixXd, double >finalTimeStatePatchPoint = propagateOrbitAugmentedToFinalCondition( getFullInitialStateAugmented( initialStateVector),
@@ -496,7 +496,7 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
 //               //fullRevolutionCompleted = true;
 //           }
 
-       }
+       //}
 
 //      std::cout << " \n=== propagationCheck SECOND ROUND ===" << std::endl
 //                << "referenceAngle: " << offsetAngle * 180.0 / tudat::mathematical_constants::PI << std::endl

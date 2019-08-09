@@ -57,6 +57,7 @@ void shiftConvergedTrajectoryGuess(Eigen::VectorXd currentTrajectoryGuess, const
         std::cout << "patch point: " << i << std::endl
                   << "initialTime: " << initialTime << std::endl
                   << "finalTime: " << finalTime << std::endl;
+
         std::map< double, Eigen::VectorXd > stateHistoryShift;
         std::pair< Eigen::MatrixXd, double > endStateAndSTMAndTime = propagateOrbitAugmentedToFinalCondition(
                     initialStateAndSTM, massParameter, finalTime, direction, stateHistoryShift, -1, initialTime);
