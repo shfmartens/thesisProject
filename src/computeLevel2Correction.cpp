@@ -12,7 +12,7 @@
 #include <Eigen/Eigenvalues>
 
 
-Eigen::VectorXd computeLevel2Correction( const Eigen::VectorXd deviationVector, const Eigen::MatrixXd forwardPropagatedStatesInclSTM, const Eigen::VectorXd initialGuess, const int numberOfPatchPoints, const double massParameter )
+Eigen::VectorXd computeLevel2Correction( const Eigen::VectorXd deviationVector, const Eigen::MatrixXd forwardPropagatedStatesInclSTM, const Eigen::VectorXd initialGuess, const Eigen::VectorXd unitOffsetVector, const int numberOfPatchPoints, const double massParameter )
 {
 
     // define matrices and vectors
@@ -28,6 +28,11 @@ Eigen::VectorXd computeLevel2Correction( const Eigen::VectorXd deviationVector, 
     Eigen::MatrixXd periodicityJacobianRow1 (3, 4*numberOfPatchPoints);
     Eigen::MatrixXd periodicityJacobianRow2 (3, 4*numberOfPatchPoints);
 
+    Eigen::VectorXd constraintVectorPhase(3*numberOfPatchPoints+2);
+    Eigen::VectorXd correctionsPhase ( 4*numberOfPatchPoints );
+    Eigen::MatrixXd updateMatrixPhase((3*numberOfPatchPoints)+2, 4*numberOfPatchPoints );
+    Eigen::MatrixXd phaseJacobianRow (1, 4*numberOfPatchPoints);
+    Eigen::MatrixXd phaseJacobianRow2 (1, 4*numberOfPatchPoints);
 
 
 
@@ -43,11 +48,20 @@ Eigen::VectorXd computeLevel2Correction( const Eigen::VectorXd deviationVector, 
     periodicityJacobianRow1.setZero();
     periodicityJacobianRow2.setZero();
 
+    constraintVectorPhase.setZero();
+    correctionsPhase.setZero();
+    updateMatrixPhase.setZero();
+    phaseJacobianRow.setZero();
+    phaseJacobianRow2.setZero();
+
+
+
     for (int k = 1; k < (numberOfPatchPoints-1); k++)
     {
         // Compute the constraintVector
         constraintVector.segment( 3*( k-1 ),3 ) = -1.0*deviationVector.segment( ( 11*( k-1 )+3 ),3) ;
         constraintVectorPeriodic.segment( 3*( k-1 ),3 ) = -1.0*deviationVector.segment( ( 11*( k-1 )+3 ),3) ;
+        constraintVectorPhase.segment( 3*( k-1 ),3 ) = -1.0*deviationVector.segment( ( 11*( k-1 )+3 ),3) ;
 
         // compute the states, state derivatives and relevant accelerations and velocities
         Eigen::VectorXd stateVectorPrevious = initialGuess.segment(11*(k-1),10);
@@ -254,6 +268,8 @@ Eigen::VectorXd computeLevel2Correction( const Eigen::VectorXd deviationVector, 
 
         updateMatrix.block(3*(k-1),4*(k-1),3,12) = updateMatrixAtPatchPoint;
         updateMatrixPeriodic.block(3*(k-1),4*(k-1),3,12) = updateMatrixAtPatchPoint;
+        updateMatrixPhase.block(3*(k-1),4*(k-1),3,12) = updateMatrixAtPatchPoint;
+
 
         if (k == 1)
         {
@@ -269,6 +285,17 @@ Eigen::VectorXd computeLevel2Correction( const Eigen::VectorXd deviationVector, 
             periodicityJacobianRow2.block(0,4,3,3) = (B_PO.inverse());
             periodicityJacobianRow2.block(0,7,3,1) = -(B_PO.inverse())*velocityPresentMinus;
 
+            // Compute the phase condition partial derivatives at point 0 (past, 1 in literature) and 1 (present, 2 in literature)
+            double accelerationVector = unitOffsetVector.transpose() * accelerationPreviousPlus;
+
+            phaseJacobianRow.block(0,0,1,3) = unitOffsetVector.transpose() * (-1.0*(B_PO.inverse()) * A_PO);
+            phaseJacobianRow(0,3) = accelerationVector + unitOffsetVector.transpose() * (accelerationPreviousPlus - D_OP*(B_OP.inverse())*velocityPreviousPlus );
+            phaseJacobianRow.block(0,4,1,3) = unitOffsetVector.transpose() * (B_OP.inverse());
+            phaseJacobianRow(0,7) = unitOffsetVector.transpose() * (-1.0 * (B_PO.inverse()) *velocityFutureMinus );
+
+            // Set the phase constraintVector
+            constraintVectorPhase(3*numberOfPatchPoints) = -1.0 * unitOffsetVector.transpose() * initialGuess.segment(3,3);
+            constraintVectorPhase(3*numberOfPatchPoints+1) = -1.0 * unitOffsetVector.transpose() * initialGuess.segment(11*(numberOfPatchPoints-1)+3,3);
         }
 
         if (k == (numberOfPatchPoints - 2))
@@ -287,6 +314,19 @@ Eigen::VectorXd computeLevel2Correction( const Eigen::VectorXd deviationVector, 
             constraintVectorPeriodic.segment(3*k,3) = -1.0*(initialGuess.segment(0,3) - stateVectorFutureMinus.segment(0,3));
             constraintVectorPeriodic.segment(3*(k+1),3) = -1.0*(initialGuess.segment(3,3) - stateVectorFutureMinus.segment(3,3));
 
+            double accelerationVector = unitOffsetVector.transpose() * accelerationFutureMinus;
+
+
+            phaseJacobianRow2.block(0,4*(k),1,3) = unitOffsetVector.transpose() * (B_PF.inverse());
+            phaseJacobianRow2(0,(4*(k))+3) = unitOffsetVector.transpose() * -1.0*(B_PF.inverse())*velocityPresentPlus;
+            phaseJacobianRow2.block(0,4*(k+1),3,3) = unitOffsetVector.transpose() * -1.0*(B_PF.inverse())*A_PF;
+            phaseJacobianRow2(0,(4*(k+1))+3) = accelerationVector + unitOffsetVector.transpose() * (accelerationFutureMinus - D_FP*(B_FP.inverse())*velocityPresentMinus );
+
+            constraintVectorPhase.segment(3*k,3) = -1.0*(initialGuess.segment(0,3) - stateVectorFutureMinus.segment(0,3));
+            constraintVectorPhase.segment(3*(k+1),3) = -1.0*(initialGuess.segment(3,3) - stateVectorFutureMinus.segment(3,3));
+
+
+
         }
 
 
@@ -294,8 +334,26 @@ Eigen::VectorXd computeLevel2Correction( const Eigen::VectorXd deviationVector, 
     updateMatrixPeriodic.block(3*(numberOfPatchPoints-2),0,3,4*numberOfPatchPoints) = periodicityJacobianRow1;
     updateMatrixPeriodic.block(3*(numberOfPatchPoints-1),0,3,4*numberOfPatchPoints) = periodicityJacobianRow2;
 
+    updateMatrixPhase.block(3*(numberOfPatchPoints-2),0,3,4*numberOfPatchPoints) = periodicityJacobianRow1;
+    updateMatrixPhase.block(3*(numberOfPatchPoints-1),0,3,4*numberOfPatchPoints) = periodicityJacobianRow2;
+    updateMatrixPhase.block(3*numberOfPatchPoints,0,1,4*numberOfPatchPoints) = phaseJacobianRow;
+    updateMatrixPhase.block(3*numberOfPatchPoints+1,0,1,4*numberOfPatchPoints) = phaseJacobianRow2;
+
+
+
+
     corrections =             1.0*(updateMatrix.transpose())*(updateMatrix*(updateMatrix.transpose())).inverse()*constraintVector;
     correctionsPeriodic =     1.0*(updateMatrixPeriodic.transpose())*(updateMatrixPeriodic*(updateMatrixPeriodic.transpose())).inverse()*constraintVectorPeriodic;
+    correctionsPhase =        1.0*(updateMatrixPhase.transpose())*(updateMatrixPhase*(updateMatrixPhase.transpose())).inverse()*constraintVectorPhase;
+
+//    std::cout.precision(5);
+//    std::cout << "== Checking Phases Implementation =="<< std::endl
+//              << "updateMatrixPeriodic: \n" <<  updateMatrixPeriodic << std::endl
+//              << "updateMatrixPhase: \n" <<  updateMatrixPhase << std::endl
+//              << "constraintVectorPeriodic: \n" << constraintVectorPeriodic << std::endl
+//              << "constraintVectorPhase: \n" << constraintVectorPhase << std::endl
+//              << "correctionsPeriodic: \n" <<  correctionsPeriodic << std::endl
+//              << "correctionsPhase: \n" <<  correctionsPhase << std::endl;
 
 
     // Store corrections in the differentialCorrection Vector
@@ -304,7 +362,6 @@ Eigen::VectorXd computeLevel2Correction( const Eigen::VectorXd deviationVector, 
 
          differentialCorrection.segment(s*11,3) = correctionsPeriodic.segment(s*4,3);
          differentialCorrection( s*11+10 ) = correctionsPeriodic( s*4+3 );
-
 
     }
 

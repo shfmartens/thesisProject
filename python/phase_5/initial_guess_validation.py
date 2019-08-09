@@ -28,6 +28,12 @@ load_initial_conditions_incl_M, load_manifold
 
 from load_data_augmented import load_orbit_augmented, load_lagrange_points_location_augmented, load_differential_correction
 
+# from matplotlib.ticker import ScalarFormatter
+# class ScalarFormatterForceFormat(ScalarFormatter):
+#     def _set_format(self,vmin,vmax):  # Override function that finds format to use.
+#         self.format = "%3.1f"  # Give format here
+
+
 class initialGuessValidation:
     def __init__(self, lagrange_point_nr, orbit_type, acceleration_magnitude, alpha, amplitude, correction_time, low_dpi):
 
@@ -59,9 +65,10 @@ class initialGuessValidation:
             self.numberOfAxisTicks = 4
             self.numberOfAxisTicksOrtho = 5
         else:
-            self.numberOfSolutions = 6
-            self.numberOfAxisTicks = 4
-            self.numberOfAxisTicksOrtho = 5
+            self.numberOfCorrectionPlots = 4
+            self.numberOfSolutions = 4
+            self.numberOfAxisTicks = 6
+            self.numberOfAxisTicksOrtho = 6
 
 
 
@@ -84,6 +91,18 @@ class initialGuessValidation:
         self.figureRatioWide = (7 * (1 + np.sqrt(5)) / 2) / 3.5
 
         self.scaleDistanceXWide = self.scaleDistanceY * self.figureRatioWide
+
+        n_colors = 6
+        self.plottingColors = {'singleLine': sns.color_palette("viridis", n_colors)[0],
+                               'tripleLine': [sns.color_palette("viridis", n_colors)[n_colors - 1],
+                                              sns.color_palette("viridis", n_colors)[int((n_colors - 1) / 2)],
+                                              sns.color_palette("viridis", n_colors)[0]],
+                               'fifthLine': [sns.color_palette("viridis", n_colors)[n_colors - 1],
+                                              sns.color_palette("viridis", n_colors)[int((n_colors - 1) / 1.5)],
+                                              sns.color_palette("viridis", n_colors)[int((n_colors - 1) / 2)],
+                                              sns.color_palette("viridis", n_colors)[int((n_colors - 1) / 3)],
+                                              sns.color_palette("viridis", n_colors)[0]]}
+        self.lineWidth=1
 
     def plot_amplitude_effect(self):
         fig = plt.figure(figsize=self.figSizeWide)
@@ -164,8 +183,8 @@ class initialGuessValidation:
         ax1.set_xlim([(Xmiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),
                       (Xmiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
         ax1.set_ylim([Ymiddle - 0.5 * scaleDistance * self.spacingFactor, Ymiddle + 0.5 * scaleDistance * self.spacingFactor])
-        ax1.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%.5f'))
-        ax1.yaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%2.1e'))
+        ax1.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.5f'))
+        ax1.yaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.5f'))
         xticks = (np.linspace((Xmiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),
                               (Xmiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),
                               num=self.numberOfAxisTicks))
@@ -186,15 +205,12 @@ class initialGuessValidation:
 
         lgd  = ax1.legend(frameon=True, loc='upper left',  bbox_to_anchor=(0, 1),prop={'size': 8})
 
-
-
-
         # Create the axes formats and legends for ax2
         ax2.set_xlim([min(deviation_df['amplitude']), max(deviation_df['amplitude'])])
         ax2.set_ylim([0, max(max(deviation_df['deltaV']),max(deviation_df['deltaR'])) * self.spacingFactor])
 
-        ax2.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%2.1e'))
-        ax2.yaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%2.1e'))
+        ax2.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.5f'))
+        ax2.yaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.5f'))
         xticks2 = (np.linspace(min(deviation_df['amplitude']), max(deviation_df['amplitude']), num=self.numberOfAxisTicks))
         yticks2 = (np.linspace(0, max(max(deviation_df['deltaR']),max(deviation_df['deltaV'])*self.spacingFactor), num=self.numberOfAxisTicks))
         ax2.xaxis.set_ticks(xticks2)
@@ -566,16 +582,16 @@ class initialGuessValidation:
 
         orbitIdsPlot = list(range(0, len(self.correctionTime), 1))
 
+
         deviation_list = []
 
-        indexPlot = [0,2,4,6,8,10]
-        indexPlotlist = list(indexPlot)
+        indexPlotlist = np.linspace(0, len(self.correctionTime) - 1, num=self.numberOfSolutions).tolist()
         Indexlist = 0
 
         minimumX = 1000.0
         minimumY = 1000.0
-        maximumX = 0.0
-        maximumY = 0.0
+        maximumX = -1000.0
+        maximumY = -1000.0
         maximumDevR = 0.0
         maximumDevV = 0.0
 
@@ -590,8 +606,6 @@ class initialGuessValidation:
                 + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str("{:7.6f}".format(self.alpha)) + '_' \
                 + str("{:7.6f}".format(self.amplitude)) + '_' \
                 + str("{:7.6f}".format(self.correctionTime[i])) + '_Maneuvers.txt')
-            print(self.correctionTime[i])
-            print(np.linalg.norm(maneuver_array))
 
             deltaVCORR = np.linalg.norm(maneuver_array)
 
@@ -604,8 +618,8 @@ class initialGuessValidation:
             deviation_list.append([self.correctionTime[i], deltaR, deltaV, deltaVCORR, deltaVTOT])
 
             if i == indexPlotlist[Indexlist]:
-                legendString = 'corr = ' + str("{:2.1e}".format(indexPlot[Indexlist]))
-                ax1.plot(df['x'], df['y'], color=sns.color_palette('viridis', self.numberOfCorrectionPlots)[i], linewidth=1, label= legendString )
+                print(Indexlist)
+                ax1.plot(df['x'], df['y'], color=self.plottingColors['fifthLine'][Indexlist], linewidth=1, label='$\\Delta t = '+ str(self.correctionTime[i])+' $')
 
                 lagrange_points_df = load_lagrange_points_location_augmented(self.accelerationMagnitude, self.alpha)
                 if self.lagrangePointNr == 1:
@@ -615,26 +629,24 @@ class initialGuessValidation:
 
                 for lagrange_point_nr in lagrange_point_nrs:
                     ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
-                                color=sns.color_palette('viridis', self.numberOfCorrectionPlots)[i], marker='x')
+                                color=self.plottingColors['fifthLine'][Indexlist], marker='x')
 
-                minimumX_temp = min(df['x'])
-                minimumY_temp = min(df['y'])
 
-                maximumX_temp = max(df['x'])
-                maximumY_temp = max(df['y'])
 
-                if minimumX_temp < minimumX:
-                    minimumX = minimumX_temp
-                if minimumY_temp < minimumY:
-                    minimumY = minimumY_temp
 
-                if maximumX_temp > maximumX:
-                    maximumX = maximumX_temp
-                if maximumY_temp > maximumY:
-                    maximumY = maximumY_temp
+                if min(df['x']) < minimumX:
+                    minimumX = min(df['x'])
+                if min(df['y']) < minimumY:
+                    minimumY = min(df['y'])
+                if max(df['x']) > maximumX:
+                    maximumX = max(df['x'])
+                if max(df['y']) > maximumY:
+                    maximumY = max(df['y'])
 
                 if Indexlist < len(indexPlotlist) - 1:
                     Indexlist = Indexlist + 1
+
+
 
         lagrange_points_df = load_lagrange_points_location_augmented(0.0, 0.0)
         if self.lagrangePointNr == 1:
@@ -652,14 +664,20 @@ class initialGuessValidation:
 
         ax1.set_xlim([(Xmiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),
                       (Xmiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
-        ax1.set_ylim(
-            [Ymiddle - 0.5 * scaleDistance * self.spacingFactor, Ymiddle + 0.5 * scaleDistance * self.spacingFactor])
+        ax1.set_ylim([Ymiddle - 0.5 * scaleDistance * self.spacingFactor, Ymiddle + 0.5 * scaleDistance * self.spacingFactor])
 
-        ax1.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%5f'))
-        ax1.yaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%2.1e'))
+
+
+
+        ax1.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%4.5f'))
+        ax1.yaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%3.5f'))
         xticks = (np.linspace((Xmiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),
                               (Xmiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),
                               num=self.numberOfAxisTicks))
+        #ax1.ticklabel_format(style='sci', axis='x', scilimits=(6, 2))
+        #ax1.ticklabel_format(style='sci', axis='y', scilimits=(6, 2))
+
+
         ax1.xaxis.set_ticks(xticks)
 
         lgd1 = ax1.legend(frameon=True, loc='center left', bbox_to_anchor=(0, 0.83), prop={'size': 7})
@@ -677,15 +695,15 @@ class initialGuessValidation:
         ax2.set_xlim([min(deviation_df['correction']), max(deviation_df['correction'])])
         ax2.set_ylim([0, max(deviation_df['deltaVTOT']) * self.spacingFactor])
 
-        ax2.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.1f'))
-        ax2.yaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%2.1e'))
+        ax2.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.5f'))
+        ax2.yaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.3f'))
         xticks2 = (np.linspace(min(deviation_df['correction']), max(deviation_df['correction']), num=6))
-        yticks2 = (np.linspace(0, max(max(deviation_df['deltaR']), max(deviation_df['deltaV']) * self.spacingFactor),
+        yticks2 = (np.linspace(0, max(max(deviation_df['deltaR']), max(deviation_df['deltaVTOT']) * self.spacingFactor),
                                num=self.numberOfAxisTicksOrtho))
         ax2.xaxis.set_ticks(xticks2)
         ax2.yaxis.set_ticks(yticks2)
 
-        lgd2 = ax2.legend(frameon=True, loc='center left', bbox_to_anchor=(0, 0.9), prop={'size': 7})
+        lgd2 = ax2.legend(frameon=True, loc='center left', bbox_to_anchor=(0, 0.88), prop={'size': 5})
 
         fig.tight_layout()
         fig.subplots_adjust(top=0.9, bottom=-0.1)
@@ -736,12 +754,12 @@ class initialGuessValidation:
         ax4.set_ylabel('y [-]')
         ax4.grid(True, which='both', ls=':')
 
-        lagrange_points_df = load_lagrange_points_location()
-
+        lagrange_points_df = load_lagrange_points_location_augmented(self.accelerationMagnitude, self.alpha)
         if self.lagrangePointNr == 1:
             lagrange_point_nrs = ['L1']
         if self.lagrangePointNr == 2:
             lagrange_point_nrs = ['L2']
+
 
         for lagrange_point_nr in lagrange_point_nrs:
             ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
@@ -780,8 +798,9 @@ class initialGuessValidation:
                                             + '_stateHistory.txt')
 
                 if i == 0:
-                  ax1.scatter(orbit_df['x'],orbit_df['y'],color='green',s = 0.1)
+                  ax1.plot(orbit_df['x'],orbit_df['y'],color=self.plottingColors['singleLine'],lineWidth=self.lineWidth,label='$\\Delta t = '+ str(self.correctionTime[i])+' $')
                   ax1.set_title('$\\Delta t_{correction} = ' + str(self.correctionTime[i]) + '$')
+                  lgd1 = ax1.legend(frameon=True, loc='upper left', bbox_to_anchor=(0, 1), prop={'size': 8})
 
                   if min_x > min(orbit_df['x']):
                         min_x = min(orbit_df['x'])
@@ -793,8 +812,10 @@ class initialGuessValidation:
                       max_y = max(orbit_df['y'])
 
                 if i == 1:
-                  ax2.scatter(orbit_df['x'],orbit_df['y'],color='green',s = 0.1)
+                  ax2.plot(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],lineWidth=self.lineWidth ,label='$\\Delta t = '+ str(self.correctionTime[i])+' $')
                   ax2.set_title('$\\Delta t_{correction} = ' + str(self.correctionTime[i]) + '$')
+                  lgd2 = ax2.legend(frameon=True, loc='upper left', bbox_to_anchor=(0, 1), prop={'size': 8})
+
 
                   if min_x > min(orbit_df['x']):
                         min_x = min(orbit_df['x'])
@@ -806,8 +827,10 @@ class initialGuessValidation:
                       max_y = max(orbit_df['y'])
 
                 if i == 2:
-                  ax3.scatter(orbit_df['x'],orbit_df['y'],color='green',s = 0.1)
+                  ax3.plot(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],lineWidth=self.lineWidth,label='$\\Delta t = '+ str(self.correctionTime[i])+' $')
                   ax3.set_title('$\\Delta t_{correction} = ' + str(self.correctionTime[i]) + '$')
+                  lgd3 = ax3.legend(frameon=True, loc='upper left', bbox_to_anchor=(0, 1), prop={'size': 8})
+
 
                   if min_x > min(orbit_df['x']):
                         min_x = min(orbit_df['x'])
@@ -819,8 +842,10 @@ class initialGuessValidation:
                       max_y = max(orbit_df['y'])
 
                 if i == 3:
-                  ax4.scatter(orbit_df['x'],orbit_df['y'],color='green',s = 0.1)
+                  ax4.plot(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],lineWidth=self.lineWidth,label='$\\Delta t = '+ str(self.correctionTime[i])+' $')
                   ax4.set_title('$\\Delta t_{correction} = ' + str(self.correctionTime[i]) + '$')
+                  lgd4 = ax4.legend(frameon=True, loc='upper left', bbox_to_anchor=(0, 1), prop={'size': 8})
+
 
                   if min_x > min(orbit_df['x']):
                         min_x = min(orbit_df['x'])
@@ -847,6 +872,15 @@ class initialGuessValidation:
 
             ax4.set_xlim([(Xmiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(Xmiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
             ax4.set_ylim([Ymiddle - 0.5 * scaleDistance * self.spacingFactor,Ymiddle + 0.5 * scaleDistance * self.spacingFactor])
+
+            ax1.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.5f'))
+            ax1.yaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.5f'))
+            ax2.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.5f'))
+            ax2.yaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.5f'))
+            ax3.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.5f'))
+            ax3.yaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.5f'))
+            ax4.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.5f'))
+            ax4.yaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.5f'))
 
             suptitle = fig.suptitle('$L_{' + str(self.lagrangePointNr) + '}$ ($a_{lt} = ' + str(
                 "{:2.1e}".format(self.accelerationMagnitude)) + ' $, $\\alpha =' + str(
@@ -1042,21 +1076,46 @@ if __name__ == '__main__':
     orbit_type = 'horizontal'
     alt_values = [0.1]
     angles = [90.0]
-    amplitudes = [0.1]
-    correction_times = [0.1,0.3,0.6,0.9]
+    amplitudes = [1.0E-5,0.1]
+    correction_times = [0.05,0.1,0.2,0.3,0.4,0.5,0.6]
+    low_dpi = True
+
+    # for lagrange_point_nr in lagrange_point_nrs:
+    #     for alt_value in alt_values:
+    #         for angle in angles:
+    #             for amplitude in amplitudes:
+    #                 initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_value, \
+    #                                                                      angle, amplitude, correction_times, low_dpi)
+    #
+    #                 initial_guess_validation.plot_correction_time_effect()
+    #                 #initial_guess_validation.plot_corrections_effect()
+    #
+    #
+    #
+    #                 del initial_guess_validation
+
+    lagrange_point_nrs = [1]
+    orbit_type = 'horizontal'
+    alt_values = [0.1]
+    angles = [90.0]
+    amplitudes = np.linspace(1.0E-5,1.0E-4,num=91).tolist()
+    correction_times = [50.0]
     low_dpi = True
 
     for lagrange_point_nr in lagrange_point_nrs:
         for alt_value in alt_values:
             for angle in angles:
-                for amplitude in amplitudes:
+                for correction_time in correction_times:
                     initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_value, \
-                                                                         angle, amplitude, correction_times, low_dpi)
+                                                                      angle, amplitudes, correction_time, low_dpi)
 
-                    initial_guess_validation.plot_correction_time_effect()
-
+                    initial_guess_validation.plot_amplitude_effect()
+                    # initial_guess_validation.plot_corrections_effect()
 
                     del initial_guess_validation
+
+
+
 
 
     # lagrange_point_nrs = [1]
@@ -1130,23 +1189,7 @@ if __name__ == '__main__':
     #
     #                 del initial_guess_validation
     #
-    # numbers_of_corrections = [0,2,3,4,5,6,7,8,9,10]
-    # alt_values = [0.0]
-    # angles = [0.0]
-    # amplitudes = [1.0E-3]
-    #
-    #
-    # for lagrange_point_nr in lagrange_point_nrs:
-    #     for angle in angles:
-    #         for amplitude in amplitudes:
-    #             for alt_value in alt_values:
-    #                 initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_value, \
-    #                                                                   angle, amplitude, numbers_of_corrections, low_dpi)
-    #
-    #                 initial_guess_validation.plot_corrections_effect()
-    #
-    #                 del initial_guess_validation
-    #
+
     # lagrange_point_nrs = [1]
     # orbit_type = 'vertical'
     # alt_values = [0.0]

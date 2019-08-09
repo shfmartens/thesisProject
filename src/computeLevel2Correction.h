@@ -3,7 +3,7 @@
 
 #include <Eigen/Core>
 
-Eigen::VectorXd computeLevel2Correction( const Eigen::VectorXd deviationVector, const Eigen::MatrixXd forwardPropagatedStatesInclSTM, const Eigen::VectorXd initialGuess, const int numberOfPatchPoints, const double massParameter );
+Eigen::VectorXd computeLevel2Correction( const Eigen::VectorXd deviationVector, const Eigen::MatrixXd forwardPropagatedStatesInclSTM, const Eigen::VectorXd initialGuess, const Eigen::VectorXd unitOffsetVector, const int numberOfPatchPoints, const double massParameter );
 
 
 

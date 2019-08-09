@@ -23,9 +23,64 @@
 #include "stateDerivativeModel.h"
 #include "stateDerivativeModelAugmented.h"
 
-void writeCorrectorDataToFile(const int librationPointNr, const double accelerationMagnitude, const double alpha, const double amplitude, const int numberOfPatchPoints, const int numberOfFloquetCorrections,
+void shiftConvergedTrajectoryGuess(Eigen::VectorXd currentTrajectoryGuess, const Eigen::VectorXd offsetUnitVector, Eigen::VectorXd& convergedTrajectoryGuess, double massParameter, const int numberOfPatchPoints)
+{
+
+// Determine the propagation direction and integration time
+    int direction;
+    double integrationDelta;
+    if(currentTrajectoryGuess(10) < 0.0)
+    {
+        direction = 1;
+        integrationDelta = -currentTrajectoryGuess(10);
+    }else
+    {
+        direction = -1;
+        integrationDelta = -currentTrajectoryGuess(10);
+
+    }
+
+    Eigen::MatrixXd initialStateAndSTM = Eigen::MatrixXd::Zero(10,11);
+    initialStateAndSTM.block(0,0,10,1) = currentTrajectoryGuess.segment(0,10);
+    initialStateAndSTM.block(0,1,10,10).setIdentity();
+
+    for (int i = 0; i < (numberOfPatchPoints); i++ )
+    {
+        // Select the begin state of the next segment
+        initialStateAndSTM.setZero();
+        initialStateAndSTM.block(0,0,10,1) = currentTrajectoryGuess.segment(11*(i),10);
+        initialStateAndSTM.block(0,1,10,10).setIdentity();
+
+        double initialTime = currentTrajectoryGuess(i+(i+1)*10);
+        double finalTime = currentTrajectoryGuess(i+(i+1)*10) + integrationDelta;
+
+        std::cout << "patch point: " << i << std::endl
+                  << "initialTime: " << initialTime << std::endl
+                  << "finalTime: " << finalTime << std::endl;
+        std::map< double, Eigen::VectorXd > stateHistoryShift;
+        std::pair< Eigen::MatrixXd, double > endStateAndSTMAndTime = propagateOrbitAugmentedToFinalCondition(
+                    initialStateAndSTM, massParameter, finalTime, direction, stateHistoryShift, -1, initialTime);
+
+        Eigen::MatrixXd endStateAndSTM      = endStateAndSTMAndTime.first;
+        double endTime                  = endStateAndSTMAndTime.second;
+        Eigen::VectorXd stateVectorOnly = endStateAndSTM.block( 0, 0, 10, 1 );
+
+
+        // Select the begin state of the next segment
+        initialStateAndSTM.setZero();
+        initialStateAndSTM.block(0,0,10,1) = currentTrajectoryGuess.segment(11*(i+1),10);
+        initialStateAndSTM.block(0,1,10,10).setIdentity();
+
+        convergedTrajectoryGuess.segment(i*11,10) = stateVectorOnly;
+        convergedTrajectoryGuess(i*11+10) = endTime;
+
+    }
+
+}
+
+void writeCorrectorDataToFile(const int librationPointNr, const double accelerationMagnitude, const double alpha, const double amplitude, const int numberOfPatchPoints, const double correctionTime,
                               std::map< double, Eigen::VectorXd > stateHistory, const Eigen::VectorXd stateVector, Eigen::VectorXd deviations, const Eigen::MatrixXd propagatedStatesInclSTM,
-                              const int cycleNumber, const int correctorLevel, const int numberOfCorrections, const double correctionDuration )
+                              const int cycleNumber, const int correctorLevel, const double numberOfCorrections, const double correctionDuration )
 {
 //std::cout << "\n== check input of writing function: " << std::endl
 //          << "libPointNr: " << librationPointNr << std::endl
@@ -55,13 +110,13 @@ void writeCorrectorDataToFile(const int librationPointNr, const double accelerat
     std::string directoryString = "../data/raw/tlt_corrector/";
 
     fileNameStringStateVector = ("L" + std::to_string(librationPointNr) + "_" + std::to_string(accelerationMagnitude)
-                                 + "_" + std::to_string(alpha) + "_" + std::to_string(amplitude) + "_" + std::to_string(numberOfPatchPoints) + "_" + std::to_string(numberOfFloquetCorrections) + "_" +  std::to_string(cycleNumber) + "_" +  std::to_string(correctorLevel) + "_stateVectors.txt");
+                                 + "_" + std::to_string(alpha) + "_" + std::to_string(amplitude) + "_" + std::to_string(numberOfPatchPoints) + "_" + std::to_string(correctionTime) + "_" +  std::to_string(cycleNumber) + "_" +  std::to_string(correctorLevel) + "_stateVectors.txt");
     fileNameStringStateHistory = ("L" + std::to_string(librationPointNr) + "_" + std::to_string(accelerationMagnitude)
-                                  + "_" + std::to_string(alpha) + "_" + std::to_string(amplitude) + "_" + std::to_string(numberOfPatchPoints) + "_" + std::to_string(numberOfFloquetCorrections) + "_" +  std::to_string(cycleNumber) + "_" +  std::to_string(correctorLevel) + "_stateHistory.txt");
+                                  + "_" + std::to_string(alpha) + "_" + std::to_string(amplitude) + "_" + std::to_string(numberOfPatchPoints) + "_" + std::to_string(correctionTime) + "_" +  std::to_string(cycleNumber) + "_" +  std::to_string(correctorLevel) + "_stateHistory.txt");
     fileNameStringDeviations = ("L" + std::to_string(librationPointNr) + "_" + std::to_string(accelerationMagnitude)
-                                + "_" + std::to_string(alpha) + "_" + std::to_string(amplitude) + "_" + std::to_string(numberOfPatchPoints) + "_" + std::to_string(numberOfFloquetCorrections) + "_" +  std::to_string(cycleNumber) + "_" +  std::to_string(correctorLevel) + "_deviations.txt");
+                                + "_" + std::to_string(alpha) + "_" + std::to_string(amplitude) + "_" + std::to_string(numberOfPatchPoints) + "_" + std::to_string(correctionTime) + "_" +  std::to_string(cycleNumber) + "_" +  std::to_string(correctorLevel) + "_deviations.txt");
     fileNameStringPropagatedStates = ("L" + std::to_string(librationPointNr) + "_" + std::to_string(accelerationMagnitude)
-                                + "_" + std::to_string(alpha) + "_" + std::to_string(amplitude) + "_" + std::to_string(numberOfPatchPoints) + "_" + std::to_string(numberOfFloquetCorrections) + "_" +  std::to_string(cycleNumber) + "_" +  std::to_string(correctorLevel) + "_propagatedStates.txt");
+                                + "_" + std::to_string(alpha) + "_" + std::to_string(amplitude) + "_" + std::to_string(numberOfPatchPoints) + "_" + std::to_string(correctionTime) + "_" +  std::to_string(cycleNumber) + "_" +  std::to_string(correctorLevel) + "_propagatedStates.txt");
 
     Eigen::VectorXd propagatedStates = propagatedStatesInclSTM.block(0,0,10*(numberOfPatchPoints-1),1);
 
@@ -173,14 +228,26 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
 {
     std::cout << "\nAPPLY PREDICTION CORRECTION\n" << std::endl;
     double amplitude = 1.0E-3;
-    int numberOfFloquetCorrections = numberOfPatchPoints - 2;
+    double correctionTime = 0.05;
     double timeINIT = 0.0;
     double timeLI = 0.0;
     double timeLII = 0.0;
 
+    // Determine unitVector
+    Eigen::VectorXd offsetUnitVector = Eigen::VectorXd::Zero(3);
+    offsetUnitVector = (initialStateVector.segment(0,3)).normalized();
+
+//    std::cout << "offsetUnitVector: \n" << offsetUnitVector << std::endl
+//               << "positionVector: \n" << initialStateVector.segment(0,3) << std::endl
+//               << "offsetUnitVector NORM: " << offsetUnitVector.norm() << std::endl
+//               << "positionVector NORM: " << initialStateVector.segment(0,3).norm() << std::endl
+//               << "inner product offsetUnit: " << offsetUnitVector.transpose() * initialStateVector.segment(3,3) << std::endl
+//               << "inner product posVel: " << initialStateVector.segment(0,3).transpose() * initialStateVector.segment(3,3)  << std::endl;
+
     // == Define the relevant variables == //
     Eigen::VectorXd outputVector = Eigen::VectorXd::Zero(25 + (11 * numberOfPatchPoints));
     Eigen::VectorXd currentTrajectoryGuess =  Eigen::VectorXd::Zero(11*numberOfPatchPoints);
+    Eigen::VectorXd convergedTrajectoryGuess =  Eigen::VectorXd::Zero(11*numberOfPatchPoints);
     Eigen::MatrixXd propagatedStatesInclSTM = Eigen::MatrixXd::Zero(10*numberOfPatchPoints,11);
     Eigen::VectorXd defectVector =  Eigen::VectorXd::Zero(11* (numberOfPatchPoints - 1) );
     Eigen::VectorXd deviationNorms = Eigen::VectorXd::Zero(5);
@@ -212,7 +279,7 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
     auto durationINIT = std::chrono::duration_cast<std::chrono::seconds>(stopINIT - startINIT);
     timeINIT = durationINIT.count();
 
-    writeCorrectorDataToFile(librationPointNr, currentTrajectoryGuess(6), currentTrajectoryGuess(7), amplitude, numberOfPatchPoints, numberOfFloquetCorrections,
+    writeCorrectorDataToFile(librationPointNr, currentTrajectoryGuess(6), currentTrajectoryGuess(7), amplitude, numberOfPatchPoints, correctionTime,
                              stateHistory, currentTrajectoryGuess, deviationNorms, propagatedStatesInclSTM, 0, 0, 0, timeINIT);
 
     int numberOfCorrections = 0;
@@ -275,7 +342,7 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
 
         std::cout << "\nLevel I Converged after " << numberOfCorrectionsLevel1 << " corrections" << std::endl;
 
-        writeCorrectorDataToFile(librationPointNr, currentTrajectoryGuess(6), currentTrajectoryGuess(7), amplitude, numberOfPatchPoints, numberOfFloquetCorrections,
+        writeCorrectorDataToFile(librationPointNr, currentTrajectoryGuess(6), currentTrajectoryGuess(7), amplitude, numberOfPatchPoints, correctionTime,
                                  stateHistory, currentTrajectoryGuess, deviationNorms, propagatedStatesInclSTM, numberOfCorrections+1, 1, numberOfCorrectionsLevel1, timeLI);
 
         // ========= Apply Level II correction if all constraints are not met  ======= //
@@ -288,7 +355,7 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
             auto startLII = std::chrono::high_resolution_clock::now();
 
             Eigen::VectorXd correctionVectorLevel2 = Eigen::VectorXd::Zero(11*numberOfPatchPoints);
-            correctionVectorLevel2 = computeLevel2Correction(defectVector, propagatedStatesInclSTM, currentTrajectoryGuess, numberOfPatchPoints, massParameter );
+            correctionVectorLevel2 = computeLevel2Correction(defectVector, propagatedStatesInclSTM, currentTrajectoryGuess, offsetUnitVector, numberOfPatchPoints, massParameter );
 
             currentTrajectoryGuess = currentTrajectoryGuess + correctionVectorLevel2;
 
@@ -322,7 +389,7 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
             auto durationLII = std::chrono::duration_cast<std::chrono::seconds>(stopLII - startLII);
             timeLII = durationLII.count();
 
-            writeCorrectorDataToFile(librationPointNr, currentTrajectoryGuess(6), currentTrajectoryGuess(7), amplitude, numberOfPatchPoints, numberOfFloquetCorrections,
+            writeCorrectorDataToFile(librationPointNr, currentTrajectoryGuess(6), currentTrajectoryGuess(7), amplitude, numberOfPatchPoints, correctionTime,
                                      stateHistory, currentTrajectoryGuess, deviationNorms, propagatedStatesInclSTM, numberOfCorrections+1, 2, 0, timeLII);
 
         }
@@ -339,6 +406,12 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
               << "Time deviation: " << timeDeviationNorm << std::endl;
 
 
+    // Reshift first patch point to time zero and check phase condition
+
+    shiftConvergedTrajectoryGuess( currentTrajectoryGuess, offsetUnitVector, convergedTrajectoryGuess, massParameter, numberOfPatchPoints);
+
+    std::cout << "output DiffCor: \n" << currentTrajectoryGuess << std::endl
+              << "output Converged Guess: \n" << convergedTrajectoryGuess << std::endl;
 
 
     outputVector = Eigen::VectorXd::Zero(25+11*numberOfPatchPoints);
