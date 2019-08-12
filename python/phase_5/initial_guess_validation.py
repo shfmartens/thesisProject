@@ -315,7 +315,7 @@ class initialGuessValidation:
             if i == indexPlotlist[Indexlist]:
 
                 legendString = '$\\alpha = $' + str("{:4.1f}".format(self.alpha[i]))
-                ax1.plot(df['x'], df['y'], color=sns.color_palette('viridis', self.numberOfAlphas)[i], linewidth=1, label= legendString )
+                ax1.plot(df['x'], df['y'], color=sns.color_palette('viridis', 6)[Indexlist], linewidth=1, label= legendString )
 
                 lagrange_points_df = load_lagrange_points_location_augmented(self.accelerationMagnitude, self.alpha[i])
                 if self.lagrangePointNr == 1:
