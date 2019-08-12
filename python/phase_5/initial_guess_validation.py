@@ -227,12 +227,12 @@ class initialGuessValidation:
 
         if self.lowDpi:
             fig.savefig('../../data/figures/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
-                        + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str("{:7.6f}".format(self.alpha)) + \
+                        + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str("{:7.6f}".format(self.alpha)) + '_' + str("{:7.6f}".format(self.correctionTime)) + \
                         '_amplitude_effect.png', transparent=True, dpi=self.dpi, bbox_extra_artists=(lgd, lgd2, suptitle), bbox_inches='tight')
 
         else:
             fig.savefig('../../data/figures/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
-                    + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str("{:7.6f}".format(self.alpha)) + \
+                    + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str("{:7.6f}".format(self.alpha)) + '_' + str("{:7.6f}".format(self.alpha)) + \
                         '_amplitude_effect.pdf', transparent=True)
 
         plt.close()
@@ -388,12 +388,12 @@ class initialGuessValidation:
 
         if self.lowDpi:
             fig.savefig('../../data/figures/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
-                        + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str("{:7.6f}".format(self.amplitude)) + \
+                        + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str("{:7.6f}".format(self.amplitude)) + '_' + str("{:7.6f}".format(self.correctionTime)) + \
                         '_angle_effect.png', transparent=True, dpi=self.dpi, bbox_extra_artists=(lgd1,lgd2,suptitle), bbox_inches='tight')
 
         else:
             fig.savefig('../../data/figures/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
-                    + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str("{:7.6f}".format(self.amplitude)) + \
+                    + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str("{:7.6f}".format(self.amplitude)) + '_' + str("{:7.6f}".format(self.correctionTime)) + \
                         '_angle_effect.pdf', transparent=True)
 
         plt.close()
@@ -556,10 +556,10 @@ class initialGuessValidation:
 
         if self.lowDpi:
             #fig.savefig('../../data/figures/initial_guess/test.png',transparent=True, dpi=self.dpi)
-            fig.savefig('../../data/figures/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str("{:7.6f}".format(self.alpha)) + '_' + str("{:7.6f}".format(self.amplitude)) + \
+            fig.savefig('../../data/figures/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str("{:7.6f}".format(self.alpha)) + '_' + str("{:7.6f}".format(self.amplitude)) + '_' + str("{:7.6f}".format(self.correctionTime)) + \
                         '_angle_effect.png', transparent=True, dpi=self.dpi, bbox_extra_artists =(lgd1, lgd2, suptitle), bbox_inches = 'tight')
         else:
-            fig.savefig('../../data/figures/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str("{:7.6f}".format(self.alpha)) + '_' + str("{:7.6f}".format(self.amplitude)) + '_acceleration_effect.pdf', transparent=True)
+            fig.savefig('../../data/figures/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str("{:7.6f}".format(self.alpha)) + '_' + str("{:7.6f}".format(self.amplitude)) + '_' + str("{:7.6f}".format(self.correctionTime)) + '_acceleration_effect.pdf', transparent=True)
 
         plt.close()
         pass
@@ -1098,6 +1098,22 @@ if __name__ == '__main__':
     orbit_type = 'horizontal'
     alt_values = [0.1]
     angles = [90.0]
+
+    # amplitudeArray = np.linspace(1.0E-5,1.0E-4,num=91)
+    # amplitudeArray2 = np.linspace(1.0E-4, 1.0E-3, num=91)
+    # amplitudeArray3 = np.linspace(1.0E-3, 1.0E-2, num=91)
+    # amplitudeArray4 = np.linspace(1.0E-2, 1.0E-1, num=91)
+    #
+    # amplitudeArray1 = amplitudeArray[:-1]
+    # amplitudeArray2 = amplitudeArray2[:-1]
+    # amplitudeArray3 = amplitudeArray3[:-1]
+    #
+    # newArray = np.append(amplitudeArray, amplitudeArray2)
+    # newArray2 = np.append(newArray, amplitudeArray3)
+    # newArray3 = np.append(newArray2, amplitudeArray4)
+    #
+    # amplitudes = newArray3.tolist()
+
     amplitudes = np.linspace(1.0E-5,1.0E-4,num=91).tolist()
     correction_times = [0.05,50.0]
     low_dpi = True
