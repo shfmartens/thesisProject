@@ -1099,22 +1099,22 @@ if __name__ == '__main__':
     alt_values = [0.1]
     angles = [90.0]
 
-    # amplitudeArray = np.linspace(1.0E-5,1.0E-4,num=91)
-    # amplitudeArray2 = np.linspace(1.0E-4, 1.0E-3, num=91)
-    # amplitudeArray3 = np.linspace(1.0E-3, 1.0E-2, num=91)
-    # amplitudeArray4 = np.linspace(1.0E-2, 1.0E-1, num=91)
-    #
-    # amplitudeArray1 = amplitudeArray[:-1]
-    # amplitudeArray2 = amplitudeArray2[:-1]
-    # amplitudeArray3 = amplitudeArray3[:-1]
-    #
-    # newArray = np.append(amplitudeArray, amplitudeArray2)
-    # newArray2 = np.append(newArray, amplitudeArray3)
-    # newArray3 = np.append(newArray2, amplitudeArray4)
-    #
-    # amplitudes = newArray3.tolist()
+    amplitudeArray = np.linspace(1.0E-5,1.0E-4,num=91)
+    amplitudeArray2 = np.linspace(1.0E-4, 1.0E-3, num=91)
+    amplitudeArray3 = np.linspace(1.0E-3, 1.0E-2, num=91)
+    amplitudeArray4 = np.linspace(1.0E-2, 1.0E-1, num=91)
 
-    amplitudes = np.linspace(1.0E-5,1.0E-4,num=91).tolist()
+    amplitudeArray1 = amplitudeArray[:-1]
+    amplitudeArray2 = amplitudeArray2[:-1]
+    amplitudeArray3 = amplitudeArray3[:-1]
+
+    newArray = np.append(amplitudeArray, amplitudeArray2)
+    newArray2 = np.append(newArray, amplitudeArray3)
+    newArray3 = np.append(newArray2, amplitudeArray4)
+
+    amplitudes = newArray3.tolist()
+
+    #amplitudes = np.linspace(1.0E-5,1.0E-4,num=91).tolist()
     correction_times = [0.05,50.0]
     low_dpi = True
 
