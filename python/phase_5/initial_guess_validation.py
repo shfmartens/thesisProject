@@ -141,7 +141,6 @@ class initialGuessValidation:
         indexPlotlist = [271, 286 ,311, 336, 361]
         #print(self.amplitude[336])
 
-
         Indexlist = 0
 
         # Compute the deviations and plot the desired intial guesses
