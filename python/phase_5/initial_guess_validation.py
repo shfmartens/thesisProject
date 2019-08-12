@@ -137,7 +137,11 @@ class initialGuessValidation:
         deviation_list = []
         deviation_corrected_list = []
 
-        indexPlotlist = np.linspace(0, len(self.amplitude) - 1, num=self.numberOfSolutions).tolist()
+        #indexPlotlist = np.linspace(0, len(self.amplitude) - 1, num=self.numberOfSolutions).tolist()
+        indexPlotlist = [0, 90, 181, 271, 361]
+
+
+
         Indexlist = 0
 
         # Compute the deviations and plot the desired intial guesses
