@@ -450,7 +450,14 @@ class initialGuessValidation:
         deviation_list = []
         deviation_corrected_list = []
 
-        indexPlotlist = np.linspace(0, len(self.accelerationMagnitude) - 1, num=self.numberOfSolutions).tolist()
+        #indexPlotlist = np.linspace(0, len(self.accelerationMagnitude) - 1, num=self.numberOfSolutions).tolist()
+        indexPlotList = [90,105,130,155,180]
+        print(self.accelerationMagnitude[90])
+        print(self.accelerationMagnitude[105])
+        print(self.accelerationMagnitude[130])
+        print(self.accelerationMagnitude[155])
+        print(self.accelerationMagnitude[180])
+
 
         Indexlist = 0
 
@@ -498,7 +505,7 @@ class initialGuessValidation:
 
             if i == indexPlotlist[Indexlist]:
                 legendString = 'a$_{lt} = $' + str("{:2.1e}".format(self.accelerationMagnitude[i]))
-                ax1.plot(df['x'], df['y'], color=sns.color_palette('viridis', self.numberOfAccelerations)[i], linewidth=1, label= legendString )
+                ax1.plot(df['x'], df['y'], color=sns.color_palette('viridis', 6)[Indexlist], linewidth=1, label= legendString )
 
                 lagrange_points_df = load_lagrange_points_location_augmented(self.accelerationMagnitude[i], self.alpha)
                 if self.lagrangePointNr == 1:
@@ -508,7 +515,7 @@ class initialGuessValidation:
 
                 for lagrange_point_nr in lagrange_point_nrs:
                     ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
-                                color=sns.color_palette('viridis', self.numberOfAccelerations)[i], marker='x')
+                                color=sns.color_palette('viridis', 6)[Indexlist], marker='x')
 
                 minimumX_temp = min(df['x'])
                 minimumY_temp = min(df['y'])
@@ -538,6 +545,20 @@ class initialGuessValidation:
         for lagrange_point_nr in lagrange_point_nrs:
             ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
                         color='black', marker='x')
+
+        bodies_df = load_bodies_location()
+        u = np.linspace(0, 2 * np.pi, 100)
+        v = np.linspace(0, np.pi, 100)
+        xM = bodies_df['Moon']['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df['Moon']['x']
+        yM = bodies_df['Moon']['r'] * np.outer(np.sin(u), np.sin(v))
+        zM = bodies_df['Moon']['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
+
+        xE = bodies_df['Earth']['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df['Earth']['x']
+        yE = bodies_df['Earth']['r'] * np.outer(np.sin(u), np.sin(v))
+        zE = bodies_df['Earth']['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
+
+        ax1.contourf(xM, yM, zM, colors='black')
+        ax1.contourf(xE, yE, zE, colors='black')
 
         bodies_df = load_bodies_location()
         u = np.linspace(0, 2 * np.pi, 100)
@@ -1184,34 +1205,37 @@ if __name__ == '__main__':
     correction_times = [0.05,50.0]
     low_dpi = True
 
-    for lagrange_point_nr in lagrange_point_nrs:
-        for alt_value in alt_values:
-            for amplitude in amplitudes:
-                for correction_time in correction_times:
-                    initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_value, \
-                                                                      angles, amplitude, correction_time, low_dpi)
-
-                    initial_guess_validation.plot_angle_effect()
-
-                    del initial_guess_validation
-
-
-    # alt_values = np.linspace(1.0E-2,1.0E-1,num=91).tolist()
-    # angles = [180]
-    # amplitudes = [0.0001]
-    # numbers_of_points = [8]
-    # low_dpi = True
-    #
     # for lagrange_point_nr in lagrange_point_nrs:
-    #     for angle in angles:
+    #     for alt_value in alt_values:
     #         for amplitude in amplitudes:
-    #             for number_of_points in numbers_of_points:
-    #                 initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_values, \
-    #                                                                   angle, amplitude, number_of_points, low_dpi)
+    #             for correction_time in correction_times:
+    #                 initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_value, \
+    #                                                                   angles, amplitude, correction_time, low_dpi)
     #
-    #                 initial_guess_validation.plot_acceleration_effect()
+    #                 initial_guess_validation.plot_angle_effect()
     #
     #                 del initial_guess_validation
+
+    amplitudeArray = np.linspace(1.0E-3,1.0E-2,num=91)
+    amplitudeArray1 = amplitudeArray[:-1]
+    amplitudeArray2 = np.linspace(1.0E-2, 1.0E-1, num=91)
+    newArray = np.append(amplitudeArray1, amplitudeArray2)
+    alt_values = newArray.tolist()
+    angles = [90]
+    amplitudes = [0.0001]
+    correction_times = [0.05]
+
+
+    for lagrange_point_nr in lagrange_point_nrs:
+        for angle in angles:
+            for amplitude in amplitudes:
+                for correction_time in correction_times:
+                    initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_values, \
+                                                                      angle, amplitude, correction_time, low_dpi)
+
+                    initial_guess_validation.plot_acceleration_effect()
+
+                    del initial_guess_validation
     #
 
     # lagrange_point_nrs = [1]

@@ -447,13 +447,13 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionCon
             currentTime = currentState.second;
             stateVectorInclSTM = currentState.first;
             previousState = currentState;
-            if (stepCounter == 0)
+            if (direction == 1)
             {
                currentState = propagateOrbitAugmented(currentState.first, massParameter, currentTime, 1, initialStepSize, maximumStepSize);
 
             }else
             {
-               currentState = propagateOrbitAugmented(currentState.first, massParameter, currentTime, 1, initialStepSize, maximumStepSize);
+               currentState = propagateOrbitAugmented(currentState.first, massParameter, currentTime, -1, initialStepSize, maximumStepSize);
             }
 
             stateVectorInclSTM = currentState.first;
