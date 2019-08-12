@@ -160,6 +160,7 @@ class initialGuessValidation:
 
             if i == indexPlotlist[Indexlist]:
                 print(i)
+                print(Indexlist)
                 legendString = '$|A| = $' + str("{:2.1e}".format(self.amplitude[i]))
                 ax1.plot(df['x'], df['y'], color=sns.color_palette('viridis', self.numberOfAmplitudes)[i], linewidth=1,label=legendString)
                 Indexlist = Indexlist + 1
