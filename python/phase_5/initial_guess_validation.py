@@ -267,8 +267,16 @@ class initialGuessValidation:
         # deviation_df = pd.DataFrame({'Amplitude': [], 'DeltaR': [], 'DeltaV': []})
         deviation_list = []
 
-        indexPlotlist = np.linspace(0, 315, num=self.numberOfSolutions).tolist()
+        #indexPlotlist = np.linspace(0, 315, num=self.numberOfSolutions).tolist()
+        indexPlotlist = [0, 60, 120, 180, 240, 300]
         Indexlist = 0
+        print(self.alpha[0])
+        print(self.alpha[60])
+        print(self.alpha[120])
+        print(self.alpha[180])
+        print(self.alpha[240])
+        print(self.alpha[300])
+
 
         minimumX = 0.0
         minimumY = 0.0
@@ -317,7 +325,7 @@ class initialGuessValidation:
 
                 for lagrange_point_nr in lagrange_point_nrs:
                     ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
-                                color=sns.color_palette('viridis', self.numberOfAlphas)[i], marker='x')
+                                color=sns.color_palette('viridis', 6)[Indexlist], marker='x')
 
                 if Indexlist == 0.0:
                     minimumX = min(df['x'])
@@ -363,6 +371,20 @@ class initialGuessValidation:
         ax1.xaxis.set_ticks(xticks1)
 
         lgd1 = ax1.legend(frameon=True, loc='center left', bbox_to_anchor=(0, 0.7),prop={'size': 8})
+
+        bodies_df = load_bodies_location()
+        u = np.linspace(0, 2 * np.pi, 100)
+        v = np.linspace(0, np.pi, 100)
+        xM = bodies_df['Moon']['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df['Moon']['x']
+        yM = bodies_df['Moon']['r'] * np.outer(np.sin(u), np.sin(v))
+        zM = bodies_df['Moon']['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
+
+        xE = bodies_df['Earth']['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df['Earth']['x']
+        yE = bodies_df['Earth']['r'] * np.outer(np.sin(u), np.sin(v))
+        zE = bodies_df['Earth']['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
+
+        ax1.contourf(xM, yM, zM, colors='black')
+        ax1.contourf(xE, yE, zE, colors='black')
 
 
         # Plot deviations ax2
@@ -1096,13 +1118,13 @@ class initialGuessValidation:
     pass
 
 if __name__ == '__main__':
-    lagrange_point_nrs = [1]
-    orbit_type = 'horizontal'
-    alt_values = [0.1]
-    angles = [90.0]
-    amplitudes = [1.0E-5,0.1]
-    correction_times = [0.05,0.1,0.2,0.3,0.4,0.5,0.6]
-    low_dpi = True
+    # lagrange_point_nrs = [1]
+    # orbit_type = 'horizontal'
+    # alt_values = [0.1]
+    # angles = [90.0]
+    # amplitudes = [1.0E-5,0.1]
+    # correction_times = [0.05,0.1,0.2,0.3,0.4,0.5,0.6]
+    # low_dpi = True
 
     # for lagrange_point_nr in lagrange_point_nrs:
     #     for alt_value in alt_values:
@@ -1118,100 +1140,62 @@ if __name__ == '__main__':
     #
     #                 del initial_guess_validation
 
-    lagrange_point_nrs = [1]
-    orbit_type = 'horizontal'
-    alt_values = [0.1]
-    angles = [90.0]
-
-    amplitudeArray = np.linspace(1.0E-5,1.0E-4,num=91)
-    amplitudeArray2 = np.linspace(1.0E-4, 1.0E-3, num=91)
-    amplitudeArray3 = np.linspace(1.0E-3, 1.0E-2, num=91)
-    amplitudeArray4 = np.linspace(1.0E-2, 1.0E-1, num=91)
-
-    amplitudeArray1 = amplitudeArray[:-1]
-    amplitudeArray2 = amplitudeArray2[:-1]
-    amplitudeArray3 = amplitudeArray3[:-1]
-
-    newArray = np.append(amplitudeArray, amplitudeArray2)
-    newArray2 = np.append(newArray, amplitudeArray3)
-    newArray3 = np.append(newArray2, amplitudeArray4)
-
-    amplitudes = newArray3.tolist()
-
-    #amplitudes = np.linspace(1.0E-5,1.0E-4,num=91).tolist()
-    correction_times = [0.05,50.0]
-    low_dpi = True
-
-    for lagrange_point_nr in lagrange_point_nrs:
-        for alt_value in alt_values:
-            for angle in angles:
-                for correction_time in correction_times:
-                    initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_value, \
-                                                                      angle, amplitudes, correction_time, low_dpi)
-
-                    initial_guess_validation.plot_amplitude_effect()
-                    # initial_guess_validation.plot_corrections_effect()
-
-                    del initial_guess_validation
-
-
-
-
-
     # lagrange_point_nrs = [1]
     # orbit_type = 'horizontal'
     # alt_values = [0.1]
-    # angles = [180.0]
-    # # amplitudeArray = np.linspace(1.0E-5,1.0E-4,num=91)
-    # # amplitudeArray2 = np.linspace(1.0E-4, 1.0E-3, num=91)
-    # # amplitudeArray3 = np.linspace(1.0E-3, 1.0E-2, num=91)
-    # # amplitudeArray4 = np.linspace(1.0E-2, 1.0E-1, num=91)
-    # #
-    # # amplitudeArray1 = amplitudeArray[:-1]
-    # # amplitudeArray2 = amplitudeArray2[:-1]
-    # # amplitudeArray3 = amplitudeArray3[:-1]
-    # #
-    # # newArray = np.append(amplitudeArray, amplitudeArray2)
-    # # newArray2 = np.append(newArray, amplitudeArray3)
-    # # newArray3 = np.append(newArray2, amplitudeArray4)
-    # #
-    # # amplitudes = newArray3.tolist()
+    # angles = [90.0]
     #
-    # amplitudes = np.linspace(1.0E-5,1.0E-4,num=91).tolist()
+    # amplitudeArray = np.linspace(1.0E-5,1.0E-4,num=91)
+    # amplitudeArray2 = np.linspace(1.0E-4, 1.0E-3, num=91)
+    # amplitudeArray3 = np.linspace(1.0E-3, 1.0E-2, num=91)
+    # amplitudeArray4 = np.linspace(1.0E-2, 1.0E-1, num=91)
     #
-    # numbers_of_points = [8]
+    # amplitudeArray1 = amplitudeArray[:-1]
+    # amplitudeArray2 = amplitudeArray2[:-1]
+    # amplitudeArray3 = amplitudeArray3[:-1]
+    #
+    # newArray = np.append(amplitudeArray, amplitudeArray2)
+    # newArray2 = np.append(newArray, amplitudeArray3)
+    # newArray3 = np.append(newArray2, amplitudeArray4)
+    #
+    # amplitudes = newArray3.tolist()
+    #
+    # #amplitudes = np.linspace(1.0E-5,1.0E-4,num=91).tolist()
+    # correction_times = [0.05,50.0]
     # low_dpi = True
     #
     # for lagrange_point_nr in lagrange_point_nrs:
     #     for alt_value in alt_values:
     #         for angle in angles:
-    #             for number_of_points in numbers_of_points:
+    #             for correction_time in correction_times:
     #                 initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_value, \
-    #                                                                      angle, amplitudes, number_of_points, low_dpi)
+    #                                                                   angle, amplitudes, correction_time, low_dpi)
     #
     #                 initial_guess_validation.plot_amplitude_effect()
-    #
-    #
-    #                 del initial_guess_validation
-    #
-    # alt_values = [0.001,0.1]
-    # angles = np.linspace(0, 359, num=360).tolist()
-    # amplitudes = [0.0001]
-    # numbers_of_points = [8]
-    # low_dpi = True
-    #
-    # for lagrange_point_nr in lagrange_point_nrs:
-    #     for alt_value in alt_values:
-    #         for amplitude in amplitudes:
-    #             for number_of_points in numbers_of_points:
-    #                 initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_value, \
-    #                                                                   angles, amplitude, number_of_points, low_dpi)
-    #
-    #                 initial_guess_validation.plot_angle_effect()
+    #                 # initial_guess_validation.plot_corrections_effect()
     #
     #                 del initial_guess_validation
-    #
-    #
+
+    lagrange_point_nrs = [1]
+    orbit_type = 'horizontal'
+    amplitudes = [0.0001,0.1]
+    angles = np.linspace(0,359,num=360)
+    alt_values = [0.1]
+    correction_times = [0.05,50.0]
+    low_dpi = True
+
+    for lagrange_point_nr in lagrange_point_nrs:
+        for alt_value in alt_values:
+            for amplitude in amplitudes:
+                for correction_time in correction_times:
+                    initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_value, \
+                                                                      angles, amplitude, correction_time, low_dpi)
+
+                    initial_guess_validation.plot_angle_effect()
+
+                    del initial_guess_validation
+
+
     # alt_values = np.linspace(1.0E-2,1.0E-1,num=91).tolist()
     # angles = [180]
     # amplitudes = [0.0001]
