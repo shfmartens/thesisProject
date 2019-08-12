@@ -32,7 +32,7 @@ int main (){
      //================================
      //== Compute equilibria, comment out when computing low-thrust intial positions ==
      //================================
-    double accMag = 0.05;
+    double accMag = 0.075;
     double alpha = 90.0;
     for (int i = 1; i < 6 ; i++)
     {
