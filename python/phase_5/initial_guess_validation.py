@@ -138,8 +138,8 @@ class initialGuessValidation:
         deviation_corrected_list = []
 
         #indexPlotlist = np.linspace(0, len(self.amplitude) - 1, num=self.numberOfSolutions).tolist()
-        indexPlotlist = [0, 90, 181, 271, 361]
-
+        indexPlotlist = [271, 286 ,311, 336, 361]
+        #print(self.amplitude[336])
 
 
         Indexlist = 0
