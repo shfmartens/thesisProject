@@ -29,23 +29,23 @@ double massParameter = tudat::gravitation::circular_restricted_three_body_proble
 
 int main (){
 
-     //================================
-     //== Compute equilibria, comment out when computing low-thrust intial positions ==
-     //================================
-    double accMag = 0.1;
-    double alpha = 90.0;
-    for (int i = 1; i < 6 ; i++)
-    {
-        Eigen::Vector2d equilibriumTest = createEquilibriumLocations(i, accMag, alpha, "acceleration", massParameter);
+//     //================================
+//     //== Compute equilibria, comment out when computing low-thrust intial positions ==
+//     //================================
+//    double accMag = 0.1;
+//    double alpha = 90.0;
+//    for (int i = 1; i < 6 ; i++)
+//    {
+//        Eigen::Vector2d equilibriumTest = createEquilibriumLocations(i, accMag, alpha, "acceleration", massParameter);
 
-        std::cout << "\n== Eq result =="<< std::endl
-                  << "librationPointNr: " << i << std::endl
-                  << "alt: " << accMag << std::endl
-                  << "alpha: " << alpha << std::endl
-                  << "equilibriumLocation: \n" << equilibriumTest << std::endl
-                  << "=================" << std::endl;
+//        std::cout << "\n== Eq result =="<< std::endl
+//                  << "librationPointNr: " << i << std::endl
+//                  << "alt: " << accMag << std::endl
+//                  << "alpha: " << alpha << std::endl
+//                  << "equilibriumLocation: \n" << equilibriumTest << std::endl
+//                  << "=================" << std::endl;
 
-    }
+//    }
 
 
     // ================================
