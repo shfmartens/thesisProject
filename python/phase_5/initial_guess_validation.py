@@ -469,7 +469,7 @@ class initialGuessValidation:
         maximumDevV = 0.0
 
         df = load_orbit_augmented(
-            '../../data/raw/initial_guess/L' +indexPlotList str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
+            '../../data/raw/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
             + str("{:7.6f}".format(0.000000)) + '_' + str("{:7.6f}".format(0.000000)) + '_' \
             + str("{:7.6f}".format(self.amplitude)) + '_' \
             + str("{:7.6f}".format(self.correctionTime)) + '_stateHistory.txt')
