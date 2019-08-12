@@ -624,7 +624,7 @@ class initialGuessValidation:
         if self.lowDpi:
             #fig.savefig('../../data/figures/initial_guess/test.png',transparent=True, dpi=self.dpi)
             fig.savefig('../../data/figures/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str("{:7.6f}".format(self.alpha)) + '_' + str("{:7.6f}".format(self.amplitude)) + '_' + str("{:7.6f}".format(self.correctionTime)) + \
-                        '_angle_effect.png', transparent=True, dpi=self.dpi, bbox_extra_artists =(lgd1, lgd2, suptitle), bbox_inches = 'tight')
+                        '_acceleration_effect.png', transparent=True, dpi=self.dpi, bbox_extra_artists =(lgd1, lgd2, suptitle), bbox_inches = 'tight')
         else:
             fig.savefig('../../data/figures/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str("{:7.6f}".format(self.alpha)) + '_' + str("{:7.6f}".format(self.amplitude)) + '_' + str("{:7.6f}".format(self.correctionTime)) + '_acceleration_effect.pdf', transparent=True)
 
