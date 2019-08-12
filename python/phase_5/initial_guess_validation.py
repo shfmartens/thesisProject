@@ -196,15 +196,19 @@ class initialGuessValidation:
         ## Test for axes ratio
         #print(1 / ax1.get_data_ratio())
 
-        # bodies_df = load_bodies_location()
-        # u = np.linspace(0, 2 * np.pi, 100)
-        # v = np.linspace(0, np.pi, 100)
-        # xM = bodies_df['Moon']['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df['Moon']['x'] - 0.14
-        # yM = bodies_df['Moon']['r'] * np.outer(np.sin(u), np.sin(v))
-        # zM = bodies_df['Moon']['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
-        #
-        #
-        # ax1.contourf(xM, yM, zM, colors='black')
+        bodies_df = load_bodies_location()
+        u = np.linspace(0, 2 * np.pi, 100)
+        v = np.linspace(0, np.pi, 100)
+        xM = bodies_df['Moon']['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df['Moon']['x']
+        yM = bodies_df['Moon']['r'] * np.outer(np.sin(u), np.sin(v))
+        zM = bodies_df['Moon']['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
+
+        xE = bodies_df['Earth']['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df['Earth']['x']
+        yE = bodies_df['Earth']['r'] * np.outer(np.sin(u), np.sin(v))
+        zE = bodies_df['Earth']['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
+
+        ax1.contourf(xM, yM, zM, colors='black')
+        ax1.contourf(xE, yE, zE, colors='black')
 
         lgd  = ax1.legend(frameon=True, loc='upper left',  bbox_to_anchor=(0, 1),prop={'size': 8})
 
