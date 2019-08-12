@@ -354,9 +354,6 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionCon
         const Eigen::MatrixXd fullInitialState, const int librationPointNr, const double massParameter, const double finalAngle, int direction,
         std::map< double, Eigen::VectorXd >& stateHistoryMinimized, const int saveFrequency, const double initialTime )
 {
-    std::cout << "finalAngle:" << finalAngle << std::endl;
-    std::cout << "finalAngle deg:" << finalAngle * 180.0 / tudat::mathematical_constants::PI << std::endl;
-
     // compute theta of initial state w.r.t. secondary body (L1, L2) or primary body (L3,4,5)
     double currentAngleOfOrbit;
     if (librationPointNr < 3)
@@ -389,6 +386,11 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionCon
         thetaSign = -1.0;
     }
 
+//    std::cout << "\n===input into for loop: ===" << std::endl
+//              << "targetAngle: " << targetAngle << std::endl
+//              << "currentAngle: " << currentAngleOfOrbit << std::endl
+//              << "thetaSign: " << thetaSign << std::endl;
+
     // declare and initialize propagation variables
     std::pair< Eigen::MatrixXd, double > previousState;
     std::pair< Eigen::MatrixXd, double > currentState;
@@ -396,8 +398,11 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionCon
     Eigen::MatrixXd stateVectorInclSTM = fullInitialState;
     Eigen::MatrixXd stateVectorOnly = fullInitialState.block(0,0,10,1);
 
-    currentState.second = currentTime;
     currentState.first = fullInitialState;
+    currentState.second = currentTime;
+
+//    std::cout << "currentState first: \n" << currentState.first << std::endl
+//              << "currentState second: " << currentState.second << std::endl;
 
     int stepCounter = 0;
 
@@ -420,13 +425,13 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionCon
             currentAngleOfOrbit = currentAngleOfOrbit + 360.0;
         }
 
-        std::cout << "i: " << i << std::endl;
-        std::cout << "check delta theta: " << targetAngle - currentAngleOfOrbit << std::endl;
-        std::cout << "check theta sign: " << thetaSign << std::endl;
+//        std::cout << "i: " << i << std::endl;
+//        std::cout << "check delta theta: " << (targetAngle - currentAngleOfOrbit) << std::endl;
+//        std::cout << "check theta sign: " << thetaSign << std::endl;
 
         while ( ( targetAngle - currentAngleOfOrbit ) * thetaSign > 0.0  )
         {
-            std::cout << "stepCounter: " << stepCounter << std::endl;
+            //std::cout << "stepCounter: " << stepCounter << std::endl;
             // Write every nth integration step to file.
             if ( saveFrequency > 0 && ( stepCounter % saveFrequency == 0 ) )
             {
@@ -439,11 +444,20 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionCon
                 }
             }
 
-            double currentTime = currentState.second;
-            Eigen::MatrixXd stateVectorInclSTM = currentState.first;
-            std::pair< Eigen::MatrixXd, double > previousState = currentState;
-            std::pair< Eigen::MatrixXd, double > currentState = propagateOrbitAugmented(currentState.first, massParameter, currentTime, 1, initialStepSize, maximumStepSize);
-            Eigen::MatrixXd stateVectorOnly = currentState.first;
+            currentTime = currentState.second;
+            stateVectorInclSTM = currentState.first;
+            previousState = currentState;
+            if (stepCounter == 0)
+            {
+               currentState = propagateOrbitAugmented(currentState.first, massParameter, currentTime, 1, initialStepSize, maximumStepSize);
+
+            }else
+            {
+               currentState = propagateOrbitAugmented(currentState.first, massParameter, currentTime, 1, initialStepSize, maximumStepSize);
+            }
+
+            stateVectorInclSTM = currentState.first;
+            stateVectorOnly = stateVectorInclSTM.block(0,0,10,1);
 
             if (librationPointNr < 3)
             {

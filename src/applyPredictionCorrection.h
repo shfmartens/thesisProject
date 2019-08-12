@@ -5,7 +5,7 @@
 #include "Eigen/Core"
 #include <map>
 
-void shiftConvergedTrajectoryGuess(int librationPointNr,Eigen::VectorXd currentTrajectoryGuess, const Eigen::VectorXd offsetUnitVector, Eigen::VectorXd& convergedTrajectoryGuess, double massParameter, const int numberOfPatchPoints);
+void shiftConvergedTrajectoryGuess(int librationPointNr,Eigen::VectorXd currentTrajectoryGuess, Eigen::VectorXd inputTrajectoryGuess, const Eigen::VectorXd offsetUnitVector, Eigen::VectorXd& convergedTrajectoryGuess, double massParameter, const int numberOfPatchPoints);
 
 
 void writeCorrectorDataToFile(const int librationPointNr, const double accelerationMagnitude, const double alpha, const double amplitude, const int numberOfPatchPoints, const double correctionTime, const std::map< double, Eigen::VectorXd > stateHistory, const Eigen::VectorXd stateVector, Eigen::VectorXd deviations,
