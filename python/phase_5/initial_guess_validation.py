@@ -456,6 +456,15 @@ class initialGuessValidation:
         maximumX = max(df['x'])
         maximumY = max(df['y'])
 
+        bodies_df = load_bodies_location()
+        u = np.linspace(0, 2 * np.pi, 100)
+        v = np.linspace(0, np.pi, 100)
+        x = bodies_df['Moon']['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df['Moon']['x']
+        y = bodies_df['Moon']['r'] * np.outer(np.sin(u), np.sin(v))
+        z = bodies_df['Moon']['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
+
+        ax1.contourf(x, y, z, colors='black')
+
         for i in orbitIdsPlot:
             df = load_orbit_augmented(
                 '../../data/raw/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
