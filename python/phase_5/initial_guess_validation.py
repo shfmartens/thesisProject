@@ -1099,7 +1099,7 @@ if __name__ == '__main__':
     alt_values = [0.1]
     angles = [90.0]
     amplitudes = np.linspace(1.0E-5,1.0E-4,num=91).tolist()
-    correction_times = [50.0]
+    correction_times = [0.05,50.0]
     low_dpi = True
 
     for lagrange_point_nr in lagrange_point_nrs:
