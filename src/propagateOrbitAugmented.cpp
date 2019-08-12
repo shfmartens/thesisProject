@@ -206,6 +206,8 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFinalCondition(
 
                 if (currentState.second > finalTime )
                 {
+                    //std::cout << "TargetTime: " << finalTime << std::endl
+                    //          << "currentTime: " << finalTime << std::endl;
                     currentState = previousState;
                     currentTime = currentState.second;
                     break;
@@ -352,11 +354,8 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionCon
         const Eigen::MatrixXd fullInitialState, const int librationPointNr, const double massParameter, const double finalAngle, int direction,
         std::map< double, Eigen::VectorXd >& stateHistoryMinimized, const int saveFrequency, const double initialTime )
 {
-
-    if( saveFrequency >= 0 )
-    {
-        stateHistoryMinimized[ initialTime ] = fullInitialState.block( 0, 0, 10, 1 );
-    }
+    std::cout << "finalAngle:" << finalAngle << std::endl;
+    std::cout << "finalAngle deg:" << finalAngle * 180.0 / tudat::mathematical_constants::PI << std::endl;
 
     // compute theta of initial state w.r.t. secondary body (L1, L2) or primary body (L3,4,5)
     double currentAngleOfOrbit;
@@ -377,7 +376,7 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionCon
     // Determine final angle in [0,360 domain]
     double targetAngle = finalAngle * 180.0 / tudat::mathematical_constants::PI;
     if (targetAngle < 0.0 ) {
-        targetAngle = currentAngleOfOrbit + 360.0;
+        targetAngle = targetAngle + 360.0;
     }
 
     // Determine thetaSign
@@ -390,43 +389,17 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionCon
         thetaSign = -1.0;
     }
 
-//    std::cout << "===check angle differenecs at start ===: "<< std::endl
-//              << "targetAngle: " << targetAngle << std::endl
-//              << "currentAngle: " << currentAngleOfOrbit << std::endl
-//              << "difference: " << targetAngle - currentAngleOfOrbit << std::endl
-//              << "thetaSign: " << thetaSign << std::endl;
+    // declare and initialize propagation variables
+    std::pair< Eigen::MatrixXd, double > previousState;
+    std::pair< Eigen::MatrixXd, double > currentState;
+    double currentTime = initialTime;
+    Eigen::MatrixXd stateVectorInclSTM = fullInitialState;
+    Eigen::MatrixXd stateVectorOnly = fullInitialState.block(0,0,10,1);
 
+    currentState.second = currentTime;
+    currentState.first = fullInitialState;
 
-    // Perform first integration step
-        std::pair< Eigen::MatrixXd, double > previousState;
-        std::pair< Eigen::MatrixXd, double > currentState;
-        Eigen::MatrixXd stateVectorInclSTM;
-        currentState = propagateOrbitAugmented(fullInitialState, massParameter, initialTime, direction, 1.0E-5, 1.0E-5 );
-        Eigen::MatrixXd stateVectorOnly = currentState.first;
-        double currentTime = currentState.second;
-
-
-
-        if (librationPointNr < 3)
-        {
-            currentAngleOfOrbit = fmod(std::atan2( stateVectorOnly(1,0), stateVectorOnly(0,0) - (1.0 - massParameter) ) * 180.0 / tudat::mathematical_constants::PI, 360.0);
-
-        }else
-        {
-            currentAngleOfOrbit = fmod(std::atan2( stateVectorOnly(1,0), stateVectorOnly(0,0) - ( - massParameter) ) * 180.0 / tudat::mathematical_constants::PI, 360.0);
-
-        }
-        if (currentAngleOfOrbit < 0.0 ) {
-            currentAngleOfOrbit = currentAngleOfOrbit + 360.0;
-        }
-
-//        std::cout << "===check angle differenecs after first step ===: "<< std::endl
-//                      << "targetAngle: " << targetAngle << std::endl
-//                      << "currentAngle: " << currentAngleOfOrbit << std::endl
-//                      << "difference: " << targetAngle - currentAngleOfOrbit << std::endl
-//                      << "thetaSign: " << thetaSign << std::endl;
-
-    int stepCounter = 1;
+    int stepCounter = 0;
 
     for (int i = 5; i <= 13; i++)
     {
@@ -447,20 +420,30 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionCon
             currentAngleOfOrbit = currentAngleOfOrbit + 360.0;
         }
 
+        std::cout << "i: " << i << std::endl;
+        std::cout << "check delta theta: " << targetAngle - currentAngleOfOrbit << std::endl;
+        std::cout << "check theta sign: " << thetaSign << std::endl;
+
         while ( ( targetAngle - currentAngleOfOrbit ) * thetaSign > 0.0  )
         {
+            std::cout << "stepCounter: " << stepCounter << std::endl;
             // Write every nth integration step to file.
             if ( saveFrequency > 0 && ( stepCounter % saveFrequency == 0 ) )
             {
-
-                stateHistoryMinimized[ currentTime ] = currentState.first.block( 0, 0, 10, 1 );
+                if (stepCounter == 0)
+                {
+                   stateHistoryMinimized[ initialTime ] = fullInitialState.block(0,0,10,1);
+                }else
+                {
+                   stateHistoryMinimized[ currentTime ] = currentState.first.block( 0, 0, 10, 1 );
+                }
             }
 
-            currentTime = currentState.second;
-            stateVectorInclSTM = currentState.first;
-            previousState = currentState;
-            currentState = propagateOrbitAugmented(currentState.first, massParameter, currentTime, 1, initialStepSize, maximumStepSize);
-            stateVectorOnly = currentState.first;
+            double currentTime = currentState.second;
+            Eigen::MatrixXd stateVectorInclSTM = currentState.first;
+            std::pair< Eigen::MatrixXd, double > previousState = currentState;
+            std::pair< Eigen::MatrixXd, double > currentState = propagateOrbitAugmented(currentState.first, massParameter, currentTime, 1, initialStepSize, maximumStepSize);
+            Eigen::MatrixXd stateVectorOnly = currentState.first;
 
             if (librationPointNr < 3)
             {
@@ -499,7 +482,7 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionCon
         stateHistoryMinimized[ currentTime ] = currentState.first.block( 0, 0, 10, 1 );
     }
     stateVectorInclSTM = currentState.first;
-    //std::cout << "||delta theta|| = " << abs(targetAngle - currentAngleOfOrbit) << ", at end of iterative procedure" << std::endl;
+    std::cout << "||delta theta|| = " << abs(targetAngle - currentAngleOfOrbit) << ", at end of iterative procedure" << std::endl;
     return currentState;
 
 }

@@ -435,6 +435,22 @@ def load_patch_points(file_path, numberOfPatchPoints):
     data.columns = ['x', 'y','z','xdot','ydot','zdot','alt','alpha','beta','m','time']
     return data
 
+def load_propagated_states(file_path, numberOfPatchPoints):
+    arrayVectors = np.loadtxt(file_path)
+    arrayVectors = arrayVectors.reshape(numberOfPatchPoints, 10)
+    data = pd.DataFrame(arrayVectors)
+    data.columns = ['x', 'y', 'z', 'xdot', 'ydot', 'zdot', 'alt', 'alpha', 'beta', 'm']
+    return data
+
+def load_tlt_stage_properties(file_path):
+    arrayVectors = np.loadtxt(file_path)
+    arrayVectors = arrayVectors.reshape(1, 7)
+    data = pd.DataFrame(arrayVectors)
+    data.columns = ['devR', 'devV', 'devVint', 'devVext', 'devT', 'time', 'iterations']
+    return data
+
+
+
 
 def load_initial_conditions(file_path):
     data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(11)))
