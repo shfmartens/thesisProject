@@ -1222,8 +1222,8 @@ if __name__ == '__main__':
     newArray = np.append(amplitudeArray1, amplitudeArray2)
     alt_values = newArray.tolist()
     angles = [90]
-    amplitudes = [0.0001]
-    correction_times = [0.05]
+    amplitudes = [0.0001,0.1]
+    correction_times = [0.05,50.0]
 
 
     for lagrange_point_nr in lagrange_point_nrs:
