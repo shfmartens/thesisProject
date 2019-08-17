@@ -339,8 +339,8 @@ Eigen::VectorXd computeLevel2Correction( const Eigen::VectorXd deviationVector, 
 //    updateMatrixPhase.block(3*numberOfPatchPoints,0,1,4*numberOfPatchPoints) = phaseJacobianRow;
 //    updateMatrixPhase.block(3*numberOfPatchPoints+1,0,1,4*numberOfPatchPoints) = phaseJacobianRow2;
 
-
-
+//    std::cout.precision(6);
+//    std::cout << "updateMatrix TLT: \n" << updateMatrix << std::endl;
 
     corrections =             1.0*(updateMatrix.transpose())*(updateMatrix*(updateMatrix.transpose())).inverse()*constraintVector;
     correctionsPeriodic =     1.0*(updateMatrixPeriodic.transpose())*(updateMatrixPeriodic*(updateMatrixPeriodic.transpose())).inverse()*constraintVectorPeriodic;
@@ -365,6 +365,10 @@ Eigen::VectorXd computeLevel2Correction( const Eigen::VectorXd deviationVector, 
 
     }
 
+    //std::cout.precision(6);
+    //std::cout << "updateMatrixPeriodic TLT: \n" << updateMatrixPeriodic << std::endl;
+    //std::cout << " constraintVectorPeriodic TLT: \n" << constraintVectorPeriodic << std::endl;
+    //std::cout << "correctionsPeriodic TLT: \n" << correctionsPeriodic << std::endl;
 
     return differentialCorrection;
 

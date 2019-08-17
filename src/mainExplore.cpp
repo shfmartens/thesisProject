@@ -8,11 +8,15 @@
 #include <sstream>
 #include <string>
 #include <math.h>
+#include <cmath>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
 #include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
 #include "Tudat/Astrodynamics/BasicAstrodynamics/celestialBodyConstants.h"
+#include "Tudat/Astrodynamics/BasicAstrodynamics/physicalConstants.h"
+#include "Tudat/Astrodynamics/BasicAstrodynamics/astrodynamicsFunctions.h"
+
 
 #include "createInitialConditions.h"
 #include "createLowThrustInitialConditions.h"
@@ -22,12 +26,15 @@
 //#include "createInitialConditionsAxialFamily.h"
 #include "connectManifoldsAtTheta.h"
 #include "createEquilibriumLocations.h"
+#include "stateDerivativeModelAugmentedVaryingMass.h"
+#include "stateDerivativeModelAugmented.h"
 #include "omp.h"
 
 
 double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER, tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER );
 
 int main (){
+
 
 //     //================================
 //     //== Compute equilibria, comment out when computing low-thrust intial positions ==
@@ -70,14 +77,16 @@ int main (){
 //        for (unsigned int i=1; i<=6; i++) {
 //            if (i ==1)
 //            {
+//                double maxThrust = 0.0;
 
 //                std::cout << "running thread 01 " << std::endl;
-//                createLowThrustInitialConditions(1, "horizontal", 1, 0.01, 0.0, 0.0, 1.0, -1.552, massParameter );
+//                createLowThrustInitialConditions(1, "horizontal", 1, 0.0, 0.0, 0.0, 1.0, -1.552, massParameter );
 //            }
 //            if (i ==2)
 //            {
+//                double maxThrust = 0.1;
 //                std::cout << "running thread 02" << std::endl;
-//                createLowThrustInitialConditions(1, "horizontal", 1, 0.05, 0.0, 0.0, 1.0, -1.552, massParameter );
+//                createLowThrustInitialConditions(1, "horizontal", 1, 0.1, 0.0, 0.0, 1.0, -1.552, massParameter );
 //            }
 //            if (i ==3)
 //            {

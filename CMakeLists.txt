@@ -237,39 +237,44 @@ list(APPEND TUDAT_APPLICATION_PROPAGATION_LIBRARIES tudat_simulation_setup tudat
 set(CR3BPLT_SOURCES
 
          "${SRCROOT}/src/applyPredictionCorrection.cpp"
+         "${SRCROOT}/src/applyMassRefinement.cpp"
          "${SRCROOT}/src/computeLevel1Correction.cpp"
+         "${SRCROOT}/src/computeLevel1MassRefinementCorrection.cpp"
+         "${SRCROOT}/src/computeLevel2MassRefinementCorrection.cpp"
          "${SRCROOT}/src/computeLevel2Correction.cpp"
          "${SRCROOT}/src/computeDifferentialCorrectionAugmented.cpp"
          "${SRCROOT}/src/applyMultivariateRootFinding.cpp"
          "${SRCROOT}/src/createLowThrustInitialConditions.cpp"
          "${SRCROOT}/src/createEquilibriumLocations.cpp"
          "${SRCROOT}/src/propagateOrbitAugmented.cpp"
+         "${SRCROOT}/src/propagateMassVaryingOrbitAugmented.cpp"
          "${SRCROOT}/src/stateDerivativeModelAugmented.cpp"
+         "${SRCROOT}/src/stateDerivativeModelAugmentedVaryingMass.cpp"
          "${SRCROOT}/src/richardsonThirdOrderApproximationMultiple.cpp"
          "${SRCROOT}/src/morimotoFirstOrderApproximation.cpp"
          "${SRCROOT}/src/floquetApproximation.cpp"
          "${SRCROOT}/src/checkEigenvalues.cpp"
-
-
-
              )
 
 set(CR3BPLT_HEADERS
          "${SRCROOT}/src/applyPredictionCorrection.h"
+         "${SRCROOT}/src/applyMassRefinement.h"
          "${SRCROOT}/src/computeLevel1Correction.h"
+         "${SRCROOT}/src/computeLevel1MassRefinementCorrection.h"
+         "${SRCROOT}/src/computeLevel2MassRefinementCorrection.h"
          "${SRCROOT}/src/computeLevel2Correction.h"
          "${SRCROOT}/src/computeDifferentialCorrectionAugmented.h"
          "${SRCROOT}/src/applyMultivariateRootFinding.h"
          "${SRCROOT}/src/createLowThrustInitialConditions.h"
          "${SRCROOT}/src/createEquilibriumLocations.h"
          "${SRCROOT}/src/propagateOrbitAugmented.h"
+         "${SRCROOT}/src/propagateMassVaryingOrbitAugmented.h"
          "${SRCROOT}/src/stateDerivativeModelAugmented.h"
+         "${SRCROOT}/src/stateDerivativeModelAugmentedVaryingMass.h"
          "${SRCROOT}/src/richardsonThirdOrderApproximationMultiple.h"
          "${SRCROOT}/src/morimotoFirstOrderApproximation.h"
          "${SRCROOT}/src/floquetApproximation.h"
          "${SRCROOT}/src/checkEigenvalues.h"
-
-
                  )
 
  # Add static libraries.

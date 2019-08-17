@@ -461,42 +461,42 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
    {
        double finalTime = initialTime + correctionTime;
 
-//       while ( (patchPointTime > initialTime) and (patchPointTime < finalTime) and (patchPointTime < RevolutionTime) and numberOfPatchPointsStored < numberOfPatchPoints  )
-//       {
-////           std::cout << "=== TESTING PATCH POINT CONDITIONS === " << std::endl
-////                      << "initialTime: " << initialTime << std::endl
-////                      << "patchPointTime: " << patchPointTime << std::endl
-////                      << "finalTime: " << finalTime << std::endl;
+       while ( (patchPointTime > initialTime) and (patchPointTime < finalTime) and (patchPointTime < RevolutionTime) and numberOfPatchPointsStored < numberOfPatchPoints  )
+       {
+//           std::cout << "=== TESTING PATCH POINT CONDITIONS === " << std::endl
+//                      << "initialTime: " << initialTime << std::endl
+//                      << "patchPointTime: " << patchPointTime << std::endl
+//                      << "finalTime: " << finalTime << std::endl;
 
 
-//           std::pair< Eigen::MatrixXd, double >finalTimeStatePatchPoint = propagateOrbitAugmentedToFinalCondition( getFullInitialStateAugmented( initialStateVector),
-//                                                                                        massParameter, patchPointTime, 1, stateHistoryInitialGuess, 1000, initialTime);
+           std::pair< Eigen::MatrixXd, double >finalTimeStatePatchPoint = propagateOrbitAugmentedToFinalCondition( getFullInitialStateAugmented( initialStateVector),
+                                                                                        massParameter, patchPointTime, 1, stateHistoryInitialGuess, 1000, initialTime);
 
-//           Eigen::MatrixXd stateVectorInclSTMPatchPoint    = finalTimeStatePatchPoint.first;
-//           double currentTimePatchPoint         = finalTimeStatePatchPoint.second;
-//           Eigen::VectorXd stateVectorOnlyPatchPoint = stateVectorInclSTMPatchPoint.block( 0, 0, 10, 1 );
+           Eigen::MatrixXd stateVectorInclSTMPatchPoint    = finalTimeStatePatchPoint.first;
+           double currentTimePatchPoint         = finalTimeStatePatchPoint.second;
+           Eigen::VectorXd stateVectorOnlyPatchPoint = stateVectorInclSTMPatchPoint.block( 0, 0, 10, 1 );
 
-//           if(numberOfPatchPointsStored < (numberOfPatchPoints - 1))
-//           {
-//               lowThrustInitialStateVectorGuess.segment(numberOfPatchPointsStored*11,10) = stateVectorOnlyPatchPoint;
-//               lowThrustInitialStateVectorGuess(numberOfPatchPointsStored*11+10) = currentTimePatchPoint;
+           if(numberOfPatchPointsStored < (numberOfPatchPoints - 1))
+           {
+               lowThrustInitialStateVectorGuess.segment(numberOfPatchPointsStored*11,10) = stateVectorOnlyPatchPoint;
+               lowThrustInitialStateVectorGuess(numberOfPatchPointsStored*11+10) = currentTimePatchPoint;
 
-//               patchPointTime = patchPointTime + patchPointInterval;
-//               numberOfPatchPointsStored++;
-//           }
+               patchPointTime = patchPointTime + patchPointInterval;
+               numberOfPatchPointsStored++;
+           }
 
-//           if(numberOfPatchPointsStored == (numberOfPatchPoints - 1))
-//           {
-//               lowThrustInitialStateVectorGuess.segment(numberOfPatchPointsStored*11,10) = initialStateVectorCorrected;
-//               lowThrustInitialStateVectorGuess(numberOfPatchPointsStored*11+10) = RevolutionTime;
+           if(numberOfPatchPointsStored == (numberOfPatchPoints - 1))
+           {
+               lowThrustInitialStateVectorGuess.segment(numberOfPatchPointsStored*11,10) = initialStateVectorCorrected;
+               lowThrustInitialStateVectorGuess(numberOfPatchPointsStored*11+10) = RevolutionTime;
 
 
-//               numberOfPatchPointsStored++;
+               numberOfPatchPointsStored++;
 
-//               //fullRevolutionCompleted = true;
-//           }
+               //fullRevolutionCompleted = true;
+           }
 
-//       }
+       }
 
 //      std::cout << " \n=== propagationCheck SECOND ROUND ===" << std::endl
 //                << "referenceAngle: " << offsetAngle * 180.0 / tudat::mathematical_constants::PI << std::endl
@@ -554,108 +554,5 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
 
      return lowThrustInitialStateVectorGuess;
 }
-
-
-//    for (int i = 0; i < (numberOfPatchPoints - 1); i++){
-
-//        // compute current time at patch point
-//        auto periodVariable = static_cast<double>(i);
-//        auto periodVariableFinal = static_cast<double>(i+1);
-//        auto periodVariable2 = static_cast<double>(numberOfPatchPoints);
-//        double initialTime = periodVariable * RevolutionTime / (periodVariable2 - 1.0);
-//        double currentfinalTime =   periodVariableFinal * RevolutionTime / (periodVariable2 - 1.0);
-
-//        // create state at segment end-time
-//        finalTime = currentfinalTime;
-
-//        std::pair< Eigen::MatrixXd, double > finalTimeState;
-//        if ( i < ( numberOfPatchPoints - 2) or numberOfCorrections == 0 )
-//        {
-//            finalTimeState = propagateOrbitAugmentedToFinalCondition( getFullInitialStateAugmented( initialStateVector),
-//                                                                             massParameter, finalTime, 1, stateHistoryInitialGuess, 1000, initialTime);
-
-//            //std::cout << "\n===Patch Point: " << i << " ==="<< std::endl
-//            //          << "initialStateVector: \n" << initialStateVector << std::endl;
-
-//        } else
-//        {
-//            finalTimeState = propagateOrbitAugmentedToFullRevolutionCondition( getFullInitialStateAugmented( initialStateVector),
-//                                                                               librationPointNr, massParameter, offsetAngle, 1, stateHistoryInitialGuess, 1000, initialTime);
-
-//            //std::cout << "\n===Patch Point: " << i << " ==="<< std::endl
-//            //          << "initialStateVector: \n" << initialStateVector << std::endl;
-//        }
-//        Eigen::MatrixXd stateVectorInclSTM      = finalTimeState.first;
-//        double currentTime             = finalTimeState.second;
-//        Eigen::VectorXd stateVectorOnly = stateVectorInclSTM.block( 0, 0, 10, 1 );
-
-//        //std::cout<< "finalStateVector: \n" << stateVectorOnly << std::endl;
-
-
-//        Eigen::VectorXd intermediateVelocityCorrection = Eigen::VectorXd::Zero(3);
-
-//        if (numberOfPatchPoints > 2 and numberOfCorrections > 0 and i < (numberOfPatchPoints - 2)){
-
-//            Eigen::VectorXd intermediatePerturbationVector = Eigen::VectorXd::Zero(10);
-//            intermediatePerturbationVector.segment(0,6) = equilibriumStateVector.segment(0,6) - stateVectorOnly.segment(0,6);
-//            //intermediatePerturbationVector.segment(0,6) = stateVectorInclSTM.block(0,1,6,6)*initialPerturbationVectorAfterCorrection;
-
-//            //std::cout << "patch point: " << i+1 << " check motion decomposition before correction" << std::endl;
-
-//            //computeMotionDecomposition(librationPointNr, orbitType, statePropagationMatrix, Eigen::MatrixXd::Identity(6,6), intermediatePerturbationVector.segment(0,6), 0.0, 1.0E-13);
-
-//            intermediateVelocityCorrection = computeVelocityCorrection(librationPointNr, orbitType, statePropagationMatrix, Eigen::MatrixXd::Identity(6,6), intermediatePerturbationVector.segment(0,6), 0.0 );
-
-//            interiorManeuverVector.segment((i+1)*3,3) = intermediateVelocityCorrection;
-//        }
-
-
-
-//        initialTime = currentTime;
-
-
-//        initialStateVector = stateVectorOnly;
-//        initialStateVector.segment(3,3) = initialStateVector.segment(3,3) - intermediateVelocityCorrection;
-
-//        initialPerturbationVectorAfterCorrection.segment(0,6) = equilibriumStateVector.segment(0,6) - initialStateVector.segment(0,6);
-
-//        //std::cout << "patch point: " << i+1 << " check motion decomposition after correction" << std::endl;
-
-//        //computeMotionDecomposition(librationPointNr, orbitType, statePropagationMatrix, Eigen::MatrixXd::Identity(6,6), initialPerturbationVectorAfterCorrection.segment(0,6), 0.0, 1.0E-13);
-
-
-//        if (i == 0  )
-//       {
-
-//            lowThrustInitialStateVectorGuess.segment(0,10) = initialStateVectorCorrected;
-//            lowThrustInitialStateVectorGuess(10) = 0.0;
-
-//            lowThrustInitialStateVectorGuess.segment(11*(i+1),10) = initialStateVector;
-//            lowThrustInitialStateVectorGuess((11*(i+1))+10) = currentTime;
-
-//        } else if (i == ( numberOfPatchPoints - 2 ) )
-//        {
-//            lowThrustInitialStateVectorGuess.segment(11*(i+1),10) = initialStateVectorCorrected;
-//            lowThrustInitialStateVectorGuess((11*(i+1))+10) = currentTime;
-
-//        } else
-//        {
-
-//            lowThrustInitialStateVectorGuess.segment(11*(i+1),10) = initialStateVector;
-//            lowThrustInitialStateVectorGuess((11*(i+1))+10) = currentTime;
-
-//        }
-
-//    }
-
-//    std::map< double, Eigen::VectorXd > stateHistoryCorrectedGuess;
-//    stateHistoryCorrectedGuess.clear();
-
-
-//      writeFloquetDataToFile( stateHistoryInitialGuess, stateHistoryCorrectedGuess, librationPointNr, orbitType, equilibriumStateVector, numberOfCorrections, amplitude, interiorManeuverVector);
-
-
-//    //std::cout << "\nResulting initial guess: \n" << lowThrustInitialStateVectorGuess << std::endl;
-
 
 

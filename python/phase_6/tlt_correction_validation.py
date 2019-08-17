@@ -213,7 +213,9 @@ class TLTCorrectorValidation:
                         + '_' + str(self.numberOfPatchPoints) + '_' + str("{:7.6f}".format(self.correctionTime)) \
                         + '_0_0_stateHistory.txt')
 
-        ax1.plot(orbit_df['x'],orbit_df['y'],color=self.plottingColors['singleLine'],linewidth=self.lineWidth, label='Current guess')
+
+
+        ax1.scatter(orbit_df['x'],orbit_df['y'],color=self.plottingColors['singleLine'],linewidth=self.lineWidth, label='Current guess',s=0.1)
 
 
         patch_points_df_previous = patch_points_df
@@ -997,20 +999,20 @@ if __name__ == '__main__':
     numbers_of_cycles = [2,3,4]
     low_dpi = False
 
-    # for lagrange_point_nr in lagrange_point_nrs:
-    #     for acceleration_magnitude in acceleration_magnitudes:
-    #         for alpha in alphas:
-    #             for amplitude in amplitudes:
-    #                 for number_of_patch_points in numbers_of_patch_points:
-    #                     for correction_time in correction_times:
-    #                         for number_of_cycles in numbers_of_cycles:
-    #                             tlt_corrector_validation = TLTCorrectorValidation(lagrange_point_nr, orbit_type, acceleration_magnitude, alpha, \
-    #                                                                           amplitude, number_of_patch_points, correction_time, number_of_cycles, low_dpi)
-    #
-    #
-    #                             #tlt_corrector_validation.plot_tlt_visualization()
-    #
-    #                             del tlt_corrector_validation
+    for lagrange_point_nr in lagrange_point_nrs:
+        for acceleration_magnitude in acceleration_magnitudes:
+            for alpha in alphas:
+                for amplitude in amplitudes:
+                    for number_of_patch_points in numbers_of_patch_points:
+                        for correction_time in correction_times:
+                            for number_of_cycles in numbers_of_cycles:
+                                tlt_corrector_validation = TLTCorrectorValidation(lagrange_point_nr, orbit_type, acceleration_magnitude, alpha, \
+                                                                              amplitude, number_of_patch_points, correction_time, number_of_cycles, low_dpi)
+
+
+                                tlt_corrector_validation.plot_tlt_visualization()
+
+                                del tlt_corrector_validation
     #
     # amplitudes = [0.0001,0.001,0.01]
     # numbers_of_patch_points = [4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]

@@ -9,5 +9,4 @@
 Eigen::MatrixXd computeStateDerivativeAugmented( const double time, const Eigen::MatrixXd& cartesianState );
 
 
-
 #endif  // TUDATBUNDLE_STATEDERIVATIVEMODELAUGMENTED_H
