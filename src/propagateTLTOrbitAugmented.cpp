@@ -11,12 +11,12 @@
 
 
 #include "propagateOrbitAugmented.h"
-#include "propagateMassVaryingOrbitAugmented.h"
+#include "propagateTLTOrbitAugmented.h"
 #include "stateDerivativeModelAugmented.h"
-#include "stateDerivativeModelAugmentedVaryingMass.h"
+#include "stateDerivativeModelAugmentedTLT.h"
 
 
-std::pair< Eigen::MatrixXd, double > propagateMassVaryingOrbitAugmented(
+std::pair< Eigen::MatrixXd, double > propagateTLTOrbitAugmented(
         const Eigen::MatrixXd& stateVectorInclSTM, double massParameter, double currentTime,
         int direction, double initialStepSize, double maximumStepSize )
 {
@@ -32,7 +32,7 @@ std::pair< Eigen::MatrixXd, double > propagateMassVaryingOrbitAugmented(
     // Create integrator to be used for propagating.
     tudat::numerical_integrators::RungeKuttaVariableStepSizeIntegrator< double, Eigen::MatrixXd > orbitMassVaryingIntegratorAugmented (
                 tudat::numerical_integrators::RungeKuttaCoefficients::get( tudat::numerical_integrators::RungeKuttaCoefficients::rungeKuttaFehlberg78 ),
-                &computeStateDerivativeAugmentedVaryingMass, 0.0, stateVectorInclSTM, minimumStepSize, maximumStepSize, relativeErrorTolerance, absoluteErrorTolerance);
+                &computeStateDerivativeAugmentedTLT, 0.0, stateVectorInclSTM, minimumStepSize, maximumStepSize, relativeErrorTolerance, absoluteErrorTolerance);
 
 
     if (direction > 0)
@@ -56,21 +56,24 @@ std::pair< Eigen::MatrixXd, double > propagateMassVaryingOrbitAugmented(
     return std::make_pair( outputState, currentTime );
 }
 
-std::pair< Eigen::MatrixXd, double >  propagateMassVaryingOrbitAugmentedToFinalCondition(
+std::pair< Eigen::MatrixXd, double >  propagateTLTOrbitAugmentedToFinalCondition(
         const Eigen::MatrixXd fullInitialState, const double massParameter, const double finalTime, int direction,
         std::map< double, Eigen::VectorXd >& stateHistory, const int saveFrequency, const double initialTime )
 {           
-    if( saveFrequency >= 0 )
-    {
-        stateHistory[ initialTime ] = fullInitialState.block( 0, 0, 10, 1 );
-    }
 
-    // Perform first integration step
+
+    // declare and initialize propagation variables
     std::pair< Eigen::MatrixXd, double > previousState;
     std::pair< Eigen::MatrixXd, double > currentState;
-    currentState = propagateMassVaryingOrbitAugmented(fullInitialState, massParameter, initialTime, direction, 1.0E-5, 1.0E-5 );
-    double currentTime = currentState.second;
-    int stepCounter = 1;
+    double currentTime = initialTime;
+    Eigen::MatrixXd stateVectorInclSTM = fullInitialState;
+    Eigen::MatrixXd stateVectorOnly = fullInitialState.block(0,0,10,1);
+
+    currentState.first = fullInitialState;
+    currentState.second = currentTime;
+
+    // Perform first integration step
+    int stepCounter = 0;
     // Perform integration steps until end of target time of half orbital period
     for (int i = 5; i <= 13; i++)
     {
@@ -93,7 +96,7 @@ std::pair< Eigen::MatrixXd, double >  propagateMassVaryingOrbitAugmentedToFinalC
 
                 currentTime = currentState.second;
                 previousState = currentState;
-                currentState = propagateMassVaryingOrbitAugmented(currentState.first, massParameter, currentTime, 1, initialStepSize, maximumStepSize);
+                currentState = propagateTLTOrbitAugmented(currentState.first, massParameter, currentTime, 1, initialStepSize, maximumStepSize);
 
                 stepCounter++;
 
@@ -121,7 +124,7 @@ std::pair< Eigen::MatrixXd, double >  propagateMassVaryingOrbitAugmentedToFinalC
 
                 currentTime = currentState.second;
                 previousState = currentState;
-                currentState = propagateMassVaryingOrbitAugmented(currentState.first, massParameter, currentTime, -1, initialStepSize, maximumStepSize);
+                currentState = propagateTLTOrbitAugmented(currentState.first, massParameter, currentTime, -1, initialStepSize, maximumStepSize);
 
                 stepCounter++;
 

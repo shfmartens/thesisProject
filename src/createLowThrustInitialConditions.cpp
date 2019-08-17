@@ -17,6 +17,7 @@
 #include "applyDifferentialCorrection.h"
 #include "applyPredictionCorrection.h"
 #include "applyMassRefinement.h"
+#include "applyTwoLevelTargeterLowThrust.h"
 #include "checkEigenvalues.h"
 #include "propagateOrbit.h"
 #include "propagateOrbitAugmented.h"
@@ -842,10 +843,18 @@ void createLowThrustInitialConditions( const int librationPointNr, const std::st
     linearApproximationResultIteration1 = getLowThrustInitialStateVectorGuess(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 0);
 
     // Refine the input guess with TLT-LT
+     Eigen::VectorXd twoLevelSolution = Eigen::VectorXd::Zero(11 * numberOfPatchPoints);
+     twoLevelSolution = applyTwoLevelTargeterLowThrust( librationPointNr, linearApproximationResultIteration1, massParameter,
+                                                 numberOfPatchPoints, maxPositionDeviationFromPeriodicOrbit,
+                                                 maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit );
+
+    // Refine the input guess with Mass Varying corrector
     Eigen::VectorXd massRefinedSolution = Eigen::VectorXd::Zero(11 * numberOfPatchPoints);
     massRefinedSolution = applyMassRefinement( librationPointNr, linearApproximationResultIteration1, massParameter,
                                                numberOfPatchPoints, maxPositionDeviationFromPeriodicOrbit,
                                                maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit );
+
+
 
 //    if ( continuationIndex == 1)
 //    {

@@ -5,20 +5,19 @@
 #include "Tudat/Astrodynamics/BasicAstrodynamics/astrodynamicsFunctions.h"
 
 
-#include "stateDerivativeModelAugmentedVaryingMass.h"
+#include "stateDerivativeModelAugmentedTLT.h"
 #include <iostream>
 
 
-Eigen::MatrixXd computeStateDerivativeAugmentedVaryingMass( const double time, const Eigen::MatrixXd& cartesianState )
+Eigen::MatrixXd computeStateDerivativeAugmentedTLT( const double time, const Eigen::MatrixXd& cartesianState )
 {
-
-    // ==== Declare essential model parameters and derivatives === //
 
     // Time is not directly used in the function.
     TUDAT_UNUSED_PARAMETER( time );
 
     // Declare mass parameter.
     extern double massParameter;
+    extern double maximumThrust;
 
     // Compute mass Rate
     double characteristicLength = 384400.0 * 1000.0; // Distance between Earth and Moon [m]
@@ -26,8 +25,9 @@ Eigen::MatrixXd computeStateDerivativeAugmentedVaryingMass( const double time, c
     double characteristicTime = orbitalPeriod /  ( 2.0 * tudat::mathematical_constants::PI); // inverted mean motion in [s]
     double seaGravitationalAcceleration = tudat::physical_constants::SEA_LEVEL_GRAVITATIONAL_ACCELERATION; // TUDAT
     double specificImpulse = 3000; // Recheck spacecraft properties
+    double thrustMagnitude = maximumThrust* ( std::sin(cartesianState(6,0) ) * std::sin(cartesianState(6,0)) ) ;
 
-    double massRate = ( -1.0 * cartesianState(6,0) * characteristicLength ) / (specificImpulse * seaGravitationalAcceleration * characteristicTime );
+    double massRate = ( -1.0 * thrustMagnitude * characteristicLength ) / (specificImpulse * seaGravitationalAcceleration * characteristicTime );
 
     // === Declare state derivative vector with same length as the state. ==
     Eigen::MatrixXd stateDerivative = Eigen::MatrixXd::Zero( 10, 11 );
@@ -59,9 +59,9 @@ Eigen::MatrixXd computeStateDerivativeAugmentedVaryingMass( const double time, c
     double alpha = cartesianState(7) * tudat::mathematical_constants::PI / 180.0;
     double beta = cartesianState(8) * tudat::mathematical_constants::PI / 180.0;
 
-    stateDerivative( 3, 0 ) = -termRelatedToPrimaryBody*(massParameter+cartesianState(0)) + termRelatedToSecondaryBody*(1.0-massParameter-cartesianState(0)) + cartesianState(0) + 2.0*cartesianState(4) + (cartesianState(6) / cartesianState(9)) * std::cos( alpha ) * std::cos( beta );
-    stateDerivative( 4, 0 ) = -termRelatedToPrimaryBody*cartesianState(1)                 - termRelatedToSecondaryBody*cartesianState(1)                     + cartesianState(1) - 2.0*cartesianState(3) + (cartesianState(6) / cartesianState(9)) * std::sin( alpha ) * std::cos( beta );
-    stateDerivative( 5, 0 ) = -termRelatedToPrimaryBody*cartesianState(2)                 - termRelatedToSecondaryBody*cartesianState(2) + (cartesianState(6) / cartesianState(9)) * std::sin( beta ) ;
+    stateDerivative( 3, 0 ) = -termRelatedToPrimaryBody*(massParameter+cartesianState(0)) + termRelatedToSecondaryBody*(1.0-massParameter-cartesianState(0)) + cartesianState(0) + 2.0*cartesianState(4) + (thrustMagnitude / cartesianState(9)) * std::cos( alpha ) * std::cos( beta );
+    stateDerivative( 4, 0 ) = -termRelatedToPrimaryBody*cartesianState(1)                 - termRelatedToSecondaryBody*cartesianState(1)                     + cartesianState(1) - 2.0*cartesianState(3) + (thrustMagnitude / cartesianState(9)) * std::sin( alpha ) * std::cos( beta );
+    stateDerivative( 5, 0 ) = -termRelatedToPrimaryBody*cartesianState(2)                 - termRelatedToSecondaryBody*cartesianState(2) + (thrustMagnitude / cartesianState(9)) * std::sin( beta ) ;
 
     // set the dervative of the thrust parameters equal to zero, since thrust magnitude and direction is constant
     stateDerivative( 6, 0 ) = 0.0;
@@ -82,41 +82,40 @@ Eigen::MatrixXd computeStateDerivativeAugmentedVaryingMass( const double time, c
     double Uzy = Uyz;
     double Uzz = (3.0*(1.0-massParameter)*zPositionScaledSquared                         )/distanceToPrimaryToFifthPower+ (3.0*massParameter*zPositionScaledSquared                             )/distanceToSecondaryToFifthPower - (1.0-massParameter)/distanceToPrimaryCubed - massParameter/distanceToSecondaryCubed ;
 
-    // Compute partials w.r.t the thrust magnitude
-    double xAccelerationPartialThrust = ( 1.0 / cartesianState(9) ) * std::cos( alpha ) * std::cos( beta );
-    double yAccelerationPartialThrust = ( 1.0 / cartesianState(9) ) * std::sin( alpha ) * std::cos( beta );
-    double zAccelerationPartialThrust = ( 1.0 / cartesianState(9) ) * std::sin( beta );
-    double massRatePartialThrust = ( -1.0 * characteristicLength ) / (specificImpulse * seaGravitationalAcceleration * characteristicTime );
+    // Compute partials w.r.t the gamma
+    double thrustMagnitudeDerivativeGamma = maximumThrust * 2.0 * std::sin(cartesianState(6,0)) * std::cos(cartesianState(6,0));
+    double xAccelerationPartialGamma = ( thrustMagnitudeDerivativeGamma / cartesianState(9) ) * std::cos( alpha ) * std::cos( beta );
+    double yAccelerationPartialGamma = ( thrustMagnitudeDerivativeGamma / cartesianState(9) ) * std::sin( alpha ) * std::cos( beta );
+    double zAccelerationPartialGamma = ( thrustMagnitudeDerivativeGamma / cartesianState(9) ) * std::sin( beta );
+    double massRatePartialGamma = ( -thrustMagnitudeDerivativeGamma * characteristicLength ) / (specificImpulse * seaGravitationalAcceleration * characteristicTime );
+
 
     // Compute partials w.r.t the alpha
-    double xAccelerationPartialAlpha = -1.0 * (cartesianState(6) / cartesianState(9)) * std::sin( alpha ) * std::cos( beta );
-    double yAccelerationPartialAlpha = (cartesianState(6) / cartesianState(9)) * std::cos( alpha ) * std::cos( beta );
+    double xAccelerationPartialAlpha = -1.0 * (thrustMagnitude / cartesianState(9)) * std::sin( alpha ) * std::cos( beta );
+    double yAccelerationPartialAlpha = (thrustMagnitude / cartesianState(9)) * std::cos( alpha ) * std::cos( beta );
 
     // Compute partials w.r.t the beta
-    double xAccelerationPartialBeta = -1.0 * (cartesianState(6) / cartesianState(9)) * std::cos( alpha ) * std::sin( beta );
-    double yAccelerationPartialBeta = -1.0 * (cartesianState(6) / cartesianState(9)) * std::sin( alpha ) * std::sin( beta );
-    double zAccelerationPartialBeta = (cartesianState(6) / cartesianState(9)) * std::cos( beta );
+    double xAccelerationPartialBeta = -1.0 * (thrustMagnitude / cartesianState(9)) * std::cos( alpha ) * std::sin( beta );
+    double yAccelerationPartialBeta = -1.0 * (thrustMagnitude / cartesianState(9)) * std::sin( alpha ) * std::sin( beta );
+    double zAccelerationPartialBeta = (thrustMagnitude / cartesianState(9)) * std::cos( beta );
 
     // Compute partials w.r.t the mass
-    double xAccelerationPartialMass = -1.0 * (cartesianState(6) / ( cartesianState(9) * cartesianState(9) ) ) * std::cos( alpha ) * std::cos( beta );
-    double yAccelerationPartialMass = -1.0 * (cartesianState(6) / ( cartesianState(9) * cartesianState(9) ) ) * std::sin( alpha ) * std::cos( beta );
-    double zAccelerationPartialMass = -1.0 * (cartesianState(6) / ( cartesianState(9) * cartesianState(9) ) ) * std::sin( beta );
-
-
-
+    double xAccelerationPartialMass = -1.0 * (thrustMagnitude / ( cartesianState(9) * cartesianState(9) ) ) * std::cos( alpha ) * std::cos( beta );
+    double yAccelerationPartialMass = -1.0 * (thrustMagnitude / ( cartesianState(9) * cartesianState(9) ) ) * std::sin( alpha ) * std::cos( beta );
+    double zAccelerationPartialMass = -1.0 * (thrustMagnitude / ( cartesianState(9) * cartesianState(9) ) ) * std::sin( beta );
 
     // Create the STM-derivative matrix
     Eigen::MatrixXd stmDerivativeFunctionAugmented (10,10);
     stmDerivativeFunctionAugmented << 0.0, 0.0, 0.0,  1.0, 0.0, 0.0,  0.0,                        0.0,                           0.0,                         0.0,
                                       0.0, 0.0, 0.0,  0.0, 1.0, 0.0,  0.0,                        0.0,                           0.0,                         0.0,
                                       0.0, 0.0, 0.0,  0.0, 0.0, 1.0,  0.0,                        0.0,                           0.0,                         0.0,
-                                      Uxx, Uxy, Uxz,  0.0, 2.0, 0.0,  xAccelerationPartialThrust, xAccelerationPartialAlpha,     xAccelerationPartialBeta,    xAccelerationPartialMass,
-                                      Uyx, Uyy, Uyz, -2.0, 0.0, 0.0,  yAccelerationPartialThrust, yAccelerationPartialAlpha,     yAccelerationPartialBeta,    yAccelerationPartialMass,
-                                      Uzx, Uzy, Uzz,  0.0, 0.0, 0.0,  zAccelerationPartialThrust, 0.0,                           zAccelerationPartialBeta,    zAccelerationPartialMass,
+                                      Uxx, Uxy, Uxz,  0.0, 2.0, 0.0,  xAccelerationPartialGamma, xAccelerationPartialAlpha,     xAccelerationPartialBeta,    xAccelerationPartialMass,
+                                      Uyx, Uyy, Uyz, -2.0, 0.0, 0.0,  yAccelerationPartialGamma, yAccelerationPartialAlpha,     yAccelerationPartialBeta,    yAccelerationPartialMass,
+                                      Uzx, Uzy, Uzz,  0.0, 0.0, 0.0,  zAccelerationPartialGamma, 0.0,                           zAccelerationPartialBeta,    zAccelerationPartialMass,
                                       0.0, 0.0, 0.0,  0.0, 0.0,  0.0, 0.0,                        0.0,                           0.0,                         0.0,
                                       0.0, 0.0, 0.0,  0.0, 0.0,  0.0, 0.0,                        0.0,                           0.0,                         0.0,
                                       0.0, 0.0, 0.0,  0.0, 0.0,  0.0, 0.0,                        0.0,                           0.0,                         0.0,
-                                      0.0, 0.0, 0.0,  0.0, 0.0,  0.0, massRatePartialThrust,      0.0,                           0.0,                         0.0;
+                                      0.0, 0.0, 0.0,  0.0, 0.0,  0.0, massRatePartialGamma,      0.0,                           0.0,                         0.0;
 
     // Differentiate the STM.
     stateDerivative.block( 0, 1, 10, 10 ) = stmDerivativeFunctionAugmented * cartesianState.block( 0, 1, 10, 10 );

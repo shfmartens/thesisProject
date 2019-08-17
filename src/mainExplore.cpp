@@ -32,7 +32,7 @@
 
 
 double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER, tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER );
-
+double maximumThrust = 0.1;
 int main (){
 
 
@@ -60,7 +60,7 @@ int main (){
     // ================================
         std::string orbitType = "horizontal";
         int continuationIndex = 1; //1: Continuate for H, 8: acceleration, 9: alpha, 10: beta
-        double accelerationMagnitude = 0.1;
+        double accelerationMagnitude = 0.07;
         double accelerationAngle = 90.0;
         double accelerationAngle2 = 0.0;
         double initialMass = 1.0;

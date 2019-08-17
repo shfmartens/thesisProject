@@ -309,6 +309,7 @@ Eigen::VectorXd computeLevel2Correction( const Eigen::VectorXd deviationVector, 
             periodicityJacobianRow2.block(0,4*(k),3,3) += -(B_PF.inverse());
             periodicityJacobianRow2.block(0,(4*(k))+3,3,1) += (B_PF.inverse())*velocityPresentPlus;
             periodicityJacobianRow2.block(0,4*(k+1),3,3) += (B_PF.inverse())*A_PF;
+            //periodicityJacobianRow2.block(0,(4*(k+1))+3,3,1) += -(accelerationFutureMinus - D_FP*(B_FP.inverse())*velocityFutureMinus );
             periodicityJacobianRow2.block(0,(4*(k+1))+3,3,1) += -(accelerationFutureMinus - D_FP*(B_FP.inverse())*velocityPresentMinus );
 
             constraintVectorPeriodic.segment(3*k,3) = -1.0*(initialGuess.segment(0,3) - stateVectorFutureMinus.segment(0,3));
