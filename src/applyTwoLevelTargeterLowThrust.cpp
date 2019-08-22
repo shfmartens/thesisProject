@@ -19,6 +19,53 @@
 #include "propagateTLTOrbitAugmented.h"
 #include "propagateMassVaryingOrbitAugmented.h"
 #include "propagateOrbitAugmented.h"
+#include "computeLevel1TLTCorrection.h"
+#include "computeLevel2TLTCorrection.h"
+#include "computeLevel2Correction.h"
+
+#include "computeLevel2MassRefinementCorrection.h"
+
+
+
+void writeTLTDataToFile(const int librationPointNr, const double accelerationMagnitude, const double alpha, const double amplitude, const int numberOfPatchPoints, const double correctionTime,
+                              std::map< double, Eigen::VectorXd > stateHistory, const Eigen::VectorXd stateVector, Eigen::VectorXd deviations, const Eigen::MatrixXd propagatedStatesInclSTMThrust, const Eigen::MatrixXd propagatedStatesInclSTMCoast,
+                              const int cycleNumber, const int correctorLevel, const int numberOfCorrections, const double correctionDuration )
+{
+    Eigen::VectorXd deviationsAndDuration = Eigen::VectorXd::Zero(7);
+    deviationsAndDuration.segment(0,5) = deviations;
+    deviationsAndDuration(5) = correctionDuration;
+    deviationsAndDuration(6) = numberOfCorrections;
+
+    std::string fileNameStringStateVector;
+    std::string fileNameStringStateHistory;
+    std::string fileNameStringDeviations;
+    std::string fileNameStringPropagatedStatesThrust;
+    std::string fileNameStringPropagatedStatesCoast;
+
+    std::string directoryString = "../data/raw/two_level_targeter/";
+
+    fileNameStringStateVector = ("L" + std::to_string(librationPointNr) + "_" + std::to_string(accelerationMagnitude)
+                                 + "_" + std::to_string(alpha) + "_" + std::to_string(amplitude) + "_" + std::to_string(numberOfPatchPoints) + "_" + std::to_string(correctionTime) + "_" +  std::to_string(cycleNumber) + "_" +  std::to_string(correctorLevel) + "_stateVectors.txt");
+    fileNameStringStateHistory = ("L" + std::to_string(librationPointNr) + "_" + std::to_string(accelerationMagnitude)
+                                  + "_" + std::to_string(alpha) + "_" + std::to_string(amplitude) + "_" + std::to_string(numberOfPatchPoints) + "_" + std::to_string(correctionTime) + "_" +  std::to_string(cycleNumber) + "_" +  std::to_string(correctorLevel) + "_stateHistory.txt");
+    fileNameStringDeviations = ("L" + std::to_string(librationPointNr) + "_" + std::to_string(accelerationMagnitude)
+                                + "_" + std::to_string(alpha) + "_" + std::to_string(amplitude) + "_" + std::to_string(numberOfPatchPoints) + "_" + std::to_string(correctionTime) + "_" +  std::to_string(cycleNumber) + "_" +  std::to_string(correctorLevel) + "_deviations.txt");
+    fileNameStringPropagatedStatesThrust = ("L" + std::to_string(librationPointNr) + "_" + std::to_string(accelerationMagnitude)
+                                + "_" + std::to_string(alpha) + "_" + std::to_string(amplitude) + "_" + std::to_string(numberOfPatchPoints) + "_" + std::to_string(correctionTime) + "_" +  std::to_string(cycleNumber) + "_" +  std::to_string(correctorLevel) + "_propagatedStatesThrust.txt");
+    fileNameStringPropagatedStatesCoast = ("L" + std::to_string(librationPointNr) + "_" + std::to_string(accelerationMagnitude)
+                                + "_" + std::to_string(alpha) + "_" + std::to_string(amplitude) + "_" + std::to_string(numberOfPatchPoints) + "_" + std::to_string(correctionTime) + "_" +  std::to_string(cycleNumber) + "_" +  std::to_string(correctorLevel) + "_propagatedStatesCoast.txt");
+
+    Eigen::VectorXd propagatedStatesThrust = propagatedStatesInclSTMThrust.block(0,0,10*(numberOfPatchPoints-1),1);
+    Eigen::VectorXd propagatedStatesCoast = propagatedStatesInclSTMCoast.block(0,0,10*(numberOfPatchPoints-1),1);
+
+
+    tudat::input_output::writeDataMapToTextFile( stateHistory, fileNameStringStateHistory, directoryString );
+    tudat::input_output::writeMatrixToFile( deviationsAndDuration, fileNameStringDeviations, 16, directoryString);
+    tudat::input_output::writeMatrixToFile( stateVector, fileNameStringStateVector, 16, directoryString);
+    tudat::input_output::writeMatrixToFile( propagatedStatesThrust, fileNameStringPropagatedStatesThrust, 16, directoryString);
+    tudat::input_output::writeMatrixToFile( propagatedStatesCoast, fileNameStringPropagatedStatesCoast, 16, directoryString);
+
+}
 
 Eigen::VectorXd rewriteInputGuess(const Eigen::VectorXd initialStateVector, const int numberOfPatchPoints)
 {
@@ -178,12 +225,19 @@ Eigen::VectorXd applyTwoLevelTargeterLowThrust(const int librationPointNr,
                                             const int maxNumberOfIterations )
 {
     std::cout << "\nAPPLY TLT-LT \n" << std::endl;
+    double amplitude = 1.0E-4;
+    double correctionTime = 0.05;
+    double timeINIT = 0.0;
+    double timeLI = 0.0;
+    double timeLII = 0.0;
+    extern double maximumThrust;
+
 
     // Declare relevant variables
-    Eigen::VectorXd outputVector = Eigen::VectorXd::Zero(25+11*numberOfPatchPoints);
+    Eigen::VectorXd outputVector = Eigen::VectorXd::Zero(11*numberOfPatchPoints);
     Eigen::VectorXd currentTrajectoryGuess = Eigen::VectorXd(12*numberOfPatchPoints);
-    Eigen::MatrixXd propagatedStatesInclSTMThrust = Eigen::MatrixXd::Zero(10*numberOfPatchPoints,11);
-    Eigen::MatrixXd propagatedStatesInclSTMCoast = Eigen::MatrixXd::Zero(10*numberOfPatchPoints,11);
+    Eigen::MatrixXd propagatedStatesInclSTMThrust = Eigen::MatrixXd::Zero(10*(numberOfPatchPoints-1),11);
+    Eigen::MatrixXd propagatedStatesInclSTMCoast = Eigen::MatrixXd::Zero(10*(numberOfPatchPoints-1),11);
     Eigen::VectorXd defectVector =  Eigen::VectorXd::Zero(12* (numberOfPatchPoints - 1) );
     Eigen::VectorXd deviationNorms = Eigen::VectorXd::Zero(6);
     std::map< double, Eigen::VectorXd > stateHistory;
@@ -193,6 +247,8 @@ Eigen::VectorXd applyTwoLevelTargeterLowThrust(const int librationPointNr,
 
     // ========= Rewrite stateVector into the desired form, replace f with gamma and add the burn points ====
     currentTrajectoryGuess = rewriteInputGuess(initialStateVector, numberOfPatchPoints);
+
+
 
 
     // ========= Compute current defects deviations by propagating the currentTrajectoryGuess in CR3BPLT with varying mass  ======= //
@@ -214,6 +270,126 @@ Eigen::VectorXd applyTwoLevelTargeterLowThrust(const int librationPointNr,
               << "Velocity ext. deviation: " << velocityExteriorDeviationNorm << std::endl
               << "Time deviation: " << timeDeviationNorm << std::endl
               << "Mass deviation: " << massDeviationNorm << std::endl;
+
+    writeTLTDataToFile(librationPointNr, initialStateVector(6), initialStateVector(7), amplitude, numberOfPatchPoints, correctionTime,
+                             stateHistory, currentTrajectoryGuess, deviationNorms, propagatedStatesInclSTMThrust, propagatedStatesInclSTMCoast, 0, 0, 0, timeINIT);
+
+    int numberOfCycles = 0;
+    // ==== Apply Level 1 Correction ==== //
+
+    while(  positionDeviationNorm > maxPositionDeviationFromPeriodicOrbit or
+            velocityTotalDeviationNorm > maxVelocityDeviationFromPeriodicOrbit or
+             timeDeviationNorm > maxPeriodDeviationFromPeriodicOrbit ){
+
+        int numberOfLevelICorrections = 0;
+        auto startLI = std::chrono::high_resolution_clock::now();
+        currentTrajectoryGuess = computeLevel1TLTCorrection(defectVector, propagatedStatesInclSTMThrust, propagatedStatesInclSTMCoast, currentTrajectoryGuess, numberOfPatchPoints, massParameter, numberOfLevelICorrections );
+
+        stateHistory.clear();
+        defectVector.setZero();
+        propagatedStatesInclSTMThrust.setZero();
+        propagatedStatesInclSTMCoast.setZero();
+
+        computeTwoLevelDeviations(currentTrajectoryGuess, numberOfPatchPoints, propagatedStatesInclSTMCoast, propagatedStatesInclSTMThrust, defectVector, stateHistory, massParameter);
+
+        deviationNorms = computeTLTDeviationNorms(defectVector, numberOfPatchPoints);
+
+        double positionDeviationNorm = deviationNorms(0);
+        double velocityTotalDeviationNorm = deviationNorms(1);
+        double velocityInteriorDeviationNorm = deviationNorms(2);
+        double velocityExteriorDeviationNorm = deviationNorms(3);
+        double timeDeviationNorm = deviationNorms(4);
+        double massDeviationNorm = deviationNorms(5);
+
+        std::cout << "\nLevel I Converged, remaining deviations are: " << std::endl
+                  << "Position deviation: " << positionDeviationNorm << std::endl
+                  << "Velocity deviation: " << velocityTotalDeviationNorm << std::endl
+                  << "Velocity int. deviation: " << velocityInteriorDeviationNorm << std::endl
+                  << "Velocity ext. deviation: " << velocityExteriorDeviationNorm << std::endl
+                  << "Time deviation: " << timeDeviationNorm << std::endl
+                  << "Mass deviation: " << massDeviationNorm << std::endl;
+
+        auto stopLI = std::chrono::high_resolution_clock::now();
+        auto durationLI = std::chrono::duration_cast<std::chrono::seconds>(stopLI - startLI);
+        timeLI = durationLI.count();
+
+        writeTLTDataToFile(librationPointNr, initialStateVector(6), initialStateVector(7), amplitude, numberOfPatchPoints, correctionTime,
+                                 stateHistory, currentTrajectoryGuess, deviationNorms, propagatedStatesInclSTMThrust, propagatedStatesInclSTMCoast, numberOfCycles+1, 1, numberOfLevelICorrections, timeLI);
+
+        if(positionDeviationNorm > maxPositionDeviationFromPeriodicOrbit or
+                   velocityTotalDeviationNorm > maxVelocityDeviationFromPeriodicOrbit or
+                timeDeviationNorm > maxPeriodDeviationFromPeriodicOrbit){
+
+            // ==== Apply Level II Correction ==== //
+            auto startLII = std::chrono::high_resolution_clock::now();
+
+            Eigen::VectorXd temporaryGuess = Eigen::VectorXd::Zero(11*numberOfPatchPoints);
+            Eigen::VectorXd ballisticGuess = Eigen::VectorXd::Zero(11*numberOfPatchPoints);
+            Eigen::VectorXd tempDeviation = Eigen::VectorXd::Zero(11*numberOfPatchPoints);
+            Eigen::MatrixXd tempPropagatedStatesInclSTMThrust = Eigen::MatrixXd::Zero(10*(numberOfPatchPoints-1),11);
+
+
+            for (int k = 0; k < numberOfPatchPoints; k++)
+            {
+                temporaryGuess.segment(k*11,11) = currentTrajectoryGuess.segment(k*12,11);
+                tempDeviation.segment(k*11,11) = defectVector.segment(k*12,11);
+                temporaryGuess(k*11+6) =  maximumThrust * std::sin(currentTrajectoryGuess(k*12+6) ) * std::sin(currentTrajectoryGuess(k*12+6) );
+
+                if(k < numberOfPatchPoints -1)
+                {
+                    tempPropagatedStatesInclSTMThrust.block(10*k,0,10,11) = propagatedStatesInclSTMThrust.block(10*k,0,10,11);
+                    tempPropagatedStatesInclSTMThrust(10*k+6,0) = maximumThrust * std::sin(propagatedStatesInclSTMThrust(10*k+6,0) ) * std::sin(propagatedStatesInclSTMThrust(10*k+6,0) );
+                }
+            }
+
+//            std::cout << "tempGuess: \n" << temporaryGuess << std::endl;
+//            std::cout << "currentTrajectoryGuess: \n" << currentTrajectoryGuess << std::endl;
+
+            ballisticGuess = computeLevel2Correction(tempDeviation, tempPropagatedStatesInclSTMThrust, temporaryGuess, Eigen::VectorXd::Zero(3), numberOfPatchPoints, massParameter );
+            temporaryGuess = computeLevel2MassRefinementCorrection(tempDeviation, tempPropagatedStatesInclSTMThrust, temporaryGuess, numberOfPatchPoints, massParameter );
+            currentTrajectoryGuess = computeLevel2TLTCorrection(defectVector, propagatedStatesInclSTMThrust, propagatedStatesInclSTMCoast, currentTrajectoryGuess, numberOfPatchPoints, massParameter);
+
+            stateHistory.clear();
+            defectVector.setZero();
+            propagatedStatesInclSTMThrust.setZero();
+            propagatedStatesInclSTMCoast.setZero();
+
+            //std::cout << "currentTrajectoryGuess: \n" << currentTrajectoryGuess << std::endl;
+
+            computeTwoLevelDeviations(currentTrajectoryGuess, numberOfPatchPoints, propagatedStatesInclSTMCoast, propagatedStatesInclSTMThrust, defectVector, stateHistory, massParameter);
+
+            deviationNorms = computeTLTDeviationNorms(defectVector, numberOfPatchPoints);
+
+            double positionDeviationNorm = deviationNorms(0);
+            double velocityTotalDeviationNorm = deviationNorms(1);
+            double velocityInteriorDeviationNorm = deviationNorms(2);
+            double velocityExteriorDeviationNorm = deviationNorms(3);
+            double timeDeviationNorm = deviationNorms(4);
+            double massDeviationNorm = deviationNorms(5);
+
+            std::cout << "\nLevel II Applied, remaining deviations are: " << std::endl
+                      << "Position deviation: " << positionDeviationNorm << std::endl
+                      << "Velocity deviation: " << velocityTotalDeviationNorm << std::endl
+                      << "Velocity int. deviation: " << velocityInteriorDeviationNorm << std::endl
+                      << "Velocity ext. deviation: " << velocityExteriorDeviationNorm << std::endl
+                      << "Time deviation: " << timeDeviationNorm << std::endl
+                      << "Mass deviation: " << massDeviationNorm << std::endl;
+
+            auto stopLII = std::chrono::high_resolution_clock::now();
+            auto durationLII = std::chrono::duration_cast<std::chrono::seconds>(stopLII - startLII);
+            timeLII = durationLII.count();
+
+            writeTLTDataToFile(librationPointNr, initialStateVector(6), initialStateVector(7), amplitude, numberOfPatchPoints, correctionTime,
+                                     stateHistory, currentTrajectoryGuess, deviationNorms, propagatedStatesInclSTMThrust, propagatedStatesInclSTMCoast, numberOfCycles+1, 2, 0, timeLII);
+
+
+
+        }
+
+
+        numberOfCycles++;
+
+    }
 
 
 

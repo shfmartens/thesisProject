@@ -212,7 +212,7 @@ Eigen::VectorXd applyMassRefinement(const int librationPointNr,
     int numberOfCycles = 0;
     // ==== Apply Level 1 Correction ==== //
     while( positionDeviationNorm > maxPositionDeviationFromPeriodicOrbit or
-           velocityInteriorDeviationNorm > maxVelocityDeviationFromPeriodicOrbit or
+           velocityTotalDeviationNorm > maxVelocityDeviationFromPeriodicOrbit or
            timeDeviationNorm > maxPeriodDeviationFromPeriodicOrbit ){
 
         int numberOfLevelICorrections = 0;
@@ -223,6 +223,20 @@ Eigen::VectorXd applyMassRefinement(const int librationPointNr,
         stateHistory.clear();
         defectVector.setZero();
         propagatedStatesInclSTM.setZero();
+
+        if (std::abs(currentTrajectoryGuess.norm()) < 1.0E-12 )
+        {
+            std::cout << " Level 1 did not converge within specified amount of iterations " << std::endl;
+            outputVector = Eigen::VectorXd::Zero(25+11*numberOfPatchPoints);
+            return outputVector;
+        }
+
+        if (numberOfCycles > maxNumberOfIterations )
+        {
+            std::cout << " Mass Refinement did not converge within specified amount of iterations " << std::endl;
+            outputVector = Eigen::VectorXd::Zero(25+11*numberOfPatchPoints);
+            return outputVector;
+        }
 
         computeMassVaryingDeviations(currentTrajectoryGuess, numberOfPatchPoints, propagatedStatesInclSTM, defectVector, stateHistory, massParameter);
 
@@ -252,7 +266,7 @@ Eigen::VectorXd applyMassRefinement(const int librationPointNr,
                                  stateHistory, currentTrajectoryGuess, deviationNorms, propagatedStatesInclSTM, numberOfCycles+1, 1, numberOfLevelICorrections, timeLI);
 
         if(positionDeviationNorm > maxPositionDeviationFromPeriodicOrbit or
-                   velocityInteriorDeviationNorm > maxVelocityDeviationFromPeriodicOrbit or
+                   velocityTotalDeviationNorm > maxVelocityDeviationFromPeriodicOrbit or
                 timeDeviationNorm > maxPeriodDeviationFromPeriodicOrbit){
 
             // ==== Apply Level II Correction ==== //

@@ -53,7 +53,7 @@ class DisplayPeriodicSolutions:
         self.orbitID = []
         self.Hlt = []
 
-        self.spacingFactor = 25
+        self.spacingFactor = 1
 
         # Plot lay-out settings
         self.plotAlpha = 1
@@ -173,11 +173,23 @@ class DisplayPeriodicSolutions:
                             + str("{:14.13f}".format(self.alpha)) + '_' \
                             + str("{:14.13f}".format(self.beta)) + '_'  \
                             + str("{:14.13f}".format(self.Hlt[i])) + '_.txt')
+
+            print(len(df['x']))
+
             ax2.plot(df['x'], df['y'], df['z'], color=plot_color, alpha=self.plotAlpha, linewidth=self.lineWidth)
             ax5.plot(df['x'], df['y'], color=plot_color, alpha=self.plotAlpha, linewidth=self.lineWidth)
 
+        scaleDistance = (max(max(df['y'])-min(df['y']),max(df['x'])-min(df['x'])))/2
+        x_middle = (max(df['x']) - min(df['x']))/2
+        y_middle = (max(df['y']) - min(df['y']))/2
 
-        ax2.set_xlim([0.8 - scaleDistance*figureRatio, 0.8 + scaleDistance*figureRatio])
+        print(x_middle)
+        print(y_middle)
+
+
+        ax5.set_xlim([0.832,0.84])
+        ax5.set_ylim([-0.005,0.005])
+
         ax2.set_ylim([-scaleDistance, +scaleDistance])
         ax2.set_zlim([-scaleDistance, +scaleDistance])
 
@@ -185,9 +197,6 @@ class DisplayPeriodicSolutions:
         ax2.view_init(30, -120)
 
 
-
-        ax5.set_xlim([0.9 - scaleDistance*figureRatio  , 0.9 + scaleDistance*figureRatio])
-        ax5.set_ylim([-scaleDistance, + scaleDistance])
 
         fig.tight_layout()
         if self.orbitType == 'horizontal':
@@ -242,8 +251,8 @@ class DisplayPeriodicSolutions:
 
 if __name__ == '__main__':
     orbit_types = ['horizontal']
-    lagrange_points = [2]
-    acceleration_magnitudes = [0.1]
+    lagrange_points = [1]
+    acceleration_magnitudes = [0.0]
     alphas = [0.0]
     betas = [0.0]
 

@@ -26,50 +26,68 @@
 void shiftConvergedTrajectoryGuess(int librationPointNr, Eigen::VectorXd currentTrajectoryGuess, Eigen::VectorXd inputTrajectoryGuess, const Eigen::VectorXd offsetUnitVector, Eigen::VectorXd& convergedTrajectoryGuess, double massParameter, const int numberOfPatchPoints)
 {
 
-// Determine the propagation direction and integration time
-    int direction;
-    double integrationDelta;
-    if(currentTrajectoryGuess(10) < inputTrajectoryGuess(10))
-    {
-        direction = 1;
-        if (currentTrajectoryGuess(10) < 0.0)
-        {
-            integrationDelta = -currentTrajectoryGuess(10);
-        } else
-        {
-            integrationDelta = currentTrajectoryGuess(10);
-        }
-
-    }else
-    {
-        direction = -1;
-        if (currentTrajectoryGuess(10) < 0.0)
-        {
-            integrationDelta = currentTrajectoryGuess(10);
-        } else
-        {
-            integrationDelta = -currentTrajectoryGuess(10);
-        }
-
-    }
 
 // Determine Target Angle
     double targetAngle;
     if (librationPointNr < 3)
     {
-        targetAngle = atan2( inputTrajectoryGuess(1), inputTrajectoryGuess(0) - (1.0 - massParameter) );
+        targetAngle = atan2( inputTrajectoryGuess(1), inputTrajectoryGuess(0) - (1.0 - massParameter) ) * 180.0/tudat::mathematical_constants::PI;
 
     } else
     {
-        targetAngle = atan2( inputTrajectoryGuess(1), inputTrajectoryGuess(0) - ( - massParameter) );
+        targetAngle = atan2( inputTrajectoryGuess(1), inputTrajectoryGuess(0) - ( - massParameter) ) * 180.0/tudat::mathematical_constants::PI;;
+    }
+    if (targetAngle < 0)
+    {
+        targetAngle = targetAngle + 360.0;
     }
 
 
-//    std::cout << " check input settings for shifting function == " << std::endl
-//              << " offsetUnitVector atan2 angle: " << targetAngle *180.0 / tudat::mathematical_constants::PI << std::endl
-//              << " direction: " << direction << std::endl
-//              << " integrationDelta: " << integrationDelta << std::endl
-//              << " currentTrajectoryGuess First Point: \n" << currentTrajectoryGuess.segment(0,6) << std::endl;
+
+ // Determine Target Angle
+    double startingAngle;
+        if (librationPointNr < 3)
+        {
+            startingAngle = atan2( currentTrajectoryGuess(1), currentTrajectoryGuess(0) - (1.0 - massParameter) ) * 180.0/tudat::mathematical_constants::PI;;
+
+        } else
+        {
+            startingAngle = atan2( currentTrajectoryGuess(1), currentTrajectoryGuess(0) - ( - massParameter) ) * 180.0/tudat::mathematical_constants::PI;;
+        }
+        if (startingAngle < 0)
+        {
+            startingAngle = startingAngle + 360.0;
+        }
+
+ // Determine integration Direction
+    int direction;
+        if (startingAngle - targetAngle > 0 )
+        {
+            if ( librationPointNr == 1)
+            {
+                direction = 1;
+            }
+            if (librationPointNr == 2)
+            {
+                direction = -1;
+            }
+        } else if (startingAngle - targetAngle < 0 )
+        {
+            if ( librationPointNr == 1)
+            {
+                direction = -1;
+            }
+            if (librationPointNr == 2)
+            {
+                direction = 1;
+            }
+
+        } else
+        {
+            convergedTrajectoryGuess = currentTrajectoryGuess;
+            return;
+        }
+
 
 
     Eigen::MatrixXd initialStateAndSTM = Eigen::MatrixXd::Zero(10,11);
@@ -88,27 +106,37 @@ void shiftConvergedTrajectoryGuess(int librationPointNr, Eigen::VectorXd current
     // determine shifting Time
     double timeOfIntegration = shiftedTime - currentTrajectoryGuess(10);
 
-    std::cout << "TIMEOFINTEGRATION: " << timeOfIntegration << std::endl;
-
     convergedTrajectoryGuess.segment(0,10) = stateVectorOnly;
     convergedTrajectoryGuess(10) = shiftedTime;
 
-    for (int i = 1; i < (numberOfPatchPoints); i++ )
+    double shiftedAngle;
+        if (librationPointNr < 3)
+        {
+            shiftedAngle = atan2( convergedTrajectoryGuess(1), convergedTrajectoryGuess(0) - (1.0 - massParameter) );
+
+        } else
+        {
+            shiftedAngle = atan2( convergedTrajectoryGuess(1), convergedTrajectoryGuess(0) - ( - massParameter) );
+        }
+
+
+
+    convergedTrajectoryGuess.segment(11*(numberOfPatchPoints-1),10) = stateVectorOnly;
+    convergedTrajectoryGuess(11*(numberOfPatchPoints-1)+10) = currentTrajectoryGuess(11*(numberOfPatchPoints-1)+10) + timeOfIntegration;
+
+
+    for (int i = 1; i < (numberOfPatchPoints - 1); i++ )
     {
         // Select the begin state of the next segment
         initialStateAndSTM.setZero();
-        initialStateAndSTM.block(0,0,10,1) = currentTrajectoryGuess.segment(11*(i),10);
+        initialStateAndSTM.block(0,0,10,1) = currentTrajectoryGuess.segment(11*i,10);
         initialStateAndSTM.block(0,1,10,10).setIdentity();
 
-        double initialTime = currentTrajectoryGuess(i+(i+1)*10);
-        double finalTime = currentTrajectoryGuess(i+(i+1)*10) + timeOfIntegration;
-
-        std::cout << "patch point: " << i << std::endl
-                  << "initialTime: " << initialTime << std::endl
-                  << "finalTime: " << finalTime << std::endl;
+        double initialTime = currentTrajectoryGuess(i*11+10);
+        double finalTime = initialTime + timeOfIntegration;
 
         std::map< double, Eigen::VectorXd > stateHistoryShift;
-        std::pair< Eigen::MatrixXd, double > endStateAndSTMAndTime = propagateOrbitAugmentedToFinalCondition(
+        std::pair< Eigen::MatrixXd, double > endStateAndSTMAndTime = propagateOrbitAugmentedToFinalConditionSmallIntervals(
                     initialStateAndSTM, massParameter, finalTime, direction, stateHistoryShift, -1, initialTime);
 
         Eigen::MatrixXd endStateAndSTM      = endStateAndSTMAndTime.first;
@@ -117,6 +145,15 @@ void shiftConvergedTrajectoryGuess(int librationPointNr, Eigen::VectorXd current
 
         convergedTrajectoryGuess.segment(i*11,10) = stateVectorOnly;
         convergedTrajectoryGuess(i*11+10) = endTime;
+
+    }
+
+    // shift the time of all patch points so initial patch point time is zero
+    double deltaTime = convergedTrajectoryGuess(10);
+    for (int i = 0; i < (numberOfPatchPoints ); i++ )
+    {
+
+          convergedTrajectoryGuess(11*i+10) = convergedTrajectoryGuess(11*i+10);
 
     }
 
@@ -247,10 +284,11 @@ void computeOrbitDeviations(Eigen::VectorXd inputStateVector, const int numberOf
         } else
         {
 
-            // inputStateVector.segment(11*(i+1),10) - stateVectorOnly << std::endl; state difference w.r.t terminal state:D
 
             // Compare the final state of propagated trajectory to initial patch point to have periodicity!
             defectVector.segment(i*11,10) = inputStateVector.segment(0,10) - stateVectorOnly;
+            //defectVector.segment(i*11,10) = inputStateVector.segment(11*(i+1),10) - stateVectorOnly;
+
             defectVector(i*11+10) = finalTime - endTime;
         }
 
@@ -453,10 +491,23 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
 
     // Reshift first patch point to time zero and check phase condition
 
+    currentTrajectoryGuess.segment(11*(numberOfPatchPoints-1), 10) = currentTrajectoryGuess.segment(0,10);
+
+    //std::cout << "output DiffCor First State: \n" << currentTrajectoryGuess.segment(0,11) << std::endl;
+    //std::cout << "output DiffCor final State: \n" << currentTrajectoryGuess.segment(11*(numberOfPatchPoints-1),11) << std::endl;
+    //std::cout << "Difference Initial and final PP : \n" << currentTrajectoryGuess.segment(0,11) - currentTrajectoryGuess.segment(11*(numberOfPatchPoints-1),11) << std::endl;
+
+
+
+    //std::cout << "defectVector after shifting: \n" << defectVector << std::endl;
+
+
     shiftConvergedTrajectoryGuess(librationPointNr, currentTrajectoryGuess, initialStateVector, offsetUnitVector, convergedTrajectoryGuess, massParameter, numberOfPatchPoints );
 
-    std::cout << "output DiffCor: \n" << currentTrajectoryGuess << std::endl
-              << "output Converged Guess: \n" << convergedTrajectoryGuess << std::endl;
+    //std::cout << "output shifted First State: \n" << convergedTrajectoryGuess.segment(0,11) << std::endl;
+    //std::cout << "output shifted Final State: \n" << convergedTrajectoryGuess.segment(11*(numberOfPatchPoints-1),11) << std::endl;
+
+
 
 
     // ========= Compute the defects of the corrected trajectory  ======= //
@@ -473,6 +524,8 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
     velocityExteriorDeviationNorm = deviationNorms(3);
     timeDeviationNorm = deviationNorms(4);
 
+    //std::cout << "defectVector after shifting: \n" << defectVector << std::endl;
+
     std::cout << "\nDEVIATIONS AFTER SHIFTING: " << std::endl
               << "Position deviation: " << positionDeviationNorm << std::endl
               << "Velocity deviation: " << velocityTotalDeviationNorm << std::endl
@@ -485,7 +538,7 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
 
     Eigen::VectorXd initialCondition = convergedTrajectoryGuess.segment(0,10);
     Eigen::VectorXd finalCondition   = propagatedStatesInclSTM.block(10*(numberOfPatchPoints-2),0,10,1);
-    double orbitalPeriod = convergedTrajectoryGuess(11*(numberOfPatchPoints) + 10) - convergedTrajectoryGuess(10);
+    double orbitalPeriod = convergedTrajectoryGuess(11*(numberOfPatchPoints-1) + 10) - convergedTrajectoryGuess(10);
 
     double hamiltonianInitialCondition  = computeHamiltonian( massParameter, initialCondition);
     double hamiltonianEndState          = computeHamiltonian( massParameter, finalCondition  );

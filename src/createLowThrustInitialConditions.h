@@ -58,11 +58,11 @@ void createLowThrustInitialConditions( const int librationPointNr, const std::st
                               const double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter(
             tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER,
             tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER ),
-                                       const int numberOfPatchPoints = 4,
+                                       const int numberOfPatchPoints = 8,
                               const double maxPositionDeviationFromPeriodicOrbit = 1.0e-12, const double maxVelocityDeviationFromPeriodicOrbit = 1.0e-12, const double maxPeriodDeviationFromPeriodicOrbit = 1.0e-12,
-                              const double maxEigenvalueDeviation = 1.0e-3,
+                              const double maxEigenvalueDeviation = 1.0e-4,
                               const boost::function< double( const Eigen::VectorXd&, const int ) > pseudoArcLengthFunctionAugmented =
-        boost::bind( &getDefaultArcLengthAugmented, 5.0E-5, _1, _2 ) );
+        boost::bind( &getDefaultArcLengthAugmented, 1.0E-4, _1, _2 ) );
 
 
 #endif  // TUDATBUNDLE_CREATELOWTHRUSTINITIALCONDITIONS_H

@@ -55,9 +55,17 @@ Eigen::VectorXd computeLevel1MassRefinementCorrection( const Eigen::VectorXd dev
 
         positionDeviationNorm = localDefectVector.norm();
 
-
+        int numberOfCorrectionsPerStage = 0;
         while (positionDeviationNorm > 1.0E-12)
         {
+
+            if (numberOfCorrectionsPerStage > 50 )
+            {
+                std::cout << std::endl;
+                correctedGuess = Eigen::VectorXd::Zero(11*numberOfPatchPoints);
+                return correctedGuess;
+            }
+
             localUpdateVector = localUpdateMatrix.inverse()*localDefectVector;
             localStateVector.segment(3,3) = localStateVector.segment(3,3) + localUpdateVector;
 
@@ -76,6 +84,7 @@ Eigen::VectorXd computeLevel1MassRefinementCorrection( const Eigen::VectorXd dev
             //          << "Position Deviation Norm: " << positionDeviationNorm << std::endl;
 
             numberOfLevelICorrections++;
+            numberOfCorrectionsPerStage++;
         }
 
         // Store converged guess into the outputVector
