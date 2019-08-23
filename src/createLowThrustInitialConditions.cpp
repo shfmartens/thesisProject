@@ -848,7 +848,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const std::st
     Eigen::MatrixXd stateVectorInclSTM = Eigen::MatrixXd::Zero( 10, 11 );
 
     Eigen::VectorXd linearApproximationResultIteration1 = Eigen::VectorXd::Zero(11*numberOfPatchPoints);
-    //Eigen::VectorXd linearApproximationResultIteration2 = Eigen::VectorXd::Zero(11*numberOfPatchPoints);
+    Eigen::VectorXd linearApproximationResultIteration2 = Eigen::VectorXd::Zero(11*numberOfPatchPoints);
 
     std::vector< Eigen::VectorXd > initialConditions;
     std::vector< Eigen::VectorXd > differentialCorrections;
@@ -856,7 +856,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const std::st
 
     // Obtain ballistic initial guesses and refine them
     linearApproximationResultIteration1 = getLowThrustInitialStateVectorGuess(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 0);
-    //linearApproximationResultIteration2 = getLowThrustInitialStateVectorGuess(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 1);
+    linearApproximationResultIteration2 = getLowThrustInitialStateVectorGuess(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 1);
 
 
     stateVectorInclSTM =  getCorrectedAugmentedInitialState(
@@ -866,10 +866,10 @@ void createLowThrustInitialConditions( const int librationPointNr, const std::st
 
 
 
-//    stateVectorInclSTM =  getCorrectedAugmentedInitialState(
-//                linearApproximationResultIteration2, computeHamiltonian( massParameter, linearApproximationResultIteration1.segment(0,10)), 1,
-//               librationPointNr, orbitType, massParameter, numberOfPatchPoints, false, initialConditions, differentialCorrections, statesContinuation,
-//                maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
+    stateVectorInclSTM =  getCorrectedAugmentedInitialState(
+                linearApproximationResultIteration2, computeHamiltonian( massParameter, linearApproximationResultIteration1.segment(0,10)), 1,
+               librationPointNr, orbitType, massParameter, numberOfPatchPoints, false, initialConditions, differentialCorrections, statesContinuation,
+                maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
 
 
     // Set exit parameters of continuation procedure
