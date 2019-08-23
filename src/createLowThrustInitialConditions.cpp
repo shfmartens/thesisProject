@@ -499,7 +499,7 @@ Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initia
     double orbitalPeriod = differentialCorrectionResult( 10 );
     double hamiltonianFullPeriodDiffCorr = differentialCorrectionResult( 23 );
 
-    Eigen::VectorXd correctionMass = applyMassRefinement( 1, differentialCorrectionResult.segment(25,11*numberOfPatchPoints), massParameter, numberOfPatchPoints, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
+    //Eigen::VectorXd correctionMass = applyMassRefinement( 1, differentialCorrectionResult.segment(25,11*numberOfPatchPoints), massParameter, numberOfPatchPoints, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
 
 
     // Propagate the initialStateVector for a full period and write output to file.
