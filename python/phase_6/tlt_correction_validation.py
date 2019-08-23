@@ -301,7 +301,7 @@ class TLTCorrectorValidation:
 
 
                 if i == 1 and j == 2:
-                    ax3.plot(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],linewidth=self.lineWidth, label='Current guess')
+                    ax3.scatter(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],linewidth=self.lineWidth, label='Current guess')
                     ax3.plot(orbit_df_previous['x'], orbit_df_previous['y'], color=self.plottingColors['doubleLine'][0],linewidth=self.lineWidth,linestyle='--', label='Previous guess')
 
                     ax3.scatter(patch_points_df['x'], patch_points_df['y'], color='black', marker=self.currentPatchStyle, s=self.patchSize, label='Current patch points')
@@ -345,7 +345,7 @@ class TLTCorrectorValidation:
                     lgd4 = ax4.legend(frameon=True, loc='upper left', bbox_to_anchor=(0, 1), prop={'size': 8})
 
                 if i == 2 and j == 2:
-                    ax5.plot(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],
+                    ax5.scatter(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],
                             linewidth=self.lineWidth, label='Current guess')
                     ax5.plot(orbit_df_previous['x'], orbit_df_previous['y'],
                             color=self.plottingColors['doubleLine'][0], linewidth=self.lineWidth, linestyle='--',
@@ -385,7 +385,7 @@ class TLTCorrectorValidation:
                     lgd6 = ax6.legend(frameon=True, loc='upper left', bbox_to_anchor=(0, 1), prop={'size': 8})
 
                 if i == 3 and j == 2:
-                    ax7.plot(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],
+                    ax7.scatter(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],
                             linewidth=self.lineWidth, label='Current guess')
                     ax7.plot(orbit_df_previous['x'], orbit_df_previous['y'],
                             color=self.plottingColors['doubleLine'][0], linewidth=self.lineWidth, linestyle='--',
@@ -990,8 +990,8 @@ class TLTCorrectorValidation:
 
 if __name__ == '__main__':
     lagrange_point_nrs = [1]
-    acceleration_magnitudes = [0.0]
-    alphas = [0.0]
+    acceleration_magnitudes = [0.1]
+    alphas = [90.0]
     orbit_type = 'horizontal'
     amplitudes = [0.01]
     numbers_of_patch_points = [4]

@@ -209,6 +209,7 @@ Eigen::VectorXd computeLevel2MassRefinementCorrection( const Eigen::VectorXd dev
             periodicityJacobianRow2.block(0,(4*(i))+3,3,1) = ( B_PF.inverse() ) * (E_PF * massRatePPlus - velocityPPlus);
             periodicityJacobianRow2.block(0,4*(i+1),3,3) = -1.0*( B_PF.inverse() )*(A_PF);
             periodicityJacobianRow2.block(0,(4*(i+1))+3,3,1) =  B_PF.inverse() * A_PF * velocityPMinus + accelerationsF; //SHOULD BE B_PF.inverse() * A_PF * velocityF + accelerationsF;
+            //periodicityJacobianRow2.block(0,(4*(i+1))+3,3,1) =  B_PF.inverse() * A_PF * velocityF + accelerationsF; //SHOULD BE B_PF.inverse() * A_PF * velocityF + accelerationsF;
 
 
             constraintVectorPeriodic.segment(3*i,3) =  stateVectorF.segment(0,3) - initialGuess.segment(0,3);
