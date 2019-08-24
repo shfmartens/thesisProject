@@ -13,7 +13,7 @@ void writeCorrectorDataToFile(const int librationPointNr, const double accelerat
 
 Eigen::VectorXd computeDeviationNorms (const Eigen::VectorXd defectVector, const int numberOfPatchPoints );
 
-void computeOrbitDeviations(Eigen::VectorXd inputStateVector, const int numberOfPatchPoints, Eigen::MatrixXd& propagatedStatesInclSTM, Eigen::VectorXd& defectVector, const double massParameter  );
+void computeOrbitDeviations(Eigen::VectorXd inputStateVector, const int numberOfPatchPoints, Eigen::MatrixXd& propagatedStatesInclSTM, Eigen::VectorXd& defectVector,   std::map< double, Eigen::VectorXd >& stateHistory,const double massParameter  );
 
 Eigen::VectorXd applyPredictionCorrection( const int librationPointNr,
                                              const Eigen::VectorXd& initialStateVector,

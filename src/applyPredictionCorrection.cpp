@@ -578,7 +578,7 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
     outputVector(10) = orbitalPeriod;
     outputVector(11) = hamiltonianInitialCondition;
     outputVector.segment(12,10) = finalCondition;
-    outputVector(22) = convergedTrajectoryGuess(11*(numberOfPatchPoints) + 10);
+    outputVector(22) = convergedTrajectoryGuess(11*(numberOfPatchPoints-1) + 10);
     outputVector(23) = hamiltonianEndState;
     outputVector(24) = numberOfCorrections;
     outputVector.segment(25,11*numberOfPatchPoints) = convergedTrajectoryGuess;

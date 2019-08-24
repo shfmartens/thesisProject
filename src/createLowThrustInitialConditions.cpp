@@ -18,6 +18,7 @@
 #include "applyPredictionCorrection.h"
 #include "applyMassRefinement.h"
 #include "applyTwoLevelTargeterLowThrust.h"
+#include "applyPredictionCorrection.h"
 #include "checkEigenvalues.h"
 #include "propagateOrbit.h"
 #include "propagateOrbitAugmented.h"
@@ -154,21 +155,17 @@ void appendResultsVectorAugmented(const double hamiltonian, const double orbital
 
 void appendDifferentialCorrectionResultsVectorAugmented(
         const double hamiltonianFullPeriod,  const Eigen::VectorXd& differentialCorrectionResult,
-        std::vector< Eigen::VectorXd >& differentialCorrections )
+        std::vector< Eigen::VectorXd >& differentialCorrections, const Eigen::VectorXd deviationsNorms )
 {
 
-    Eigen::VectorXd tempDifferentialCorrection = Eigen::VectorXd( 13 );
-
+    Eigen::VectorXd tempDifferentialCorrection = Eigen::VectorXd( 18 );
 
 
     tempDifferentialCorrection( 0 ) = differentialCorrectionResult( 24 );  // numberOfIterations
-    tempDifferentialCorrection( 1 ) = hamiltonianFullPeriod;  // jacobiEnergyHalfPeriod
+    tempDifferentialCorrection( 1 ) = hamiltonianFullPeriod;  // HamiltonianFullPeriod
     tempDifferentialCorrection( 2 ) = differentialCorrectionResult( 22 );  // currentTime
-    for (int i = 12; i <= 21; i++)
-    {
-        tempDifferentialCorrection( i - 9 ) = differentialCorrectionResult( i );  // FullPeriodStateVector
-    }
-
+    tempDifferentialCorrection.segment(3,5) = deviationsNorms;
+    tempDifferentialCorrection.segment(8,10) = differentialCorrectionResult.segment(12,10);
 
 
     differentialCorrections.push_back(tempDifferentialCorrection);
@@ -178,13 +175,14 @@ void appendDifferentialCorrectionResultsVectorAugmented(
 void appendContinuationStatesVectorAugmented(const int orbitNumber, const int numberOfPatchPoints, const double hamiltonianInitialCondition,
                                              const Eigen::VectorXd& differentialCorrectionResult, std::vector< Eigen::VectorXd >& statesContinuation)
 {
-    Eigen::VectorXd tempStatesContinuation = Eigen::VectorXd( 2 + 11*numberOfPatchPoints  );
+    Eigen::VectorXd tempStatesContinuation = Eigen::VectorXd( 3 + 11*numberOfPatchPoints  );
     tempStatesContinuation( 0 ) = orbitNumber;  // numberOfIterations
     tempStatesContinuation( 1 ) = hamiltonianInitialCondition;  // Hamiltonian Initial Condition
+    tempStatesContinuation( 2 ) = differentialCorrectionResult(10);
 
-    for (int i = 25; i < ( 11*numberOfPatchPoints + 25 ); i++)
+    for (int i = 0; i < ( 11*numberOfPatchPoints ); i++)
     {
-        tempStatesContinuation( i - 23 ) = differentialCorrectionResult( i );  // InitialStateVectors
+        tempStatesContinuation(i + 3) = differentialCorrectionResult(25 + i);
     }
 
     statesContinuation.push_back(tempStatesContinuation);
@@ -545,7 +543,14 @@ Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initia
     // Save results
     double hamiltonianFullPeriod = computeHamiltonian( massParameter, stateVectorInclSTM.block(0,0,10,1));
 
-    appendDifferentialCorrectionResultsVectorAugmented( hamiltonianFullPeriodDiffCorr, differentialCorrectionResult, differentialCorrections );
+    Eigen::VectorXd defectVector(11*numberOfPatchPoints);
+    Eigen::MatrixXd propagatedStates(10*(numberOfPatchPoints-1),11);
+    std::map< double, Eigen::VectorXd > stateHistoryTemp;
+
+    computeOrbitDeviations(differentialCorrectionResult.segment(25,11*numberOfPatchPoints), numberOfPatchPoints, propagatedStates, defectVector, stateHistoryTemp, massParameter);
+    Eigen::VectorXd deviationNorms = computeDeviationNorms(defectVector,numberOfPatchPoints);
+
+    appendDifferentialCorrectionResultsVectorAugmented( hamiltonianFullPeriodDiffCorr, differentialCorrectionResult, differentialCorrections, deviationNorms );
 
     appendContinuationStatesVectorAugmented( orbitNumber, numberOfPatchPoints, differentialCorrectionResult(11), differentialCorrectionResult, statesContinuation);
 
@@ -715,6 +720,7 @@ void writeFinalResultsToFilesAugmented( const int librationPointNr, const std::s
     textFileStatesContinuation.precision(std::numeric_limits<double>::digits10);
 
     // Write initial conditions to file
+    std::cout << "initialConditions Size: " << initialConditions.size() << std::endl;
     for (unsigned int i=0; i<initialConditions.size(); i++) {
 
         textFileInitialConditions << std::left << std::scientific                                          << std::setw(25)
@@ -782,9 +788,11 @@ void writeFinalResultsToFilesAugmented( const int librationPointNr, const std::s
                                        << differentialCorrections[i][6]  << std::setw(25) << differentialCorrections[i][7]  << std::setw(25)
                                        << differentialCorrections[i][8]  << std::setw(25) << differentialCorrections[i][9]  << std::setw(25)
                                        << differentialCorrections[i][10] << std::setw(25) << differentialCorrections[i][11] << std::setw(25)
-                                       << differentialCorrections[i][12] << std::endl;
+                                       << differentialCorrections[i][12] << std::setw(25) << differentialCorrections[i][13] << std::setw(25)
+                                       << differentialCorrections[i][14] << std::setw(25) << differentialCorrections[i][15] << std::setw(25)
+                                       << differentialCorrections[i][16] << std::setw(25) << differentialCorrections[i][17] << std::setw(25)  << std::endl;
 
-        for (int test = 0; test < (2+11*numberOfPatchPoints); test++)
+        for (int test = 0; test < (3+11*numberOfPatchPoints); test++)
                 {
 
                     textFileStatesContinuation << std::left << std::scientific   << std::setw(25)
@@ -899,7 +907,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 
     // Set exit parameters of continuation procedure
-    int maximumNumberOfInitialConditions = 400;
+    int maximumNumberOfInitialConditions = 500;
     int numberOfInitialConditions = 2;
 
 
@@ -929,9 +937,9 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 
           std::cout << "============" << std::endl
-                     << "X^{n}: \n" << statesContinuation[ statesContinuation.size( ) - 2 ].segment( 2, 10 ) << std::endl
-                     << "X^{n+1}: \n" << statesContinuation[ statesContinuation.size( ) - 1 ].segment( 2, 10 ) << std::endl
-                     << "X^{n+1} - X^{n}: \n" << ( statesContinuation[ statesContinuation.size( ) - 1 ].segment( 2, 10 ) - statesContinuation[ statesContinuation.size( ) - 2 ].segment( 2, 11 ) )<< std::endl;
+                     << "X^{n}: \n" << statesContinuation[ statesContinuation.size( ) - 2 ].segment( 3, 10 ) << std::endl
+                     << "X^{n+1}: \n" << statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 10 ) << std::endl
+                     << "X^{n+1} - X^{n}: \n" << ( statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 10 ) - statesContinuation[ statesContinuation.size( ) - 2 ].segment( 3, 10 ) )<< std::endl;
           std::cout << "Hamiltonian n: "  << statesContinuation[ statesContinuation.size( ) - 2 ](1) << std::endl;
           std::cout << "Hamiltonian n+1: "  << statesContinuation[ statesContinuation.size( ) - 1 ](1) << std::endl;
           std::cout << "Hamiltonian n+1 - n+1: "  << (statesContinuation[ statesContinuation.size( ) - 1 ](1) - statesContinuation[ statesContinuation.size( ) - 2 ](1) )<< std::endl;
@@ -939,8 +947,8 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 
           // Determine increments to state and time
-             stateIncrement.segment(1,11*numberOfPatchPoints) = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 2, 11*numberOfPatchPoints ) -
-                             statesContinuation[ statesContinuation.size( ) - 2 ].segment( 2, 11*numberOfPatchPoints );
+             stateIncrement.segment(1,11*numberOfPatchPoints) = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*numberOfPatchPoints ) -
+                             statesContinuation[ statesContinuation.size( ) - 2 ].segment( 3, 11*numberOfPatchPoints );
              stateIncrement(0) = statesContinuation[ statesContinuation.size( ) - 1 ]( 1 ) -
                              statesContinuation[ statesContinuation.size( ) - 2 ]( 1 );
 
@@ -951,7 +959,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
           std::cout << "pseudoArcLengthCorrection: " << pseudoArcLengthCorrection << std::endl;
 
           // Apply numerical continuation
-           initialStateVector = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 2, 11*numberOfPatchPoints ) +
+           initialStateVector = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*numberOfPatchPoints ) +
                                 stateIncrement.segment(1,11*numberOfPatchPoints) * pseudoArcLengthCorrection;
 
            std::cout << "X^{n+2} GUESS: \n" << initialStateVector.segment(0,10) << std::endl;

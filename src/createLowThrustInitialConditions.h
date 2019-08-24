@@ -22,7 +22,7 @@ void appendResultsVectorAugmented(const double hamiltonian, const double orbital
 
 void appendDifferentialCorrectionResultsVectorAugmented(
         const double hamiltonianHalfPeriod,  const Eigen::VectorXd& differentialCorrectionResult,
-        std::vector< Eigen::VectorXd >& differentialCorrections );
+        std::vector< Eigen::VectorXd >& differentialCorrections, const Eigen::VectorXd deviationsNorms );
 
 void appendContinuationStatesVectorAugmented(const int orbitNumber, const int numberOfPatchPoints, const double hamiltonianInitialCondition,
                                              const Eigen::VectorXd& differentialCorrectionResult, std::vector< Eigen::VectorXd >& statesContinuation);
