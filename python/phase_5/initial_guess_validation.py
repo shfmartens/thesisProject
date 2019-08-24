@@ -826,6 +826,12 @@ class initialGuessValidation:
             lagrange_point_nrs = ['L1']
         if self.lagrangePointNr == 2:
             lagrange_point_nrs = ['L2']
+        if self.lagrangePointNr == 3:
+            lagrange_point_nrs = ['L3']
+        if self.lagrangePointNr == 4:
+            lagrange_point_nrs = ['L4']
+        if self.lagrangePointNr == 5:
+            lagrange_point_nrs = ['L5']
 
 
         for lagrange_point_nr in lagrange_point_nrs:
@@ -861,12 +867,12 @@ class initialGuessValidation:
                 orbit_df = load_orbit_augmented('../../data/raw/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_'\
                                             + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' \
                                             + str("{:7.6f}".format(self.alpha)) + '_' + str("{:7.6f}".format(self.amplitude)) \
-                                            + '_' + str("{:7.6f}".format(self.correctionTime[i])) \
+                                            + '_' + str("{:7.6f}".format(self.correctionTime[0])) \
                                             + '_stateHistory.txt')
 
                 if i == 0:
-                  ax1.plot(orbit_df['x'],orbit_df['y'],color=self.plottingColors['singleLine'],lineWidth=self.lineWidth,label='$\\Delta t = '+ str(self.correctionTime[i])+' $')
-                  ax1.set_title('$\\Delta t_{correction} = ' + str(self.correctionTime[i]) + '$')
+                  ax1.plot(orbit_df['x'],orbit_df['y'],color=self.plottingColors['singleLine'],lineWidth=self.lineWidth,label='$\\Delta t = '+ str(self.correctionTime[0])+' $')
+                  ax1.set_title('$\\Delta t_{correction} = ' + str(self.correctionTime[0]) + '$')
                   lgd1 = ax1.legend(frameon=True, loc='upper left', bbox_to_anchor=(0, 1), prop={'size': 8})
 
                   if min_x > min(orbit_df['x']):
@@ -879,8 +885,8 @@ class initialGuessValidation:
                       max_y = max(orbit_df['y'])
 
                 if i == 1:
-                  ax2.plot(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],lineWidth=self.lineWidth ,label='$\\Delta t = '+ str(self.correctionTime[i])+' $')
-                  ax2.set_title('$\\Delta t_{correction} = ' + str(self.correctionTime[i]) + '$')
+                  ax2.plot(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],lineWidth=self.lineWidth ,label='$\\Delta t = '+ str(self.correctionTime[0])+' $')
+                  ax2.set_title('$\\Delta t_{correction} = ' + str(self.correctionTime[0]) + '$')
                   lgd2 = ax2.legend(frameon=True, loc='upper left', bbox_to_anchor=(0, 1), prop={'size': 8})
 
 
@@ -894,8 +900,8 @@ class initialGuessValidation:
                       max_y = max(orbit_df['y'])
 
                 if i == 2:
-                  ax3.plot(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],lineWidth=self.lineWidth,label='$\\Delta t = '+ str(self.correctionTime[i])+' $')
-                  ax3.set_title('$\\Delta t_{correction} = ' + str(self.correctionTime[i]) + '$')
+                  ax3.plot(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],lineWidth=self.lineWidth,label='$\\Delta t = '+ str(self.correctionTime[0])+' $')
+                  ax3.set_title('$\\Delta t_{correction} = ' + str(self.correctionTime[0]) + '$')
                   lgd3 = ax3.legend(frameon=True, loc='upper left', bbox_to_anchor=(0, 1), prop={'size': 8})
 
 
@@ -909,8 +915,8 @@ class initialGuessValidation:
                       max_y = max(orbit_df['y'])
 
                 if i == 3:
-                  ax4.plot(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],lineWidth=self.lineWidth,label='$\\Delta t = '+ str(self.correctionTime[i])+' $')
-                  ax4.set_title('$\\Delta t_{correction} = ' + str(self.correctionTime[i]) + '$')
+                  ax4.plot(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],lineWidth=self.lineWidth,label='$\\Delta t = '+ str(self.correctionTime[0])+' $')
+                  ax4.set_title('$\\Delta t_{correction} = ' + str(self.correctionTime[0]) + '$')
                   lgd4 = ax4.legend(frameon=True, loc='upper left', bbox_to_anchor=(0, 1), prop={'size': 8})
 
 
@@ -1139,27 +1145,27 @@ class initialGuessValidation:
     pass
 
 if __name__ == '__main__':
-    # lagrange_point_nrs = [1]
-    # orbit_type = 'horizontal'
-    # alt_values = [0.1]
-    # angles = [90.0]
-    # amplitudes = [1.0E-5,0.1]
-    # correction_times = [0.05,0.1,0.2,0.3,0.4,0.5,0.6]
-    # low_dpi = True
+    lagrange_point_nrs = [4]
+    orbit_type = 'horizontal'
+    alt_values = [0.0]
+    angles = [00.0]
+    amplitudes = [1.0E-5]
+    correction_times = [0.05]
+    low_dpi = True
 
-    # for lagrange_point_nr in lagrange_point_nrs:
-    #     for alt_value in alt_values:
-    #         for angle in angles:
-    #             for amplitude in amplitudes:
-    #                 initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_value, \
-    #                                                                      angle, amplitude, correction_times, low_dpi)
-    #
-    #                 initial_guess_validation.plot_correction_time_effect()
-    #                 #initial_guess_validation.plot_corrections_effect()
-    #
-    #
-    #
-    #                 del initial_guess_validation
+    for lagrange_point_nr in lagrange_point_nrs:
+        for alt_value in alt_values:
+            for angle in angles:
+                for amplitude in amplitudes:
+                    initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_value, \
+                                                                         angle, amplitude, correction_times, low_dpi)
+
+                    initial_guess_validation.plot_correction_time_effect()
+                    #initial_guess_validation.plot_corrections_effect()
+
+
+
+                    del initial_guess_validation
 
     # lagrange_point_nrs = [1]
     # orbit_type = 'horizontal'
@@ -1197,13 +1203,13 @@ if __name__ == '__main__':
     #
     #                 del initial_guess_validation
 
-    lagrange_point_nrs = [1]
-    orbit_type = 'horizontal'
-    amplitudes = [0.0001,0.1]
-    angles = np.linspace(0,359,num=360)
-    alt_values = [0.1]
-    correction_times = [0.05,50.0]
-    low_dpi = True
+    # lagrange_point_nrs = [1]
+    # orbit_type = 'horizontal'
+    # amplitudes = [0.0001,0.1]
+    # angles = np.linspace(0,359,num=360)
+    # alt_values = [0.1]
+    # correction_times = [0.05,50.0]
+    # low_dpi = True
 
     # for lagrange_point_nr in lagrange_point_nrs:
     #     for alt_value in alt_values:
@@ -1216,27 +1222,27 @@ if __name__ == '__main__':
     #
     #                 del initial_guess_validation
 
-    amplitudeArray = np.linspace(1.0E-3,1.0E-2,num=91)
-    amplitudeArray1 = amplitudeArray[:-1]
-    amplitudeArray2 = np.linspace(1.0E-2, 1.0E-1, num=91)
-    newArray = np.append(amplitudeArray1, amplitudeArray2)
-    alt_values = newArray.tolist()
-    angles = [90]
-    amplitudes = [0.0001,0.1]
-    correction_times = [0.05,50.0]
-
-
-    for lagrange_point_nr in lagrange_point_nrs:
-        for angle in angles:
-            for amplitude in amplitudes:
-                for correction_time in correction_times:
-                    initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_values, \
-                                                                      angle, amplitude, correction_time, low_dpi)
-
-                    initial_guess_validation.plot_acceleration_effect()
-
-                    del initial_guess_validation
+    # amplitudeArray = np.linspace(1.0E-3,1.0E-2,num=91)
+    # amplitudeArray1 = amplitudeArray[:-1]
+    # amplitudeArray2 = np.linspace(1.0E-2, 1.0E-1, num=91)
+    # newArray = np.append(amplitudeArray1, amplitudeArray2)
+    # alt_values = newArray.tolist()
+    # angles = [90]
+    # amplitudes = [0.0001,0.1]
+    # correction_times = [0.05,50.0]
     #
+    #
+    # for lagrange_point_nr in lagrange_point_nrs:
+    #     for angle in angles:
+    #         for amplitude in amplitudes:
+    #             for correction_time in correction_times:
+    #                 initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_values, \
+    #                                                                   angle, amplitude, correction_time, low_dpi)
+    #
+    #                 initial_guess_validation.plot_acceleration_effect()
+    #
+    #                 del initial_guess_validation
+    # #
 
     # lagrange_point_nrs = [1]
     # orbit_type = 'vertical'

@@ -11,7 +11,45 @@
 #include "propagateOrbitAugmented.h"
 #include <Eigen/Eigenvalues>
 
+Eigen::MatrixXd computeWeightedLyapunovExponent(const Eigen::MatrixXd stateTransitionMatrixPO, const Eigen::MatrixXd stateTransitionMatrixFP, const double previousTime,const double nextTime )
+{
 
+    // create output Variable
+    Eigen::MatrixXd outputMatrix(4,4);
+    outputMatrix.setZero();
+
+    // create identity Matrix
+    Eigen::MatrixXd identityMatrix(4,4);
+    identityMatrix.setIdentity();
+
+    //Compute Time Horizon
+    double timeHorizon = std::abs(nextTime- previousTime);
+
+    // Compute the matrix to be evaluated
+    Eigen::MatrixXd stateTransitionMatrixProduct = (stateTransitionMatrixFP.transpose())*stateTransitionMatrixPO;
+
+    // Compute maximum positive Eigenvalue of the matrixProduct
+    double maximumEigenValue = -1000.0;
+    Eigen::EigenSolver< Eigen::MatrixXd > eigProduct( stateTransitionMatrixProduct );
+
+    for(int i = 0; i < 6; i++ )
+    {
+        if (eigProduct.eigenvalues()(i).real() > maximumEigenValue )
+        {
+            maximumEigenValue = eigProduct.eigenvalues()(i).real();
+        }
+    }
+
+
+    // Compute the Lyapunov Exponent
+    double LyapunovExponent =( 1.0 / timeHorizon ) * std::log ( std::sqrt(maximumEigenValue) );
+
+    // Multiply LLE with the identiy matrix
+    outputMatrix = LyapunovExponent * identityMatrix;
+    return outputMatrix;
+
+
+}
 Eigen::VectorXd computeLevel2Correction( const Eigen::VectorXd deviationVector, const Eigen::MatrixXd forwardPropagatedStatesInclSTM, const Eigen::VectorXd initialGuess, const Eigen::VectorXd unitOffsetVector, const int numberOfPatchPoints, const double massParameter )
 {
 
@@ -27,6 +65,8 @@ Eigen::VectorXd computeLevel2Correction( const Eigen::VectorXd deviationVector, 
 
     Eigen::MatrixXd periodicityJacobianRow1 (3, 4*numberOfPatchPoints);
     Eigen::MatrixXd periodicityJacobianRow2 (3, 4*numberOfPatchPoints);
+
+    Eigen::MatrixXd weightingMatrix (4*numberOfPatchPoints, 4*numberOfPatchPoints);
 
 //    Eigen::VectorXd constraintVectorPhase(3*numberOfPatchPoints+2);
 //    Eigen::VectorXd correctionsPhase ( 4*numberOfPatchPoints );
@@ -47,6 +87,7 @@ Eigen::VectorXd computeLevel2Correction( const Eigen::VectorXd deviationVector, 
     updateMatrixPeriodic.setZero();
     periodicityJacobianRow1.setZero();
     periodicityJacobianRow2.setZero();
+    weightingMatrix.setZero();
 
 //    constraintVectorPhase.setZero();
 //    correctionsPhase.setZero();
@@ -270,6 +311,10 @@ Eigen::VectorXd computeLevel2Correction( const Eigen::VectorXd deviationVector, 
         updateMatrixPeriodic.block(3*(k-1),4*(k-1),3,12) = updateMatrixAtPatchPoint;
         //updateMatrixPhase.block(3*(k-1),4*(k-1),3,12) = updateMatrixAtPatchPoint;
 
+        double previousTime = initialGuess(11*(k-1)+10);
+        double nextTime = initialGuess(11*(k+1)+10);
+        weightingMatrix.block(k*4,k*4,4,4) = computeWeightedLyapunovExponent(stateTransitionMatrixPO, stateTransitionMatrixFP, previousTime, nextTime );
+
 
         if (k == 1)
         {
@@ -285,8 +330,11 @@ Eigen::VectorXd computeLevel2Correction( const Eigen::VectorXd deviationVector, 
             periodicityJacobianRow2.block(0,4,3,3) = (B_PO.inverse());
             periodicityJacobianRow2.block(0,7,3,1) = -(B_PO.inverse())*velocityPresentMinus;
 
+            double currentTime = initialGuess(11*k+10);
+            weightingMatrix.block(0,0,4,4) = computeWeightedLyapunovExponent(stateTransitionMatrixPO, stateTransitionMatrixPO, previousTime, currentTime );
+
             // Compute the phase condition partial derivatives at point 0 (past, 1 in literature) and 1 (present, 2 in literature)
-            double accelerationVector = unitOffsetVector.transpose() * accelerationPreviousPlus;
+            double accelerationVector = unitOffsetVector.transpose() * accelerationPreviousPlus;          
 
 //            phaseJacobianRow.block(0,0,1,3) = unitOffsetVector.transpose() * (-1.0*(B_PO.inverse()) * A_PO);
 //            phaseJacobianRow(0,3) = accelerationVector + unitOffsetVector.transpose() * (accelerationPreviousPlus - D_OP*(B_OP.inverse())*velocityPreviousPlus );
@@ -315,6 +363,9 @@ Eigen::VectorXd computeLevel2Correction( const Eigen::VectorXd deviationVector, 
             constraintVectorPeriodic.segment(3*k,3) = -1.0*(initialGuess.segment(0,3) - stateVectorFutureMinus.segment(0,3));
             constraintVectorPeriodic.segment(3*(k+1),3) = -1.0*(initialGuess.segment(3,3) - stateVectorFutureMinus.segment(3,3));
 
+            double currentTime = initialGuess(11*k+10);
+            weightingMatrix.block(4*(k+1),4*(k+1),4,4) = computeWeightedLyapunovExponent(stateTransitionMatrixFP, stateTransitionMatrixFP, currentTime, nextTime );
+
             double accelerationVector = unitOffsetVector.transpose() * accelerationFutureMinus;
 
 
@@ -332,6 +383,8 @@ Eigen::VectorXd computeLevel2Correction( const Eigen::VectorXd deviationVector, 
 
 
     }
+
+
     updateMatrixPeriodic.block(3*(numberOfPatchPoints-2),0,3,4*numberOfPatchPoints) = periodicityJacobianRow1;
     updateMatrixPeriodic.block(3*(numberOfPatchPoints-1),0,3,4*numberOfPatchPoints) = periodicityJacobianRow2;
 
@@ -341,7 +394,7 @@ Eigen::VectorXd computeLevel2Correction( const Eigen::VectorXd deviationVector, 
 //    updateMatrixPhase.block(3*numberOfPatchPoints+1,0,1,4*numberOfPatchPoints) = phaseJacobianRow2;
 
     //std::cout.precision(5);
-    //std::cout << "updateMatrix TLT: \n" << updateMatrixPeriodic << std::endl;
+    //std::cout << "weightingMatrix: \n" << weightingMatrix << std::endl;
 
     corrections =             1.0*(updateMatrix.transpose())*(updateMatrix*(updateMatrix.transpose())).inverse()*constraintVector;
     correctionsPeriodic =     1.0*(updateMatrixPeriodic.transpose())*(updateMatrixPeriodic*(updateMatrixPeriodic.transpose())).inverse()*constraintVectorPeriodic;

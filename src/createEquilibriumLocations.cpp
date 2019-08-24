@@ -300,7 +300,7 @@ Eigen::Vector2d computeSeedSolution(const int librationPointNr, const double thr
 }
 
 
-Eigen::Vector2d createEquilibriumLocations (const int librationPointNr, const double thrustAcceleration, const double accelerationAngle, const std::string parameterSpecification, const double massParameter, const double maxDeviationFromSolution, const int maxIterations, const int saveFrequency, const double stepSize, const double relaxationParameter)
+Eigen::Vector2d createEquilibriumLocations (const int librationPointNr, const double thrustAcceleration, const double accelerationAngle, const std::string parameterSpecification, const double ySign, const double massParameter, const double maxDeviationFromSolution, const int maxIterations, const int saveFrequency, const double stepSize, const double relaxationParameter)
 {
 
     // Set output precision and clear screen.
@@ -415,7 +415,20 @@ Eigen::Vector2d createEquilibriumLocations (const int librationPointNr, const do
 
                              stepCounter++;
 
-                             if (alpha > (accelerationAngle - stepSize/10.0) && alpha < (accelerationAngle + stepSize /10.0) && seedStored == false )
+                             double alphaCondition;
+                             alphaCondition = alpha;
+                               if (alpha < 0.0)
+                                   {
+                                      alphaCondition = alphaCondition + 360.0;
+                                   } else if (alpha > 360.0)
+                                   {
+                                      alphaCondition = alphaCondition - 360.0;
+                                   } else
+                                   {
+                                      alphaCondition = alphaCondition;
+                                   }
+
+                             if ( alphaCondition > (accelerationAngle - stepSize/10.0) && alphaCondition < (accelerationAngle + stepSize /10.0) && seedStored == false && (equilibriumLocation(1)*ySign > 0.0 or librationPointNr < 3 ) )
                              {
 
                                  targetEquilibrium = equilibriumLocation;

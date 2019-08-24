@@ -20,7 +20,7 @@ Eigen::VectorXd applyPredictionCorrection( const int librationPointNr,
                                              const double massParameter, const int numberOfPatchPoints,
                                              double maxPositionDeviationFromPeriodicOrbit,
                                              double maxVelocityDeviationFromPeriodicOrbit, const double maxPeriodDeviationFromPeriodicOrbit,
-                                             const int maxNumberOfIterations = 20 );
+                                             const int maxNumberOfIterations = 10 );
 
 
 #endif  // TUDATBUNDLE_APPLYPREDICTONCORRECTION_H

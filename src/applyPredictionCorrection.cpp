@@ -365,17 +365,41 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
                              stateHistory, currentTrajectoryGuess, deviationNorms, propagatedStatesInclSTM, 0, 0, 0, timeINIT);
 
     int numberOfCorrections = 0;
+    bool deviationFromPeriodicOrbitRelaxed = false;
     while (positionDeviationNorm > maxPositionDeviationFromPeriodicOrbit or
            velocityTotalDeviationNorm > maxVelocityDeviationFromPeriodicOrbit or
            timeDeviationNorm > maxPeriodDeviationFromPeriodicOrbit ){
 
         std::cout << "\nSTART TLT CORRECTION CYCLE " << numberOfCorrections + 1 << "." << std::endl;
 
-        if( numberOfCorrections > maxNumberOfIterations ){
+        if( numberOfCorrections > maxNumberOfIterations  and deviationFromPeriodicOrbitRelaxed == false ){
 
-            std::cout << "Predictor Corrector did not converge within maxNumberOfIterations" << std::endl;
-            return outputVector = Eigen::VectorXd::Zero(25+11*numberOfPatchPoints);
+            std::cout << "Predictor Corrector did not converge within maxNumberOfIterations, relaxing constraints" << std::endl;
+            maxVelocityDeviationFromPeriodicOrbit= 1.0E-11;
+            deviationFromPeriodicOrbitRelaxed = true;
+            //return outputVector = Eigen::VectorXd::Zero(25+11*numberOfPatchPoints);
         }
+
+        if( numberOfCorrections > 2 * maxNumberOfIterations  ){
+
+            std::cout << "Predictor Corrector did not converge within 2 * maxNumberOfIterations relaxing constraints to 1.0E-10" << std::endl;
+            maxPositionDeviationFromPeriodicOrbit = 1.0E-10;
+            maxVelocityDeviationFromPeriodicOrbit= 1.0E-10;
+
+            deviationFromPeriodicOrbitRelaxed = true;
+            //return outputVector = Eigen::VectorXd::Zero(25+11*numberOfPatchPoints);
+
+        }
+
+        if( numberOfCorrections > 3 * maxNumberOfIterations  ){
+
+            std::cout << "Predictor Corrector did not converge within 2 * maxNumberOfIterations relaxing constraints to 1.0E-8 which will break sympletic structure" << std::endl;
+            maxPositionDeviationFromPeriodicOrbit = 1.0E-8;
+            maxVelocityDeviationFromPeriodicOrbit= 1.0E-8;
+
+            deviationFromPeriodicOrbitRelaxed = true;
+            //return outputVector = Eigen::VectorXd::Zero(25+11*numberOfPatchPoints);
+            }
 
         // ==== Apply Level 1 Correction ==== //
 

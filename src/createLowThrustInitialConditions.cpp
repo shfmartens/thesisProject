@@ -218,6 +218,18 @@ Eigen::VectorXd getEarthMoonInitialGuessParameters ( const int librationPointNr,
                 {
                     initialGuessParameters(0) = 1.0e-5;
                 }
+                else if (librationPointNr == 3)
+                {
+                    initialGuessParameters(0) = 1.0e-5;
+                }
+                else if (librationPointNr == 4)
+                {
+                    initialGuessParameters(0) = 1.0e-5;
+                } else
+                {
+                    initialGuessParameters(0) = 1.0e-5;
+                }
+
             }
             else if (orbitType == "vertical")
             {
@@ -252,6 +264,18 @@ Eigen::VectorXd getEarthMoonInitialGuessParameters ( const int librationPointNr,
                     initialGuessParameters(0) = 1.0e-4;
                 }
                 else if (librationPointNr == 2)
+                {
+                    initialGuessParameters(0) = 1.0e-4;
+                }
+                else if (librationPointNr == 3)
+                {
+                    initialGuessParameters(0) = 1.0e-4;
+                }
+                else if (librationPointNr == 4)
+                {
+                    initialGuessParameters(0) = 1.0e-4;
+                }
+                else if (librationPointNr == 5)
                 {
                     initialGuessParameters(0) = 1.0e-4;
                 }
@@ -446,7 +470,7 @@ Eigen::VectorXd getEarthMoonInitialGuessParameters ( const int librationPointNr,
     return initialGuessParameters;
 }
 
-Eigen::VectorXd getLowThrustInitialStateVectorGuess( const int librationPointNr, const std::string& orbitType, const double accelerationMagnitude, const double accelerationAngle, const double accelerationAngle2, const double initialMass, const int continuationIndex, const int numberOfPatchPoints, const int guessIteration,
+Eigen::VectorXd getLowThrustInitialStateVectorGuess( const int librationPointNr, const double ySign, const std::string& orbitType, const double accelerationMagnitude, const double accelerationAngle, const double accelerationAngle2, const double initialMass, const int continuationIndex, const int numberOfPatchPoints, const int guessIteration,
                                             const boost::function< Eigen::VectorXd( const int librationPointNr, const std::string& orbitType, const double accelerationMagnitude, const double accelerationAngle, const double accelerationAngle2, const int continuationIndex, const int guessIteration ) > getInitialGuessParameters )
 {
     Eigen::VectorXd lowThrustInitialStateVectorGuess = Eigen::VectorXd::Zero(numberOfPatchPoints*11);
@@ -455,7 +479,7 @@ Eigen::VectorXd getLowThrustInitialStateVectorGuess( const int librationPointNr,
 
     initialGuessParameters = getInitialGuessParameters(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, continuationIndex, guessIteration );
 
-    lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, orbitType, initialGuessParameters(0), initialGuessParameters(1), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
+    lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, ySign, orbitType, initialGuessParameters(0), initialGuessParameters(1), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
    //lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, orbitType, 1.0E-4, initialGuessParameters(1), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
 
     return lowThrustInitialStateVectorGuess;
@@ -503,9 +527,11 @@ Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initia
 
 
     // Propagate the initialStateVector for a full period and write output to file.
+
     std::map< double, Eigen::VectorXd > stateHistory;
     Eigen::MatrixXd stateVectorInclSTM = propagateOrbitAugmentedToFinalCondition(
                 getFullInitialStateAugmented( initialStateVector ), massParameter, orbitalPeriod, 1, stateHistory, 1000, 0.0 ).first;
+
 
     writeStateHistoryToFileAugmented( stateHistory, initialStateVector(6), initialStateVector(7), initialStateVector(8), differentialCorrectionResult(11), orbitNumber, librationPointNr, orbitType, 1000, false );
 
@@ -833,7 +859,7 @@ bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differenti
     return continueNumericalContinuation;
 }
 
-void createLowThrustInitialConditions( const int librationPointNr, const std::string& orbitType, const int continuationIndex, const double accelerationMagnitude, const double accelerationAngle,
+void createLowThrustInitialConditions( const int librationPointNr, const double ySign, const std::string& orbitType, const int continuationIndex, const double accelerationMagnitude, const double accelerationAngle,
                                        const double accelerationAngle2, const double initialMass, const double familyHamiltonian,
                               const double massParameter, const int numberOfPatchPoints, const double maxPositionDeviationFromPeriodicOrbit, const double maxVelocityDeviationFromPeriodicOrbit, const double maxPeriodDeviationFromPeriodicOrbit, const double maxEigenvalueDeviation,
                               const boost::function< double( const Eigen::VectorXd&, const int ) > pseudoArcLengthFunctionAugmented ) {
@@ -855,8 +881,8 @@ void createLowThrustInitialConditions( const int librationPointNr, const std::st
     std::vector< Eigen::VectorXd > statesContinuation;
 
     // Obtain ballistic initial guesses and refine them
-    linearApproximationResultIteration1 = getLowThrustInitialStateVectorGuess(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 0);
-    linearApproximationResultIteration2 = getLowThrustInitialStateVectorGuess(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 1);
+    linearApproximationResultIteration1 = getLowThrustInitialStateVectorGuess(librationPointNr, ySign, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 0);
+    linearApproximationResultIteration2 = getLowThrustInitialStateVectorGuess(librationPointNr, ySign, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 1);
 
 
     stateVectorInclSTM =  getCorrectedAugmentedInitialState(
@@ -873,7 +899,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const std::st
 
 
     // Set exit parameters of continuation procedure
-    int maximumNumberOfInitialConditions = 100;
+    int maximumNumberOfInitialConditions = 400;
     int numberOfInitialConditions = 2;
 
 

@@ -599,7 +599,7 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionOrF
     if (librationPointNr < 3)
     {
         currentAngleOfOrbit = atan2( fullInitialState(1,0), fullInitialState(0,0) - (1.0 - massParameter) ) * 180.0 / tudat::mathematical_constants::PI;
-        if (currentAngleOfOrbit < 0.0 ) {
+        if (currentAngleOfOrbit < 0.0 and librationPointNr == 1 ) {
             currentAngleOfOrbit = currentAngleOfOrbit + 360.0;
         }
     } else
@@ -612,7 +612,7 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionOrF
 
     // Convert reference angle in [0,360 domain]
     double referenceAngle  = finalAngle * 180.0 / tudat::mathematical_constants::PI;
-    if (referenceAngle < 0.0 ) {
+    if (referenceAngle < 0.0 and librationPointNr != 2) {
         referenceAngle = referenceAngle + 360.0;
     }
 
@@ -636,7 +636,7 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionOrF
         if (librationPointNr < 3)
         {
             currentAngleOfOrbit = atan2( stateVectorOnly(1,0), stateVectorOnly(0,0) - (1.0 - massParameter) ) * 180.0 / tudat::mathematical_constants::PI;
-            if (currentAngleOfOrbit < 0.0 ) {
+            if (currentAngleOfOrbit < 0.0 and librationPointNr == 1) {
                 currentAngleOfOrbit = currentAngleOfOrbit + 360.0;
             }
         } else
@@ -649,14 +649,17 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionOrF
 
 //        std::cout << "\n referenceAngle: " << referenceAngle << std::endl
 //                  << "currentAngle: " << currentAngleOfOrbit <<std::endl
-//                  << "current - referenceAngle: " << currentAngleOfOrbit - referenceAngle << std::endl;
+//                  << "current - referenceAngle: " << currentAngleOfOrbit - referenceAngle << std::endl
+//                  << "initialState: \n" << fullInitialState.block(0,0,10,1) << std::endl
+//                  << "firstPropState: \n" << stateVectorOnly.block(0,0,10,1) << std::endl;
+
         if (currentAngleOfOrbit - referenceAngle > 0.0 ) {
             thetaSign = 1.0;
         } else {
             thetaSign = -1.0;
         }
 
-        //std::cout << "thetaSign: " << thetaSign << std::endl;
+ //       std::cout << "thetaSign: " << thetaSign << std::endl;
 
     }
 
@@ -687,7 +690,15 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionOrF
             // Write every nth integration step to file.
             if ( saveFrequency > 0 && ( stepCounter % saveFrequency == 0 ) )
             {
+//                std::cout << "Test Angle progression: "<< atan2( stateVectorOnly(1,0), stateVectorOnly(0,0) - ( - massParameter) ) * 180.0 / tudat::mathematical_constants::PI << std::endl;
+//                std::cout << "Difference curr - ref: "<<  (atan2( stateVectorOnly(1,0), stateVectorOnly(0,0) - ( - massParameter) ) * 180.0 / tudat::mathematical_constants::PI  - referenceAngle )<< std::endl;
+//                std::cout << "current - ref X corr: " << currentState.first(0,0) - previousState.first(0,0) << std::endl;
+//                std::cout << "Condition: "<< thetaSign * (atan2( stateVectorOnly(1,0), stateVectorOnly(0,0) - ( - massParameter) ) * 180.0 / tudat::mathematical_constants::PI  - referenceAngle )<< std::endl;
+//                std::cout << "signChanges: "<< thetaSignChanges << std::endl;
+
+
                 stateHistoryMinimized[ currentTime ] = currentState.first.block( 0, 0, 10, 1 );
+
             }
                 // propagate orbit and compute new angle
                 currentTime = currentState.second;
@@ -700,7 +711,8 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionOrF
                 if (librationPointNr < 3)
                 {
                     currentAngleOfOrbit = atan2( stateVectorOnly(1,0), stateVectorOnly(0,0) - (1.0 - massParameter) ) * 180.0 / tudat::mathematical_constants::PI;
-                    if (currentAngleOfOrbit < 0.0 ) {
+                    if (currentAngleOfOrbit < 0.0 and librationPointNr == 1 )
+                    {
                         currentAngleOfOrbit = currentAngleOfOrbit + 360.0;
                     }
                 } else
@@ -715,7 +727,9 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionOrF
                 stepCounter++;
                 if ( ( currentAngleOfOrbit - referenceAngle) * thetaSign < 0.0 )
                 {
-                    //std::cout << "The sign of angle has changed "<< std::endl;
+//                    std::cout << "The sign of angle has changed "<< std::endl;
+//                    std::cout << "i: " << i << std::endl;
+
                     thetaSignChanges++;
                     thetaSign = thetaSign*-1.0;
                 }
@@ -727,7 +741,7 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionOrF
 
                     // ensure that the fullRevolution boolean is set to true if overshoot procedure keeps getting activated
                     // by a change in sign
-                    if (i < 13)
+                    if ( ( i < 13 && librationPointNr < 3) or ( i < 10 && librationPointNr > 2) )
                     {
                         thetaSignChanges--;
                         thetaSign = thetaSign*-1.0;
@@ -742,12 +756,14 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionOrF
                     if (librationPointNr < 3)
                     {
                         currentAngleOfOrbit = atan2( stateVectorOnly(1,0), stateVectorOnly(0,0) - (1.0 - massParameter) ) * 180.0 / tudat::mathematical_constants::PI;
-                        if (currentAngleOfOrbit < 0.0 ) {
+                        if (currentAngleOfOrbit < 0.0  and librationPointNr == 1)
+                        {
                             currentAngleOfOrbit = currentAngleOfOrbit + 360.0;
                         }
                     } else
                     {
                         currentAngleOfOrbit = atan2( stateVectorOnly(1,0), stateVectorOnly(0,0) - ( - massParameter) ) * 180.0 / tudat::mathematical_constants::PI;
+
                         if (currentAngleOfOrbit < 0.0 ) {
                             currentAngleOfOrbit = currentAngleOfOrbit + 360.0;
                         }
@@ -770,7 +786,7 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionOrF
                     if (librationPointNr < 3)
                     {
                         currentAngleOfOrbit = atan2( stateVectorOnly(1,0), stateVectorOnly(0,0) - (1.0 - massParameter) ) * 180.0 / tudat::mathematical_constants::PI;
-                        if (currentAngleOfOrbit < 0.0 ) {
+                        if (currentAngleOfOrbit < 0.0 and librationPointNr == 1 ) {
                             currentAngleOfOrbit = currentAngleOfOrbit + 360.0;
                         }
                     } else

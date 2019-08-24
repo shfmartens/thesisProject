@@ -100,6 +100,8 @@ void computeMotionDecomposition(const int librationPointNr, const std::string or
         perturbationDecomposition.block(0,i,6,1) = perturbationCoefficients(i) * modalMatrix.block(0,i,6,1);
     }
 
+    //std::cout << "perturbationDecompostion: \n" << perturbationDecomposition.block(0,0,6,2) << std::endl;
+
 }
 
 Eigen::VectorXd computeVelocityCorrection(const int librationPointNr, const std::string orbitType, Eigen::MatrixXd statePropagationMatrix, Eigen::MatrixXd stateTransitionMatrix, Eigen::VectorXd initialPerturbationVector, const double perturbationTime, const double numericalThreshold )
@@ -273,7 +275,7 @@ Eigen::VectorXd computeVelocityCorrection(const int librationPointNr, const std:
 }
 
 
-Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType,
+Eigen::VectorXd floquetApproximation(int librationPointNr, const double ySign, std::string orbitType,
                                                   double amplitude, double thrustMagnitude, double accelerationAngle, double accelerationAngle2, const double initialMass, const int numberOfPatchPoints, const double correctionTime, const double maxEigenValueDeviation )
 {
     Eigen::VectorXd lowThrustInitialStateVectorGuess(11*numberOfPatchPoints);
@@ -293,7 +295,9 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
     const double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( primaryGravitationalParameter, secondaryGravitationalParameter );
 
     // Compute location of the artificial equilibrium point
-    Eigen::Vector2d equilibriumLocation = createEquilibriumLocations( librationPointNr, thrustMagnitude, accelerationAngle, "acceleration", massParameter );
+    Eigen::Vector2d equilibriumLocation = createEquilibriumLocations( librationPointNr, thrustMagnitude, accelerationAngle, "acceleration", ySign, massParameter );
+
+    std::cout << "equilibriumLoc: \n " << equilibriumLocation << std::endl;
 
     Eigen::VectorXd equilibriumStateVector =   Eigen::VectorXd::Zero( 10 );
     equilibriumStateVector.segment(0,2) = equilibriumLocation;
@@ -307,6 +311,7 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
     // ====  1. Compute the initial uncorrected state ==== //
     Eigen::VectorXd initialStateVectorUncorrected =   Eigen::VectorXd::Zero( 10 );
     Eigen::VectorXd initialStateVectorCorrected = Eigen::VectorXd::Zero(10);
+    Eigen::VectorXd offsetVector = Eigen::VectorXd::Zero( 10 );
     Eigen::VectorXd initialPerturbationVector = Eigen::VectorXd::Zero( 10 );
     Eigen::VectorXd initialPerturbationVectorAfterCorrection = Eigen::VectorXd::Zero( 10 );
 
@@ -329,14 +334,16 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
         yArgument = equilibriumStateVector(1);
         offsetAngle = atan2(yArgument, xArgument);
 
-        initialPerturbationVector(0) = amplitude * cos(offsetAngle);
-        initialPerturbationVector(1) = amplitude * sin(offsetAngle);
+        offsetVector(0) = amplitude * cos(offsetAngle);
+        offsetVector(1) = amplitude * sin(offsetAngle);
     } else
     {
-        initialPerturbationVector(2) = amplitude;
+        offsetVector(2) = amplitude;
     }
 
-    initialStateVectorUncorrected = equilibriumStateVector + initialPerturbationVector;
+    initialStateVectorUncorrected = equilibriumStateVector + offsetVector;
+    initialPerturbationVector = equilibriumStateVector - initialStateVectorUncorrected;
+
 
     //  3. Compute the State Propagation Matrix
 
@@ -347,16 +354,17 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
     stateDerivativeInclSPM = computeStateDerivativeAugmented( 0.0, getFullInitialStateAugmented( equilibriumStateVector) );
     statePropagationMatrix = stateDerivativeInclSPM.block(0,1,6,6);
 
-    computeMotionDecomposition(librationPointNr, orbitType, statePropagationMatrix, Eigen::MatrixXd::Identity(6,6), initialPerturbationVector.segment(0,6), 0.0, 1.0E-13);
+    //computeMotionDecomposition(librationPointNr, orbitType, statePropagationMatrix, Eigen::MatrixXd::Identity(6,6), initialPerturbationVector.segment(0,6), 0.0, 1.0E-13);
 
     Eigen::VectorXd correctionVelocity = computeVelocityCorrection(librationPointNr, orbitType, statePropagationMatrix, Eigen::MatrixXd::Identity(6,6), initialPerturbationVector.segment(0,6), 0.0);
 
     initialStateVectorCorrected = initialStateVectorUncorrected;
-    initialStateVectorCorrected.segment(3,3) = initialStateVectorCorrected.segment(3,3) + correctionVelocity;
+    initialStateVectorCorrected.segment(3,3) = initialStateVectorCorrected.segment(3,3) - correctionVelocity;
+
 
     initialPerturbationVectorAfterCorrection = equilibriumStateVector - initialStateVectorCorrected;
 
-    computeMotionDecomposition(librationPointNr, orbitType, statePropagationMatrix, Eigen::MatrixXd::Identity(6,6), initialPerturbationVectorAfterCorrection.segment(0,6), 0.0, 1.0E-13);
+    //computeMotionDecomposition(librationPointNr, orbitType, statePropagationMatrix, Eigen::MatrixXd::Identity(6,6), initialPerturbationVectorAfterCorrection.segment(0,6), 0.0, 1.0E-13);
 
     // 5. Estimate the approximate period via propagataToFinalThetaCorrection
 
@@ -399,7 +407,12 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
             intermediateVelocityCorrection = computeVelocityCorrection(librationPointNr, orbitType, statePropagationMatrix, Eigen::MatrixXd::Identity(6,6), intermediatePerturbationVector.segment(0,6), 0.0 );
 
             initialStateVector = stateVectorOnly;
-            initialStateVector.segment(3,3) = initialStateVector.segment(3,3)-intermediateVelocityCorrection;
+
+            initialStateVector.segment(3,3) = initialStateVector.segment(3,3) - intermediateVelocityCorrection;
+
+            //omputeMotionDecomposition(librationPointNr, orbitType, statePropagationMatrix, Eigen::MatrixXd::Identity(6,6), equilibriumStateVector.segment(0,6) - initialStateVector.segment(0,6), 0.0, 1.0E-13);
+
+
 
             numberOfCorrections++;
 
@@ -532,7 +545,10 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, std::string orbitType
        intermediateVelocityCorrection = computeVelocityCorrection(librationPointNr, orbitType, statePropagationMatrix, Eigen::MatrixXd::Identity(6,6), intermediatePerturbationVector.segment(0,6), 0.0 );
 
        initialStateVector = stateVectorOnly;
+
        initialStateVector.segment(3,3) = initialStateVector.segment(3,3)-intermediateVelocityCorrection;
+
+
 
        // LIKELY TO BE ERROR! AT LEAST SLOPPY PROGRAMMING
        if (numberOfCorrections > 0)
