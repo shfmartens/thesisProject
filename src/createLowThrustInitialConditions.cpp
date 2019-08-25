@@ -745,6 +745,7 @@ void writeFinalResultsToFilesAugmented( const int librationPointNr, const std::s
                                   << initialConditions[i][36] << std::setw(25) << initialConditions[i][37] << std::setw(25)
                                   << initialConditions[i][38] << std::setw(25) << initialConditions[i][39] << std::setw(25)
                                   << initialConditions[i][40] << std::setw(25) << initialConditions[i][41] << std::setw(25)
+                                  << initialConditions[i][42] << std::setw(25) << initialConditions[i][43] << std::setw(25)
                                   << initialConditions[i][44] << std::setw(25) << initialConditions[i][45] << std::setw(25)
                                   << initialConditions[i][46] << std::setw(25) << initialConditions[i][47] << std::setw(25)
                                   << initialConditions[i][48] << std::setw(25) << initialConditions[i][49] << std::setw(25)
@@ -907,7 +908,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 
     // Set exit parameters of continuation procedure
-    int maximumNumberOfInitialConditions = 500;
+    int maximumNumberOfInitialConditions = 400;
     int numberOfInitialConditions = 2;
 
 

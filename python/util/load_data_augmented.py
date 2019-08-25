@@ -422,8 +422,8 @@ def load_states_continuation(file_path):
     return data
 
 def load_differential_correction(file_path):
-    data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(11)))
-    data.columns = ['iterations', 'hlt','period','x','y','z','xdot','ydot','zdot','alt','alpha']
+    data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(18)))
+    data.columns = ['iterations', 'hlt','period','posDev','velDev','velIntDev','velExtDev','timeDev','x','y','z','xdot','ydot','zdot','alt','alpha','beta','m']
     return data
 
 def load_patch_points(file_path, numberOfPatchPoints):
@@ -456,6 +456,11 @@ def load_initial_conditions(file_path):
     data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(11)))
     data.columns = ['iterations', 'hlt','period','x','y','z','xdot','ydot','zdot','alt','alpha']
     return data
+
+def load_initial_conditions_augmented_incl_M(file_path):
+    data = pd.read_table(file_path, delim_whitespace=True, header=None)
+    return data
+
 
 if __name__ == '__main__':
     load_lagrange_points_location(0.001,60.0)
