@@ -56,19 +56,19 @@ class DisplayPeriodicSolutions:
 
         # define filenames of states_continuation and differential correction
         self.continuation_fileName = str('L' + str(self.lagrangePointNr) + '_' + str(self.orbitType) \
-            + '_' + str("{:14.13f}".format(self.accelerationMagnitude)) + '_' + \
-            str("{:14.13f}".format(self.alpha)) + '_' + \
-            str("{:14.13f}".format(self.beta)) + '_states_continuation.txt')
+            + '_' + str("{:12.11f}".format(self.accelerationMagnitude)) + '_' + \
+            str("{:12.11f}".format(self.alpha)) + '_' + \
+            str("{:12.11f}".format(self.beta)) + '_states_continuation.txt')
 
         self.correction_fileName = str('L' + str(self.lagrangePointNr) + '_' + str(self.orbitType) \
-                                         + '_' + str("{:14.13f}".format(self.accelerationMagnitude)) + '_' + \
-                                         str("{:14.13f}".format(self.alpha)) + '_' + \
-                                         str("{:14.13f}".format(self.beta)) + '_differential_correction.txt')
+                                         + '_' + str("{:12.11f}".format(self.accelerationMagnitude)) + '_' + \
+                                         str("{:12.11f}".format(self.alpha)) + '_' + \
+                                         str("{:12.11f}".format(self.beta)) + '_differential_correction.txt')
 
         self.monodromy_fileName = str('L' + str(self.lagrangePointNr) + '_' + str(self.orbitType) \
-                                       + '_' + str("{:14.13f}".format(self.accelerationMagnitude)) + '_' + \
-                                       str("{:14.13f}".format(self.alpha)) + '_' + \
-                                       str("{:14.13f}".format(self.beta)) + '_initial_conditions.txt')
+                                       + '_' + str("{:12.11f}".format(self.accelerationMagnitude)) + '_' + \
+                                       str("{:12.11f}".format(self.alpha)) + '_' + \
+                                       str("{:12.11f}".format(self.beta)) + '_initial_conditions.txt')
 
         if self.varyingQuantity == 'Hamiltonian':
             statesContinuation_df = load_states_continuation(self.hamiltonian_filepath + self.continuation_fileName)
@@ -138,9 +138,9 @@ class DisplayPeriodicSolutions:
 
         for i in range(len(self.continuationParameter)):
             orbit_df = load_orbit_augmented('../../data/raw/orbits/augmented/L' + str(self.lagrangePointNr) + '_' + str(self.orbitType) \
-            + '_' + str("{:14.13f}".format(self.accelerationMagnitude)) + '_' + \
-            str("{:14.13f}".format(self.alpha)) + '_' + \
-            str("{:14.13f}".format(self.beta))+ '_' + str("{:14.13f}".format(self.Hlt[i])) + '_.txt')
+            + '_' + str("{:12.11f}".format(self.accelerationMagnitude)) + '_' + \
+            str("{:12.11f}".format(self.alpha)) + '_' + \
+            str("{:12.11f}".format(self.beta))+ '_' + str("{:12.11f}".format(self.Hlt[i])) + '_.txt')
 
             initial_state = orbit_df.head(1).values[0]
             terminal_state = orbit_df.tail(1).values[0]
@@ -480,10 +480,10 @@ class DisplayPeriodicSolutions:
             plot_color = colors[self.plotColorIndexBasedOnContinuation[i]]
 
             df = load_orbit('../../data/raw/orbits/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
-                            + str("{:14.13f}".format(self.accelerationMagnitude)) + '_' \
-                            + str("{:14.13f}".format(self.alpha)) + '_' \
-                            + str("{:14.13f}".format(self.beta)) + '_' \
-                            + str("{:14.13f}".format(self.Hlt[i])) + '_.txt')
+                            + str("{:12.11f}".format(self.accelerationMagnitude)) + '_' \
+                            + str("{:12.11f}".format(self.alpha)) + '_' \
+                            + str("{:12.11f}".format(self.beta)) + '_' \
+                            + str("{:12.11f}".format(self.Hlt[i])) + '_.txt')
 
             ax.plot(df['x'], df['y'], color=plot_color, alpha=self.plotAlpha, linewidth=self.lineWidth)
 
@@ -934,10 +934,10 @@ class DisplayPeriodicSolutions:
 if __name__ == '__main__':
     orbit_types = ['horizontal']
     lagrange_points = [1]
-    acceleration_magnitudes = [0.1]
-    alphas = [0.0,60.0,120.0,180.0,240.0,300.0]
+    acceleration_magnitudes = [0.0]
+    alphas = [0.0]
     betas = [0.0]
-    low_dpi = True  
+    low_dpi = True
     varying_quantities = ['Hamiltonian']
 
     for orbit_type in orbit_types:

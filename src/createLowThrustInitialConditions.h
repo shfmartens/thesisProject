@@ -54,11 +54,11 @@ bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differenti
                        const double maxEigenvalueDeviation = 1.0e-3 );
 
 Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::VectorXd& initialStateGuess, const int orbitNumber,
-                                          const int librationPointNr, const std::string& orbitType, const double massParameter, const int numberOfPatchPoints,
+                                          const int librationPointNr, const std::string& orbitType, const double massParameter, const int numberOfPatchPoints, int& numberOfCollocationPoints
                                           std::vector< Eigen::VectorXd >& initialConditions,
                                           std::vector< Eigen::VectorXd >& differentialCorrections,
                                           std::vector< Eigen::VectorXd >& statesContinuation,
-                                                   const double maxPositionDeviationFromPeriodicOrbit, double maxVelocityDeviationFromPeriodicOrbit, const double maxPeriodDeviationFromPeriodicOrbit, const int numberOfCollocationPoints );
+                                                   const double maxPositionDeviationFromPeriodicOrbit, double maxVelocityDeviationFromPeriodicOrbit, const double maxPeriodDeviationFromPeriodicOrbit );
 
 void createLowThrustInitialConditions( const int librationPointNr, const double ySign, const std::string& orbitType, const int continuationIndex, const double accelerationMagnitude, const double accelerationAngle,
                                        const double accelerationAngle2, const double initialMass, const double familyHamiltonian,
@@ -66,7 +66,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
             tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER,
             tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER ),
                                        const int numberOfPatchPoints = 8,
-                                       const int numberOfCollocationPoints = 10,
+                                       int numberOfCollocationPoints = 10,
                               const double maxPositionDeviationFromPeriodicOrbit = 1.0e-12, const double maxVelocityDeviationFromPeriodicOrbit = 5.0e-12, const double maxPeriodDeviationFromPeriodicOrbit = 1.0e-12,
                               const double maxEigenvalueDeviation = 1.0e-4,
                               const boost::function< double( const Eigen::VectorXd&, const int ) > pseudoArcLengthFunctionAugmented =

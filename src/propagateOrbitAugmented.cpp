@@ -114,19 +114,19 @@ void writeStateHistoryToFileAugmented(
 {
 
     std::ostringstream ssAccelerationMagnitude;
-    ssAccelerationMagnitude << std::fixed <<std::setprecision(13) << accelerationMagnitude;
+    ssAccelerationMagnitude << std::fixed <<std::setprecision(11) << accelerationMagnitude;
     std::string stringAccelerationMagnitude = ssAccelerationMagnitude.str();
 
     std::ostringstream ssAccelerationAngle1;
-    ssAccelerationAngle1 << std::fixed <<  std::setprecision(13) << accelerationAngle;
+    ssAccelerationAngle1 << std::fixed <<  std::setprecision(11) << accelerationAngle;
     std::string stringAccelerationAngle1 = ssAccelerationAngle1.str();
 
     std::ostringstream ssAccelerationAngle2;
-    ssAccelerationAngle2 << std::fixed << std::setprecision(13) << accelerationAngle2;
+    ssAccelerationAngle2 << std::fixed << std::setprecision(11) << accelerationAngle2;
     std::string stringAccelerationAngle2 = ssAccelerationAngle2.str();
 
     std::ostringstream ssHamiltonian;
-    ssHamiltonian << std::fixed << std::setprecision(13) << initialHamiltonian;
+    ssHamiltonian << std::fixed << std::setprecision(11) << initialHamiltonian;
     std::string stringHamiltonian = ssHamiltonian.str();
 
 

@@ -95,8 +95,8 @@ class DisplayFamilyProperties:
         for i in range(len(self.overviewArray)):
             if len(self.accelerationMagnitude) > 1:
                 init_conditions_df = load_initial_conditions_augmented_incl_M(self.file_directory + 'L'+str(self.lagrangePointNr)+'_'+self.orbitType \
-                      +'_' + str("{:14.13f}".format(self.overviewArray[i])) + '_' + str("{:14.13f}".format(self.titleVariable)) \
-                      + '_' + str("{:14.13f}".format(self.beta)) + '_initial_conditions.txt')
+                      +'_' + str("{:12.11f}".format(self.overviewArray[i])) + '_' + str("{:12.11f}".format(self.titleVariable)) \
+                      + '_' + str("{:12.11f}".format(self.beta)) + '_initial_conditions.txt')
 
                 ax.plot(init_conditions_df[1].values, init_conditions_df[0].values,
                         label='$a_{lt} = + ' + str(self.overviewArray[i]),

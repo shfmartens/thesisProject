@@ -60,7 +60,7 @@ int main (){
     // ================================
 
 
-    #pragma omp parallel num_threads(1)
+    #pragma omp parallel num_threads(14)
     {
         #pragma omp for
         for (unsigned int i=1; i<=1; i++) {
@@ -68,7 +68,7 @@ int main (){
             {
                 std::cout << "Run Thread " << i << std::endl;
                 std::string orbitType = "horizontal";
-                int continuationIndex = 6; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
+                int continuationIndex = 1; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
                 double accelerationMagnitude = 0.0;
                 double accelerationAngle = 0.0;
                 double accelerationAngle2 = 0.0;

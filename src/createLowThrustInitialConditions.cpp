@@ -504,16 +504,16 @@ double computeHamiltonian (const double massParameter, const Eigen::VectorXd sta
 }
 
 Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::VectorXd& initialStateGuess, const int orbitNumber,
-                                          const int librationPointNr, const std::string& orbitType, const double massParameter, const int numberOfPatchPoints,
+                                          const int librationPointNr, const std::string& orbitType, const double massParameter, const int numberOfPatchPoints, int& numberOfCollocationPoints,
                                           std::vector< Eigen::VectorXd >& initialConditions,
                                           std::vector< Eigen::VectorXd >& differentialCorrections,
                                           std::vector< Eigen::VectorXd >& statesContinuation,
-                                                   const double maxPositionDeviationFromPeriodicOrbit, double maxVelocityDeviationFromPeriodicOrbit, const double maxPeriodDeviationFromPeriodicOrbit, const int numberOfCollocationPoints )
+                                                   const double maxPositionDeviationFromPeriodicOrbit, double maxVelocityDeviationFromPeriodicOrbit, const double maxPeriodDeviationFromPeriodicOrbit )
 {
     Eigen::VectorXd initialCollocationGuess;
     Eigen::VectorXd initialStateVector(10);
 
-    // if orbitNumber == 1 -> Repropagate so we have evenly spaced nodes over the whole orbit
+    // optional loop for mesh refinement
     if (orbitNumber == 1 )
     {
         initialCollocationGuess = initialStateGuess;
@@ -671,19 +671,19 @@ void writeFinalResultsToFilesAugmented( const int librationPointNr, const std::s
     // Write variables to the right precision via ostringstream
 
     std::ostringstream ssAccelerationMagnitude;
-    ssAccelerationMagnitude << std::fixed <<std::setprecision(13) << accelerationMagnitude;
+    ssAccelerationMagnitude << std::fixed <<std::setprecision(11) << accelerationMagnitude;
     std::string stringAccelerationMagnitude = ssAccelerationMagnitude.str();
 
     std::ostringstream ssAccelerationAngle1;
-    ssAccelerationAngle1 << std::fixed <<  std::setprecision(13) << accelerationAngle;
+    ssAccelerationAngle1 << std::fixed <<  std::setprecision(11) << accelerationAngle;
     std::string stringAccelerationAngle1 = ssAccelerationAngle1.str();
 
     std::ostringstream ssAccelerationAngle2;
-    ssAccelerationAngle2 << std::fixed << std::setprecision(13) << accelerationAngle2;
+    ssAccelerationAngle2 << std::fixed << std::setprecision(11) << accelerationAngle2;
     std::string stringAccelerationAngle2 = ssAccelerationAngle2.str();
 
     std::ostringstream ssHamiltonian;
-    ssHamiltonian << std::fixed << std::setprecision(13) << familyHamiltonian;
+    ssHamiltonian << std::fixed << std::setprecision(11) << familyHamiltonian;
     std::string stringHamiltonian = ssHamiltonian.str();
 
     // remove initial Conditions file that already exist
@@ -999,7 +999,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 
     // Set exit parameters of continuation procedure
-    int maximumNumberOfInitialConditions = 3;
+    int maximumNumberOfInitialConditions = 200;
     int numberOfInitialConditions;
     if (continuationIndex == 1)
     {
@@ -1025,7 +1025,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
     while( ( numberOfInitialConditions < maximumNumberOfInitialConditions ) && continueNumericalContinuation)
     {
 
-        std::cout << "========== Numerical continuation Status Update ========== "<< std::endl
+        std::cout << "========== Numerical continuation Status Update L" << librationPointNr << "_" << orbitType << "_" << "acc = " << accelerationMagnitude << ", alpha = " << accelerationAngle <<  " ========== "<< std::endl
                 << "Creating initial guess number "  << numberOfInitialConditions + 1 << std::endl
                 << "Continuating along continuation index "  << continuationIndex << std::endl
                 << "============================================================ " << std::endl;
@@ -1075,8 +1075,8 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                }
 
                stateVectorInclSTM = getCollocatedAugmentedInitialState( initialStateVector, numberOfInitialConditions, librationPointNr, orbitType, massParameter,
-                                                   numberOfPatchPoints, initialConditions, differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit,
-                                                   maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit, numberOfCollocationPoints);
+                                                   numberOfPatchPoints, numberOfCollocationPoints, initialConditions, differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit,
+                                                   maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
 
 
           }
