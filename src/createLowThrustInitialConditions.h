@@ -66,7 +66,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
             tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER,
             tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER ),
                                        const int numberOfPatchPoints = 8,
-                                       int numberOfCollocationPoints = 10,
+                                       const int initialNumberOfCollocationPoints = 10,
                               const double maxPositionDeviationFromPeriodicOrbit = 1.0e-12, const double maxVelocityDeviationFromPeriodicOrbit = 5.0e-12, const double maxPeriodDeviationFromPeriodicOrbit = 1.0e-12,
                               const double maxEigenvalueDeviation = 1.0e-4,
                               const boost::function< double( const Eigen::VectorXd&, const int ) > pseudoArcLengthFunctionAugmented =

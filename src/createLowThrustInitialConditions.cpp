@@ -517,10 +517,12 @@ Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::VectorXd& initi
     if (orbitNumber == 1 )
     {
         initialCollocationGuess = initialStateGuess;
+        numberOfCollocationPoints = numberOfCollocationPoints;
 
     } else
     {
         initialCollocationGuess = initialStateGuess;
+        numberOfCollocationPoints = numberOfCollocationPoints;
     }
 
     // Apply collocation
@@ -955,7 +957,7 @@ bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differenti
 
 void createLowThrustInitialConditions( const int librationPointNr, const double ySign, const std::string& orbitType, const int continuationIndex, const double accelerationMagnitude, const double accelerationAngle,
                                        const double accelerationAngle2, const double initialMass, const double familyHamiltonian,
-                              const double massParameter, const int numberOfPatchPoints, const int numberOfCollocationPoints, const double maxPositionDeviationFromPeriodicOrbit, const double maxVelocityDeviationFromPeriodicOrbit, const double maxPeriodDeviationFromPeriodicOrbit, const double maxEigenvalueDeviation,
+                              const double massParameter, const int numberOfPatchPoints, const int initialNumberOfCollocationPoints, const double maxPositionDeviationFromPeriodicOrbit, const double maxVelocityDeviationFromPeriodicOrbit, const double maxPeriodDeviationFromPeriodicOrbit, const double maxEigenvalueDeviation,
                               const boost::function< double( const Eigen::VectorXd&, const int ) > pseudoArcLengthFunctionAugmented ) {
 
     std::cout << "\nCreate initial conditions:\n" << std::endl;
@@ -1062,6 +1064,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
               initialStateVector = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*numberOfPatchPoints );
 
               std::cout << "initialStateVector: \n "<< initialStateVector << std::endl;
+              int numberOfCollocationPoints = initialNumberOfCollocationPoints;
               if (numberOfInitialConditions == 1 and numberOfPatchPoints != numberOfCollocationPoints)
               {
                 initialStateVector = redstributeNodesOverTrajectory(initialStateVector, numberOfPatchPoints, numberOfCollocationPoints, massParameter);
@@ -1074,10 +1077,9 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                     //initialStateVector(i*11+continuationIndex) = initialStateVector(i*11+continuationIndex) + incrementContinuationParameter;
                }
 
-               stateVectorInclSTM = getCollocatedAugmentedInitialState( initialStateVector, numberOfInitialConditions, librationPointNr, orbitType, massParameter,
-                                                   numberOfPatchPoints, numberOfCollocationPoints, initialConditions, differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit,
-                                                   maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
-
+               stateVectorInclSTM = getCollocatedAugmentedInitialState( initialStateVector, numberOfInitialConditions, librationPointNr, orbitType,
+                                                                        massParameter, numberOfPatchPoints, numberOfCollocationPoints, initialConditions,
+                                                                        differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
 
           }
 
