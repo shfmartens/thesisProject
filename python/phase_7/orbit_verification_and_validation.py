@@ -937,7 +937,7 @@ if __name__ == '__main__':
     acceleration_magnitudes = [0.1]
     alphas = [0.0,60.0,120.0,180.0,240.0,300.0]
     betas = [0.0]
-    low_dpi = True
+    low_dpi = True  
     varying_quantities = ['Hamiltonian']
 
     for orbit_type in orbit_types:
