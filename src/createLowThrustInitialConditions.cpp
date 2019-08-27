@@ -15,6 +15,7 @@
 #include "createInitialConditions.h"
 #include "createLowThrustInitialConditions.h"
 #include "applyDifferentialCorrection.h"
+#include "applyCollocation.h"
 #include "applyPredictionCorrection.h"
 #include "applyMassRefinement.h"
 #include "applyTwoLevelTargeterLowThrust.h"
@@ -313,11 +314,11 @@ Eigen::VectorXd getEarthMoonInitialGuessParameters ( const int librationPointNr,
             {
                 if (librationPointNr == 1)
                 {
-                    initialGuessParameters(0) = 1.0e-4;
+                    initialGuessParameters(0) = 1.0e-5;
                 }
                 else if (librationPointNr == 2)
                 {
-                    initialGuessParameters(0) = 1.0e-4;
+                    initialGuessParameters(0) = 1.0e-5;
                 }
             }
             else if (orbitType == "vertical")
@@ -502,6 +503,91 @@ double computeHamiltonian (const double massParameter, const Eigen::VectorXd sta
 
 }
 
+Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::VectorXd& initialStateGuess, const int orbitNumber,
+                                          const int librationPointNr, const std::string& orbitType, const double massParameter, const int numberOfPatchPoints,
+                                          std::vector< Eigen::VectorXd >& initialConditions,
+                                          std::vector< Eigen::VectorXd >& differentialCorrections,
+                                          std::vector< Eigen::VectorXd >& statesContinuation,
+                                                   const double maxPositionDeviationFromPeriodicOrbit, double maxVelocityDeviationFromPeriodicOrbit, const double maxPeriodDeviationFromPeriodicOrbit, const int numberOfCollocationPoints )
+{
+    Eigen::VectorXd initialCollocationGuess;
+    Eigen::VectorXd initialStateVector(10);
+
+    // if orbitNumber == 1 -> Repropagate so we have evenly spaced nodes over the whole orbit
+    if (orbitNumber == 1 )
+    {
+        initialCollocationGuess = initialStateGuess;
+
+    } else
+    {
+        initialCollocationGuess = initialStateGuess;
+    }
+
+    // Apply collocation
+    Eigen::VectorXd deviationNorms(5);
+    Eigen::VectorXd collocatedGuess(11*numberOfCollocationPoints);
+    Eigen::VectorXd collocationResult = applyCollocation(initialCollocationGuess, massParameter, numberOfCollocationPoints, collocatedGuess,
+                                                         maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
+
+    initialStateVector = collocationResult.segment( 0, 10 );
+    double orbitalPeriod = collocationResult( 10 );
+    double hamiltonianFullPeriodColloc = collocationResult( 23 );
+
+    // Propagate the initialStateVector for a full period and write output to file.
+
+    std::cout << "orbPeriod: " << orbitalPeriod << std::endl;
+
+    std::map< double, Eigen::VectorXd > stateHistory;
+    Eigen::MatrixXd stateVectorInclSTM = propagateOrbitAugmentedToFinalCondition(
+                getFullInitialStateAugmented( initialStateVector ), massParameter, orbitalPeriod, 1, stateHistory, 1000, 0.0 ).first;
+
+    std::cout << "prop completed: " << std::endl;
+
+    writeStateHistoryToFileAugmented( stateHistory, initialStateVector(6), initialStateVector(7), initialStateVector(8), collocationResult(11), orbitNumber, librationPointNr, orbitType, 1000, false );
+
+    std::cout << "writeStateHistoryToFileAugmented copm: " << std::endl;
+
+
+    // Save results
+    double hamiltonianFullPeriod = computeHamiltonian( massParameter, stateVectorInclSTM.block(0,0,10,1));
+
+    Eigen::VectorXd defectVector(11*numberOfCollocationPoints);
+    Eigen::MatrixXd propagatedStates(10*(numberOfCollocationPoints-1),11);
+    std::map< double, Eigen::VectorXd > stateHistoryTemp;
+
+    computeOrbitDeviations(collocatedGuess, numberOfCollocationPoints, propagatedStates, defectVector, stateHistoryTemp, massParameter);
+
+    std::cout << "orbit devs copm: " << std::endl;
+
+
+    deviationNorms = computeDeviationNorms(defectVector,numberOfCollocationPoints);
+
+    std::cout << "orbit devs NORMS copm: " << std::endl;
+
+
+    appendDifferentialCorrectionResultsVectorAugmented( hamiltonianFullPeriod, collocationResult, differentialCorrections, deviationNorms );
+
+    std::cout << "append diffCorr  copm: " << std::endl;
+
+
+    Eigen::VectorXd collocationResultWithStates(25+11*numberOfCollocationPoints);
+    collocationResultWithStates.segment(0,25) = collocationResult;
+    collocationResultWithStates.segment(25,11*numberOfCollocationPoints) = collocatedGuess;
+
+    appendContinuationStatesVectorAugmented( orbitNumber, numberOfCollocationPoints, collocationResult(11), collocationResultWithStates, statesContinuation);
+
+    std::cout << "append continuation  copm: " << std::endl;
+
+
+    appendResultsVectorAugmented( hamiltonianFullPeriod, orbitalPeriod, initialStateVector, stateVectorInclSTM, initialConditions );
+
+    std::cout << "append results  copm: " << std::endl;
+
+    return stateVectorInclSTM;
+
+}
+
+
 Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initialStateGuess, double targetHamiltonian, const int orbitNumber,
                                           const int librationPointNr, const std::string& orbitType, const double massParameter, const int numberOfPatchPoints, const bool hamiltonianConstraint,
                                           std::vector< Eigen::VectorXd >& initialConditions,
@@ -525,7 +611,6 @@ Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initia
 
 
     // Propagate the initialStateVector for a full period and write output to file.
-
     std::map< double, Eigen::VectorXd > stateHistory;
     Eigen::MatrixXd stateVectorInclSTM = propagateOrbitAugmentedToFinalCondition(
                 getFullInitialStateAugmented( initialStateVector ), massParameter, orbitalPeriod, 1, stateHistory, 1000, 0.0 ).first;
@@ -870,7 +955,7 @@ bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differenti
 
 void createLowThrustInitialConditions( const int librationPointNr, const double ySign, const std::string& orbitType, const int continuationIndex, const double accelerationMagnitude, const double accelerationAngle,
                                        const double accelerationAngle2, const double initialMass, const double familyHamiltonian,
-                              const double massParameter, const int numberOfPatchPoints, const double maxPositionDeviationFromPeriodicOrbit, const double maxVelocityDeviationFromPeriodicOrbit, const double maxPeriodDeviationFromPeriodicOrbit, const double maxEigenvalueDeviation,
+                              const double massParameter, const int numberOfPatchPoints, const int numberOfCollocationPoints, const double maxPositionDeviationFromPeriodicOrbit, const double maxVelocityDeviationFromPeriodicOrbit, const double maxPeriodDeviationFromPeriodicOrbit, const double maxEigenvalueDeviation,
                               const boost::function< double( const Eigen::VectorXd&, const int ) > pseudoArcLengthFunctionAugmented ) {
 
     std::cout << "\nCreate initial conditions:\n" << std::endl;
@@ -891,8 +976,11 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
     // Obtain ballistic initial guesses and refine them
     linearApproximationResultIteration1 = getLowThrustInitialStateVectorGuess(librationPointNr, ySign, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 0);
-    linearApproximationResultIteration2 = getLowThrustInitialStateVectorGuess(librationPointNr, ySign, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 1);
 
+    if (continuationIndex == 1)
+    {
+        linearApproximationResultIteration2 = getLowThrustInitialStateVectorGuess(librationPointNr, ySign, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 1);
+    }
 
     stateVectorInclSTM =  getCorrectedAugmentedInitialState(
                 linearApproximationResultIteration1, computeHamiltonian( massParameter, linearApproximationResultIteration1.segment(0,10)), 0,
@@ -900,18 +988,26 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                 maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
 
 
+    if (continuationIndex == 1)
+    {
+        stateVectorInclSTM =  getCorrectedAugmentedInitialState(
+                    linearApproximationResultIteration2, computeHamiltonian( massParameter, linearApproximationResultIteration1.segment(0,10)), 1,
+                   librationPointNr, orbitType, massParameter, numberOfPatchPoints, false, initialConditions, differentialCorrections, statesContinuation,
+                    maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
+    }
 
-    stateVectorInclSTM =  getCorrectedAugmentedInitialState(
-                linearApproximationResultIteration2, computeHamiltonian( massParameter, linearApproximationResultIteration1.segment(0,10)), 1,
-               librationPointNr, orbitType, massParameter, numberOfPatchPoints, false, initialConditions, differentialCorrections, statesContinuation,
-                maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
 
 
     // Set exit parameters of continuation procedure
-    int maximumNumberOfInitialConditions = 400;
-    int numberOfInitialConditions = 2;
-
-
+    int maximumNumberOfInitialConditions = 3;
+    int numberOfInitialConditions;
+    if (continuationIndex == 1)
+    {
+        numberOfInitialConditions = 2;
+    } else
+    {
+        numberOfInitialConditions = 1;
+    }
 
     // Generate periodic orbits until termination
     double orbitalPeriod  = 0.0, periodIncrement = 0.0;
@@ -936,47 +1032,54 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
          double incrementContinuationParameter =  pow(10,(static_cast<float>(-orderOfMagnitude)));
 
+          if(continuationIndex == 1)
+          {
+              // Determine increments to state and time
+                 stateIncrement.segment(1,11*numberOfPatchPoints) = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*numberOfPatchPoints ) -
+                                 statesContinuation[ statesContinuation.size( ) - 2 ].segment( 3, 11*numberOfPatchPoints );
+                 stateIncrement(0) = statesContinuation[ statesContinuation.size( ) - 1 ]( 1 ) -
+                                 statesContinuation[ statesContinuation.size( ) - 2 ]( 1 );
 
-          std::cout << "============" << std::endl
-                     << "X^{n}: \n" << statesContinuation[ statesContinuation.size( ) - 2 ].segment( 3, 10 ) << std::endl
-                     << "X^{n+1}: \n" << statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 10 ) << std::endl
-                     << "X^{n+1} - X^{n}: \n" << ( statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 10 ) - statesContinuation[ statesContinuation.size( ) - 2 ].segment( 3, 10 ) )<< std::endl;
-          std::cout << "Hamiltonian n: "  << statesContinuation[ statesContinuation.size( ) - 2 ](1) << std::endl;
-          std::cout << "Hamiltonian n+1: "  << statesContinuation[ statesContinuation.size( ) - 1 ](1) << std::endl;
-          std::cout << "Hamiltonian n+1 - n+1: "  << (statesContinuation[ statesContinuation.size( ) - 1 ](1) - statesContinuation[ statesContinuation.size( ) - 2 ](1) )<< std::endl;
+              std::cout << "stateIncrement First Patch point: \n" << stateIncrement.segment(0,11) << std::endl;
+              double pseudoArcLengthCorrection = pseudoArcLengthFunctionAugmented( stateIncrement.segment(0,11), continuationIndex );
 
+              std::cout << "pseudoArcLengthCorrection: " << pseudoArcLengthCorrection << std::endl;
 
-
-          // Determine increments to state and time
-             stateIncrement.segment(1,11*numberOfPatchPoints) = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*numberOfPatchPoints ) -
-                             statesContinuation[ statesContinuation.size( ) - 2 ].segment( 3, 11*numberOfPatchPoints );
-             stateIncrement(0) = statesContinuation[ statesContinuation.size( ) - 1 ]( 1 ) -
-                             statesContinuation[ statesContinuation.size( ) - 2 ]( 1 );
-
-          std::cout << "stateIncrement First Patch point: \n" << stateIncrement.segment(0,11) << std::endl;
-          double
-          pseudoArcLengthCorrection = pseudoArcLengthFunctionAugmented( stateIncrement.segment(0,11), continuationIndex );
-
-          std::cout << "pseudoArcLengthCorrection: " << pseudoArcLengthCorrection << std::endl;
-
-          // Apply numerical continuation
-           initialStateVector = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*numberOfPatchPoints ) +
-                                stateIncrement.segment(1,11*numberOfPatchPoints) * pseudoArcLengthCorrection;
-
-           std::cout << "X^{n+2} GUESS: \n" << initialStateVector.segment(0,10) << std::endl;
-           std::cout << "Hamiltonian n+2 GUESS: "  << computeHamiltonian(massParameter,  initialStateVector.segment(0,10)) << std::endl;
-
-           std::cout << "X^{n+2} - X^{n+2}: \n" << initialStateVector.segment(0,10) - statesContinuation[ statesContinuation.size( ) - 1 ].segment( 2, 10 ) << std::endl;
+              // Apply numerical continuation
+               initialStateVector = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*numberOfPatchPoints ) +
+                                    stateIncrement.segment(1,11*numberOfPatchPoints) * pseudoArcLengthCorrection;
 
 
 
-           targetHamiltonian = statesContinuation[ statesContinuation.size( ) - 1 ](1) + stateIncrement(0) * pseudoArcLengthCorrection;
+               stateVectorInclSTM =  getCorrectedAugmentedInitialState( initialStateVector, targetHamiltonian, numberOfInitialConditions,
+                                                                                 librationPointNr, orbitType, massParameter, numberOfPatchPoints, false,
+                                                                                 initialConditions, differentialCorrections, statesContinuation,
+                                                                                 maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
+          }
+          if (continuationIndex == 6)
+          {
+              // extract the starting guess from statesContinuation
+              initialStateVector = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*numberOfPatchPoints );
 
-           stateVectorInclSTM =  getCorrectedAugmentedInitialState( initialStateVector, targetHamiltonian, numberOfInitialConditions,
-                                                                             librationPointNr, orbitType, massParameter, numberOfPatchPoints, false,
-                                                                             initialConditions, differentialCorrections, statesContinuation,
-                                                                             maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
+              std::cout << "initialStateVector: \n "<< initialStateVector << std::endl;
+              if (numberOfInitialConditions == 1 and numberOfPatchPoints != numberOfCollocationPoints)
+              {
+                initialStateVector = redstributeNodesOverTrajectory(initialStateVector, numberOfPatchPoints, numberOfCollocationPoints, massParameter);
+              }
 
+
+              // Add thrust increment to orbit!
+               for(int i = 0; i < numberOfCollocationPoints; i ++)
+               {
+                    //initialStateVector(i*11+continuationIndex) = initialStateVector(i*11+continuationIndex) + incrementContinuationParameter;
+               }
+
+               stateVectorInclSTM = getCollocatedAugmentedInitialState( initialStateVector, numberOfInitialConditions, librationPointNr, orbitType, massParameter,
+                                                   numberOfPatchPoints, initialConditions, differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit,
+                                                   maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit, numberOfCollocationPoints);
+
+
+          }
 
            numberOfInitialConditions += 1;
 

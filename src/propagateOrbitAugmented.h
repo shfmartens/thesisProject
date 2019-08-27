@@ -7,6 +7,8 @@
 
 #include "Tudat/Basics/basicTypedefs.h"
 
+Eigen::VectorXd redstributeNodesOverTrajectory(const Eigen::VectorXd initialStateVector, const int numberOfPatchPoints,  const int numberOfCollocationPoints, const double massParameter);
+
 Eigen::MatrixXd getFullInitialStateAugmented( const Eigen::VectorXd& initialState );
 
 void writeFloquetDataToFile (const std::map< double, Eigen::VectorXd >& stateHistoryCorrected, Eigen::VectorXd lowThrustInitialStateVectorGuess, const int librationPointNr, const std::string orbitType, const Eigen::VectorXd equilibriumStateVector, const double correctionTime, const double amplitude, Eigen::VectorXd interiorManeuverCorrector );

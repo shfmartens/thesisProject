@@ -13,6 +13,42 @@
 #include "propagateOrbitAugmented.h"
 #include "stateDerivativeModelAugmented.h"
 
+Eigen::VectorXd redstributeNodesOverTrajectory(const Eigen::VectorXd initialStateVector, const int numberOfPatchPoints,  const int numberOfCollocationPoints, const double massParameter)
+{
+
+    Eigen::VectorXd redistributedGuess(11*numberOfCollocationPoints);
+    redistributedGuess.setZero();
+
+    Eigen::ArrayXd timeArray = Eigen::ArrayXd::LinSpaced(numberOfCollocationPoints,0,initialStateVector(11*(numberOfPatchPoints-1) + 10 ) );
+
+    // store the first state and time:
+    redistributedGuess.segment(0,11) = initialStateVector.segment(0,11);
+
+    // introduce loop variables
+    Eigen::VectorXd stateVectorOnly = initialStateVector.segment(0,10);
+    double initialTime = timeArray(0);
+    double finalTime;
+    for(int i = 1; i < numberOfCollocationPoints; i++)
+    {
+        Eigen::MatrixXd initialStateInclSTM(10,11);
+        initialStateInclSTM.block(0,0,10,1) = stateVectorOnly;
+        finalTime = timeArray(i);
+        std::map< double, Eigen::VectorXd > stateHistory;
+        std::pair< Eigen::MatrixXd, double > StateInclSTMandTime = propagateOrbitAugmentedToFinalCondition( initialStateInclSTM,
+                                                                                                            massParameter, finalTime, 1, stateHistory, -1, initialTime );
+        Eigen::MatrixXd StateInclSTM = StateInclSTMandTime.first;
+        initialTime                  = StateInclSTMandTime.second;
+        stateVectorOnly              = StateInclSTM.block( 0, 0, 10, 1 );
+
+
+        redistributedGuess.segment(i*11,10) = stateVectorOnly;
+        redistributedGuess(i*11+10) = initialTime;
+
+    }
+
+    return redistributedGuess;
+}
+
 Eigen::MatrixXd getFullInitialStateAugmented( const Eigen::VectorXd& initialState )
 {
     Eigen::MatrixXd fullInitialState = Eigen::MatrixXd::Zero( 10, 11 );

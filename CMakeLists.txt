@@ -237,6 +237,7 @@ list(APPEND TUDAT_APPLICATION_PROPAGATION_LIBRARIES tudat_simulation_setup tudat
 set(CR3BPLT_SOURCES
 
          "${SRCROOT}/src/applyPredictionCorrection.cpp"
+         "${SRCROOT}/src/applyCollocation.cpp"
          "${SRCROOT}/src/applyMassRefinement.cpp"
          "${SRCROOT}/src/applyTwoLevelTargeterLowThrust.cpp"
          "${SRCROOT}/src/computeLevel1Correction.cpp"
@@ -263,6 +264,7 @@ set(CR3BPLT_SOURCES
 
 set(CR3BPLT_HEADERS
          "${SRCROOT}/src/applyPredictionCorrection.h"
+         "${SRCROOT}/src/applyCollocation.h"
          "${SRCROOT}/src/applyMassRefinement.h"
          "${SRCROOT}/src/applyTwoLevelTargeterLowThrust.h"
          "${SRCROOT}/src/computeLevel1Correction.h"

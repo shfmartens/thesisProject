@@ -162,6 +162,21 @@ class DisplayPeriodicSolutions:
             self.deviation_velocity_norm.append(np.sqrt(xdotDeviation ** 2 + ydotDeviation  ** 2 + zdotDeviation ** 2 ))
 
         # Analyse monodromy matrix
+        self.eigenvalues = []
+        self.D = []
+        self.orderOfLinearInstability = []
+        self.orbitIdBifurcations = []
+        self.lambda1 = []
+        self.lambda2 = []
+        self.lambda3 = []
+        self.lambda4 = []
+        self.lambda5 = []
+        self.lambda6 = []
+        self.eigenvalues= []
+        self.v1 = []
+        self.v2 = []
+        self.v3 = []
+
         self.maxEigenvalueDeviation = 1.0e-3  # Changed from 1e-3
         for row in initial_conditions_incl_m_df.iterrows():
             M = np.matrix(
@@ -170,23 +185,23 @@ class DisplayPeriodicSolutions:
 
             eigenvalue = np.linalg.eigvals(M)
 
-        sorting_indices = [-1, -1, -1, -1, -1, -1]
-        idx_real_one = []
-        # Find indices of the first pair of real eigenvalue equal to one
-        for idx, l in enumerate(eigenvalue):
-            print(idx)
-            print(l)
-            if abs(l.imag) < self.maxEigenvalueDeviation:
-                if abs(l.real - 1.0) < self.maxEigenvalueDeviation:
-                    if sorting_indices[2] == -1:
-                        sorting_indices[2] = idx
-                        idx_real_one.append(idx)
-                    elif sorting_indices[3] == -1:
-                        sorting_indices[3] = idx
-                        idx_real_one.append(idx)
+            sorting_indices = [-1, -1, -1, -1, -1, -1]
+            idx_real_one = []
 
-        # Find indices of the pair of largest/smallest real eigenvalue (corresponding to the unstable/stable subspace)
-        for idx, l in enumerate(eigenvalue):
+
+            # Find indices of the first pair of real eigenvalue equal to one
+            for idx, l in enumerate(eigenvalue):
+                if abs(l.imag) < self.maxEigenvalueDeviation:
+                    if abs(l.real - 1.0) < self.maxEigenvalueDeviation:
+                        if sorting_indices[2] == -1:
+                            sorting_indices[2] = idx
+                            idx_real_one.append(idx)
+                        elif sorting_indices[3] == -1:
+                            sorting_indices[3] = idx
+                            idx_real_one.append(idx)
+
+            # Find indices of the pair of largest/smallest real eigenvalue (corresponding to the unstable/stable subspace)
+            for idx, l in enumerate(eigenvalue):
                 if idx == (sorting_indices[2] or sorting_indices[3]):
                     continue
                 if abs(l.imag) < self.maxEigenvalueDeviation:
@@ -196,17 +211,162 @@ class DisplayPeriodicSolutions:
                             sorting_indices[5] = idx
 
 
-        missing_indices = sorted(list(set(list(range(-1, 6))) - set(sorting_indices)))
-        print(sorting_indices)
-        print(set(sorting_indices))
-        print(missing_indices)
+            missing_indices = sorted(list(set(list(range(-1, 6))) - set(sorting_indices)))
 
-        if eigenvalue.imag[missing_indices[0]] > eigenvalue.imag[missing_indices[1]]:
-            sorting_indices[1] = missing_indices[0]
-            sorting_indices[4] = missing_indices[1]
-        else:
-            sorting_indices[1] = missing_indices[1]
-            sorting_indices[4] = missing_indices[0]
+            if eigenvalue.imag[missing_indices[0]] > eigenvalue.imag[missing_indices[1]]:
+                sorting_indices[1] = missing_indices[0]
+                sorting_indices[4] = missing_indices[1]
+            else:
+                sorting_indices[1] = missing_indices[1]
+                sorting_indices[4] = missing_indices[0]
+
+            if len(sorting_indices) > len(set(sorting_indices)):
+                print('\nWARNING: SORTING INDEX IS NOT UNIQUE FOR ' + self.orbitType + ' AT L' + str(
+                     self.lagrangePointNr))
+                print(eigenvalue)
+                if len(idx_real_one) != 2:
+                    idx_real_one = []
+                    # Find indices of the first pair of real eigenvalue equal to one
+                    for idx, l in enumerate(eigenvalue):
+                        if abs(l.imag) < 2 * self.maxEigenvalueDeviation:
+                            if abs(l.real - 1.0) < 2 * self.maxEigenvalueDeviation:
+                                if sorting_indices[2] == -1:
+                                    sorting_indices[2] = idx
+                                    idx_real_one.append(idx)
+                                elif sorting_indices[3] == -1:
+                                    sorting_indices[3] = idx
+                                    idx_real_one.append(idx)
+
+                if len(idx_real_one) == 2:
+                    sorting_indices = [-1, -1, -1, -1, -1, -1]
+                    sorting_indices[2] = idx_real_one[0]
+                    sorting_indices[3] = idx_real_one[1]
+                    print('minimum angle = ' + str(
+                        min(abs(np.angle(eigenvalue[list(set(range(6)) - set(idx_real_one))], deg=True)))))
+                    print('maximum angle = ' + str(
+                        max(abs(np.angle(eigenvalue[list(set(range(6)) - set(idx_real_one))], deg=True)))))
+                    # Assume two times real one and two conjugate pairs
+                    for idx, l in enumerate(eigenvalue):
+                        print(idx)
+                        print(abs(np.angle(l, deg=True)))
+                        # min(abs(np.angle(eigenvalue[list(set(range(6)) - set(idx_real_one))], deg=True)))
+                        # if abs(np.angle(l, deg=True))%180 == min(abs(np.angle(eigenvalue[list(set(range(6)) - set(idx_real_one))], deg=True)) %180):
+                        if l.real == eigenvalue[list(set(range(6)) - set(idx_real_one))].real.max():
+                            if l.imag > 0:
+                                sorting_indices[0] = idx
+                            elif l.imag < 0:
+                                sorting_indices[5] = idx
+                        # if abs(np.angle(l, deg=True))%180 == max(abs(np.angle(eigenvalue[list(set(range(6)) - set(idx_real_one))], deg=True)) %180):
+                        if l.real == eigenvalue[list(set(range(6)) - set(idx_real_one))].real.min():
+                            if l.imag > 0:
+                                sorting_indices[1] = idx
+                            elif l.imag < 0:
+                                sorting_indices[4] = idx
+                        print(sorting_indices)
+
+                if len(sorting_indices) > len(set(sorting_indices)):
+                    print('\nWARNING: SORTING INDEX IS STILL NOT UNIQUE')
+                    # Sorting eigenvalues from largest to smallest norm, excluding real one
+
+                    # Sorting based on previous phase
+                    if len(idx_real_one) == 2:
+                        sorting_indices = [-1, -1, -1, -1, -1, -1]
+                        sorting_indices[2] = idx_real_one[0]
+                        sorting_indices[3] = idx_real_one[1]
+
+                        # Assume two times real one and two conjugate pairs
+                        for idx, l in enumerate(eigenvalue[list(set(range(6)) - set(idx_real_one))]):
+                            print(idx)
+                            if abs(l.real - self.lambda1[-1].real) == min(
+                                    abs(eigenvalue.real - self.lambda1[-1].real)) and abs(
+                                    l.imag - self.lambda1[-1].imag) == min(
+                                    abs(eigenvalue.imag - self.lambda1[-1].imag)):
+                                sorting_indices[0] = idx
+                            if abs(l.real - self.lambda2[-1].real) == min(
+                                    abs(eigenvalue.real - self.lambda2[-1].real)) and abs(
+                                    l.imag - self.lambda2[-1].imag) == min(
+                                    abs(eigenvalue.imag - self.lambda2[-1].imag)):
+                                sorting_indices[1] = idx
+                            if abs(l.real - self.lambda5[-1].real) == min(
+                                    abs(eigenvalue.real - self.lambda5[-1].real)) and abs(
+                                    l.imag - self.lambda5[-1].imag) == min(
+                                    abs(eigenvalue.imag - self.lambda5[-1].imag)):
+                                sorting_indices[4] = idx
+                            if abs(l.real - self.lambda6[-1].real) == min(
+                                    abs(eigenvalue.real - self.lambda6[-1].real)) and abs(
+                                    l.imag - self.lambda6[-1].imag) == min(
+                                    abs(eigenvalue.imag - self.lambda6[-1].imag)):
+                                sorting_indices[5] = idx
+                            print(sorting_indices)
+
+                    pass
+                if (sorting_indices[1] and sorting_indices[4]) == -1:
+                    # Fill two missing values
+                    two_missing_indices = list(set(list(range(-1, 6))) - set(sorting_indices))
+                    if abs(eigenvalue[two_missing_indices[0]].real) > abs(eigenvalue[two_missing_indices[1]].real):
+                        sorting_indices[1] = two_missing_indices[0]
+                        sorting_indices[4] = two_missing_indices[1]
+                    else:
+                        sorting_indices[1] = two_missing_indices[1]
+                        sorting_indices[4] = two_missing_indices[0]
+                    print(sorting_indices)
+                if (sorting_indices[0] and sorting_indices[5]) == -1:
+                    # Fill two missing values
+                    two_missing_indices = list(set(list(range(-1, 6))) - set(sorting_indices))
+                    print(eigenvalue)
+                    print(sorting_indices)
+                    print(two_missing_indices)
+                    # TODO quick fix for extended v-l
+                    # if len(two_missing_indices)==1:
+                    #     print('odd that only one index remains')
+                    #     if sorting_indices[0] == -1:
+                    #         sorting_indices[0] = two_missing_indices[0]
+                    #     else:
+                    #         sorting_indices[5] = two_missing_indices[0]
+                    # sorting_indices = abs(eigenvalue).argsort()[::-1]
+                    if abs(eigenvalue[two_missing_indices[0]].real) > abs(eigenvalue[two_missing_indices[1]].real):
+                        sorting_indices[0] = two_missing_indices[0]
+                        sorting_indices[5] = two_missing_indices[1]
+                    else:
+                        sorting_indices[0] = two_missing_indices[1]
+                        sorting_indices[5] = two_missing_indices[0]
+                    print(sorting_indices)
+
+                if len(sorting_indices) > len(set(sorting_indices)):
+                    print('\nWARNING: SORTING INDEX IS STILL STILL NOT UNIQUE')
+                    # Sorting eigenvalues from largest to smallest norm, excluding real one
+                    sorting_indices = abs(eigenvalue).argsort()[::-1]
+                print(eigenvalue[sorting_indices])
+
+            self.eigenvalues.append(eigenvalue[sorting_indices])
+            self.lambda1.append(eigenvalue[sorting_indices[0]])
+            self.lambda2.append(eigenvalue[sorting_indices[1]])
+            self.lambda3.append(eigenvalue[sorting_indices[2]])
+            self.lambda4.append(eigenvalue[sorting_indices[3]])
+            self.lambda5.append(eigenvalue[sorting_indices[4]])
+            self.lambda6.append(eigenvalue[sorting_indices[5]])
+
+            # Determine order of linear instability
+            reduction = 0
+            for i in range(6):
+                if (abs(eigenvalue[i]) - 1.0) < 1e-2:
+                    reduction += 1
+
+            if len(self.orderOfLinearInstability) > 0:
+                # Check for a bifurcation, when the order of linear instability changes
+                if (6 - reduction) != self.orderOfLinearInstability[-1]:
+                    self.orbitIdBifurcations.append(row[0])
+
+            self.orderOfLinearInstability.append(6 - reduction)
+            self.v1.append(abs(eigenvalue[sorting_indices[0]] + eigenvalue[sorting_indices[5]]) / 2)
+            self.v2.append(abs(eigenvalue[sorting_indices[1]] + eigenvalue[sorting_indices[4]]) / 2)
+            self.v3.append(abs(eigenvalue[sorting_indices[2]] + eigenvalue[sorting_indices[3]]) / 2)
+            self.D.append(np.linalg.det(M))
+
+        print('Index for bifurcations: ')
+        print(self.orbitIdBifurcations)
+
+
 
 
 
@@ -237,7 +397,13 @@ class DisplayPeriodicSolutions:
         # Colour schemes
         n_colors = 3
         n_colors_l = 6
-        self.plottingColors = {'singleLine': sns.color_palette("viridis", n_colors)[0],
+        self.plottingColors = {'lambda1': sns.color_palette("viridis", n_colors_l)[0],
+                               'lambda2': sns.color_palette("viridis", n_colors_l)[2],
+                               'lambda3': sns.color_palette("viridis", n_colors_l)[4],
+                               'lambda4': sns.color_palette("viridis", n_colors_l)[5],
+                               'lambda5': sns.color_palette("viridis", n_colors_l)[3],
+                               'lambda6': sns.color_palette("viridis", n_colors_l)[1],
+                                'singleLine': sns.color_palette("viridis", n_colors)[0],
                                'doubleLine': [sns.color_palette("viridis", n_colors)[n_colors-1], sns.color_palette("viridis", n_colors)[0]],
                                'tripleLine': [sns.color_palette("viridis", n_colors)[n_colors - 1],
                                               sns.color_palette("viridis", n_colors)[int((n_colors - 1) / 2)],
@@ -515,22 +681,42 @@ class DisplayPeriodicSolutions:
 
         xticks = (np.linspace(min(self.Hlt), max(self.Hlt), num=self.numberOfXTicks))
 
+        l1 = [abs(entry) for entry in self.lambda1]
+        l2 = [abs(entry) for entry in self.lambda2]
+        l3 = [abs(entry) for entry in self.lambda3]
+        l4 = [abs(entry) for entry in self.lambda4]
+        l5 = [abs(entry) for entry in self.lambda5]
+        l6 = [abs(entry) for entry in self.lambda6]
+
         arr[0, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
         arr[0, 0].xaxis.set_ticks(xticks)
+
+
+        arr[0, 0].semilogy(self.continuationParameter, l1, c=self.plottingColors['lambda1'])
+        arr[0, 0].semilogy(self.continuationParameter, l2, c=self.plottingColors['lambda2'])
+        arr[0, 0].semilogy(self.continuationParameter, l3, c=self.plottingColors['lambda3'])
+        arr[0, 0].semilogy(self.continuationParameter, l4, c=self.plottingColors['lambda4'])
+        arr[0, 0].semilogy(self.continuationParameter, l5, c=self.plottingColors['lambda5'])
+        arr[0, 0].semilogy(self.continuationParameter, l6, c=self.plottingColors['lambda6'])
         arr[0, 0].set_xlim(xlim)
         arr[0, 0].set_ylim([1e-4, 1e4])
         arr[0, 0].set_title('$|\lambda_1| \geq |\lambda_2| \geq |\lambda_3| = 1 = |1/\lambda_3| \geq |1/\lambda_2| \geq |1/\lambda_1|$')
         arr[0, 0].set_ylabel('Eigenvalues module [-]')
 
+        d = [abs(entry - 1) for entry in self.D]
+        arr[0, 1].semilogy(self.continuationParameter, d, c=self.plottingColors['singleLine'], linewidth=1)
         arr[0, 1].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
         arr[0, 1].xaxis.set_ticks(xticks)
         arr[0, 1].set_xlim(xlim)
         arr[0, 1].set_ylim([1e-14, 1e-6])
         arr[0, 1].set_ylabel('$| 1 - Det(\mathbf{M}) |$ [-]')
         arr[0, 1].set_title('Error in determinant ')
+        arr[0, 1].semilogy(self.continuationParameter, 1.0e-3 * np.ones(len(self.continuationParameter)), color=self.plottingColors['limit'], linewidth=1, linestyle='--')
+
 
         arr[1, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
         arr[1, 0].xaxis.set_ticks(xticks)
+        arr[1, 0].scatter(self.continuationParameter, self.orderOfLinearInstability, s=size, c=self.plottingColors['singleLine'])
         arr[1, 0].set_ylabel('Order of linear instability [-]')
         arr[1, 0].set_xlim(xlim)
         arr[1, 0].set_ylim([0, 3])
@@ -538,6 +724,15 @@ class DisplayPeriodicSolutions:
         arr[1, 1].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
         arr[1, 1].xaxis.set_ticks(xticks)
         arr[1, 1].set_xlim(xlim)
+        l3zoom = [abs(entry - 1) for entry in l3]
+        l4zoom = [abs(entry - 1) for entry in l4]
+        arr[1, 1].semilogy(self.continuationParameter, l3zoom, c=self.plottingColors['doubleLine'][0], linewidth=1)
+        arr[1, 1].semilogy(self.continuationParameter, l4zoom, c=self.plottingColors['doubleLine'][1], linewidth=1, linestyle=':')
+        arr[1, 1].semilogy(self.continuationParameter, 1.0e-3 * np.ones(len(self.continuationParameter)), color=self.plottingColors['limit'], linewidth=1, linestyle='--')
+
+
+
+
         # arr[1, 1].set_ylim([0, 1.5e-3])
         arr[1, 1].set_ylabel(' $||\lambda_3|-1|$ [-]')
         arr[1, 1].set_title('Error in eigenvalue pair denoting periodicity')
@@ -586,13 +781,161 @@ class DisplayPeriodicSolutions:
 
         pass
 
+    def plot_stability(self):
+        unit_circle_1 = plt.Circle((0, 0), 1, color='grey', fill=False)
+        unit_circle_2 = plt.Circle((0, 0), 1, color='grey', fill=False)
+
+        size = 7
+
+        xlim = [min(self.continuationParameter), max(self.continuationParameter)]
+        xticks = (np.linspace(min(self.Hlt), max(self.Hlt), num=self.numberOfXTicks))
+
+
+
+        f, arr = plt.subplots(3, 3, figsize=self.figSize)
+
+
+        arr[0, 0].scatter(np.real(self.lambda1), np.imag(self.lambda1), c=self.plottingColors['lambda1'], s=size)
+        arr[0, 0].scatter(np.real(self.lambda6), np.imag(self.lambda6), c=self.plottingColors['lambda6'], s=size)
+        arr[0, 0].set_xlim([0, 3000])
+        arr[0, 0].set_ylim([-1000, 1000])
+        arr[0, 0].set_title('$\lambda_1, 1/\lambda_1$')
+        arr[0, 0].set_xlabel('Re [-]')
+        arr[0, 0].set_ylabel('Im [-]')
+
+        arr[0, 1].scatter(np.real(self.lambda2), np.imag(self.lambda2), c=self.plottingColors['lambda2'], s=size)
+        arr[0, 1].scatter(np.real(self.lambda5), np.imag(self.lambda5), c=self.plottingColors['lambda5'], s=size)
+        arr[0, 1].set_xlim([-8, 2])
+        arr[0, 1].set_ylim([-4, 4])
+        arr[0, 1].set_title('$\lambda_2, 1/\lambda_2$')
+        arr[0, 1].set_xlabel('Re [-]')
+        arr[0, 1].add_artist(unit_circle_1)
+
+
+        arr[0, 2].scatter(np.real(self.lambda3), np.imag(self.lambda3), c=self.plottingColors['lambda3'], s=size)
+        arr[0, 2].scatter(np.real(self.lambda4), np.imag(self.lambda4), c=self.plottingColors['lambda4'], s=size)
+        arr[0, 2].set_xlim([-1.5, 1.5])
+        arr[0, 2].set_ylim([-1, 1])
+        arr[0, 2].set_title('$\lambda_3, 1/\lambda_3$')
+        arr[0, 2].set_xlabel('Re [-]')
+        arr[0, 2].add_artist(unit_circle_2)
+
+        arr[1, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
+        arr[1, 0].xaxis.set_ticks(xticks)
+        arr[1, 0].scatter(self.continuationParameter, np.angle(self.lambda1, deg=True), c=self.plottingColors['lambda1'], s=size)
+        arr[1, 0].scatter(self.continuationParameter, np.angle(self.lambda6, deg=True), c=self.plottingColors['lambda6'], s=size)
+        arr[1, 0].set_xlim(xlim)
+        arr[1, 0].set_ylim([-180, 180])
+        arr[1, 0].set_ylabel('Phase [$^\circ$]')
+
+        arr[1, 1].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
+        arr[1, 1].xaxis.set_ticks(xticks)
+        arr[1, 1].scatter(self.continuationParameter, np.angle(self.lambda2, deg=True), c=self.plottingColors['lambda2'], s=size)
+        arr[1, 1].scatter(self.continuationParameter, np.angle(self.lambda5, deg=True), c=self.plottingColors['lambda5'], s=size)
+        arr[1, 1].set_xlim(xlim)
+        arr[1, 1].set_ylim([-180, 180])
+
+        arr[1, 2].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
+        arr[1, 2].xaxis.set_ticks(xticks)
+        arr[1, 2].scatter(self.continuationParameter, np.angle(self.lambda3, deg=True), c=self.plottingColors['lambda3'], s=size)
+        arr[1, 2].scatter(self.continuationParameter, np.angle(self.lambda4, deg=True), c=self.plottingColors['lambda4'], s=size)
+        arr[1, 2].set_xlim(xlim)
+        arr[1, 2].set_ylim([-180, 180])
+
+        arr[2, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
+        arr[2, 0].xaxis.set_ticks(xticks)
+        arr[2, 0].semilogy(self.continuationParameter, self.v1, c=self.plottingColors['lambda6'])
+        arr[2, 0].axhline(1, c=self.plottingColors['limit'], linewidth=1, linestyle='--')
+        arr[2, 0].set_xlim(xlim)
+        arr[2, 0].set_ylim([1e-1, 1e4])
+        arr[2, 0].set_ylabel('Stability index [-]')
+        arr[2, 0].set_title('$v_1$')
+
+        arr[2, 1].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
+        arr[2, 1].xaxis.set_ticks(xticks)
+        arr[2, 1].semilogy(self.continuationParameter, self.v2, c=self.plottingColors['lambda5'])
+        arr[2, 1].axhline(1, c=self.plottingColors['limit'], linewidth=1, linestyle='--')
+        arr[2, 1].set_xlim(xlim)
+        arr[2, 1].set_ylim([1e-1, 1e1])
+        arr[2, 1].set_title('$v_2$')
+
+        if varying_quantity == 'Hamiltonian':
+            xlabel = '$H_{lt}$ [-]'
+        if varying_quantity == 'Acceleration':
+            xlabel = '$a_{lt}$ [-]'
+        if varying_quantity == 'Alpha':
+            xlabel = '$\\alpha$ [-]'
+
+
+        arr[2, 0].set_xlabel(xlabel)
+        arr[2, 1].set_xlabel(xlabel)
+        arr[2, 2].set_xlabel(xlabel)
+
+        arr[2, 2].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
+        arr[2, 2].xaxis.set_ticks(xticks)
+        arr[2, 2].semilogy(self.continuationParameter, self.v3, c=self.plottingColors['lambda4'])
+        arr[2, 2].axhline(1, c=self.plottingColors['limit'], linewidth=1, linestyle='--')
+        arr[2, 2].set_xlim(xlim)
+        arr[2, 2].set_ylim([1e-1, 1e1])
+        arr[2, 2].set_title('$v_3$')
+
+        for i in range(3):
+            for j in range(3):
+                arr[i, j].grid(True, which='both', ls=':')
+
+        plt.tight_layout()
+        plt.subplots_adjust(top=0.9)
+
+        if self.varyingQuantity == 'Hamiltonian':
+            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($a_{lt} = ' + str(
+            "{:3.1f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + '- Eigenvalues $\lambda_i$ \& stability indices $v_i$',size=self.suptitleSize)
+        if self.varyingQuantity == 'Acceleration':
+            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
+                "{:3.1f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Eigenvalues $\lambda_i$ \& stability indices $v_i$', size=self.suptitleSize)
+        if self.varyingQuantity == 'Alpha':
+            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
+                "{:3.1f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.1f}".format(self.accelerationMagnitude))  + ' - Eigenvalues $\lambda_i$ \& stability indices $v_i$', size=self.suptitleSize)
+
+
+        if self.varyingQuantity == 'Hamiltonian':
+            if self.lowDPI:
+                plt.savefig('../../data/figures/orbits/varying_hamiltonian/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
+                "{:7.6f}".format(self.alpha)) + '_stability.png', transparent=True, dpi=self.dpi, bbox_inches='tight')
+            else:
+                plt.savefig('../../data/figures/orbits/varying_hamiltonian/L' + str(
+                self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
+                "{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
+                "{:7.6f}".format(self.alpha)) + '_stability.png', transparent=True, bbox_inches='tight')
+        if self.varyingQuantity == 'Acceleration':
+            if self.lowDPI:
+                plt.savefig('../../data/figures/orbits/varying_acceleration/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
+                "{:7.6f}".format(self.alpha)) + '_stability.png', transparent=True, dpi=self.dpi, bbox_inches='tight')
+            else:
+                plt.savefig('../../data/figures/orbits/varying_acceleration/L' + str(
+                self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
+                "{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
+                "{:7.6f}".format(self.alpha)) + '_stability.png', transparent=True, bbox_inches='tight')
+        if self.varyingQuantity == 'Alpha':
+            if self.lowDPI:
+                plt.savefig('../../data/figures/orbits/varying_alpha/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
+                "{:7.6f}".format(self.alpha)) + '_stability.png', transparent=True, dpi=self.dpi, bbox_inches='tight')
+            else:
+                plt.savefig('../../data/figures/orbits/varying_alpha/L' + str(
+                self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
+                "{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
+                "{:7.6f}".format(self.alpha)) + '_stability.png', transparent=True, bbox_inches='tight')
+
+
+        pass
+
+
 
 
 if __name__ == '__main__':
     orbit_types = ['horizontal']
     lagrange_points = [1]
-    acceleration_magnitudes = [0.0]
-    alphas = [0.0]
+    acceleration_magnitudes = [0.1]
+    alphas = [0.0,60.0,120.0,180.0,240.0,300.0]
     betas = [0.0]
     low_dpi = True
     varying_quantities = ['Hamiltonian']
@@ -609,6 +952,8 @@ if __name__ == '__main__':
                             display_periodic_solutions.plot_families()
                             display_periodic_solutions.plot_periodicity_validation()
                             display_periodic_solutions.plot_monodromy_analysis()
+                            display_periodic_solutions.plot_stability()
+
 
 
                             del display_periodic_solutions

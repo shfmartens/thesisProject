@@ -153,7 +153,7 @@ void shiftConvergedTrajectoryGuess(int librationPointNr, Eigen::VectorXd current
     for (int i = 0; i < (numberOfPatchPoints ); i++ )
     {
 
-          convergedTrajectoryGuess(11*i+10) = convergedTrajectoryGuess(11*i+10);
+          convergedTrajectoryGuess(11*i+10) = convergedTrajectoryGuess(11*i+10) - deltaTime;
 
     }
 
