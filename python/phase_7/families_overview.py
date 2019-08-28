@@ -108,7 +108,7 @@ class DisplayFamilyProperties:
                 self.alpha[0]) + ' ^{\\circ}$) Overview ' + '- Hamiltonian and period ', size=self.suptitleSize)
             else:
                 plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + '($a_{lt} = ' + str(
-                    self.accelerationMagnitude[0]) + ') Overview ' + '- Hamiltonian and period ', size=self.suptitleSize)
+                    self.accelerationMagnitude[0]) + '$) Overview ' + '- Hamiltonian and period ', size=self.suptitleSize)
 
         if self.varyingQuantity == 'Hamiltonian':
             if len(self.accelerationMagnitude) > 1:
@@ -132,8 +132,8 @@ class DisplayFamilyProperties:
 if __name__ == '__main__':
     orbit_types = ['horizontal']
     lagrange_points = [1]
-    acceleration_magnitudes = [0.0,0.05]
-    alphas = [0.0]
+    acceleration_magnitudes = [0.1]
+    alphas = [0.0,60.0,120.0,180.0,240.0,300.0]
     betas = [0.0]
     low_dpi = True
     varying_quantities = 'Hamiltonian'
