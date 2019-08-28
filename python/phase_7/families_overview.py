@@ -73,6 +73,12 @@ class DisplayFamilyProperties:
                                    'tripleLine': [sns.color_palette("viridis", n_colors)[n_colors - 1],
                                                   sns.color_palette("viridis", n_colors)[int((n_colors - 1) / 2)],
                                                   sns.color_palette("viridis", n_colors)[0]],
+                                   'sixLine': [   sns.color_palette("viridis", n_colors_l)[n_colors_l - 1],
+                                                  sns.color_palette("viridis", n_colors_l)[n_colors_l - 2],
+                                                  sns.color_palette("viridis", n_colors_l)[n_colors_l - 3],
+                                                  sns.color_palette("viridis", n_colors_l)[n_colors_l - 4],
+                                                  sns.color_palette("viridis", n_colors_l)[n_colors_l - 5],
+                                                  sns.color_palette("viridis", n_colors_l)[0]],
                                    'fifthLine': [sns.color_palette("viridis", n_colors)[n_colors - 1],
                                                  sns.color_palette("viridis", n_colors)[int((n_colors - 1) / 1.5)],
                                                  sns.color_palette("viridis", n_colors)[int((n_colors - 1) / 2)],
@@ -108,7 +114,7 @@ class DisplayFamilyProperties:
 
                 ax.plot(init_conditions_df[1].values, init_conditions_df[0].values,
                         label='$a_{lt} = + ' + str(self.overviewArray[i]),
-                        linestyle='-', color=self.plottingColors['tripleLine'][i])
+                        linestyle='-', color=self.plottingColors['sixLine'][i])
 
         if self.varyingQuantity == 'Hamiltonian':
             if len(self.accelerationMagnitude) > 1:
