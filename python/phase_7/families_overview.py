@@ -97,6 +97,12 @@ class DisplayFamilyProperties:
                 init_conditions_df = load_initial_conditions_augmented_incl_M(self.file_directory + 'L'+str(self.lagrangePointNr)+'_'+self.orbitType \
                       +'_' + str("{:12.11f}".format(self.overviewArray[i])) + '_' + str("{:12.11f}".format(self.titleVariable)) \
                       + '_' + str("{:12.11f}".format(self.beta)) + '_initial_conditions.txt')
+            else:
+                init_conditions_df = load_initial_conditions_augmented_incl_M(self.file_directory + 'L' + str(self.lagrangePointNr) + '_' + self.orbitType \
+                    + '_' + str("{:12.11f}".format(self.titleVariable)) + '_' + str(
+                        "{:12.11f}".format(self.overviewArray[i])) \
+                    + '_' + str("{:12.11f}".format(self.beta)) + '_initial_conditions.txt')
+
 
                 print(len(init_conditions_df))
 
