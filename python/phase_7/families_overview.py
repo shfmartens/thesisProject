@@ -98,6 +98,8 @@ class DisplayFamilyProperties:
                       +'_' + str("{:12.11f}".format(self.overviewArray[i])) + '_' + str("{:12.11f}".format(self.titleVariable)) \
                       + '_' + str("{:12.11f}".format(self.beta)) + '_initial_conditions.txt')
 
+                print(len(init_conditions_df))
+
                 ax.plot(init_conditions_df[1].values, init_conditions_df[0].values,
                         label='$a_{lt} = + ' + str(self.overviewArray[i]),
                         linestyle='-', color=self.plottingColors['tripleLine'][i])
