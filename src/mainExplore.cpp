@@ -31,6 +31,7 @@
 #include "omp.h"
 
 
+
 double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER, tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER );
 double maximumThrust = 0.1;
 int main (){
@@ -59,16 +60,15 @@ int main (){
     // == Compute initial conditions ==
     // ================================
 
-
-    #pragma omp parallel num_threads(14)
+    #pragma omp parallel num_threads(1)
     {
         #pragma omp for
-        for (unsigned int i=1; i<=14; i++) {
+        for (unsigned int i=1; i<=1; i++) {
             if (i ==1)
             {
                 std::cout << "Run Thread " << i << std::endl;
                 std::string orbitType = "horizontal";
-                int continuationIndex = 1; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
+                int continuationIndex = 6; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
                 double accelerationMagnitude = 0.0;
                 double accelerationAngle = 0.0;
                 double accelerationAngle2 = 0.0;

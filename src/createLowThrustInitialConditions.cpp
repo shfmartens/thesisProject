@@ -503,7 +503,7 @@ double computeHamiltonian (const double massParameter, const Eigen::VectorXd sta
 
 }
 
-Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::VectorXd& initialStateGuess, const int orbitNumber,
+Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::MatrixXd& initialOddPoints, const int orbitNumber,
                                           const int librationPointNr, const std::string& orbitType, const double massParameter, const int numberOfPatchPoints, int& numberOfCollocationPoints,
                                           std::vector< Eigen::VectorXd >& initialConditions,
                                           std::vector< Eigen::VectorXd >& differentialCorrections,
@@ -513,22 +513,11 @@ Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::VectorXd& initi
     Eigen::VectorXd initialCollocationGuess;
     Eigen::VectorXd initialStateVector(10);
 
-    // optional loop for mesh refinement
-    if (orbitNumber == 1 )
-    {
-        initialCollocationGuess = initialStateGuess;
-        numberOfCollocationPoints = numberOfCollocationPoints;
-
-    } else
-    {
-        initialCollocationGuess = initialStateGuess;
-        numberOfCollocationPoints = numberOfCollocationPoints;
-    }
 
     // Apply collocation
     Eigen::VectorXd deviationNorms(5);
     Eigen::VectorXd collocatedGuess(11*numberOfCollocationPoints);
-    Eigen::VectorXd collocationResult = applyCollocation(initialCollocationGuess, massParameter, numberOfCollocationPoints, collocatedGuess,
+    Eigen::VectorXd collocationResult = applyCollocation(initialOddPoints, massParameter, numberOfCollocationPoints, collocatedGuess,
                                                          maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
 
     initialStateVector = collocationResult.segment( 0, 10 );
@@ -537,18 +526,12 @@ Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::VectorXd& initi
 
     // Propagate the initialStateVector for a full period and write output to file.
 
-    std::cout << "orbPeriod: " << orbitalPeriod << std::endl;
-
     std::map< double, Eigen::VectorXd > stateHistory;
     Eigen::MatrixXd stateVectorInclSTM = propagateOrbitAugmentedToFinalCondition(
                 getFullInitialStateAugmented( initialStateVector ), massParameter, orbitalPeriod, 1, stateHistory, 1000, 0.0 ).first;
 
-    std::cout << "prop completed: " << std::endl;
 
     writeStateHistoryToFileAugmented( stateHistory, initialStateVector(6), initialStateVector(7), initialStateVector(8), collocationResult(11), orbitNumber, librationPointNr, orbitType, 1000, false );
-
-    std::cout << "writeStateHistoryToFileAugmented copm: " << std::endl;
-
 
     // Save results
     double hamiltonianFullPeriod = computeHamiltonian( massParameter, stateVectorInclSTM.block(0,0,10,1));
@@ -559,18 +542,9 @@ Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::VectorXd& initi
 
     computeOrbitDeviations(collocatedGuess, numberOfCollocationPoints, propagatedStates, defectVector, stateHistoryTemp, massParameter);
 
-    std::cout << "orbit devs copm: " << std::endl;
-
-
     deviationNorms = computeDeviationNorms(defectVector,numberOfCollocationPoints);
 
-    std::cout << "orbit devs NORMS copm: " << std::endl;
-
-
     appendDifferentialCorrectionResultsVectorAugmented( hamiltonianFullPeriod, collocationResult, differentialCorrections, deviationNorms );
-
-    std::cout << "append diffCorr  copm: " << std::endl;
-
 
     Eigen::VectorXd collocationResultWithStates(25+11*numberOfCollocationPoints);
     collocationResultWithStates.segment(0,25) = collocationResult;
@@ -578,12 +552,8 @@ Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::VectorXd& initi
 
     appendContinuationStatesVectorAugmented( orbitNumber, numberOfCollocationPoints, collocationResult(11), collocationResultWithStates, statesContinuation);
 
-    std::cout << "append continuation  copm: " << std::endl;
-
-
     appendResultsVectorAugmented( hamiltonianFullPeriod, orbitalPeriod, initialStateVector, stateVectorInclSTM, initialConditions );
 
-    std::cout << "append results  copm: " << std::endl;
 
     return stateVectorInclSTM;
 
@@ -879,8 +849,12 @@ void writeFinalResultsToFilesAugmented( const int librationPointNr, const std::s
                                        << differentialCorrections[i][12] << std::setw(25) << differentialCorrections[i][13] << std::setw(25)
                                        << differentialCorrections[i][14] << std::setw(25) << differentialCorrections[i][15] << std::setw(25)
                                        << differentialCorrections[i][16] << std::setw(25) << differentialCorrections[i][17] << std::setw(25)  << std::endl;
+        //std::cout << "i: " << std::endl;
+        //std::cout << "size statesContinuation[i]: "  << (statesContinuation[i]).size() << std::endl;
+        //std::cout << "size statesContinuation[i] - 2: "  << (statesContinuation[i]).size() - 2<< std::endl;
 
-        for (int test = 0; test < (3+11*numberOfPatchPoints); test++)
+
+        for (int test = 0; test < ( (statesContinuation[i]).size() ) ; test++)
                 {
 
                     textFileStatesContinuation << std::left << std::scientific   << std::setw(25)
@@ -1001,7 +975,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 
     // Set exit parameters of continuation procedure
-    int maximumNumberOfInitialConditions = 200;
+    int maximumNumberOfInitialConditions = 5;
     int numberOfInitialConditions;
     if (continuationIndex == 1)
     {
@@ -1061,23 +1035,41 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
           if (continuationIndex == 6)
           {
               // extract the starting guess from statesContinuation
-              initialStateVector = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*numberOfPatchPoints );
-
-              std::cout << "initialStateVector: \n "<< initialStateVector << std::endl;
               int numberOfCollocationPoints = initialNumberOfCollocationPoints;
+              if (numberOfInitialConditions == 1)
+              {
+                  initialStateVector = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*numberOfPatchPoints );
+
+              } else
+              {
+                  initialStateVector = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*numberOfCollocationPoints );
+
+              }
+
+
+              // Redistribute the nodes over the orbit evenly spaced in time according to the desired number of CollocationPoints,
               if (numberOfInitialConditions == 1 and numberOfPatchPoints != numberOfCollocationPoints)
               {
                 initialStateVector = redstributeNodesOverTrajectory(initialStateVector, numberOfPatchPoints, numberOfCollocationPoints, massParameter);
               }
 
 
-              // Add thrust increment to orbit!
-               for(int i = 0; i < numberOfCollocationPoints; i ++)
+              // Compute the interior points and nodes for each segment, this is the input for the getCollocated State
+              Eigen::MatrixXd oddNodesMatrix((11*(numberOfCollocationPoints-1)), 4 );
+              computeOddPoints(initialStateVector, oddNodesMatrix, numberOfCollocationPoints, massParameter);
+
+
+              // Add thrust increment to all nodes and interior Points!
+               for(int i = 0; i < (numberOfCollocationPoints-1); i ++)
                {
-                    //initialStateVector(i*11+continuationIndex) = initialStateVector(i*11+continuationIndex) + incrementContinuationParameter;
+                   for(int j = 0; j < 4; j++)
+                   {
+                       oddNodesMatrix(11*i+6,j) = oddNodesMatrix(11*i+6,j) + incrementContinuationParameter;
+                   }
                }
 
-               stateVectorInclSTM = getCollocatedAugmentedInitialState( initialStateVector, numberOfInitialConditions, librationPointNr, orbitType,
+
+               stateVectorInclSTM = getCollocatedAugmentedInitialState( oddNodesMatrix, numberOfInitialConditions, librationPointNr, orbitType,
                                                                         massParameter, numberOfPatchPoints, numberOfCollocationPoints, initialConditions,
                                                                         differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
 
