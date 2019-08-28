@@ -116,6 +116,8 @@ class DisplayFamilyProperties:
                         label='$a_{lt} = + ' + str(self.overviewArray[i]),
                         linestyle='-', color=self.plottingColors['sixLine'][i])
 
+        ax.set_ylim([-1.4,-1.8])
+
         if self.varyingQuantity == 'Hamiltonian':
             if len(self.accelerationMagnitude) > 1:
                 plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + '($\\alpha = ' + str(
