@@ -7,6 +7,7 @@
 #include <Eigen/QR>
 #include <Eigen/Dense>
 #include <boost/function.hpp>
+#include <random>
 
 #include "Tudat/Astrodynamics/BasicAstrodynamics/celestialBodyConstants.h"
 #include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
@@ -975,7 +976,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 
     // Set exit parameters of continuation procedure
-    int maximumNumberOfInitialConditions = 2000;
+    int maximumNumberOfInitialConditions = 3;
     int numberOfInitialConditions;
     if (continuationIndex == 1)
     {
@@ -1053,22 +1054,65 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                 initialStateVector = redstributeNodesOverTrajectory(initialStateVector, numberOfPatchPoints, numberOfCollocationPoints, massParameter);
               }
 
-
               // Compute the interior points and nodes for each segment, this is the input for the getCollocated State
               Eigen::MatrixXd oddNodesMatrix((11*(numberOfCollocationPoints-1)), 4 );
               computeOddPoints(initialStateVector, oddNodesMatrix, numberOfCollocationPoints, massParameter);
 
+              // Generate random noise
+              int numberOfNodes = 3*(numberOfCollocationPoints-1)+1;
+              int numberOfStates = numberOfNodes*6;
+              Eigen::VectorXd noiseVector(numberOfStates);
+              noiseVector.setZero();
+
+              std::random_device                  rand_dev;
+              std::mt19937                        generator(rand_dev());
+              std::uniform_real_distribution<double>  distr(1.0E-12, 1.0E-06);
+
+              std::random_device                  rand_dev2;
+              std::mt19937                        generator2(rand_dev2());
+              std::uniform_real_distribution<double>  distr2(0, 1);
+
+              for(int i = 0; i < numberOfStates; i++)
+              {
+
+                  double sign = 0.0;
+                  if ( distr2(generator2) < 0.5 )
+                  {
+                      sign = -1.0;
+                  } else
+                  {
+                      sign = 1.0;
+                  }
+                  if ( (i+1) % 3 == 0 and i > 0)
+                  {
+                      noiseVector(i) = 0.0;
+                  } else
+                  {
+                      noiseVector(i) = sign*distr(generator);
+
+                  }
+
+              }
+
+              std::cout << "noiseVector: \n" << noiseVector << std::endl;
 
               // Add thrust increment to all nodes and interior Points!
                for(int i = 0; i < (numberOfCollocationPoints-1); i ++)
                {
+                   Eigen::VectorXd noiseVectorSegment = noiseVector.segment(18*i,24);
                    for(int j = 0; j < 4; j++)
                    {
-                       oddNodesMatrix(11*i+6,j) = oddNodesMatrix(11*i+6,j) + incrementContinuationParameter;
+                       Eigen::VectorXd noiseVectorLocal(11);
+                       noiseVectorLocal.setZero();
+                       noiseVectorLocal.segment(0,6) = noiseVectorSegment.segment(6*j,6);
+
+                       oddNodesMatrix.block(11*i,j,6,1) = oddNodesMatrix.block(11*i,j,6,1) + noiseVectorLocal;
+
+                       //oddNodesMatrix(11*i+6,j) = oddNodesMatrix(11*i+6,j) + incrementContinuationParameter;
                    }
                }
 
-
+               std::cout << "oddNotesMatrix: \n" << oddNodesMatrix << std::endl;
                stateVectorInclSTM = getCollocatedAugmentedInitialState( oddNodesMatrix, numberOfInitialConditions, librationPointNr, orbitType,
                                                                         massParameter, numberOfPatchPoints, numberOfCollocationPoints, initialConditions,
                                                                         differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);

@@ -11,6 +11,7 @@
 #include <cmath>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
+#include <random>
 
 #include "Tudat/Astrodynamics/Gravitation/librationPoint.h"
 #include "Tudat/Astrodynamics/BasicAstrodynamics/celestialBodyConstants.h"
@@ -29,6 +30,7 @@
 #include "stateDerivativeModelAugmentedVaryingMass.h"
 #include "stateDerivativeModelAugmented.h"
 #include "omp.h"
+#include "applyCollocation.h"
 
 
 
@@ -60,21 +62,22 @@ int main (){
     // == Compute initial conditions ==
     // ================================
 
-    #pragma omp parallel num_threads(12)
+    #pragma omp parallel num_threads(1)
     {
         #pragma omp for
-        for (unsigned int i=1; i<=12; i++) {
+        for (unsigned int i=1; i<=1; i++) {
             if (i ==1)
             {
                 std::cout << "Run Thread " << i << std::endl;
                 std::string orbitType = "horizontal";
-                int continuationIndex = 1; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
-                double accelerationMagnitude = 0.001;
+                int continuationIndex = 6; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
+                double accelerationMagnitude = 0.0;
                 double accelerationAngle = 0.0;
                 double accelerationAngle2 = 0.0;
                 double initialMass = 1.0;
                 double ySign = 1.0;
                 createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, massParameter );
+
 
             }
             if (i ==2)
