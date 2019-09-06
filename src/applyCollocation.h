@@ -5,13 +5,19 @@
 #include "Eigen/Core"
 #include <map>
 
-Eigen::VectorXd computeCollocationDeviationNorms(const Eigen::VectorXd collocationDefectVector, const int numberOfCollocationPoints);
+Eigen::VectorXd rewriteOddPointsToVector(const Eigen::MatrixXd& oddNodesMatrix, const int numberOfCollocationPoints);
+
+void shiftTimeOfConvergedCollocatedGuess(const Eigen::MatrixXd collocationDesignVector, Eigen::VectorXd& collocatedGuess, Eigen::VectorXd& collocatedNodes, const int numberOfCollocationPoints, Eigen::VectorXd thrustAndMassParameters);
+
+void propagateAndSaveCollocationProcedure(const Eigen::MatrixXd oddPointsInput, Eigen::VectorXd timeIntervals, Eigen::VectorXd thrustAndMassParameters, const int numberOfCollocationPoints, const int typeOfInput, const double massParameter);
+
+Eigen::VectorXd computeCollocationDeviationNorms(const Eigen::MatrixXd collocationDefectVector, const Eigen::MatrixXd collocationDesignVector, const int numberOfCollocationPoints);
 
 Eigen::MatrixXd evaluateVectorFields(const Eigen::MatrixXd initialCollocationGuess, const int numberOfCollocationPoints);
 
 void extractDurationAndDynamicsFromInput(const Eigen::MatrixXd initialCollocationGuess, const int numberOfCollocationPoints, Eigen::MatrixXd& oddPointsDynamics,  Eigen::VectorXd& timeIntervals);
 
-void computeOddPoints(Eigen::VectorXd initialStateVector, Eigen::MatrixXd& internalPointsMatrix,int numberOfCollocationPoints, const double massParameter);
+void computeOddPoints(Eigen::VectorXd initialStateVector, Eigen::MatrixXd& internalPointsMatrix,int numberOfCollocationPoints, const double massParameter, bool firstCollocationGuess);
 
 Eigen::VectorXd convertNodeTimes(Eigen::MatrixXd nodeTimesNormalized, double lowerBound, double upperBound);
 
@@ -20,11 +26,11 @@ void computeMeshStates(Eigen::VectorXd currentNodeAndTime, Eigen::VectorXd nextN
 
 void retrieveLegendreGaussLobattoConstaints(const std::string desiredQuantity, Eigen::MatrixXd& outputMatrix);
 
-void computeCollocationDefects(Eigen::MatrixXd& collocationDefectVector, Eigen::MatrixXd& collocationDesignVector, const Eigen::MatrixXd oddStates, const Eigen::MatrixXd oddStatesDerivatives, Eigen::VectorXd timeIntervals, Eigen::VectorXd thrustAndMassParameters, const int numberOfCollocationPoints);
+void computeCollocationDefects(Eigen::MatrixXd& collocationDefectVector, Eigen::MatrixXd& collocationDesignVector, const Eigen::MatrixXd oddStates, const Eigen::MatrixXd oddStatesDerivatives, Eigen::VectorXd timeIntervals, Eigen::VectorXd thrustAndMassParameters, const int numberOfCollocationPoints, const double initialTime, const int continuationIndex, const Eigen::MatrixXd phaseConstraintVector);
 
 
-Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuesss, const double massParameter, const int numberOfCollocationPoints, Eigen::VectorXd& collocatedGuess,
-                                                         const double maxPositionDeviationFromPeriodicOrbit, const double maxVelocityDeviationFromPeriodicOrbit, const double maxPeriodDeviationFromPeriodicOrbit, const int maxNumberOfIterations = 10 );
+Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuesss, const double massParameter, const int numberOfCollocationPoints, Eigen::VectorXd& collocatedGuess, Eigen::VectorXd& collocatedNodes, Eigen::VectorXd& deviationNorms, const int continuationIndex, const Eigen::MatrixXd phaseConstraintVector,
+                                                          double maxPositionDeviationFromPeriodicOrbit,  double maxVelocityDeviationFromPeriodicOrbit,  double maxPeriodDeviationFromPeriodicOrbit, const int maxNumberOfCollocationIterations = 100 );
 
 
 

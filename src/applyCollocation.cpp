@@ -16,37 +16,263 @@
 
 #include "createLowThrustInitialConditions.h"
 #include "applyCollocation.h"
+#include "applyPredictionCorrection.h"
 #include "applyLineSearchAttenuation.h"
 #include "stateDerivativeModel.h"
 #include "stateDerivativeModelAugmented.h"
 #include "propagateOrbitAugmented.h"
 #include "computeCollocationCorrection.h"
 
-Eigen::VectorXd computeCollocationDeviationNorms(const Eigen::VectorXd collocationDefectVector, const int numberOfCollocationPoints)
+Eigen::VectorXd rewriteOddPointsToVector(const Eigen::MatrixXd& oddNodesMatrix, const int numberOfCollocationPoints)
 {
-    Eigen::VectorXd deviationNorms(2);
+    int numberOfStates = 3*(numberOfCollocationPoints-1)+1;
+    Eigen::VectorXd outputVector = Eigen::VectorXd::Zero(11*numberOfStates);
+
+    for(int i = 0; i < numberOfCollocationPoints-1; i ++)
+    {
+        Eigen::MatrixXd segmentMatrix = oddNodesMatrix.block(i*11,0,11,4);
+        Eigen::VectorXd segmentConvertedToVector = Eigen::VectorXd(44);
+
+        for(int j = 0; j < 4; j++)
+        {
+            segmentConvertedToVector.segment(j*11,11) = segmentMatrix.block(0,j,11,1);
+        }
+
+        outputVector.segment(33*i,44) = segmentConvertedToVector;
+    }
+
+    return outputVector;
+}
+
+void shiftTimeOfConvergedCollocatedGuess(const Eigen::MatrixXd collocationDesignVector, Eigen::VectorXd& collocatedGuess, Eigen::VectorXd& collocatedNodes, const int numberOfCollocationPoints, Eigen::VectorXd thrustAndMassParameters)
+{
+    // extract the node times for gauss lobato strategy
+    Eigen::MatrixXd nodeTimes = Eigen::MatrixXd::Zero(7,1);
+    retrieveLegendreGaussLobattoConstaints("nodeTimes", nodeTimes );
+    double deltaTime = collocationDesignVector(6);
+
+    // per segment
+    int nodeNumber = 1;
+
+    for(int i = 0; i < (numberOfCollocationPoints - 1); i++)
+    {
+
+        Eigen::VectorXd segmentDesignVector = collocationDesignVector.block(19*i,0,26,1);
+        double initialSegmentTime = segmentDesignVector(6)-deltaTime;
+        double timeInterval = segmentDesignVector(25)-segmentDesignVector(6);
+
+        Eigen::VectorXd newNodeVector = Eigen::VectorXd::Zero(11);
+        Eigen::VectorXd localDesignVector = Eigen::VectorXd::Zero(6);
+
+        nodeNumber--;
+
+        for(int j = 0; j < 4; j++)
+        {
+            if (j == 0)
+            {
+                localDesignVector = segmentDesignVector.segment(0,6);
+
+            } else
+            {
+                localDesignVector = segmentDesignVector.segment(j*6+1,6);
+            }
+
+            Eigen::VectorXd newNodeVector = Eigen::VectorXd::Zero(11);
+            newNodeVector.segment(0,6) = localDesignVector;
+            newNodeVector.segment(6,4) = thrustAndMassParameters;
+            newNodeVector(10) = initialSegmentTime + timeInterval*nodeTimes(2*j,0);
+
+            collocatedGuess.segment(nodeNumber*11,11) = newNodeVector;
+
+            if (j == 0 )
+            {
+                collocatedNodes.segment(i*11,11) = newNodeVector;
+            }
+
+            if (j == 3 and i == numberOfCollocationPoints-2)
+            {
+                collocatedNodes.segment((i+1)*11,11) = newNodeVector;
+            }
+
+            nodeNumber++;
+
+
+        }
+    }
+        // extract local design vector
+        // compute the timeInterval
+            // per node/interior point
+                //add relevant part of the designVector
+                //add relevant part of thrustandMassParameters
+                // add the computed time
+
+}
+
+void propagateAndSaveCollocationProcedure(const Eigen::MatrixXd oddPointsInput, Eigen::VectorXd timeIntervals, Eigen::VectorXd thrustAndMassParameters, const int numberOfCollocationPoints, const int typeOfInput, const double massParameter)
+{
+    // declare relevant variables for the function and set all to zero or empty them
+    Eigen::VectorXd inputStateVector(11*numberOfCollocationPoints);
+    Eigen::VectorXd defectVector(11*(numberOfCollocationPoints-1));
+    Eigen::MatrixXd propagatedStatesInclSTM(10*(numberOfCollocationPoints-1),11);
+    std::map< double, Eigen::VectorXd > stateHistory;
+    Eigen::VectorXd deviationNorms(7);
+
+
+    inputStateVector.setZero(); defectVector.setZero();
+    propagatedStatesInclSTM.setZero(); stateHistory.clear();
+    deviationNorms.setZero();
+
+    // rewrite the initialGuess to the desired format
+    if (typeOfInput == 0 or typeOfInput == 1)\
+    {
+        for(int i = 0; i < (numberOfCollocationPoints-1); i++)
+        {
+            inputStateVector.segment(i*11,11) = oddPointsInput.block(i*11,0,11,1);
+
+            if (i == numberOfCollocationPoints-2)
+            {
+                inputStateVector.segment((i+1)*11,11) = oddPointsInput.block(i*11,3,11,1);
+            }
+        }
+
+    } else{
+
+        for(int i = 0; i < (numberOfCollocationPoints-1); i++)
+        {
+
+            Eigen::VectorXd segmentNodes = oddPointsInput.block(i*19,0,26,1);
+
+            inputStateVector.segment(i*11,6) = segmentNodes.segment(0,6);
+            inputStateVector.segment(i*11+6,4) = thrustAndMassParameters;
+            inputStateVector(i*11+10) = segmentNodes(6);
+
+
+            if (i == numberOfCollocationPoints-2)
+            {
+                inputStateVector.segment((i+1)*11,6) = segmentNodes.segment(19,6);
+                inputStateVector.segment((i+1)*11+6,4) = thrustAndMassParameters;
+                inputStateVector((i+1)*11+10) = segmentNodes(25);
+
+            }
+        }
+    }
+
+    // compute deviations via multiple shooting and the respective deviation norms
+    computeOrbitDeviations(inputStateVector, numberOfCollocationPoints, propagatedStatesInclSTM, defectVector, stateHistory, massParameter);
+
+
+    // compute Deviation Norms
+    Eigen::VectorXd positionDeviationTotal (3*(numberOfCollocationPoints-1));
+    Eigen::VectorXd velocityDeviationTotal (3*(numberOfCollocationPoints-1));
+    Eigen::VectorXd timeDeviationTotal ((numberOfCollocationPoints-1));
+    Eigen::VectorXd positionDeviationInternal (3*(numberOfCollocationPoints-2));
+    Eigen::VectorXd velocityDeviationInternal (3*(numberOfCollocationPoints-2));
+    Eigen::VectorXd positionDeviationExternal(3);
+    Eigen::VectorXd velocityDeviationExternal(3);
+
+    for(int i = 0; i < (numberOfCollocationPoints-1); i++)
+    {
+        Eigen::VectorXd localDefectVector = defectVector.segment(i*11,11);
+        positionDeviationTotal.segment(3*i,3) = localDefectVector.segment(0,3);
+        velocityDeviationTotal.segment(3*i,3) = localDefectVector.segment(3,3);
+        timeDeviationTotal(i) = localDefectVector(10);
+
+        if(i < (numberOfCollocationPoints -2 ))
+        {
+            positionDeviationInternal.segment(3*i,3) = localDefectVector.segment(0,3);
+            velocityDeviationInternal.segment(3*i,3) = localDefectVector.segment(3,3);
+
+        }
+        if (i == (numberOfCollocationPoints -2 ))
+        {
+            positionDeviationExternal = localDefectVector.segment(0,3);
+            velocityDeviationExternal = localDefectVector.segment(3,3);
+        }
+
+    }
+
+    deviationNorms(0) = positionDeviationTotal.norm();
+    deviationNorms(1) = velocityDeviationTotal.norm();
+    deviationNorms(2) = positionDeviationInternal.norm();
+    deviationNorms(3) = velocityDeviationInternal.norm();
+    deviationNorms(4) = positionDeviationExternal.norm();
+    deviationNorms(5) = velocityDeviationExternal.norm();
+    deviationNorms(6) = timeDeviationTotal.norm();
+
+
+
+    // save output to file, use typeOfInput as variable!
+     std::string directoryString = "../data/raw/collocation/";
+
+     std::string fileNameStringStateVector;
+     std::string fileNameStringStateHistory;
+     std::string fileNameStringDeviations;
+     std::string fileNameStringPropagatedStates;
+
+
+     fileNameStringStateVector = (std::to_string(typeOfInput) +"_stateVectors.txt");
+     fileNameStringStateHistory = (std::to_string(typeOfInput) +"_stateHistory.txt");
+     fileNameStringDeviations = (std::to_string(typeOfInput) +"_deviations.txt");
+     fileNameStringPropagatedStates = (std::to_string(typeOfInput) +"_propagatedStates.txt");
+
+     Eigen::VectorXd propagatedStates = propagatedStatesInclSTM.block(0,0,10*(numberOfCollocationPoints-1),1);
+
+
+     tudat::input_output::writeMatrixToFile( inputStateVector, fileNameStringStateVector, 16, directoryString);
+     tudat::input_output::writeDataMapToTextFile( stateHistory, fileNameStringStateHistory, directoryString );
+     tudat::input_output::writeMatrixToFile( deviationNorms, fileNameStringDeviations, 16, directoryString);
+     tudat::input_output::writeMatrixToFile( propagatedStates, fileNameStringPropagatedStates, 16, directoryString);
+
+
+}
+
+Eigen::VectorXd computeCollocationDeviationNorms(const Eigen::MatrixXd collocationDefectVector, const Eigen::MatrixXd collocationDesignVector, const int numberOfCollocationPoints)
+{
+    Eigen::VectorXd deviationNorms(5);
     deviationNorms.setZero();
 
     int numberOfDefects = 3*(numberOfCollocationPoints -1);
     Eigen::VectorXd positionDeviations(3*numberOfDefects);
     Eigen::VectorXd velocityDeviations(3*numberOfDefects);
     Eigen::VectorXd periodicityDeviation(6);
+    Eigen::VectorXd periodicityPositionDeviation(3);
+    Eigen::VectorXd periodicityVelocityDeviation(3);
+    double phaseConstraint = 0.0;
 
 
-    positionDeviations.setZero(); velocityDeviations.setZero();
-    for(int i = 0; i < numberOfDefects; i++)
+    int nodeNumber = 0;
+    positionDeviations.setZero(); velocityDeviations.setZero(); periodicityPositionDeviation.setZero(); periodicityVelocityDeviation.setZero();
+    for(int i = 0; i < (numberOfCollocationPoints-1); i++)
     {
-        Eigen::VectorXd nodeDefects(6);
-        nodeDefects = collocationDefectVector.segment(i*6,6);
-        positionDeviations.segment(i*3,3) = nodeDefects.segment(0,3);
-        velocityDeviations.segment(i*3,3) = nodeDefects.segment(3,3);
+
+        Eigen::VectorXd segmentDeviationVector = collocationDefectVector.block(18*i,0,18,1);
+
+        for(int j = 0; j < 3; j++)
+        {
+            Eigen::VectorXd nodeDefects(6);
+            nodeDefects = segmentDeviationVector.block(j*6,0,6,1);
+
+            positionDeviations.segment(3*nodeNumber,3) = nodeDefects.segment(0,3);
+            velocityDeviations.segment(3*nodeNumber,3) = nodeDefects.segment(3,3);
+
+            nodeNumber++;
+
+        }
+
+
 
     }
 
+    periodicityDeviation = collocationDesignVector.block(0,0,6,1)-collocationDesignVector.block(19*(numberOfCollocationPoints-1),0,6,1);
+    periodicityPositionDeviation = periodicityDeviation.segment(0,3);
+    periodicityVelocityDeviation = periodicityDeviation.segment(3,3);
+    phaseConstraint = collocationDefectVector(collocationDefectVector.rows()-1,0);
 
     deviationNorms(0) = positionDeviations.norm();
     deviationNorms(1) = velocityDeviations.norm();
-
+    deviationNorms(2) = periodicityPositionDeviation.norm();
+    deviationNorms(3) = periodicityVelocityDeviation.norm();
+    deviationNorms(4) = phaseConstraint;
 
 
     return deviationNorms;
@@ -88,53 +314,70 @@ void extractDurationAndDynamicsFromInput(const Eigen::MatrixXd initialCollocatio
 
 }
 
-void computeOddPoints(const Eigen::VectorXd initialStateVector, Eigen::MatrixXd& internalPointsMatrix, int numberOfCollocationPoints, const double massParameter)
+void computeOddPoints(const Eigen::VectorXd initialStateVector, Eigen::MatrixXd& internalPointsMatrix, int numberOfCollocationPoints, const double massParameter, const bool firstCollocationGuess)
 {
         Eigen::MatrixXd nodeTimesNormalized;
         retrieveLegendreGaussLobattoConstaints("nodeTimes",nodeTimesNormalized);
 
-
-        for(int i = 0; i < (numberOfCollocationPoints-1); i++ )
+        if(firstCollocationGuess == true)
         {
-            // add initial and final node to the internal points matrix
-           internalPointsMatrix.block(i*11,0,11,1) = initialStateVector.segment(i*11,11);
-           internalPointsMatrix.block(i*11,3,11,1) = initialStateVector.segment((i+1)*11,11);
+            for(int i = 0; i < (numberOfCollocationPoints-1); i++ )
+            {
+                // add initial and final node to the internal points matrix
+               internalPointsMatrix.block(i*11,0,11,1) = initialStateVector.segment(i*11,11);
+               internalPointsMatrix.block(i*11,3,11,1) = initialStateVector.segment((i+1)*11,11);
 
-           // compute the times of the interior points
-           double initialSegmentTime = initialStateVector(i*11+10);
-           double finalSegmentTime = initialStateVector((i+1)*11+10);
-           Eigen::VectorXd segmentNodeTimes = convertNodeTimes( nodeTimesNormalized, initialSegmentTime, finalSegmentTime);
+               // compute the times of the interior points
+               double initialSegmentTime = initialStateVector(i*11+10);
+               double finalSegmentTime = initialStateVector((i+1)*11+10);
+               Eigen::VectorXd segmentNodeTimes = convertNodeTimes( nodeTimesNormalized, initialSegmentTime, finalSegmentTime);
 
-           double timeInteriorPoint1 = segmentNodeTimes(2);
-           double timeInteriorPoint2 = segmentNodeTimes(4);
+               double timeInteriorPoint1 = segmentNodeTimes(2);
+               double timeInteriorPoint2 = segmentNodeTimes(4);
 
-           // Compute the interior point states via propagatedAugmentedToFinalCondition
-           std::map< double, Eigen::VectorXd > stateHistory;
-           std::pair< Eigen::MatrixXd, double > stateVectorInclSTMAndTimePoint1 = propagateOrbitAugmentedToFinalCondition(
-                       getFullInitialStateAugmented( initialStateVector.segment(i*11,10) ), massParameter, timeInteriorPoint1, 1, stateHistory, -1, initialSegmentTime );
+               // Compute the interior point states via propagatedAugmentedToFinalCondition
+               std::map< double, Eigen::VectorXd > stateHistory;
+               std::pair< Eigen::MatrixXd, double > stateVectorInclSTMAndTimePoint1 = propagateOrbitAugmentedToFinalCondition(
+                           getFullInitialStateAugmented( initialStateVector.segment(i*11,10) ), massParameter, timeInteriorPoint1, 1, stateHistory, -1, initialSegmentTime );
 
-           Eigen::MatrixXd stateVectorInclSTMPoint1 = stateVectorInclSTMAndTimePoint1.first;
-           double actualTimeInteriorPoint1 = stateVectorInclSTMAndTimePoint1.second;
-           Eigen::VectorXd stateInteriorPoint1 = stateVectorInclSTMPoint1.block(0,0,10,1);
+               Eigen::MatrixXd stateVectorInclSTMPoint1 = stateVectorInclSTMAndTimePoint1.first;
+               double actualTimeInteriorPoint1 = stateVectorInclSTMAndTimePoint1.second;
+               Eigen::VectorXd stateInteriorPoint1 = stateVectorInclSTMPoint1.block(0,0,10,1);
 
-           std::pair< Eigen::MatrixXd, double > stateVectorInclSTMAndTimePoint2 = propagateOrbitAugmentedToFinalCondition(
-                       getFullInitialStateAugmented( initialStateVector.segment(i*11,10) ), massParameter, timeInteriorPoint2, 1, stateHistory, -1, initialSegmentTime );
+               std::pair< Eigen::MatrixXd, double > stateVectorInclSTMAndTimePoint2 = propagateOrbitAugmentedToFinalCondition(
+                           getFullInitialStateAugmented( initialStateVector.segment(i*11,10) ), massParameter, timeInteriorPoint2, 1, stateHistory, -1, initialSegmentTime );
 
-           Eigen::MatrixXd stateVectorInclSTMPoint2 = stateVectorInclSTMAndTimePoint2.first;
-           double actualTimeInteriorPoint2 = stateVectorInclSTMAndTimePoint2.second;
-           Eigen::VectorXd stateInteriorPoint2 = stateVectorInclSTMPoint2.block(0,0,10,1);
+               Eigen::MatrixXd stateVectorInclSTMPoint2 = stateVectorInclSTMAndTimePoint2.first;
+               double actualTimeInteriorPoint2 = stateVectorInclSTMAndTimePoint2.second;
+               Eigen::VectorXd stateInteriorPoint2 = stateVectorInclSTMPoint2.block(0,0,10,1);
 
-           // Store the points in the Matrix
-           internalPointsMatrix.block(i*11,1,10,1) = stateInteriorPoint1;
-           internalPointsMatrix(i*11+10,1) = actualTimeInteriorPoint1;
-           internalPointsMatrix.block(i*11,2,10,1) = stateInteriorPoint2;
-           internalPointsMatrix(i*11+10,2) = actualTimeInteriorPoint2;
+               // Store the points in the Matrix
+               internalPointsMatrix.block(i*11,1,10,1) = stateInteriorPoint1;
+               internalPointsMatrix(i*11+10,1) = actualTimeInteriorPoint1;
+               internalPointsMatrix.block(i*11,2,10,1) = stateInteriorPoint2;
+               internalPointsMatrix(i*11+10,2) = actualTimeInteriorPoint2;
 
 
+            }
         }
 
+         if(firstCollocationGuess == false ){
+            for(int i = 0; i < (numberOfCollocationPoints-1); i++ )
+               {
+                  Eigen::VectorXd segmentNodes = initialStateVector.segment(i*33,44);
+                  for(int j = 0; j < 4; j++)
+                  {
+                      internalPointsMatrix.block(i*11,j,11,1) = segmentNodes.segment(j*11,11);
+                  }
+               }
 
+            }
 }
+
+
+
+
+
 
 Eigen::VectorXd convertNodeTimes(Eigen::MatrixXd nodeTimesNormalized, double lowerBound, double upperBound)
 {
@@ -355,7 +598,7 @@ void retrieveLegendreGaussLobattoConstaints(const std::string desiredQuantity, E
 }
 
 
-void computeCollocationDefects(Eigen::MatrixXd& collocationDefectVector, Eigen::MatrixXd& collocationDesignVector, const Eigen::MatrixXd oddStates, const Eigen::MatrixXd oddStatesDerivatives, Eigen::VectorXd timeIntervals, Eigen::VectorXd thrustAndMassParameters, const int numberOfCollocationPoints)
+void computeCollocationDefects(Eigen::MatrixXd& collocationDefectVector, Eigen::MatrixXd& collocationDesignVector, const Eigen::MatrixXd oddStates, const Eigen::MatrixXd oddStatesDerivatives, Eigen::VectorXd timeIntervals, Eigen::VectorXd thrustAndMassParameters, const int numberOfCollocationPoints, const double initialTime, const int continuationIndex, const Eigen::MatrixXd phaseConstraintVector)
 {
     // Load relevant constants
     Eigen::MatrixXd oddTimesMatrix(8,8);            Eigen::MatrixXd evenTimesMatrix(8,3);
@@ -375,8 +618,8 @@ void computeCollocationDefects(Eigen::MatrixXd& collocationDefectVector, Eigen::
     for(int i = 0; i < (numberOfCollocationPoints -1); i++)
     {
         Eigen::VectorXd localCollocationDefectVector(18,1);
-        Eigen::VectorXd localCollocationDesignVector(18,1);
-        Eigen::VectorXd localCollocationDesignVectorFinal(24,1);
+        Eigen::VectorXd localCollocationDesignVector(19,1);
+        Eigen::VectorXd localCollocationDesignVectorFinal(26,1);
 
         localCollocationDefectVector.setZero();
         localCollocationDesignVector.setZero();
@@ -495,47 +738,65 @@ void computeCollocationDefects(Eigen::MatrixXd& collocationDefectVector, Eigen::
 
         if (i < ( numberOfCollocationPoints - 2) )
         {
+            double localNodeTime;
+            if (i == 0)
+            {
+                localNodeTime = initialTime;
+            } else
+            {
+                localNodeTime = initialTime + ( timeIntervals.segment(0,i) ).sum();
+            }
             localCollocationDesignVector.segment(0,6) = localOddStates.block(0,0,6,1);
-            localCollocationDesignVector.segment(6,6) = localOddStates.block(0,1,6,1);
-            localCollocationDesignVector.segment(12,6) = localOddStates.block(0,2,6,1);
+            localCollocationDesignVector(6) = localNodeTime;
+            localCollocationDesignVector.segment(7,6) = localOddStates.block(0,1,6,1);
+            localCollocationDesignVector.segment(13,6) = localOddStates.block(0,2,6,1);
 
-            collocationDesignVector.block(18*i,0,18,1) = localCollocationDesignVector;
+            collocationDesignVector.block(19*i,0,19,1) = localCollocationDesignVector;
+
         } else
         {
+            double localNodeTime = initialTime + ( timeIntervals.segment(0,i) ).sum();
+            double localNodeTimeFinal= initialTime + ( timeIntervals.segment(0,i+1) ).sum();
+
             localCollocationDesignVectorFinal.segment(0,6) = localOddStates.block(0,0,6,1);
-            localCollocationDesignVectorFinal.segment(6,6) = localOddStates.block(0,1,6,1);
-            localCollocationDesignVectorFinal.segment(12,6) = localOddStates.block(0,2,6,1);
-            localCollocationDesignVectorFinal.segment(18,6) = localOddStates.block(0,3,6,1);
+            localCollocationDesignVectorFinal(6) = localNodeTime;
+            localCollocationDesignVectorFinal.segment(7,6) = localOddStates.block(0,1,6,1);
+            localCollocationDesignVectorFinal.segment(13,6) = localOddStates.block(0,2,6,1);
+            localCollocationDesignVectorFinal.segment(19,6) = localOddStates.block(0,3,6,1);
+            localCollocationDesignVectorFinal(25) = localNodeTimeFinal;
 
 
-            collocationDesignVector.block(18*i,0,24,1) = localCollocationDesignVectorFinal;
+            collocationDesignVector.block(19*i,0,26,1) = localCollocationDesignVectorFinal;
         }
-
-
-
-//        std::cout << "segment: " << i << std::endl;
-//        std::cout << "localCollocationDefectVector: \n" << localCollocationDefectVector << std::endl;
-//        std::cout << "localCollocationDesignVector: \n" << localCollocationDesignVector << std::endl;
 
 
     }
 
-//    std::cout << "collocationDefectVector: \n" << collocationDefectVector << std::endl;
-//    std::cout << "collocationDesignVector: \n" << collocationDesignVector << std::endl;
-//    std::cout << "collocationDefectVector Size: "  << collocationDefectVector.size() << std::endl;
-//    std::cout << "collocationDesignVector Size: "  << collocationDesignVector.size() << std::endl;
+// Add the periodicity defects:
+    int numberOfDefectPoints = (numberOfCollocationPoints-1)*3;
+    Eigen::VectorXd initialState = Eigen::VectorXd::Zero(6);
+    Eigen::VectorXd finalState = Eigen::VectorXd::Zero(6);
+
+    initialState = oddStates.block(0,0,6,1);
+    finalState = oddStates.block(6*(numberOfCollocationPoints-2),3,6,1 );
+    collocationDefectVector.block(numberOfDefectPoints*6,0,6,1) = initialState - finalState;
+
+// Compute phase constraint
+   Eigen::Vector6d derivativeFirstPoint = phaseConstraintVector.block(0,1,6,1);
+   Eigen::Vector6d increment = collocationDesignVector.block(0,0,6,1) - phaseConstraintVector.block(0,0,6,1);
+   double phaseConstraint = increment.transpose() * derivativeFirstPoint;
+   collocationDefectVector(collocationDefectVector.rows()-1,0) = phaseConstraint;
 
 
 
 }
 
 
-Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, const double massParameter, const int numberOfCollocationPoints, Eigen::VectorXd& collocatedGuess,
-                                                         const double maxPositionDeviationFromPeriodicOrbit, const double maxVelocityDeviationFromPeriodicOrbit, const double maxPeriodDeviationFromPeriodicOrbit, const int maxNumberOfIterations)
+Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, const double massParameter, const int numberOfCollocationPoints, Eigen::VectorXd& collocatedGuess, Eigen::VectorXd& collocatedNodes, Eigen::VectorXd& deviationNorms, const int continuationIndex, const Eigen::MatrixXd phaseConstraintVector,
+                                                          double maxPositionDeviationFromPeriodicOrbit,  double maxVelocityDeviationFromPeriodicOrbit,  double maxPeriodDeviationFromPeriodicOrbit, const int maxNumberOfCollocationIterations)
 {
     // initialize Variables
     Eigen::VectorXd outputVector = Eigen::VectorXd(25);
-    int numberOfCorrections = 0;
 
     // Evaluate the vector field at all odd points
     Eigen::MatrixXd initialCollocationGuessDerivatives = Eigen::MatrixXd::Zero(11*(numberOfCollocationPoints-1),4);
@@ -544,7 +805,7 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
     // Extract state information and time intervals from the input
     Eigen::VectorXd thrustAndMassParameters = Eigen::VectorXd::Zero(4);
     thrustAndMassParameters.segment(0,4) = initialCollocationGuess.block(6,0,4,1);
-
+    double initialTime = initialCollocationGuess(10,0);
 
     Eigen::VectorXd timeIntervals = Eigen::VectorXd::Zero(numberOfCollocationPoints -1);
     Eigen::MatrixXd oddStates = Eigen::MatrixXd::Zero(6*(numberOfCollocationPoints-1),4);
@@ -552,61 +813,131 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
 
     extractDurationAndDynamicsFromInput(initialCollocationGuess, initialCollocationGuessDerivatives, numberOfCollocationPoints,oddStates, oddStatesDerivatives,timeIntervals);
 
-    // compute the input to the correction algorithm
-    Eigen::MatrixXd collocationDefectVector((numberOfCollocationPoints-1)*18,1);
-    Eigen::MatrixXd collocationDesignVector((numberOfCollocationPoints-1)*18+6,1);
 
-    computeCollocationDefects(collocationDefectVector, collocationDesignVector, oddStates, oddStatesDerivatives, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints);
-    Eigen::VectorXd collocationDeviationNorms = computeCollocationDeviationNorms(collocationDefectVector, numberOfCollocationPoints);
+    // compute the input to the correction algorithm
+    int lengthOfDefectVector;
+    if (continuationIndex == 1)
+    {
+        lengthOfDefectVector = (numberOfCollocationPoints-1)*18+6+1;
+    }
+
+    Eigen::MatrixXd collocationDefectVector(lengthOfDefectVector,1);
+    Eigen::MatrixXd collocationDesignVector((numberOfCollocationPoints-1)*19+7,1);
+
+
+    computeCollocationDefects(collocationDefectVector, collocationDesignVector, oddStates, oddStatesDerivatives, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, initialTime, continuationIndex, phaseConstraintVector);
+
+    Eigen::VectorXd collocationDeviationNorms = computeCollocationDeviationNorms(collocationDefectVector, collocationDesignVector, numberOfCollocationPoints);
 
     double positionDefectDeviations = collocationDeviationNorms(0);
     double velocityDefectDeviations= collocationDeviationNorms(1);
+    double periodicityPositionDeviations= collocationDeviationNorms(2);
+    double periodicityVelocityDeviations = collocationDeviationNorms(3);
+    double phaseDeviations = collocationDeviationNorms(4);
+
+
+    int numberOfCorrections = 0;
+    bool continueColloc = true;
 
     std::cout << "\nDeviations at the start of collocation procedure: " << std::endl;
     std::cout << "numberOfCorrections: " << numberOfCorrections << std::endl;
     std::cout << "positionDefectDeviations: " << positionDefectDeviations << std::endl;
     std::cout << "velocityDefectDeviations: " << velocityDefectDeviations << std::endl;
+    std::cout << "periodicityPositionDeviations: " << periodicityPositionDeviations << std::endl;
+    std::cout << "periodicityVelocityDeviations: " << periodicityVelocityDeviations << std::endl;
+    std::cout << "phaseDeviations: " << phaseDeviations << std::endl;
 
-    while( positionDefectDeviations > maxPositionDeviationFromPeriodicOrbit
-           or velocityDefectDeviations > maxVelocityDeviationFromPeriodicOrbit  )
+
+    while( ( positionDefectDeviations > maxPositionDeviationFromPeriodicOrbit
+           || velocityDefectDeviations > maxVelocityDeviationFromPeriodicOrbit || phaseDeviations >  maxPositionDeviationFromPeriodicOrbit ) && continueColloc  )
     {
 
         // compute the correction
         Eigen::VectorXd collocationCorrectionVector(collocationDesignVector.size());
         collocationCorrectionVector.setZero();
-        collocationCorrectionVector = computeCollocationCorrection(collocationDefectVector, collocationDesignVector, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints);
-        //std::cout << " collocationCorrectionVector: " << collocationCorrectionVector << std::endl;
+        collocationCorrectionVector = computeCollocationCorrection(collocationDefectVector, collocationDesignVector, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, continuationIndex, phaseConstraintVector);
 
         // apply line search, select design vector which produces the smallest norm
-        applyLineSearchAttenuation(collocationCorrectionVector, collocationDefectVector, collocationDesignVector, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints);
+
+        applyLineSearchAttenuation(collocationCorrectionVector, collocationDefectVector, collocationDesignVector, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, continuationIndex, phaseConstraintVector);
 
         numberOfCorrections++;
+        if ( numberOfCorrections > maxNumberOfCollocationIterations)
+        {
+                        maxPositionDeviationFromPeriodicOrbit = 1.0E-11;
+                        maxVelocityDeviationFromPeriodicOrbit = 1.0E-11;
+
+        }
+
+        if ( numberOfCorrections > 2*maxNumberOfCollocationIterations)
+        {
+                        maxPositionDeviationFromPeriodicOrbit = 1.0E-10;
+                        maxVelocityDeviationFromPeriodicOrbit = 1.0E-10;
+
+        }
+
+        if ( numberOfCorrections > 3*maxNumberOfCollocationIterations)
+        {
+                        maxPositionDeviationFromPeriodicOrbit = 1.0E-9;
+                        maxVelocityDeviationFromPeriodicOrbit = 1.0E-9;
+
+        }
+        if ( numberOfCorrections > 3*maxNumberOfCollocationIterations+1)
+        {
+                        maxPositionDeviationFromPeriodicOrbit = 1.0E-7;
+                        maxVelocityDeviationFromPeriodicOrbit = 1.0E-7;
+
+        }
+        if ( numberOfCorrections > 3*maxNumberOfCollocationIterations+2)
+        {
+                        maxPositionDeviationFromPeriodicOrbit = 1.0E-4;
+                        maxVelocityDeviationFromPeriodicOrbit = 1.0E-4;
+
+        }
+
         // compute defects after line search attenuation to determine if convergence has been reached
-        collocationDeviationNorms = computeCollocationDeviationNorms(collocationDefectVector, numberOfCollocationPoints);
+        collocationDeviationNorms = computeCollocationDeviationNorms(collocationDefectVector, collocationDesignVector, numberOfCollocationPoints);
 
         positionDefectDeviations = collocationDeviationNorms(0);
         velocityDefectDeviations= collocationDeviationNorms(1);
+        periodicityPositionDeviations = collocationDeviationNorms(2);
+        periodicityVelocityDeviations = collocationDeviationNorms(3);
+        phaseDeviations = collocationDeviationNorms(4);
 
-        std::cout << "\nCollocation applied, remaining deviations are: " << std::endl;
-        std::cout << "numberOfCorrections: " << numberOfCorrections << std::endl;
-        std::cout << "positionDefectDeviations: " << positionDefectDeviations << std::endl;
-        std::cout << "velocityDefectDeviations: " << velocityDefectDeviations << std::endl;
+
+//        std::cout << "\nCollocation applied, remaining deviations are: " << std::endl;
+//        std::cout << "numberOfCorrections: " << numberOfCorrections << std::endl;
+//        std::cout << "positionDefectDeviations: " << positionDefectDeviations << std::endl;
+//        std::cout << "velocityDefectDeviations: " << velocityDefectDeviations << std::endl;
+//        std::cout << "periodicityPositionDeviations: " << periodicityPositionDeviations << std::endl;
+//        std::cout << "periodicityVelocityDeviations: " << periodicityVelocityDeviations << std::endl;
+//        std::cout << "phaseDeviations: " << phaseDeviations << std::endl;
+
 
     }
 
+
     std::cout << "\nTRAJECTORY CONVERGED AFTER " << numberOfCorrections << " COLLOCATION CORRECTIONS, REMAINING DEVIATIONS: " << std::endl;
-    std::cout << "numberOfCorrections: " << numberOfCorrections << std::endl;
     std::cout << "positionDefectDeviations: " << positionDefectDeviations << std::endl;
     std::cout << "velocityDefectDeviations: " << velocityDefectDeviations << std::endl;
+    std::cout << "periodicityPositionDeviations: " << periodicityPositionDeviations << std::endl;
+    std::cout << "periodicityVelocityDeviations: " << periodicityVelocityDeviations << std::endl;
+    std::cout << "phaseDeviations: " << phaseDeviations << std::endl;
 
-    // Compute variables for outputVector and collocatedGuess
-    collocatedGuess.segment(0,11*(numberOfCollocationPoints-1))  = initialCollocationGuess.block(0,0,11*(numberOfCollocationPoints-1),1);
-    collocatedGuess.segment(11*(numberOfCollocationPoints-1),11) = initialCollocationGuess.block(11*(numberOfCollocationPoints-2),3,11,1);
 
-    Eigen::VectorXd  initialCondition = collocatedGuess.segment(0,10);
-    Eigen::VectorXd  finalCondition = collocatedGuess.segment(11*(numberOfCollocationPoints-1),10);
 
-    double orbitalPeriod = collocatedGuess(11*(numberOfCollocationPoints-1)+10) - collocatedGuess(10);
+    //propagateAndSaveCollocationProcedure(collocationDesignVector, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, 2, massParameter);
+
+    // Compute variables for outputVector and collocatedGuess, rewrite collocationDesignVector to vector format (incldue interior points or not?)
+    // and store in collocated guess
+
+    shiftTimeOfConvergedCollocatedGuess(collocationDesignVector, collocatedGuess, collocatedNodes, numberOfCollocationPoints, thrustAndMassParameters);
+    deviationNorms = collocationDeviationNorms;
+
+    Eigen::VectorXd  initialCondition = collocatedNodes.segment(0,10);
+    Eigen::VectorXd  finalCondition = collocatedNodes.segment(11*(numberOfCollocationPoints-1),10);
+
+    double orbitalPeriod = collocatedNodes(11*(numberOfCollocationPoints-1)+10) - collocatedNodes(10);
 
     double hamiltonianInitialCondition  = computeHamiltonian( massParameter, initialCondition);
     double hamiltonianEndState          = computeHamiltonian( massParameter, finalCondition  );
@@ -615,7 +946,7 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
     outputVector(10) = orbitalPeriod;
     outputVector(11) = hamiltonianInitialCondition;
     outputVector.segment(12,10) = finalCondition;
-    outputVector(22) = collocatedGuess(11*(numberOfCollocationPoints-1) + 10);
+    outputVector(22) = collocatedNodes(11*(numberOfCollocationPoints-1) + 10);
     outputVector(23) = hamiltonianEndState;
     outputVector(24) = numberOfCorrections;
 

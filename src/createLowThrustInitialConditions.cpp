@@ -25,6 +25,9 @@
 #include "propagateOrbit.h"
 #include "propagateOrbitAugmented.h"
 #include "floquetApproximation.h"
+#include "createEquilibriumLocations.h"
+#include "stateDerivativeModelAugmented.h"
+#include "computeCollocationCorrection.h"
 
 void appendResultsVectorAugmented(const double hamiltonian, const double orbitalPeriod, const Eigen::VectorXd& initialStateVector,
         const Eigen::MatrixXd& stateVectorInclSTM, std::vector< Eigen::VectorXd >& initialConditions )
@@ -174,17 +177,17 @@ void appendDifferentialCorrectionResultsVectorAugmented(
 
 }
 
-void appendContinuationStatesVectorAugmented(const int orbitNumber, const int numberOfPatchPoints, const double hamiltonianInitialCondition,
+void appendContinuationStatesVectorAugmented(const int orbitNumber, const int numberOfPatchPoints, const double hamiltonianInitialCondition, const double orbitalPeriod,
                                              const Eigen::VectorXd& differentialCorrectionResult, std::vector< Eigen::VectorXd >& statesContinuation)
 {
     Eigen::VectorXd tempStatesContinuation = Eigen::VectorXd( 3 + 11*numberOfPatchPoints  );
     tempStatesContinuation( 0 ) = orbitNumber;  // numberOfIterations
     tempStatesContinuation( 1 ) = hamiltonianInitialCondition;  // Hamiltonian Initial Condition
-    tempStatesContinuation( 2 ) = differentialCorrectionResult(10);
+    tempStatesContinuation( 2 ) = orbitalPeriod;
 
     for (int i = 0; i < ( 11*numberOfPatchPoints ); i++)
     {
-        tempStatesContinuation(i + 3) = differentialCorrectionResult(25 + i);
+        tempStatesContinuation(i + 3) = differentialCorrectionResult(i);
     }
 
     statesContinuation.push_back(tempStatesContinuation);
@@ -505,7 +508,7 @@ double computeHamiltonian (const double massParameter, const Eigen::VectorXd sta
 }
 
 Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::MatrixXd& initialOddPoints, const int orbitNumber,
-                                          const int librationPointNr, const std::string& orbitType, const double massParameter, const int numberOfPatchPoints, int& numberOfCollocationPoints,
+                                          const int librationPointNr, const std::string& orbitType, const int continuationIndex, const Eigen::MatrixXd phaseConstraintVector, const double massParameter, const int numberOfPatchPoints, int& numberOfCollocationPoints,
                                           std::vector< Eigen::VectorXd >& initialConditions,
                                           std::vector< Eigen::VectorXd >& differentialCorrections,
                                           std::vector< Eigen::VectorXd >& statesContinuation,
@@ -516,9 +519,12 @@ Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::MatrixXd& initi
 
 
     // Apply collocation
+    int numberOfOddPoints = (numberOfCollocationPoints-1)*3 + 1;
     Eigen::VectorXd deviationNorms(5);
-    Eigen::VectorXd collocatedGuess(11*numberOfCollocationPoints);
-    Eigen::VectorXd collocationResult = applyCollocation(initialOddPoints, massParameter, numberOfCollocationPoints, collocatedGuess,
+    Eigen::VectorXd collocatedGuess(11*numberOfOddPoints);
+    Eigen::VectorXd collocatedNodes(11*numberOfCollocationPoints);
+
+    Eigen::VectorXd collocationResult = applyCollocation(initialOddPoints, massParameter, numberOfCollocationPoints, collocatedGuess, collocatedNodes, deviationNorms, continuationIndex, phaseConstraintVector,
                                                          maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
 
     initialStateVector = collocationResult.segment( 0, 10 );
@@ -541,17 +547,13 @@ Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::MatrixXd& initi
     Eigen::MatrixXd propagatedStates(10*(numberOfCollocationPoints-1),11);
     std::map< double, Eigen::VectorXd > stateHistoryTemp;
 
-    computeOrbitDeviations(collocatedGuess, numberOfCollocationPoints, propagatedStates, defectVector, stateHistoryTemp, massParameter);
-
-    deviationNorms = computeDeviationNorms(defectVector,numberOfCollocationPoints);
-
     appendDifferentialCorrectionResultsVectorAugmented( hamiltonianFullPeriod, collocationResult, differentialCorrections, deviationNorms );
 
     Eigen::VectorXd collocationResultWithStates(25+11*numberOfCollocationPoints);
     collocationResultWithStates.segment(0,25) = collocationResult;
-    collocationResultWithStates.segment(25,11*numberOfCollocationPoints) = collocatedGuess;
+    collocationResultWithStates.segment(25,11*numberOfCollocationPoints) = collocatedNodes;
 
-    appendContinuationStatesVectorAugmented( orbitNumber, numberOfCollocationPoints, collocationResult(11), collocationResultWithStates, statesContinuation);
+    appendContinuationStatesVectorAugmented( orbitNumber, numberOfOddPoints, collocationResult(11), orbitalPeriod, collocatedGuess, statesContinuation);
 
     appendResultsVectorAugmented( hamiltonianFullPeriod, orbitalPeriod, initialStateVector, stateVectorInclSTM, initialConditions );
 
@@ -562,7 +564,7 @@ Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::MatrixXd& initi
 
 
 Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initialStateGuess, double targetHamiltonian, const int orbitNumber,
-                                          const int librationPointNr, const std::string& orbitType, const double massParameter, const int numberOfPatchPoints, const bool hamiltonianConstraint,
+                                          const int librationPointNr, const std::string& orbitType, const double massParameter, const int numberOfPatchPoints, const int numberOfCollocationPoints, const bool hamiltonianConstraint,
                                           std::vector< Eigen::VectorXd >& initialConditions,
                                           std::vector< Eigen::VectorXd >& differentialCorrections,
                                           std::vector< Eigen::VectorXd >& statesContinuation,
@@ -570,6 +572,8 @@ Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initia
 
     //Eigen::MatrixXd stateVectorInclSTM = Eigen::MatrixXd::Zero(8,9);
     Eigen::VectorXd initialStateVector(10);
+    int numberOfOddPoints = (numberOfCollocationPoints-1)*3 + 1;
+
 
     // Correct state vector guess
     Eigen::VectorXd differentialCorrectionResult = applyPredictionCorrection(
@@ -580,8 +584,6 @@ Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initia
     double orbitalPeriod = differentialCorrectionResult( 10 );
     double hamiltonianFullPeriodDiffCorr = differentialCorrectionResult( 23 );
 
-    //Eigen::VectorXd correctionMass = applyMassRefinement( 1, differentialCorrectionResult.segment(25,11*numberOfPatchPoints), massParameter, numberOfPatchPoints, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
-
 
     // Propagate the initialStateVector for a full period and write output to file.
     std::map< double, Eigen::VectorXd > stateHistory;
@@ -591,11 +593,6 @@ Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initia
 
     writeStateHistoryToFileAugmented( stateHistory, initialStateVector(6), initialStateVector(7), initialStateVector(8), differentialCorrectionResult(11), orbitNumber, librationPointNr, orbitType, 1000, false );
 
-    // Propagate the differentialCorrectionResult in CR3BP-LT mass with varying mass
-//     Eigen::VectorXd massRefinedSolution = Eigen::VectorXd::Zero(11 * numberOfPatchPoints);
-//     massRefinedSolution = applyMassRefinement( librationPointNr, differentialCorrectionResult.segment(25,11*numberOfPatchPoints), massParameter,
-//                                                   numberOfPatchPoints, maxPositionDeviationFromPeriodicOrbit,
-//                                                   maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit );
 
 
     // Save results
@@ -609,8 +606,18 @@ Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initia
     Eigen::VectorXd deviationNorms = computeDeviationNorms(defectVector,numberOfPatchPoints);
 
     appendDifferentialCorrectionResultsVectorAugmented( hamiltonianFullPeriodDiffCorr, differentialCorrectionResult, differentialCorrections, deviationNorms );
+    Eigen::VectorXd statesConvergedGuess = differentialCorrectionResult.segment(25,11*numberOfPatchPoints);
 
-    appendContinuationStatesVectorAugmented( orbitNumber, numberOfPatchPoints, differentialCorrectionResult(11), differentialCorrectionResult, statesContinuation);
+    // store the multiple shooting converged guesses as converged colllocated formats in the
+    Eigen::VectorXd redistributedNodes = redstributeNodesOverTrajectory( statesConvergedGuess, numberOfPatchPoints, numberOfCollocationPoints, massParameter);
+    Eigen::MatrixXd oddNodesMatrix((11*(numberOfCollocationPoints-1)), 4 );
+    computeOddPoints(redistributedNodes, oddNodesMatrix, numberOfCollocationPoints, massParameter, true);
+    Eigen::VectorXd convergedGuessCollocationFormat = rewriteOddPointsToVector(oddNodesMatrix, numberOfCollocationPoints);
+
+
+    appendContinuationStatesVectorAugmented( orbitNumber, numberOfOddPoints, differentialCorrectionResult(11), orbitalPeriod, convergedGuessCollocationFormat, statesContinuation);
+
+
 
     appendResultsVectorAugmented( hamiltonianFullPeriod, orbitalPeriod, initialStateVector, stateVectorInclSTM, initialConditions );
 
@@ -892,11 +899,6 @@ double getDefaultArcLengthAugmented(
        rho_n = currentState.segment( 8, 1 ).norm( );
 
    }
-//        std::cout << "== ARCLENGTH TEST ==" << std::endl
-//                  << "rho_n: " << rho_n << std::endl
-//                  << "scalingFactor: " << scalingFactor << std::endl
-//                  << "distanceIncrement: " << distanceIncrement << std::endl;
-
 
    return (distanceIncrement * scalingFactor) / ( rho_n );
 }
@@ -930,6 +932,43 @@ bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differenti
     return continueNumericalContinuation;
 }
 
+Eigen::VectorXd computeHamiltonianVaryingStateIncrement(const Eigen::VectorXd initialStateVector, const int numberOfCollocationPoints, const double massParameter)
+{
+    Eigen::VectorXd outputVector(initialStateVector.rows());;
+    outputVector.setZero();
+
+    const double currentHamiltonian = computeHamiltonian( massParameter, initialStateVector.segment(0,10));
+
+    for(int i = 0; i < numberOfCollocationPoints; i++)
+    {
+        Eigen::VectorXd localIncrement = Eigen::VectorXd::Zero(11);
+        localIncrement.setZero();
+
+
+        Eigen::VectorXd currentNode = initialStateVector.segment(i*11,11);
+        Eigen::VectorXcd statePositionAndVelocity = currentNode.segment(0,6);
+        Eigen::VectorXd thrustAndMassParameters = currentNode.segment(6,4);
+        double epsilon = 1.0E-10;
+        std::complex<double> increment(0.0,epsilon);
+
+
+        for(int j = 0; j < 6; j++)
+        {
+            Eigen::VectorXcd columnDesignVector = statePositionAndVelocity;
+            columnDesignVector(j) = columnDesignVector(j) + increment;
+            double localDerivative = computeHamiltonianDerivativeUsingComplexStep( columnDesignVector, thrustAndMassParameters, currentHamiltonian, epsilon, massParameter  );
+            localIncrement(j,0) = localDerivative;
+        }
+
+        outputVector.segment(i*11,11) = localIncrement;
+    }
+
+
+
+    return outputVector;
+
+}
+
 void createLowThrustInitialConditions( const int librationPointNr, const double ySign, const std::string& orbitType, const int continuationIndex, const double accelerationMagnitude, const double accelerationAngle,
                                        const double accelerationAngle2, const double initialMass, const double familyHamiltonian,
                               const double massParameter, const int numberOfPatchPoints, const int initialNumberOfCollocationPoints, const double maxPositionDeviationFromPeriodicOrbit, const double maxVelocityDeviationFromPeriodicOrbit, const double maxPeriodDeviationFromPeriodicOrbit, const double maxEigenvalueDeviation,
@@ -961,7 +1000,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
     stateVectorInclSTM =  getCorrectedAugmentedInitialState(
                 linearApproximationResultIteration1, computeHamiltonian( massParameter, linearApproximationResultIteration1.segment(0,10)), 0,
-               librationPointNr, orbitType, massParameter, numberOfPatchPoints, false, initialConditions, differentialCorrections, statesContinuation,
+               librationPointNr, orbitType, massParameter, numberOfPatchPoints, initialNumberOfCollocationPoints,false, initialConditions, differentialCorrections, statesContinuation,
                 maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
 
 
@@ -969,14 +1008,14 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
     {
         stateVectorInclSTM =  getCorrectedAugmentedInitialState(
                     linearApproximationResultIteration2, computeHamiltonian( massParameter, linearApproximationResultIteration1.segment(0,10)), 1,
-                   librationPointNr, orbitType, massParameter, numberOfPatchPoints, false, initialConditions, differentialCorrections, statesContinuation,
+                   librationPointNr, orbitType, massParameter, numberOfPatchPoints, initialNumberOfCollocationPoints, false, initialConditions, differentialCorrections, statesContinuation,
                     maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
     }
 
 
-
+// ============ CONTINUATION PROCEDURE ================== //
     // Set exit parameters of continuation procedure
-    int maximumNumberOfInitialConditions = 3;
+    int maximumNumberOfInitialConditions = 20;
     int numberOfInitialConditions;
     if (continuationIndex == 1)
     {
@@ -995,9 +1034,11 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
     double pseudoArcLengthCorrection = 0.0;
     bool continueNumericalContinuation = true;
-    Eigen::VectorXd stateIncrement(11*numberOfPatchPoints+1);
-    stateIncrement.setZero();
     double targetHamiltonian;
+    Eigen::MatrixXd phaseConstraintVector = Eigen::MatrixXd::Zero(6,2);
+    int numberOfCollocationPoints = initialNumberOfCollocationPoints;
+
+    auto startINIT = std::chrono::high_resolution_clock::now();
 
     while( ( numberOfInitialConditions < maximumNumberOfInitialConditions ) && continueNumericalContinuation)
     {
@@ -1011,128 +1052,170 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
           if(continuationIndex == 1)
           {
-              // Determine increments to state and time
-                 stateIncrement.segment(1,11*numberOfPatchPoints) = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*numberOfPatchPoints ) -
-                                 statesContinuation[ statesContinuation.size( ) - 2 ].segment( 3, 11*numberOfPatchPoints );
-                 stateIncrement(0) = statesContinuation[ statesContinuation.size( ) - 1 ]( 1 ) -
+              int numberOfStates =  numberOfStates = 3*(numberOfCollocationPoints-1)+1;
+
+              Eigen::VectorXd initialStateVectorContinuation (11* numberOfStates);
+              initialStateVectorContinuation.setZero();
+
+
+              initialStateVectorContinuation = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*numberOfStates );
+
+
+              // compute the information for poincare phase condition
+              phaseConstraintVector.block(0,0,6,1) = statesContinuation[ 0 ].segment( 3, 6 );
+              phaseConstraintVector.block(0,1,6,1) = computeStateDerivativeAugmented( 0.0, getFullInitialStateAugmented( statesContinuation[ 0 ].segment( 3, 10 ) ) ).block(0,0,6,1);
+
+
+              // perform numerical continuation
+              Eigen::VectorXd stateIncrement(11*numberOfStates+1);
+              stateIncrement.setZero();
+
+
+             stateIncrement.segment(1,11*numberOfStates) = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*numberOfStates ) -
+                                 statesContinuation[ statesContinuation.size( ) - 2 ].segment( 3, 11*numberOfStates );
+             stateIncrement(0) = statesContinuation[ statesContinuation.size( ) - 1 ]( 1 ) -
                                  statesContinuation[ statesContinuation.size( ) - 2 ]( 1 );
 
-              std::cout << "stateIncrement First Patch point: \n" << stateIncrement.segment(0,11) << std::endl;
-              double pseudoArcLengthCorrection = pseudoArcLengthFunctionAugmented( stateIncrement.segment(0,11), continuationIndex );
-
-              std::cout << "pseudoArcLengthCorrection: " << pseudoArcLengthCorrection << std::endl;
-
-              // Apply numerical continuation
-               initialStateVector = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*numberOfPatchPoints ) +
-                                    stateIncrement.segment(1,11*numberOfPatchPoints) * pseudoArcLengthCorrection;
+                 double pseudoArcLengthCorrection = pseudoArcLengthFunctionAugmented( stateIncrement.segment(0,11), continuationIndex );
 
 
+                initialStateVectorContinuation = initialStateVectorContinuation + pseudoArcLengthCorrection* stateIncrement.segment(1,numberOfStates*11);
+              // Compute the interior points and nodes for each segment, this is the input for the getCollocated State
+              Eigen::MatrixXd oddNodesMatrix((11*(numberOfCollocationPoints-1)), 4 );
+              computeOddPoints(initialStateVectorContinuation, oddNodesMatrix, numberOfCollocationPoints, massParameter, false);
 
-               stateVectorInclSTM =  getCorrectedAugmentedInitialState( initialStateVector, targetHamiltonian, numberOfInitialConditions,
-                                                                                 librationPointNr, orbitType, massParameter, numberOfPatchPoints, false,
-                                                                                 initialConditions, differentialCorrections, statesContinuation,
-                                                                                 maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
+
+              stateVectorInclSTM = getCollocatedAugmentedInitialState( oddNodesMatrix, numberOfInitialConditions, librationPointNr, orbitType, continuationIndex, phaseConstraintVector,
+                                                                       massParameter, numberOfPatchPoints, numberOfCollocationPoints, initialConditions,
+                                                                       differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
+
+
           }
           if (continuationIndex == 6)
           {
-              // extract the starting guess from statesContinuation
-              int numberOfCollocationPoints = initialNumberOfCollocationPoints;
-              if (numberOfInitialConditions == 1)
-              {
-                  initialStateVector = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*numberOfPatchPoints );
 
-              } else
-              {
-                  initialStateVector = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*numberOfCollocationPoints );
+              int numberOfStates =  numberOfStates = 3*(numberOfCollocationPoints-1)+1;
 
-              }
+              Eigen::VectorXd initialStateVectorContinuation (11* numberOfStates);
+              initialStateVectorContinuation.setZero();
 
-
-              // Redistribute the nodes over the orbit evenly spaced in time according to the desired number of CollocationPoints,
-              if (numberOfInitialConditions == 1 and numberOfPatchPoints != numberOfCollocationPoints)
-              {
-                initialStateVector = redstributeNodesOverTrajectory(initialStateVector, numberOfPatchPoints, numberOfCollocationPoints, massParameter);
-              }
+              initialStateVectorContinuation = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*numberOfStates );
 
               // Compute the interior points and nodes for each segment, this is the input for the getCollocated State
               Eigen::MatrixXd oddNodesMatrix((11*(numberOfCollocationPoints-1)), 4 );
-              computeOddPoints(initialStateVector, oddNodesMatrix, numberOfCollocationPoints, massParameter);
+              computeOddPoints(initialStateVectorContinuation, oddNodesMatrix, numberOfCollocationPoints, massParameter, false);
 
-              // Generate random noise
-              int numberOfNodes = 3*(numberOfCollocationPoints-1)+1;
-              int numberOfStates = numberOfNodes*6;
-              Eigen::VectorXd noiseVector(numberOfStates);
-              noiseVector.setZero();
 
-              std::random_device                  rand_dev;
-              std::mt19937                        generator(rand_dev());
-              std::uniform_real_distribution<double>  distr(1.0E-12, 1.0E-06);
+              stateVectorInclSTM = getCollocatedAugmentedInitialState( oddNodesMatrix, numberOfInitialConditions, librationPointNr, orbitType, continuationIndex, phaseConstraintVector,
+                                                                       massParameter, numberOfPatchPoints, numberOfCollocationPoints, initialConditions,
+                                                                       differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
 
-              std::random_device                  rand_dev2;
-              std::mt19937                        generator2(rand_dev2());
-              std::uniform_real_distribution<double>  distr2(0, 1);
 
-              for(int i = 0; i < numberOfStates; i++)
-              {
 
-                  double sign = 0.0;
-                  if ( distr2(generator2) < 0.5 )
-                  {
-                      sign = -1.0;
-                  } else
-                  {
-                      sign = 1.0;
-                  }
-                  if ( (i+1) % 3 == 0 and i > 0)
-                  {
-                      noiseVector(i) = 0.0;
-                  } else
-                  {
-                      noiseVector(i) = sign*distr(generator);
 
-                  }
 
-              }
 
-              std::cout << "noiseVector: \n" << noiseVector << std::endl;
+              //propagateAndSaveCollocationProcedure(oddNodesMatrix, Eigen::VectorXd::Zero(numberOfCollocationPoints-1), Eigen::VectorXd::Zero(4), numberOfCollocationPoints, 0, massParameter);
 
               // Add thrust increment to all nodes and interior Points!
                for(int i = 0; i < (numberOfCollocationPoints-1); i ++)
                {
-                   Eigen::VectorXd noiseVectorSegment = noiseVector.segment(18*i,24);
                    for(int j = 0; j < 4; j++)
                    {
-                       Eigen::VectorXd noiseVectorLocal(11);
-                       noiseVectorLocal.setZero();
-                       noiseVectorLocal.segment(0,6) = noiseVectorSegment.segment(6*j,6);
 
-                       oddNodesMatrix.block(11*i,j,6,1) = oddNodesMatrix.block(11*i,j,6,1) + noiseVectorLocal;
 
-                       //oddNodesMatrix(11*i+6,j) = oddNodesMatrix(11*i+6,j) + incrementContinuationParameter;
+                      oddNodesMatrix(11*i+6,j) = oddNodesMatrix(11*i+6,j) + incrementContinuationParameter;
                    }
                }
 
-               std::cout << "oddNotesMatrix: \n" << oddNodesMatrix << std::endl;
-               stateVectorInclSTM = getCollocatedAugmentedInitialState( oddNodesMatrix, numberOfInitialConditions, librationPointNr, orbitType,
+               stateVectorInclSTM = getCollocatedAugmentedInitialState( oddNodesMatrix, numberOfInitialConditions, librationPointNr, orbitType, continuationIndex, phaseConstraintVector,
                                                                         massParameter, numberOfPatchPoints, numberOfCollocationPoints, initialConditions,
                                                                         differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
 
           }
 
+          continueNumericalContinuation = checkTerminationAugmented(differentialCorrections, stateVectorInclSTM, orbitType, librationPointNr, maxEigenvalueDeviation );
+          std::cout << "continueNumericalContinuation: " << continueNumericalContinuation << std::endl;
+
+           if ( continuationIndex != 1 && continueNumericalContinuation == false && orderOfMagnitude > minimumIncrementOrderOfMagnitude )
+                  {
+                         orderOfMagnitude = orderOfMagnitude + 1;
+                         continueNumericalContinuation = true;
+                   }
+
            numberOfInitialConditions += 1;
 
-           continueNumericalContinuation = checkTerminationAugmented(differentialCorrections, stateVectorInclSTM, orbitType, librationPointNr, maxEigenvalueDeviation );
-           std::cout << "continueNumericalContinuation: " << continueNumericalContinuation << std::endl;
 
-            if ( continuationIndex != 1 && continueNumericalContinuation == false && orderOfMagnitude > minimumIncrementOrderOfMagnitude )
-                   {
-                          orderOfMagnitude = orderOfMagnitude + 1;
-                          continueNumericalContinuation = true;
-                    }
 
     }
 
 
+    auto stopINIT = std::chrono::high_resolution_clock::now();
+    auto durationINIT = std::chrono::duration_cast<std::chrono::seconds>(stopINIT - startINIT);
+    double timeINIT = durationINIT.count();
+
+    std::cout << "time for 20 continuation orbits: " << timeINIT << std::endl;
+
     writeFinalResultsToFilesAugmented( librationPointNr, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, familyHamiltonian, numberOfPatchPoints, initialConditions, differentialCorrections, statesContinuation );
 
 }
+
+
+//              // Generate random noise
+//              int numberOfNodes = 3*(numberOfCollocationPoints-1)+1;
+//              int numberOfStates2 = numberOfNodes*6;
+//              Eigen::VectorXd noiseVector(numberOfStates);
+//              noiseVector.setZero();
+
+//              std::random_device                  rand_dev;
+//              std::mt19937                        generator(rand_dev());
+//              std::uniform_real_distribution<double>  distr(1.0E-12, 1.0E-05);
+
+//              std::random_device                  rand_dev2;
+//              std::mt19937                        generator2(rand_dev2());
+//              std::uniform_real_distribution<double>  distr2(0, 1);
+
+//              for(int i = 0; i < numberOfStates; i++)
+//              {
+
+//                  double sign = 0.0;
+//                  if ( distr2(generator2) < 0.5 )
+//                  {
+//                      sign = -1.0;
+//                  } else
+//                  {
+//                      sign = 1.0;
+//                  }
+//                  if ( (i+1) % 3 == 0 and i > 0)
+//                  {
+//                      noiseVector(i) = 0.0;
+//                  } else
+//                  {
+//                      noiseVector(i) = sign*distr(generator);
+
+//                  }
+
+//              }
+
+//              //std::cout << "noiseVector: \n" << noiseVector << std::endl;
+
+
+// Add thrust increment to all nodes and interior Points!
+// for(int i = 0; i < (numberOfCollocationPoints-1); i ++)
+// {
+     //Eigen::VectorXd noiseVectorSegment = noiseVector.segment(18*i,24);
+ //    for(int j = 0; j < 4; j++)
+//     {
+//                       Eigen::VectorXd noiseVectorLocal(11);
+//                       noiseVectorLocal.setZero();
+//                       noiseVectorLocal.segment(0,6) = noiseVectorSegment.segment(6*j,6);
+
+         //oddNodesMatrix.block(11*i,j,6,1) = oddNodesMatrix.block(11*i,j,6,1) + noiseVectorLocal;
+
+//        oddNodesMatrix(11*i+6,j) = oddNodesMatrix(11*i+6,j) + incrementContinuationParameter;
+//     }
+// }
+
+ //propagateAndSaveCollocationProcedure(oddNodesMatrix, Eigen::VectorXd::Zero(numberOfCollocationPoints-1), Eigen::VectorXd::Zero(4), numberOfCollocationPoints, 1, massParameter);
+
+
