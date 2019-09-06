@@ -1038,8 +1038,6 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
     Eigen::MatrixXd phaseConstraintVector = Eigen::MatrixXd::Zero(6,2);
     int numberOfCollocationPoints = initialNumberOfCollocationPoints;
 
-    auto startINIT = std::chrono::high_resolution_clock::now();
-
     while( ( numberOfInitialConditions < maximumNumberOfInitialConditions ) && continueNumericalContinuation)
     {
 
@@ -1148,13 +1146,6 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 
     }
-
-
-    auto stopINIT = std::chrono::high_resolution_clock::now();
-    auto durationINIT = std::chrono::duration_cast<std::chrono::seconds>(stopINIT - startINIT);
-    double timeINIT = durationINIT.count();
-
-    std::cout << "time for continuation orbits: " << timeINIT << std::endl;
 
     writeFinalResultsToFilesAugmented( librationPointNr, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, familyHamiltonian, numberOfPatchPoints, initialConditions, differentialCorrections, statesContinuation );
 
