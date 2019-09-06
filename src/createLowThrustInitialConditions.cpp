@@ -1154,7 +1154,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
     auto durationINIT = std::chrono::duration_cast<std::chrono::seconds>(stopINIT - startINIT);
     double timeINIT = durationINIT.count();
 
-    std::cout << "time for 20 continuation orbits: " << timeINIT << std::endl;
+    std::cout << "time for continuation orbits: " << timeINIT << std::endl;
 
     writeFinalResultsToFilesAugmented( librationPointNr, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, familyHamiltonian, numberOfPatchPoints, initialConditions, differentialCorrections, statesContinuation );
 
