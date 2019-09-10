@@ -604,7 +604,7 @@ class DisplayPeriodicSolutions:
         arr[2, 1].xaxis.set_ticks(xticks)
         arr[2, 1].set_title('Number of correction cycles')
         arr[2, 1].set_xlim(xlim)
-        arr[2, 1].set_ylim(0, 200)
+        arr[2, 1].set_ylim(0, 300)
         arr[2, 1].plot(self.continuationParameter, self.numberOfIterations, linewidth=linewidth, c=self.plottingColors['singleLine'])
 
         arr[0, 0].set_ylabel('$\Delta \mathbf{r}$ [-]')
