@@ -116,8 +116,8 @@ class DisplayFamilyProperties:
                         label='$a_{lt} = + ' + str(self.overviewArray[i]),
                         linestyle='--', color=self.plottingColors['sixLine'][i])
                 print(self.overviewArray[i])
-                print(min(init_conditions_df['hlt']))
-                print(max(init_conditions_df['hlt']))
+                print(min(init_conditions_df[0].values))
+                print(max(init_conditions_df[0].values))
 
 
         ax.set_ylim([-1.4,-1.8])
