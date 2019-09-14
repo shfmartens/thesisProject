@@ -22,6 +22,64 @@
 #include "stateDerivativeModelAugmented.h"
 #include "propagateOrbitAugmented.h"
 #include "computeCollocationCorrection.h"
+#include "applyMeshRefinement.h"
+
+
+void  writeTrajectoryErrorDataToFile(const int numberOfCollocationPoints, const Eigen::VectorXd fullPeriodDeviations, const Eigen::VectorXd defectVectorMS, const Eigen::VectorXd collocatedDefects, const Eigen::VectorXd integrationErrors, const int magnitudeNoiseOffset, const double amplitude )
+{
+
+    // define the matrices to be written to text files
+    Eigen::VectorXd fullPeriodDeviationNorms(2);
+    Eigen::VectorXd shootingDeviationNorms(2*(numberOfCollocationPoints-1));
+    Eigen::VectorXd collocationDeviationNorms(2*(numberOfCollocationPoints-1));
+
+    for(int i = 0; i < (numberOfCollocationPoints-1); i++)
+    {
+        Eigen::VectorXd localShootingDeviations    = defectVectorMS.segment(i*11,11);
+        shootingDeviationNorms(2*i) = (localShootingDeviations.segment(0,3)).norm();
+        shootingDeviationNorms(2*i+1) = (localShootingDeviations.segment(3,3)).norm();
+
+        Eigen::VectorXd localcollocationDeviations = collocatedDefects.segment(i*18,18);
+        collocationDeviationNorms(2*i) = sqrt( ( localcollocationDeviations.segment(0,3) ).squaredNorm() +
+                                         ( localcollocationDeviations.segment(6,3) ).squaredNorm() +
+                                         ( localcollocationDeviations.segment(12,3) ).squaredNorm() );
+        collocationDeviationNorms(2*i+1) = sqrt( ( localcollocationDeviations.segment(3,3) ).squaredNorm() +
+                                         ( localcollocationDeviations.segment(9,3) ).squaredNorm() +
+                                         ( localcollocationDeviations.segment(15,3) ).squaredNorm() );
+
+    }
+
+    fullPeriodDeviationNorms(0) = (fullPeriodDeviations.segment(0,3)).norm();
+    fullPeriodDeviationNorms(1) = (fullPeriodDeviations.segment(3,3)).norm();
+
+    // save output to file, use typeOfInput as variable!
+     std::string directoryString = "../data/raw/collocation/mesh_effect";
+
+     std::string fileNameStringFullPeriod;
+     std::string fileNameStringDeviationsMS;
+     std::string fileNameStringDeviationsColloc;
+     std::string fileNameStringDeviationsErrors;
+
+
+     fileNameStringFullPeriod = (std::to_string(amplitude) + "_" + std::to_string(numberOfCollocationPoints) +  "_" + std::to_string(magnitudeNoiseOffset) +  "_fullPeriodDeviations.txt");
+     fileNameStringDeviationsMS = (std::to_string(amplitude) + "_" + std::to_string(numberOfCollocationPoints) +  "_" + std::to_string(magnitudeNoiseOffset) + "_shootingDeviations.txt");
+     fileNameStringDeviationsColloc = ( std::to_string(amplitude) + "_" + std::to_string(numberOfCollocationPoints) +  "_" + std::to_string(magnitudeNoiseOffset) +  "_collocationDeviations.txt");
+     fileNameStringDeviationsErrors = ( std::to_string(amplitude) + "_" + std::to_string(numberOfCollocationPoints) +  "_" + std::to_string(magnitudeNoiseOffset) +  "_collocationErrors.txt");
+
+
+
+
+     tudat::input_output::writeMatrixToFile( fullPeriodDeviationNorms, fileNameStringFullPeriod, 16, directoryString);
+     tudat::input_output::writeMatrixToFile( shootingDeviationNorms, fileNameStringDeviationsMS, 16, directoryString);
+     tudat::input_output::writeMatrixToFile( collocationDeviationNorms, fileNameStringDeviationsColloc, 16, directoryString);
+     tudat::input_output::writeMatrixToFile( integrationErrors, fileNameStringDeviationsErrors, 16, directoryString);
+
+
+
+
+
+}
+
 
 Eigen::VectorXd rewriteOddPointsToVector(const Eigen::MatrixXd& oddNodesMatrix, const int numberOfCollocationPoints)
 {
@@ -373,10 +431,6 @@ void computeOddPoints(const Eigen::VectorXd initialStateVector, Eigen::MatrixXd&
 
             }
 }
-
-
-
-
 
 
 Eigen::VectorXd convertNodeTimes(Eigen::MatrixXd nodeTimesNormalized, double lowerBound, double upperBound)
@@ -782,17 +836,17 @@ void computeCollocationDefects(Eigen::MatrixXd& collocationDefectVector, Eigen::
     collocationDefectVector.block(numberOfDefectPoints*6,0,6,1) = initialState - finalState;
 
 // Compute phase constraint
-   Eigen::Vector6d derivativeFirstPoint = phaseConstraintVector.block(0,1,6,1);
-   Eigen::Vector6d increment = collocationDesignVector.block(0,0,6,1) - phaseConstraintVector.block(0,0,6,1);
-   double phaseConstraint = increment.transpose() * derivativeFirstPoint;
-   collocationDefectVector(collocationDefectVector.rows()-1,0) = phaseConstraint;
+//   Eigen::Vector6d derivativeFirstPoint = phaseConstraintVector.block(0,1,6,1);
+//   Eigen::Vector6d increment = collocationDesignVector.block(0,0,6,1) - phaseConstraintVector.block(0,0,6,1);
+//   double phaseConstraint = increment.transpose() * derivativeFirstPoint;
+//   collocationDefectVector(collocationDefectVector.rows()-1,0) = phaseConstraint;
 
 
 
 }
 
 
-Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, const double massParameter, const int numberOfCollocationPoints, Eigen::VectorXd& collocatedGuess, Eigen::VectorXd& collocatedNodes, Eigen::VectorXd& deviationNorms, const int continuationIndex, const Eigen::MatrixXd phaseConstraintVector,
+Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, const double massParameter, const int numberOfCollocationPoints, Eigen::VectorXd& collocatedGuess, Eigen::VectorXd& collocatedNodes, Eigen::VectorXd& deviationNorms, Eigen::VectorXd& collocatedDefects, const int continuationIndex, const Eigen::MatrixXd phaseConstraintVector,
                                                           double maxPositionDeviationFromPeriodicOrbit,  double maxVelocityDeviationFromPeriodicOrbit,  double maxPeriodDeviationFromPeriodicOrbit, const int maxNumberOfCollocationIterations)
 {
     // initialize Variables
@@ -813,12 +867,16 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
 
     extractDurationAndDynamicsFromInput(initialCollocationGuess, initialCollocationGuessDerivatives, numberOfCollocationPoints,oddStates, oddStatesDerivatives,timeIntervals);
 
+    // start mesh refinement loop here!
 
     // compute the input to the correction algorithm
     int lengthOfDefectVector;
     if (continuationIndex == 1)
     {
         lengthOfDefectVector = (numberOfCollocationPoints-1)*18+6+1;
+    } else
+    {
+        lengthOfDefectVector = (numberOfCollocationPoints-1)*18+6;
     }
 
     Eigen::MatrixXd collocationDefectVector(lengthOfDefectVector,1);
@@ -846,10 +904,12 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
     std::cout << "periodicityPositionDeviations: " << periodicityPositionDeviations << std::endl;
     std::cout << "periodicityVelocityDeviations: " << periodicityVelocityDeviations << std::endl;
     std::cout << "phaseDeviations: " << phaseDeviations << std::endl;
+    std::cout << "collocationDefectVector.Norm(): " << collocationDefectVector.norm() << std::endl;
 
 
-    while( ( positionDefectDeviations > maxPositionDeviationFromPeriodicOrbit
-           || velocityDefectDeviations > maxVelocityDeviationFromPeriodicOrbit || phaseDeviations >  maxPositionDeviationFromPeriodicOrbit ) && continueColloc  )
+//    while( ( positionDefectDeviations > maxPositionDeviationFromPeriodicOrbit
+//           || velocityDefectDeviations > maxVelocityDeviationFromPeriodicOrbit || phaseDeviations >  maxPositionDeviationFromPeriodicOrbit ) && continueColloc  )
+    while( (collocationDefectVector.norm() > 1.0E-12) && continueColloc  )
     {
 
         // compute the correction
@@ -904,7 +964,6 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
         periodicityVelocityDeviations = collocationDeviationNorms(3);
         phaseDeviations = collocationDeviationNorms(4);
 
-
 //        std::cout << "\nCollocation applied, remaining deviations are: " << std::endl;
 //        std::cout << "numberOfCorrections: " << numberOfCorrections << std::endl;
 //        std::cout << "positionDefectDeviations: " << positionDefectDeviations << std::endl;
@@ -923,8 +982,10 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
     std::cout << "periodicityPositionDeviations: " << periodicityPositionDeviations << std::endl;
     std::cout << "periodicityVelocityDeviations: " << periodicityVelocityDeviations << std::endl;
     std::cout << "phaseDeviations: " << phaseDeviations << std::endl;
+    std::cout << "collocationDefectVector.Norm(): " << collocationDefectVector.norm() << std::endl;
 
 
+    //applyMeshRefinement( collocationDesignVector, thrustAndMassParameters, numberOfCollocationPoints);
 
     //propagateAndSaveCollocationProcedure(collocationDesignVector, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, 2, massParameter);
 
@@ -933,6 +994,7 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
 
     shiftTimeOfConvergedCollocatedGuess(collocationDesignVector, collocatedGuess, collocatedNodes, numberOfCollocationPoints, thrustAndMassParameters);
     deviationNorms = collocationDeviationNorms;
+    collocatedDefects = collocationDefectVector;
 
     Eigen::VectorXd  initialCondition = collocatedNodes.segment(0,10);
     Eigen::VectorXd  finalCondition = collocatedNodes.segment(11*(numberOfCollocationPoints-1),10);

@@ -329,9 +329,9 @@ Eigen::VectorXd computeCollocationCorrection(const Eigen::MatrixXd defectVector,
                 periodicityColumn.setZero();
 
                 periodicityColumn = computePeriodicityDerivativeUsingComplexStep(columnInitialState, finalState, epsilon);
-                phaseDerivative = computePhasePeriodicityDerivativeUsingComplexStep(columnInitialState, phaseConstraintVector, epsilon);
+                //phaseDerivative = computePhasePeriodicityDerivativeUsingComplexStep(columnInitialState, phaseConstraintVector, epsilon);
 
-                jacobiPhaseHamiltonianSegment(0,j) =  phaseDerivative;
+                //jacobiPhaseHamiltonianSegment(0,j) =  phaseDerivative;
                 jacobiPeriodicitySegment.block(0,j,6,1) = periodicityColumn;
             }
 
@@ -370,8 +370,8 @@ Eigen::VectorXd computeCollocationCorrection(const Eigen::MatrixXd defectVector,
         }
     }
 
-    jacobiMatrix.block( ( jacobiMatrix.rows()-7 ), 0, 6, jacobiMatrix.cols()) = jacobiPeriodicitySegment;
-    jacobiMatrix.block( ( jacobiMatrix.rows()-1 ), 0, 1, jacobiMatrix.cols()) = jacobiPhaseHamiltonianSegment;
+    jacobiMatrix.block( ( jacobiMatrix.rows()-6 ), 0, 6, jacobiMatrix.cols()) = jacobiPeriodicitySegment;
+    //jacobiMatrix.block( ( jacobiMatrix.rows()-1 ), 0, 1, jacobiMatrix.cols()) = jacobiPhaseHamiltonianSegment;
 
     //std::cout << "first segment: \n" << jacobiMatrix.block(jacobiMatrix.rows()-1,0,1,6) << std::endl;
     //std::cout << "last segment: \n" << jacobiMatrix.block(jacobiMatrix.rows()-6,jacobiMatrix.cols()-7,6,7) << std::endl;

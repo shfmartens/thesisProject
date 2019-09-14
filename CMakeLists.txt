@@ -238,6 +238,7 @@ set(CR3BPLT_SOURCES
 
          "${SRCROOT}/src/applyPredictionCorrection.cpp"
          "${SRCROOT}/src/applyCollocation.cpp"
+         "${SRCROOT}/src/applyMeshRefinement.cpp"
          "${SRCROOT}/src/computeCollocationCorrection.cpp"
          "${SRCROOT}/src/applyLineSearchAttenuation.cpp"
          "${SRCROOT}/src/applyMassRefinement.cpp"
@@ -270,6 +271,7 @@ set(CR3BPLT_HEADERS
          "${SRCROOT}/src/computeCollocationCorrection.h"
          "${SRCROOT}/src/applyLineSearchAttenuation.h"
          "${SRCROOT}/src/applyMassRefinement.h"
+         "${SRCROOT}/src/applyMeshRefinement.h"
          "${SRCROOT}/src/applyTwoLevelTargeterLowThrust.h"
          "${SRCROOT}/src/computeLevel1Correction.h"
          "${SRCROOT}/src/computeLevel1MassRefinementCorrection.h"

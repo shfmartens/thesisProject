@@ -5,6 +5,8 @@
 #include "Eigen/Core"
 #include <map>
 
+void  writeTrajectoryErrorDataToFile(const int numberOfCollocationPoints, const Eigen::VectorXd fullPeriodDeviations, const Eigen::VectorXd defectVectorMS, const Eigen::VectorXd collocatedDefects, const Eigen::VectorXd collcationSegmentErrors, const int magnitudeNoiseOffset, const double amplitude );
+
 Eigen::VectorXd rewriteOddPointsToVector(const Eigen::MatrixXd& oddNodesMatrix, const int numberOfCollocationPoints);
 
 void shiftTimeOfConvergedCollocatedGuess(const Eigen::MatrixXd collocationDesignVector, Eigen::VectorXd& collocatedGuess, Eigen::VectorXd& collocatedNodes, const int numberOfCollocationPoints, Eigen::VectorXd thrustAndMassParameters);
@@ -29,7 +31,7 @@ void retrieveLegendreGaussLobattoConstaints(const std::string desiredQuantity, E
 void computeCollocationDefects(Eigen::MatrixXd& collocationDefectVector, Eigen::MatrixXd& collocationDesignVector, const Eigen::MatrixXd oddStates, const Eigen::MatrixXd oddStatesDerivatives, Eigen::VectorXd timeIntervals, Eigen::VectorXd thrustAndMassParameters, const int numberOfCollocationPoints, const double initialTime, const int continuationIndex, const Eigen::MatrixXd phaseConstraintVector);
 
 
-Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuesss, const double massParameter, const int numberOfCollocationPoints, Eigen::VectorXd& collocatedGuess, Eigen::VectorXd& collocatedNodes, Eigen::VectorXd& deviationNorms, const int continuationIndex, const Eigen::MatrixXd phaseConstraintVector,
+Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuesss, const double massParameter, const int numberOfCollocationPoints, Eigen::VectorXd& collocatedGuess, Eigen::VectorXd& collocatedNodes, Eigen::VectorXd& deviationNorms, Eigen::VectorXd& collocatedDefects, const int continuationIndex, const Eigen::MatrixXd phaseConstraintVector,
                                                           double maxPositionDeviationFromPeriodicOrbit,  double maxVelocityDeviationFromPeriodicOrbit,  double maxPeriodDeviationFromPeriodicOrbit, const int maxNumberOfCollocationIterations = 100 );
 
 

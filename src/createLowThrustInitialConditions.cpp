@@ -28,6 +28,7 @@
 #include "createEquilibriumLocations.h"
 #include "stateDerivativeModelAugmented.h"
 #include "computeCollocationCorrection.h"
+#include "applyMeshRefinement.h"
 
 void appendResultsVectorAugmented(const double hamiltonian, const double orbitalPeriod, const Eigen::VectorXd& initialStateVector,
         const Eigen::MatrixXd& stateVectorInclSTM, std::vector< Eigen::VectorXd >& initialConditions )
@@ -318,7 +319,7 @@ Eigen::VectorXd getEarthMoonInitialGuessParameters ( const int librationPointNr,
             {
                 if (librationPointNr == 1)
                 {
-                    initialGuessParameters(0) = 1.0e-5;
+                    initialGuessParameters(0) = 1.0e-4;
                 }
                 else if (librationPointNr == 2)
                 {
@@ -370,7 +371,7 @@ Eigen::VectorXd getEarthMoonInitialGuessParameters ( const int librationPointNr,
         {
             if (librationPointNr == 1)
             {
-                initialGuessParameters(0) = 1.0e-4;
+                initialGuessParameters(0) = 1.0e-5;
             }
             else if (librationPointNr == 2)
             {
@@ -523,8 +524,9 @@ Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::MatrixXd& initi
     Eigen::VectorXd deviationNorms(5);
     Eigen::VectorXd collocatedGuess(11*numberOfOddPoints);
     Eigen::VectorXd collocatedNodes(11*numberOfCollocationPoints);
+    Eigen::VectorXd collocatedDefects(18*(numberOfCollocationPoints-1));
 
-    Eigen::VectorXd collocationResult = applyCollocation(initialOddPoints, massParameter, numberOfCollocationPoints, collocatedGuess, collocatedNodes, deviationNorms, continuationIndex, phaseConstraintVector,
+    Eigen::VectorXd collocationResult = applyCollocation(initialOddPoints, massParameter, numberOfCollocationPoints, collocatedGuess, collocatedNodes, deviationNorms, collocatedDefects, continuationIndex, phaseConstraintVector,
                                                          maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
 
     initialStateVector = collocationResult.segment( 0, 10 );
@@ -537,6 +539,20 @@ Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::MatrixXd& initi
     Eigen::MatrixXd stateVectorInclSTM = propagateOrbitAugmentedToFinalCondition(
                 getFullInitialStateAugmented( initialStateVector ), massParameter, orbitalPeriod, 1, stateHistory, 1000, 0.0 ).first;
 
+    // compute Deviations resulting from full period and MS!
+    Eigen::VectorXd fullPeriodDeviations = initialStateVector.block(0,0,10,1) - stateVectorInclSTM.block(0,0,10,1);
+
+    Eigen::VectorXd defectVectorMS(11*(numberOfCollocationPoints-1));
+    std::map< double, Eigen::VectorXd > stateHistoryMS;
+    Eigen::MatrixXd propagatedStatesMS(10*(numberOfCollocationPoints-1),11);
+
+
+    //defectVectorMS.setZero(); stateHistoryMS.clear(); propagatedStatesMS.setZero();
+    //computeOrbitDeviations( collocatedNodes, numberOfCollocationPoints, propagatedStatesMS, defectVectorMS, stateHistoryMS, massParameter);
+    //const int magnitudeNoiseOffset = 0;
+    //const double amplitude = 9.0E-3;
+    //Eigen::VectorXd collcationSegmentErrors = computeSegmentErrors( collocatedGuess, initialOddPoints.block(6,0,4,1), numberOfCollocationPoints);
+    //writeTrajectoryErrorDataToFile(numberOfCollocationPoints, fullPeriodDeviations, defectVectorMS, collocatedDefects, collcationSegmentErrors, magnitudeNoiseOffset, amplitude );
 
     writeStateHistoryToFileAugmented( stateHistory, initialStateVector(6), initialStateVector(7), initialStateVector(8), collocationResult(11), orbitNumber, librationPointNr, orbitType, 1000, false );
 
@@ -1015,7 +1031,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 // ============ CONTINUATION PROCEDURE ================== //
     // Set exit parameters of continuation procedure
-    int maximumNumberOfInitialConditions = 10000;
+    int maximumNumberOfInitialConditions = 4000;
     int numberOfInitialConditions;
     if (continuationIndex == 1)
     {
@@ -1092,7 +1108,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
           if (continuationIndex == 6)
           {
 
-              int numberOfStates =  numberOfStates = 3*(numberOfCollocationPoints-1)+1;
+              int numberOfStates =  3*(numberOfCollocationPoints-1)+1;
 
               Eigen::VectorXd initialStateVectorContinuation (11* numberOfStates);
               initialStateVectorContinuation.setZero();
@@ -1103,32 +1119,69 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
               Eigen::MatrixXd oddNodesMatrix((11*(numberOfCollocationPoints-1)), 4 );
               computeOddPoints(initialStateVectorContinuation, oddNodesMatrix, numberOfCollocationPoints, massParameter, false);
 
+              propagateAndSaveCollocationProcedure(oddNodesMatrix, Eigen::VectorXd::Zero(numberOfCollocationPoints-1), Eigen::VectorXd::Zero(4), numberOfCollocationPoints, 0, massParameter);
+
+              // Generate random noise
+              int numberOfNodes = 3*(numberOfCollocationPoints-1)+1;
+              int numberOfStates2 = numberOfNodes*6;
+              Eigen::VectorXd noiseVector(numberOfStates2);
+              noiseVector.setZero();
+
+              std::random_device                  rand_dev;
+              std::mt19937                        generator(rand_dev());
+              std::uniform_real_distribution<double>  distr(1.0E-12, 1.0E-05);
+
+              std::random_device                  rand_dev2;
+              std::mt19937                        generator2(rand_dev2());
+              std::uniform_real_distribution<double>  distr2(0, 1);
+
+              for(int i = 0; i < numberOfStates2; i++)
+                   {
+
+                       double sign = 0.0;
+                       if ( distr2(generator2) < 0.5 )
+                       {
+                            sign = -1.0;
+                        } else
+                         {
+                            sign = 1.0;
+                          }
+                       if ( (i+1) % 3 == 0 and i > 0)
+                          {
+                            noiseVector(i) = 0.0;
+                          } else
+                          {
+                            noiseVector(i) = sign*distr(generator);
+
+                          }
+
+                     }
+
+
+               //Add thrust increment to all nodes and interior Points!
+               for(int i = 0; i < (numberOfCollocationPoints-1); i ++)
+               {
+                   Eigen::VectorXd noiseVectorSegment = noiseVector.segment(18*i,24);
+                   for(int j = 0; j < 4; j++)
+                   {
+                                     Eigen::VectorXd noiseVectorLocal(11);
+                                     noiseVectorLocal.setZero();
+                                     noiseVectorLocal.segment(0,6) = noiseVectorSegment.segment(6*j,6);
+
+                       oddNodesMatrix.block(11*i,j,6,1) = oddNodesMatrix.block(11*i,j,6,1) + noiseVectorLocal;
+
+                      //oddNodesMatrix(11*i+6,j) = oddNodesMatrix(11*i+6,j) + incrementContinuationParameter;
+                   }
+               }
+
+
 
               stateVectorInclSTM = getCollocatedAugmentedInitialState( oddNodesMatrix, numberOfInitialConditions, librationPointNr, orbitType, continuationIndex, phaseConstraintVector,
                                                                        massParameter, numberOfPatchPoints, numberOfCollocationPoints, initialConditions,
                                                                        differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
 
 
-
-
-
-
-              //propagateAndSaveCollocationProcedure(oddNodesMatrix, Eigen::VectorXd::Zero(numberOfCollocationPoints-1), Eigen::VectorXd::Zero(4), numberOfCollocationPoints, 0, massParameter);
-
-              // Add thrust increment to all nodes and interior Points!
-               for(int i = 0; i < (numberOfCollocationPoints-1); i ++)
-               {
-                   for(int j = 0; j < 4; j++)
-                   {
-
-
-                      oddNodesMatrix(11*i+6,j) = oddNodesMatrix(11*i+6,j) + incrementContinuationParameter;
-                   }
-               }
-
-               stateVectorInclSTM = getCollocatedAugmentedInitialState( oddNodesMatrix, numberOfInitialConditions, librationPointNr, orbitType, continuationIndex, phaseConstraintVector,
-                                                                        massParameter, numberOfPatchPoints, numberOfCollocationPoints, initialConditions,
-                                                                        differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
+              propagateAndSaveCollocationProcedure(oddNodesMatrix, Eigen::VectorXd::Zero(numberOfCollocationPoints-1), Eigen::VectorXd::Zero(4), numberOfCollocationPoints, 1, massParameter);
 
           }
 
@@ -1152,60 +1205,6 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 }
 
 
-//              // Generate random noise
-//              int numberOfNodes = 3*(numberOfCollocationPoints-1)+1;
-//              int numberOfStates2 = numberOfNodes*6;
-//              Eigen::VectorXd noiseVector(numberOfStates);
-//              noiseVector.setZero();
-
-//              std::random_device                  rand_dev;
-//              std::mt19937                        generator(rand_dev());
-//              std::uniform_real_distribution<double>  distr(1.0E-12, 1.0E-05);
-
-//              std::random_device                  rand_dev2;
-//              std::mt19937                        generator2(rand_dev2());
-//              std::uniform_real_distribution<double>  distr2(0, 1);
-
-//              for(int i = 0; i < numberOfStates; i++)
-//              {
-
-//                  double sign = 0.0;
-//                  if ( distr2(generator2) < 0.5 )
-//                  {
-//                      sign = -1.0;
-//                  } else
-//                  {
-//                      sign = 1.0;
-//                  }
-//                  if ( (i+1) % 3 == 0 and i > 0)
-//                  {
-//                      noiseVector(i) = 0.0;
-//                  } else
-//                  {
-//                      noiseVector(i) = sign*distr(generator);
-
-//                  }
-
-//              }
-
-//              //std::cout << "noiseVector: \n" << noiseVector << std::endl;
-
-
-// Add thrust increment to all nodes and interior Points!
-// for(int i = 0; i < (numberOfCollocationPoints-1); i ++)
-// {
-     //Eigen::VectorXd noiseVectorSegment = noiseVector.segment(18*i,24);
- //    for(int j = 0; j < 4; j++)
-//     {
-//                       Eigen::VectorXd noiseVectorLocal(11);
-//                       noiseVectorLocal.setZero();
-//                       noiseVectorLocal.segment(0,6) = noiseVectorSegment.segment(6*j,6);
-
-         //oddNodesMatrix.block(11*i,j,6,1) = oddNodesMatrix.block(11*i,j,6,1) + noiseVectorLocal;
-
-//        oddNodesMatrix(11*i+6,j) = oddNodesMatrix(11*i+6,j) + incrementContinuationParameter;
-//     }
-// }
 
  //propagateAndSaveCollocationProcedure(oddNodesMatrix, Eigen::VectorXd::Zero(numberOfCollocationPoints-1), Eigen::VectorXd::Zero(4), numberOfCollocationPoints, 1, massParameter);
 
