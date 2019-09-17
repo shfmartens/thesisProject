@@ -329,9 +329,9 @@ Eigen::VectorXd computeCollocationCorrection(const Eigen::MatrixXd defectVector,
                 periodicityColumn.setZero();
 
                 periodicityColumn = computePeriodicityDerivativeUsingComplexStep(columnInitialState, finalState, epsilon);
-                //phaseDerivative = computePhasePeriodicityDerivativeUsingComplexStep(columnInitialState, phaseConstraintVector, epsilon);
+                phaseDerivative = computePhasePeriodicityDerivativeUsingComplexStep(columnInitialState, phaseConstraintVector, epsilon);
 
-                //jacobiPhaseHamiltonianSegment(0,j) =  phaseDerivative;
+                jacobiPhaseHamiltonianSegment(0,j) =  phaseDerivative;
                 jacobiPeriodicitySegment.block(0,j,6,1) = periodicityColumn;
             }
 
@@ -354,27 +354,23 @@ Eigen::VectorXd computeCollocationCorrection(const Eigen::MatrixXd defectVector,
 
                 periodicityColumn = computePeriodicityDerivativeUsingComplexStep(initialState, columnFinalState, epsilon);
 
-//                std::cout << "i " << i << std::endl;
-//                std::cout << "j " << j << std::endl;
-//                 std::cout << "periodicityColumn " << periodicityColumn << std::endl;
-//                 std::cout << "columnInitialState " << initialState << std::endl;
-//                 std::cout << "finalState " << columnFinalState << std::endl;
 
                 jacobiPeriodicitySegment.block(0,( jacobiPeriodicitySegment.cols()-7+j ),6,1) = periodicityColumn;
-                //jacobiPeriodicitySegment.block(0,( jacobiPeriodicitySegment.cols()-7 ),6,6) = -1.0*Eigen::MatrixXd::Identity(6,6);
             }
 
-            //std::cout << "i " << i << std::endl
-            //          << "jacobiPeriodicitySegment final 6x7: " << jacobiPeriodicitySegment.block(0,jacobiPeriodicitySegment.cols()-7,6,7) << std::endl;
 
         }
     }
 
-    jacobiMatrix.block( ( jacobiMatrix.rows()-6 ), 0, 6, jacobiMatrix.cols()) = jacobiPeriodicitySegment;
-    //jacobiMatrix.block( ( jacobiMatrix.rows()-1 ), 0, 1, jacobiMatrix.cols()) = jacobiPhaseHamiltonianSegment;
+    if (continuationIndex == 1)
+    {
+        jacobiMatrix.block( ( jacobiMatrix.rows()-7 ), 0, 6, jacobiMatrix.cols()) = jacobiPeriodicitySegment;
+        jacobiMatrix.block( ( jacobiMatrix.rows()-1 ), 0, 1, jacobiMatrix.cols()) = jacobiPhaseHamiltonianSegment;
+    } else
+    {
+        jacobiMatrix.block( ( jacobiMatrix.rows()-6 ), 0, 6, jacobiMatrix.cols()) = jacobiPeriodicitySegment;
 
-    //std::cout << "first segment: \n" << jacobiMatrix.block(jacobiMatrix.rows()-1,0,1,6) << std::endl;
-    //std::cout << "last segment: \n" << jacobiMatrix.block(jacobiMatrix.rows()-6,jacobiMatrix.cols()-7,6,7) << std::endl;
+    }
 
 
     // should I use umfpack or other things, compare to two different methods for sparsity

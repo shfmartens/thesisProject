@@ -23,6 +23,7 @@
 #include "propagateOrbitAugmented.h"
 #include "computeCollocationCorrection.h"
 #include "applyMeshRefinement.h"
+#include "interpolatePolynomials.h"
 
 
 void  writeTrajectoryErrorDataToFile(const int numberOfCollocationPoints, const Eigen::VectorXd fullPeriodDeviations, const Eigen::VectorXd defectVectorMS, const Eigen::VectorXd collocatedDefects, const Eigen::VectorXd integrationErrors, const int magnitudeNoiseOffset, const double amplitude )
@@ -79,7 +80,6 @@ void  writeTrajectoryErrorDataToFile(const int numberOfCollocationPoints, const 
 
 
 }
-
 
 Eigen::VectorXd rewriteOddPointsToVector(const Eigen::MatrixXd& oddNodesMatrix, const int numberOfCollocationPoints)
 {
@@ -157,12 +157,6 @@ void shiftTimeOfConvergedCollocatedGuess(const Eigen::MatrixXd collocationDesign
 
         }
     }
-        // extract local design vector
-        // compute the timeInterval
-            // per node/interior point
-                //add relevant part of the designVector
-                //add relevant part of thrustandMassParameters
-                // add the computed time
 
 }
 
@@ -836,166 +830,270 @@ void computeCollocationDefects(Eigen::MatrixXd& collocationDefectVector, Eigen::
     collocationDefectVector.block(numberOfDefectPoints*6,0,6,1) = initialState - finalState;
 
 // Compute phase constraint
-//   Eigen::Vector6d derivativeFirstPoint = phaseConstraintVector.block(0,1,6,1);
-//   Eigen::Vector6d increment = collocationDesignVector.block(0,0,6,1) - phaseConstraintVector.block(0,0,6,1);
-//   double phaseConstraint = increment.transpose() * derivativeFirstPoint;
-//   collocationDefectVector(collocationDefectVector.rows()-1,0) = phaseConstraint;
-
-
+    if ( continuationIndex == 1)
+    {
+        Eigen::Vector6d derivativeFirstPoint = phaseConstraintVector.block(0,1,6,1);
+        Eigen::Vector6d increment = collocationDesignVector.block(0,0,6,1) - phaseConstraintVector.block(0,0,6,1);
+        double phaseConstraint = increment.transpose() * derivativeFirstPoint;
+        collocationDefectVector(collocationDefectVector.rows()-1,0) = phaseConstraint;
+    }
 
 }
 
 
-Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, const double massParameter, const int numberOfCollocationPoints, Eigen::VectorXd& collocatedGuess, Eigen::VectorXd& collocatedNodes, Eigen::VectorXd& deviationNorms, Eigen::VectorXd& collocatedDefects, const int continuationIndex, const Eigen::MatrixXd phaseConstraintVector,
-                                                          double maxPositionDeviationFromPeriodicOrbit,  double maxVelocityDeviationFromPeriodicOrbit,  double maxPeriodDeviationFromPeriodicOrbit, const int maxNumberOfCollocationIterations)
+Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, const double massParameter, int& numberOfCollocationPoints, Eigen::VectorXd& collocatedGuess, Eigen::VectorXd& collocatedNodes, Eigen::VectorXd& deviationNorms, Eigen::VectorXd& collocatedDefects, const int continuationIndex, const Eigen::MatrixXd phaseConstraintVector,
+                                                          double maxPositionDeviationFromPeriodicOrbit,  double maxVelocityDeviationFromPeriodicOrbit,  double maxPeriodDeviationFromPeriodicOrbit, const int maxNumberOfCollocationIterations, const double maximumErrorTolerance)
 {
-    // initialize Variables
-    Eigen::VectorXd outputVector = Eigen::VectorXd(25);
+    // ======= initialize variables and rewrite input for the collocation procedure ====== //
+    Eigen::VectorXd outputVector = Eigen::VectorXd::Zero(25);
+    Eigen::VectorXd outputDesignVector;
+    Eigen::VectorXd outputDefectVector;
+    double outputDeltaDistribution = 0.0;
 
-    // Evaluate the vector field at all odd points
-    Eigen::MatrixXd initialCollocationGuessDerivatives = Eigen::MatrixXd::Zero(11*(numberOfCollocationPoints-1),4);
-    initialCollocationGuessDerivatives = evaluateVectorFields(initialCollocationGuess, numberOfCollocationPoints);
+    double maximumErrorPerSegment = 10.0*maximumErrorTolerance;
+    Eigen::MatrixXd collocationGuessStart = initialCollocationGuess;
 
-    // Extract state information and time intervals from the input
-    Eigen::VectorXd thrustAndMassParameters = Eigen::VectorXd::Zero(4);
-    thrustAndMassParameters.segment(0,4) = initialCollocationGuess.block(6,0,4,1);
-    double initialTime = initialCollocationGuess(10,0);
-
-    Eigen::VectorXd timeIntervals = Eigen::VectorXd::Zero(numberOfCollocationPoints -1);
-    Eigen::MatrixXd oddStates = Eigen::MatrixXd::Zero(6*(numberOfCollocationPoints-1),4);
-    Eigen::MatrixXd oddStatesDerivatives = Eigen::MatrixXd::Zero(6*(numberOfCollocationPoints-1),4);
-
-    extractDurationAndDynamicsFromInput(initialCollocationGuess, initialCollocationGuessDerivatives, numberOfCollocationPoints,oddStates, oddStatesDerivatives,timeIntervals);
-
-    // start mesh refinement loop here!
-
-    // compute the input to the correction algorithm
-    int lengthOfDefectVector;
-    if (continuationIndex == 1)
+    // introduce a variable which will replace the initial collocation guess in the loop
+    while(maximumErrorPerSegment > maximumErrorTolerance  )
     {
-        lengthOfDefectVector = (numberOfCollocationPoints-1)*18+6+1;
-    } else
-    {
-        lengthOfDefectVector = (numberOfCollocationPoints-1)*18+6;
+        // Evaluate the vector field at all odd points
+        Eigen::MatrixXd initialCollocationGuessDerivatives = Eigen::MatrixXd::Zero(11*(numberOfCollocationPoints-1),4);
+        initialCollocationGuessDerivatives = evaluateVectorFields(collocationGuessStart, numberOfCollocationPoints);
+
+        // Extract state information and time intervals from the input
+        Eigen::VectorXd thrustAndMassParameters = Eigen::VectorXd::Zero(4);
+        thrustAndMassParameters.segment(0,4) = collocationGuessStart.block(6,0,4,1);
+        double initialTime = collocationGuessStart(10,0);
+
+        Eigen::VectorXd timeIntervals = Eigen::VectorXd::Zero(numberOfCollocationPoints -1);
+        Eigen::MatrixXd oddStates = Eigen::MatrixXd::Zero(6*(numberOfCollocationPoints-1),4);
+        Eigen::MatrixXd oddStatesDerivatives = Eigen::MatrixXd::Zero(6*(numberOfCollocationPoints-1),4);
+
+        extractDurationAndDynamicsFromInput(collocationGuessStart, initialCollocationGuessDerivatives, numberOfCollocationPoints,oddStates, oddStatesDerivatives,timeIntervals);
+
+
+        // compute the input to the correction algorithm
+        int lengthOfDefectVector;
+        if (continuationIndex == 1)
+        {
+            lengthOfDefectVector = (numberOfCollocationPoints-1)*18+6+1;
+        } else
+        {
+            lengthOfDefectVector = (numberOfCollocationPoints-1)*18+6;
+        }
+
+        Eigen::VectorXd collocationDeviationNorms(5);
+        Eigen::MatrixXd collocationDefectVector(lengthOfDefectVector,1);
+        Eigen::MatrixXd collocationDesignVector((numberOfCollocationPoints-1)*19+7,1);
+        Eigen::MatrixXd collocationDesignVectorEquidistribution((numberOfCollocationPoints-1)*19+7,1);
+        Eigen::MatrixXd collocationDefectVectorEquidistribution(lengthOfDefectVector,1);
+        Eigen::VectorXd segmentErrorDistribution(numberOfCollocationPoints-1);
+        Eigen::MatrixXd eightOrderDerivatives(6,numberOfCollocationPoints-1);
+        int meshRefinementCounter = 0;
+        int numberOfCorrections = 0;
+        // ======= Start the loop for mesh refinement ====== //
+        double distributionDeltaPreviousIteration = 1.0E3;
+        double distributionDeltaCurrentIteration = 1.0E2;
+
+        while (distributionDeltaPreviousIteration > distributionDeltaCurrentIteration and distributionDeltaCurrentIteration > 1.0E-12)
+        {
+
+            computeCollocationDefects(collocationDefectVector, collocationDesignVector, oddStates, oddStatesDerivatives, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, initialTime, continuationIndex, phaseConstraintVector);
+
+            collocationDeviationNorms = computeCollocationDeviationNorms(collocationDefectVector, collocationDesignVector, numberOfCollocationPoints);
+
+            double positionDefectDeviations = collocationDeviationNorms(0);
+            double velocityDefectDeviations= collocationDeviationNorms(1);
+            double periodicityPositionDeviations= collocationDeviationNorms(2);
+            double periodicityVelocityDeviations = collocationDeviationNorms(3);
+            double phaseDeviations = collocationDeviationNorms(4);
+
+
+            numberOfCorrections = 0;
+            bool continueColloc = true;
+            distributionDeltaPreviousIteration = distributionDeltaCurrentIteration;
+
+            std::cout << "\nDeviations at the start of collocation procedure: " << std::endl;
+            std::cout << "numberOfCorrections: " << numberOfCorrections << std::endl;
+            std::cout << "positionDefectDeviations: " << positionDefectDeviations << std::endl;
+            std::cout << "velocityDefectDeviations: " << velocityDefectDeviations << std::endl;
+            std::cout << "periodicityPositionDeviations: " << periodicityPositionDeviations << std::endl;
+            std::cout << "periodicityVelocityDeviations: " << periodicityVelocityDeviations << std::endl;
+            std::cout << "phaseDeviations: " << phaseDeviations << std::endl;
+            std::cout << "collocationDefectVector.Norm(): " << collocationDefectVector.norm() << std::endl;
+            std::cout << "distributionDeltaCurrentIteration: " << distributionDeltaCurrentIteration << std::endl;
+
+
+            Eigen::VectorXd initialDesignVector = collocationDesignVector.block(0,0,collocationDesignVector.rows(),1);
+
+            // ======= Start the loop for collocation procedure ====== //
+            while( (collocationDefectVector.norm() > 1.0E-12) && continueColloc  )
+            {
+
+                // compute the correction
+                Eigen::VectorXd collocationCorrectionVector(collocationDesignVector.size());
+                collocationCorrectionVector.setZero();
+                collocationCorrectionVector = computeCollocationCorrection(collocationDefectVector, collocationDesignVector, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, continuationIndex, phaseConstraintVector);
+
+                // apply line search, select design vector which produces the smallest norm
+                applyLineSearchAttenuation(collocationCorrectionVector, collocationDefectVector, collocationDesignVector, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, continuationIndex, phaseConstraintVector);
+
+                // Relax the tolerances if a certain number of corrections is reached
+                numberOfCorrections++;
+                if ( numberOfCorrections > maxNumberOfCollocationIterations)
+                {
+                                maxPositionDeviationFromPeriodicOrbit = 1.0E-11;
+                                maxVelocityDeviationFromPeriodicOrbit = 1.0E-11;
+
+                }
+
+                if ( numberOfCorrections > 2*maxNumberOfCollocationIterations)
+                {
+                                maxPositionDeviationFromPeriodicOrbit = 1.0E-10;
+                                maxVelocityDeviationFromPeriodicOrbit = 1.0E-10;
+
+                }
+
+                if ( numberOfCorrections > 3*maxNumberOfCollocationIterations)
+                {
+                                maxPositionDeviationFromPeriodicOrbit = 1.0E-9;
+                                maxVelocityDeviationFromPeriodicOrbit = 1.0E-9;
+
+                }
+                if ( numberOfCorrections > 3*maxNumberOfCollocationIterations+1)
+                {
+                                maxPositionDeviationFromPeriodicOrbit = 1.0E-7;
+                                maxVelocityDeviationFromPeriodicOrbit = 1.0E-7;
+
+                }
+                if ( numberOfCorrections > 3*maxNumberOfCollocationIterations+2)
+                {
+                                maxPositionDeviationFromPeriodicOrbit = 1.0E-4;
+                                maxVelocityDeviationFromPeriodicOrbit = 1.0E-4;
+
+                }
+
+                // compute defects after line search attenuation to determine if convergence has been reached
+                collocationDeviationNorms = computeCollocationDeviationNorms(collocationDefectVector, collocationDesignVector, numberOfCollocationPoints);
+
+                positionDefectDeviations = collocationDeviationNorms(0);
+                velocityDefectDeviations= collocationDeviationNorms(1);
+                periodicityPositionDeviations = collocationDeviationNorms(2);
+                periodicityVelocityDeviations = collocationDeviationNorms(3);
+                phaseDeviations = collocationDeviationNorms(4);
+
+            }
+
+            // store the solution in a seperate variables
+            Eigen::VectorXd convergedDesignVector = collocationDesignVector.block(0,0,collocationDesignVector.rows(),1);
+            Eigen::VectorXd convergedDefectVector = collocationDefectVector.block(0,0,collocationDefectVector.rows(),1);
+
+
+            // Apply mesh refinement and compute the errors per segment
+            applyMeshRefinement( collocationDesignVector, segmentErrorDistribution, thrustAndMassParameters, numberOfCollocationPoints);
+            Eigen::VectorXd meshRefinedDesignVector = collocationDesignVector.block(0,0,collocationDesignVector.rows(),1);
+            Eigen::VectorXd timeShiftCollocation = computeProcedureTimeShifts( initialDesignVector, convergedDesignVector, numberOfCollocationPoints);
+            Eigen::VectorXd timeShiftMeshRefinement = computeProcedureTimeShifts( convergedDesignVector, meshRefinedDesignVector, numberOfCollocationPoints);
+            computeSegmentProperties( collocationDesignVector, thrustAndMassParameters, numberOfCollocationPoints, oddStates, oddStatesDerivatives, timeIntervals);
+            initialTime = collocationDesignVector(6);
+            distributionDeltaCurrentIteration = segmentErrorDistribution.maxCoeff() - segmentErrorDistribution.minCoeff();
+
+
+            std::cout << "\nTRAJECTORY CONVERGED AFTER " << numberOfCorrections << " COLLOCATION CORRECTIONS, REMAINING DEVIATIONS: " << std::endl;
+            std::cout << "positionDefectDeviations: " << positionDefectDeviations << std::endl;
+            std::cout << "velocityDefectDeviations: " << velocityDefectDeviations << std::endl;
+            std::cout << "periodicityPositionDeviations: " << periodicityPositionDeviations << std::endl;
+            std::cout << "periodicityVelocityDeviations: " << periodicityVelocityDeviations << std::endl;
+            std::cout << "phaseDeviations: " << phaseDeviations << std::endl;
+            std::cout << "collocationDefectVector.Norm(): " << collocationDefectVector.norm() << std::endl;
+            std::cout << "distributionDeltaCurrentIteration: " << distributionDeltaCurrentIteration << std::endl;
+
+
+            if (distributionDeltaCurrentIteration >= distributionDeltaPreviousIteration)
+            {
+                // rol back design vector to the converged solution of the previous mesh
+                collocationDesignVector = collocationDesignVectorEquidistribution;
+                collocationDefectVector = collocationDefectVectorEquidistribution;
+                initialTime = collocationDesignVector(6);
+                distributionDeltaCurrentIteration = distributionDeltaPreviousIteration;
+            }
+            else
+            {
+                // Set solution with best equidistribution as the current solution
+                collocationDesignVectorEquidistribution = convergedDesignVector;
+                collocationDefectVectorEquidistribution = convergedDefectVector;
+                maximumErrorPerSegment = segmentErrorDistribution.maxCoeff();
+                meshRefinementCounter++;
+            }
+
+
+
+        }
+
+
+
+        if (maximumErrorPerSegment > maximumErrorTolerance)
+        {
+
+            std::cout << "\n === MESH SOLVED AND EQUIDISTRIBUTED BUT DOES NOT MEET ERROR CRITERIA, ADDING PATCH POINTS === " << std::endl
+                      << "collocationDefectVector Eculidian Norm: " << collocationDefectVector.norm() << std::endl
+                      << "maximumError: " << maximumErrorPerSegment << std::endl
+                      << "error Tolerance: : " << maximumErrorTolerance << std::endl
+                      << "distributionDeltaCurrentIteration: " << distributionDeltaCurrentIteration << std::endl
+                      << "current Number of Collocation Points: : " << numberOfCollocationPoints << std::endl;
+
+
+            // save the old number of collocation points
+            int oldNumberOfCollocationPoints = numberOfCollocationPoints;
+
+            // compute the new number of collocation points
+            double currentNumberOfCollocatiohPoints = static_cast<double>(numberOfCollocationPoints);
+            double currentNumberOfSegments =  static_cast<double>(numberOfCollocationPoints-1);
+            double orderOfCollocationScheme = 12.0;
+
+            double newNumberSegments = std::round( currentNumberOfSegments * pow((10.0*maximumErrorPerSegment)/maximumErrorTolerance,1.0/(orderOfCollocationScheme+1.0)) + 5);
+            numberOfCollocationPoints = static_cast<int>(newNumberSegments) +1;
+
+            collocationGuessStart.resize(11*(numberOfCollocationPoints-1),4); collocationGuessStart.setZero();
+
+            interpolatePolynomials(collocationDesignVector, oldNumberOfCollocationPoints, collocationGuessStart, numberOfCollocationPoints, thrustAndMassParameters, massParameter  );
+
+            std::cout << "new Number Of Patch Points: : " << numberOfCollocationPoints << std::endl;
+
+        } else
+        {
+            std::cout << "=== error tolerance achieved! ===" << std::endl
+            << "maximumErrorPerSegment: " << maximumErrorPerSegment << std::endl
+            << "maximumErrorTolerance: " << maximumErrorTolerance << std::endl;
+
+            outputDeltaDistribution = distributionDeltaCurrentIteration;
+
+            outputDesignVector = collocationDesignVector.block(0,0,collocationDesignVector.rows(),1);
+            outputDefectVector = collocationDefectVector.block(0,0,collocationDefectVector.rows(),1);
+            int finalNumberOfSegments = numberOfCollocationPoints-1;
+            int finalNumberOfOddPoints = 3*finalNumberOfSegments+1;
+
+
+            collocatedGuess.resize(11*finalNumberOfOddPoints);    collocatedGuess.setZero();
+            collocatedNodes.resize(11*numberOfCollocationPoints); collocatedNodes.setZero();
+
+            shiftTimeOfConvergedCollocatedGuess(collocationDesignVector, collocatedGuess, collocatedNodes, numberOfCollocationPoints, thrustAndMassParameters);
+
+
+        }
+
     }
 
-    Eigen::MatrixXd collocationDefectVector(lengthOfDefectVector,1);
-    Eigen::MatrixXd collocationDesignVector((numberOfCollocationPoints-1)*19+7,1);
+    std::cout << "\n === COLLOCATION PROCEDURE COMPLETED, MESH IS SOLVED, EQUIDISTRIBUTED AND SATISFIES ERROR TOLERANCE CRITERIA === " << std::endl
+              << "collocationDefectVector Eculidian Norm: " << outputDefectVector.norm() << std::endl
+              << "maximumError: "                           << maximumErrorPerSegment << std::endl
+              << "error Tolerance: : "                      << maximumErrorTolerance << std::endl
+              << "distributionDeltaCurrentIteration: "      << outputDeltaDistribution << std::endl
+              << "current Number of Collocation Points: : " << numberOfCollocationPoints << std::endl;
 
-
-    computeCollocationDefects(collocationDefectVector, collocationDesignVector, oddStates, oddStatesDerivatives, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, initialTime, continuationIndex, phaseConstraintVector);
-
-    Eigen::VectorXd collocationDeviationNorms = computeCollocationDeviationNorms(collocationDefectVector, collocationDesignVector, numberOfCollocationPoints);
-
-    double positionDefectDeviations = collocationDeviationNorms(0);
-    double velocityDefectDeviations= collocationDeviationNorms(1);
-    double periodicityPositionDeviations= collocationDeviationNorms(2);
-    double periodicityVelocityDeviations = collocationDeviationNorms(3);
-    double phaseDeviations = collocationDeviationNorms(4);
-
-
-    int numberOfCorrections = 0;
-    bool continueColloc = true;
-
-    std::cout << "\nDeviations at the start of collocation procedure: " << std::endl;
-    std::cout << "numberOfCorrections: " << numberOfCorrections << std::endl;
-    std::cout << "positionDefectDeviations: " << positionDefectDeviations << std::endl;
-    std::cout << "velocityDefectDeviations: " << velocityDefectDeviations << std::endl;
-    std::cout << "periodicityPositionDeviations: " << periodicityPositionDeviations << std::endl;
-    std::cout << "periodicityVelocityDeviations: " << periodicityVelocityDeviations << std::endl;
-    std::cout << "phaseDeviations: " << phaseDeviations << std::endl;
-    std::cout << "collocationDefectVector.Norm(): " << collocationDefectVector.norm() << std::endl;
-
-
-//    while( ( positionDefectDeviations > maxPositionDeviationFromPeriodicOrbit
-//           || velocityDefectDeviations > maxVelocityDeviationFromPeriodicOrbit || phaseDeviations >  maxPositionDeviationFromPeriodicOrbit ) && continueColloc  )
-    while( (collocationDefectVector.norm() > 1.0E-12) && continueColloc  )
-    {
-
-        // compute the correction
-        Eigen::VectorXd collocationCorrectionVector(collocationDesignVector.size());
-        collocationCorrectionVector.setZero();
-        collocationCorrectionVector = computeCollocationCorrection(collocationDefectVector, collocationDesignVector, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, continuationIndex, phaseConstraintVector);
-
-        // apply line search, select design vector which produces the smallest norm
-
-        applyLineSearchAttenuation(collocationCorrectionVector, collocationDefectVector, collocationDesignVector, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, continuationIndex, phaseConstraintVector);
-
-        numberOfCorrections++;
-        if ( numberOfCorrections > maxNumberOfCollocationIterations)
-        {
-                        maxPositionDeviationFromPeriodicOrbit = 1.0E-11;
-                        maxVelocityDeviationFromPeriodicOrbit = 1.0E-11;
-
-        }
-
-        if ( numberOfCorrections > 2*maxNumberOfCollocationIterations)
-        {
-                        maxPositionDeviationFromPeriodicOrbit = 1.0E-10;
-                        maxVelocityDeviationFromPeriodicOrbit = 1.0E-10;
-
-        }
-
-        if ( numberOfCorrections > 3*maxNumberOfCollocationIterations)
-        {
-                        maxPositionDeviationFromPeriodicOrbit = 1.0E-9;
-                        maxVelocityDeviationFromPeriodicOrbit = 1.0E-9;
-
-        }
-        if ( numberOfCorrections > 3*maxNumberOfCollocationIterations+1)
-        {
-                        maxPositionDeviationFromPeriodicOrbit = 1.0E-7;
-                        maxVelocityDeviationFromPeriodicOrbit = 1.0E-7;
-
-        }
-        if ( numberOfCorrections > 3*maxNumberOfCollocationIterations+2)
-        {
-                        maxPositionDeviationFromPeriodicOrbit = 1.0E-4;
-                        maxVelocityDeviationFromPeriodicOrbit = 1.0E-4;
-
-        }
-
-        // compute defects after line search attenuation to determine if convergence has been reached
-        collocationDeviationNorms = computeCollocationDeviationNorms(collocationDefectVector, collocationDesignVector, numberOfCollocationPoints);
-
-        positionDefectDeviations = collocationDeviationNorms(0);
-        velocityDefectDeviations= collocationDeviationNorms(1);
-        periodicityPositionDeviations = collocationDeviationNorms(2);
-        periodicityVelocityDeviations = collocationDeviationNorms(3);
-        phaseDeviations = collocationDeviationNorms(4);
-
-//        std::cout << "\nCollocation applied, remaining deviations are: " << std::endl;
-//        std::cout << "numberOfCorrections: " << numberOfCorrections << std::endl;
-//        std::cout << "positionDefectDeviations: " << positionDefectDeviations << std::endl;
-//        std::cout << "velocityDefectDeviations: " << velocityDefectDeviations << std::endl;
-//        std::cout << "periodicityPositionDeviations: " << periodicityPositionDeviations << std::endl;
-//        std::cout << "periodicityVelocityDeviations: " << periodicityVelocityDeviations << std::endl;
-//        std::cout << "phaseDeviations: " << phaseDeviations << std::endl;
-
-
-    }
-
-
-    std::cout << "\nTRAJECTORY CONVERGED AFTER " << numberOfCorrections << " COLLOCATION CORRECTIONS, REMAINING DEVIATIONS: " << std::endl;
-    std::cout << "positionDefectDeviations: " << positionDefectDeviations << std::endl;
-    std::cout << "velocityDefectDeviations: " << velocityDefectDeviations << std::endl;
-    std::cout << "periodicityPositionDeviations: " << periodicityPositionDeviations << std::endl;
-    std::cout << "periodicityVelocityDeviations: " << periodicityVelocityDeviations << std::endl;
-    std::cout << "phaseDeviations: " << phaseDeviations << std::endl;
-    std::cout << "collocationDefectVector.Norm(): " << collocationDefectVector.norm() << std::endl;
-
-
-    //applyMeshRefinement( collocationDesignVector, thrustAndMassParameters, numberOfCollocationPoints);
-
-    //propagateAndSaveCollocationProcedure(collocationDesignVector, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, 2, massParameter);
 
     // Compute variables for outputVector and collocatedGuess, rewrite collocationDesignVector to vector format (incldue interior points or not?)
     // and store in collocated guess
-
-    shiftTimeOfConvergedCollocatedGuess(collocationDesignVector, collocatedGuess, collocatedNodes, numberOfCollocationPoints, thrustAndMassParameters);
-    deviationNorms = collocationDeviationNorms;
-    collocatedDefects = collocationDefectVector;
-
     Eigen::VectorXd  initialCondition = collocatedNodes.segment(0,10);
     Eigen::VectorXd  finalCondition = collocatedNodes.segment(11*(numberOfCollocationPoints-1),10);
 
@@ -1010,7 +1108,7 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
     outputVector.segment(12,10) = finalCondition;
     outputVector(22) = collocatedNodes(11*(numberOfCollocationPoints-1) + 10);
     outputVector(23) = hamiltonianEndState;
-    outputVector(24) = numberOfCorrections;
+    //outputVector(24) = numberOfCorrections;
 
     return outputVector;
 

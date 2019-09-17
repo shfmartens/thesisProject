@@ -29,6 +29,7 @@
 #include "stateDerivativeModelAugmented.h"
 #include "computeCollocationCorrection.h"
 #include "applyMeshRefinement.h"
+#include "interpolatePolynomials.h"
 
 void appendResultsVectorAugmented(const double hamiltonian, const double orbitalPeriod, const Eigen::VectorXd& initialStateVector,
         const Eigen::MatrixXd& stateVectorInclSTM, std::vector< Eigen::VectorXd >& initialConditions )
@@ -319,7 +320,7 @@ Eigen::VectorXd getEarthMoonInitialGuessParameters ( const int librationPointNr,
             {
                 if (librationPointNr == 1)
                 {
-                    initialGuessParameters(0) = 1.0e-4;
+                    initialGuessParameters(0) = 9.0e-3;
                 }
                 else if (librationPointNr == 2)
                 {
@@ -520,15 +521,15 @@ Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::MatrixXd& initi
 
 
     // Apply collocation
-    int numberOfOddPoints = (numberOfCollocationPoints-1)*3 + 1;
     Eigen::VectorXd deviationNorms(5);
-    Eigen::VectorXd collocatedGuess(11*numberOfOddPoints);
-    Eigen::VectorXd collocatedNodes(11*numberOfCollocationPoints);
-    Eigen::VectorXd collocatedDefects(18*(numberOfCollocationPoints-1));
+    Eigen::VectorXd collocatedGuess;
+    Eigen::VectorXd collocatedNodes;
+    Eigen::VectorXd collocatedDefects;
 
     Eigen::VectorXd collocationResult = applyCollocation(initialOddPoints, massParameter, numberOfCollocationPoints, collocatedGuess, collocatedNodes, deviationNorms, collocatedDefects, continuationIndex, phaseConstraintVector,
                                                          maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
 
+    int numberOfOddPoints = (numberOfCollocationPoints-1)*3 + 1;
     initialStateVector = collocationResult.segment( 0, 10 );
     double orbitalPeriod = collocationResult( 10 );
     double hamiltonianFullPeriodColloc = collocationResult( 23 );
@@ -1031,7 +1032,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 // ============ CONTINUATION PROCEDURE ================== //
     // Set exit parameters of continuation procedure
-    int maximumNumberOfInitialConditions = 4000;
+    int maximumNumberOfInitialConditions = 4;
     int numberOfInitialConditions;
     if (continuationIndex == 1)
     {
@@ -1084,11 +1085,48 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
               Eigen::VectorXd stateIncrement(11*numberOfStates+1);
               stateIncrement.setZero();
 
+             if ( statesContinuation[ statesContinuation.size( ) - 1 ].size() == statesContinuation[ statesContinuation.size( ) - 2 ].size() )
+             {
+                 std::cout << "number of patch point of guesses is similar!: " << std::endl
+                            << "size statesContinuation[size-2]: " << statesContinuation[ statesContinuation.size( ) - 2 ].size() << std::endl
+                            << "size statesContinuation[size-1]: " << statesContinuation[ statesContinuation.size( ) - 1 ].size() << std::endl;
 
-             stateIncrement.segment(1,11*numberOfStates) = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*numberOfStates ) -
-                                 statesContinuation[ statesContinuation.size( ) - 2 ].segment( 3, 11*numberOfStates );
-             stateIncrement(0) = statesContinuation[ statesContinuation.size( ) - 1 ]( 1 ) -
-                                 statesContinuation[ statesContinuation.size( ) - 2 ]( 1 );
+                 stateIncrement.segment(1,11*numberOfStates) = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*numberOfStates ) -
+                                     statesContinuation[ statesContinuation.size( ) - 2 ].segment( 3, 11*numberOfStates );
+                 stateIncrement(0) = statesContinuation[ statesContinuation.size( ) - 1 ]( 1 ) -
+                                     statesContinuation[ statesContinuation.size( ) - 2 ]( 1 );
+             } else
+             {
+                 std::cout << "number of patch point of guesses has been changed!!: " << std::endl
+                            << "size statesContinuation[size-2]: " << statesContinuation[ statesContinuation.size( ) - 2 ].size() << std::endl
+                            << "size statesContinuation[size-1]: " << statesContinuation[ statesContinuation.size( ) - 1 ].size() << std::endl;
+
+                 Eigen::VectorXd stateIncrementInterpolation(11*numberOfStates);  stateIncrementInterpolation.setZero();
+
+                 stateIncrement(0) = statesContinuation[ statesContinuation.size( ) - 1 ]( 1 ) -
+                                     statesContinuation[ statesContinuation.size( ) - 2 ]( 1 );
+
+                 Eigen::VectorXd previousGuess = statesContinuation[ statesContinuation.size( ) - 2 ];
+                 Eigen::VectorXd currentGuess = statesContinuation[ statesContinuation.size( ) - 1 ];
+
+                 computeStateIncrementFromInterpolation(previousGuess, currentGuess, stateIncrementInterpolation );
+
+                 stateIncrement.segment(1,11*numberOfStates) = stateIncrementInterpolation;
+             }
+                Eigen::Vector6d x1 = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 6 );
+                Eigen::Vector6d x0 = statesContinuation[ statesContinuation.size( ) - 2 ].segment( 3, 6 );
+                Eigen::Vector6d difference = x1-x0;
+                Eigen::Vector6d x0dot = computeStateDerivativeAugmented(0.0, getFullInitialStateAugmented( statesContinuation[ statesContinuation.size( ) - 2 ].segment( 3, 10 ))).block(0,0,6,1);
+
+
+                std::cout << "\n===== TESTING INTEGRAL PHASE CONSTRAINT =====" << std::endl
+                           << "x1: \n" << x1 << std::endl
+                           << "x0: \n" << x0 << std::endl
+                           << "difference: \n" << difference << std::endl
+                           << "x0dot: \n" << x0dot << std::endl
+                           << "x1^T x0dot: " << x1.transpose()*x0dot << std::endl
+                           << "difference.transpose x0: " << difference.transpose()*x0dot << std::endl;
+
 
                  double pseudoArcLengthCorrection = pseudoArcLengthFunctionAugmented( stateIncrement.segment(0,11), continuationIndex );
 
@@ -1168,7 +1206,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                                      noiseVectorLocal.setZero();
                                      noiseVectorLocal.segment(0,6) = noiseVectorSegment.segment(6*j,6);
 
-                       oddNodesMatrix.block(11*i,j,6,1) = oddNodesMatrix.block(11*i,j,6,1) + noiseVectorLocal;
+                       //oddNodesMatrix.block(11*i,j,6,1) = oddNodesMatrix.block(11*i,j,6,1) + noiseVectorLocal;
 
                       //oddNodesMatrix(11*i+6,j) = oddNodesMatrix(11*i+6,j) + incrementContinuationParameter;
                    }

@@ -5,6 +5,8 @@
 #include "Eigen/Core"
 #include <map>
 
+void computeInterpolationSegmentsAndTimes(const Eigen::VectorXd newNodeTimes, const int numberOfCollocationPoints, Eigen::VectorXd& oddPointTimesNormalized, Eigen::VectorXd& oddPointsSegments );
+
 void writeMassRefinementDataToFile(const int librationPointNr, const double accelerationMagnitude, const double alpha, const double amplitude, const int numberOfPatchPoints, const double correctionTime, const std::map< double, Eigen::VectorXd > stateHistory, const Eigen::VectorXd stateVector, Eigen::VectorXd deviations,
                               const Eigen::MatrixXd propagatedStatesInclSTM, const int cycleNumber, const int correctorLevel, const int numberOfCorrections, const double correctionDuration );
 

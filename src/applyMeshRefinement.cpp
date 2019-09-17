@@ -13,6 +13,128 @@
 #include "applyLineSearchAttenuation.h"
 #include "applyMeshRefinement.h"
 
+Eigen::VectorXd computeProcedureTimeShifts(Eigen::VectorXd collocationDesignVectorInitial, Eigen::VectorXd collocationDesignVectorFinal, const int numberOfCollocationPoints)
+{
+    // initialize outputVector //
+    Eigen::VectorXd outputVector(numberOfCollocationPoints); outputVector.setZero();
+    Eigen::VectorXd differenceVector = collocationDesignVectorFinal - collocationDesignVectorInitial;
+
+
+    for(int i = 0; i < numberOfCollocationPoints-1;i++)
+    {
+        Eigen::VectorXd localDifferenceVector = differenceVector.segment(19*i,26);
+        outputVector(i) = localDifferenceVector(6);
+        outputVector(i+1) = localDifferenceVector(25);
+
+    }
+
+    return outputVector;
+
+}
+
+Eigen::VectorXd computeStateViaPolynomialInterpolation(const Eigen::MatrixXd segmentOddStates, const Eigen::MatrixXd segmentOddStateDerivatives, const double deltaTime, const double interpolationTime)
+{
+    // Define relevant variables
+    Eigen::VectorXd outputVector(6);                                             outputVector.setZero();
+    Eigen::MatrixXd oddTimesMatrix(8,8);                                         oddTimesMatrix.setZero();
+    retrieveLegendreGaussLobattoConstaints("oddTimesMatrix", oddTimesMatrix);
+
+    // determine the polynomialCoefficient Matrix
+    Eigen::MatrixXd dynamicsMatrix(6,8);                    dynamicsMatrix.setZero();
+    Eigen::MatrixXd polynomialCoefficientMatrix(6,8);       polynomialCoefficientMatrix.setZero();
+    dynamicsMatrix.block(0,0,6,4) = segmentOddStates;
+    dynamicsMatrix.block(0,4,6,4) = deltaTime * segmentOddStateDerivatives;
+
+    polynomialCoefficientMatrix = dynamicsMatrix * oddTimesMatrix.inverse();
+
+    // construct the interpolationVector
+    Eigen::VectorXd interpolationTimeVector(8); interpolationTimeVector.setZero();
+    interpolationTimeVector(0) = pow(interpolationTime, 0.0);
+    interpolationTimeVector(1) = pow(interpolationTime, 1.0);
+    interpolationTimeVector(2) = pow(interpolationTime, 2.0);
+    interpolationTimeVector(3) = pow(interpolationTime, 3.0);
+    interpolationTimeVector(4) = pow(interpolationTime, 4.0);
+    interpolationTimeVector(5) = pow(interpolationTime, 5.0);
+    interpolationTimeVector(6) = pow(interpolationTime, 6.0);
+    interpolationTimeVector(7) = pow(interpolationTime, 7.0);
+
+    outputVector = polynomialCoefficientMatrix * interpolationTimeVector;
+
+    return outputVector;
+
+}
+
+void computeInterpolationSegmentsAndTimes(const Eigen::VectorXd newNodeTimes, const Eigen::VectorXd currentNodeTimes, const int numberOfCollocationPoints, Eigen::VectorXd& newOddPointTimesDimensional, Eigen::VectorXd& newOddPointTimesNormalized, Eigen::VectorXd& oddPointsSegments, Eigen::VectorXd& newTimeIntervals )
+{
+
+    // delcare relevant variables
+    int numberOfSegments = numberOfCollocationPoints - 1;
+    int numberOfOddPoints = 3*numberOfSegments+1;
+    Eigen::MatrixXd legendreGaussLobattoTimes(7,1); legendreGaussLobattoTimes.setZero();
+    retrieveLegendreGaussLobattoConstaints("nodeTimes", legendreGaussLobattoTimes);
+    Eigen::MatrixXd timeIntervalMatrix(numberOfCollocationPoints-1,2); timeIntervalMatrix.setZero();
+
+    // Compute the dimensional times of all odd points  and fill the dimensionalTimeVectorMatrix
+    for(int i = 0; i < numberOfSegments; i++)
+        {
+            // determine segment times of the new mesh
+            Eigen::VectorXd segmentTimes = Eigen::VectorXd::Zero(4);
+            double initialSegmentTime = newNodeTimes(i);
+            double finalSegmentTime = newNodeTimes(i+1);
+            double segmentTimeInterval = finalSegmentTime - initialSegmentTime;
+
+            // determine segment times of the old mesh
+            double currentInitialSegmentTime = currentNodeTimes(i);
+            double currentFinalSegmentTime = currentNodeTimes(i+1);
+
+            timeIntervalMatrix(i,0) = currentInitialSegmentTime;
+            timeIntervalMatrix(i,1) = currentFinalSegmentTime;
+
+            for(int j = 0; j < 4; j++)
+            {
+                if (j == 0)
+                {
+                    segmentTimes(j) = initialSegmentTime;
+                } else if (j == 1)
+                {
+                    segmentTimes(j) = initialSegmentTime+legendreGaussLobattoTimes(2,0)*segmentTimeInterval;
+
+                } else if (j == 2)
+                {
+                    segmentTimes(j) = initialSegmentTime+legendreGaussLobattoTimes(4,0)*segmentTimeInterval;
+                }
+                else
+                {
+                    segmentTimes(j) = finalSegmentTime;
+                }
+            }
+
+            newOddPointTimesDimensional.segment(3*i,4) = segmentTimes;
+            newTimeIntervals(i) = segmentTimeInterval;
+
+        }
+
+        // determine on which segment of old mesh the new odd points lie and compute their nondimensional time on that mesh
+        for (int i = 0; i < numberOfOddPoints; i++)
+        {
+            double currentOddPointTime = newOddPointTimesDimensional(i);
+
+            for(int j = 0; j < numberOfSegments; j++)
+            {
+                if (currentOddPointTime >= timeIntervalMatrix(j,0) and currentOddPointTime <= timeIntervalMatrix(j,1) )
+                {
+                    oddPointsSegments(i) = j;
+
+                    double timeInterval = timeIntervalMatrix(j,1) - timeIntervalMatrix(j,0);
+                    double initialIntervalTime = timeIntervalMatrix(j,0);
+                    newOddPointTimesNormalized(i) = (currentOddPointTime - initialIntervalTime)/timeInterval;
+
+                }
+            }
+        }
+
+}
+
 void computeNewMesh(const Eigen::VectorXd collocationDesignVector,  const Eigen::VectorXd thrustAndMassParameters, const Eigen::VectorXd nodeTimes, const Eigen::VectorXd newNodeTimes, const int numberOfCollocationPoints, Eigen::VectorXd& newDesignVector)
 {
     // declare initial variables
@@ -24,46 +146,72 @@ void computeNewMesh(const Eigen::VectorXd collocationDesignVector,  const Eigen:
     Eigen::VectorXd nodeTimesRedundant(numberOfCollocationPoints);         nodeTimesRedundant.setZero();
     Eigen::VectorXd newOddPointTimes(numberOfOddPoints);                   newOddPointTimes.setZero();
 
+    Eigen::VectorXd segmentVector(numberOfOddPoints);                      segmentVector.setZero();
+    Eigen::VectorXd newOddPointTimesNormalized(numberOfOddPoints);         newOddPointTimesNormalized.setZero();
+    Eigen::VectorXd newOddPointTimesDimensional(numberOfOddPoints);        newOddPointTimesDimensional.setZero();
+    Eigen::VectorXd newTimeIntervals(numberOfSegments);                    newTimeIntervals.setZero();
+
+
+
     // compute the information needed for interpolation (oddStates, OddStateDerivatives, TimeIntervals)
     computeTimeIntervals(collocationDesignVector, numberOfCollocationPoints, timeIntervals, nodeTimesRedundant);
 
     computeSegmentProperties(collocationDesignVector, thrustAndMassParameters, numberOfCollocationPoints, oddStates, oddStateDerivatives, timeIntervals );
 
-    // Compute the non-dimensional times of all odd points
-    for(int i = 0; i < numberOfSegments; i++)
+    // compute the times on the new mesh for interior and node points and determine which segment is needed to interpolate the new states
+    computeInterpolationSegmentsAndTimes(newNodeTimes, nodeTimes, numberOfCollocationPoints, newOddPointTimesDimensional, newOddPointTimesNormalized, segmentVector, newTimeIntervals );
+
+    // perform interpolation and the new times to construct the new mesh
+    bool designVecIncludesThrustAndMass = false;
+    if (collocationDesignVector.rows() == 11*numberOfOddPoints )
+    {
+        designVecIncludesThrustAndMass = true;
+    }
+
+    int startingSegment = 0;
+
+    for (int i = 0; i < numberOfOddPoints; i++)
+    {
+        auto segmentNumber = static_cast<int>(segmentVector(i));
+        double interpolationTime = newOddPointTimesNormalized(i);
+        double oddPointTime = newOddPointTimesDimensional(i);
+        double segmentTimeInterval = timeIntervals(segmentNumber);
+
+        Eigen::MatrixXd segmentOddStates = oddStates.block(6*segmentNumber,0,6,4);
+        Eigen::MatrixXd segmentOddStateDerivatives = oddStateDerivatives.block(6*segmentNumber,0,6,4);
+
+        Eigen::VectorXd interpolatedOddPoint = computeStateViaPolynomialInterpolation(segmentOddStates, segmentOddStateDerivatives, segmentTimeInterval, interpolationTime);
+
+        // store in design vector, check on format to decide how to store it! if 11 it is isimplem if not nodes include time while interior points do not.
+
+        if (designVecIncludesThrustAndMass == true)
         {
-            Eigen::VectorXd segmentTimes = Eigen::VectorXd::Zero(4);
-            for(int j = 0; j < 4; j++)
+            newDesignVector.segment(i*11,6) = interpolatedOddPoint;
+            newDesignVector.segment(i*11+6,4) = thrustAndMassParameters;
+            newDesignVector(i*11+10) = oddPointTime;
+
+        } else
+        {
+            int numberOfElements = 0;
+            if(i % 3 == 0)
             {
-                if (j == 0)
-                {
-                    segmentTimes(j) = newNodeTimes(i);
-                } else if (j == 3)
-                {
-                    segmentTimes(j) = newNodeTimes(i+1);
-                }
+                numberOfElements =  7;
+                newDesignVector.segment(startingSegment, 6) = interpolatedOddPoint;
+                newDesignVector(startingSegment+6) = oddPointTime;
+
+            } else
+            {
+                numberOfElements = 6;
+                newDesignVector.segment(startingSegment, 6) = interpolatedOddPoint;
+
             }
 
-            newOddPointTimes.segment(3*i,4) = segmentTimes;
+            startingSegment = startingSegment+numberOfElements;
 
         }
 
-    std::cout << "newNodeTimes: \n" << newNodeTimes << std::endl;
-    std::cout << "newOddPointTimes: \n" << newOddPointTimes << std::endl;
+    }
 
-
-
-
-
-    // loop per node/interior point
-        // determine the new dimensional time of the node point
-            // if node: take it directly from newNodeTimes
-            // if interior point: determine delta_t of the segment, use oddTimes to compute the exact time
-            // save in vector which holds all node times!
-        // determine in which segment the node lies (0 = segment 1 etc.) via if loops
-        // determine the non-dimensional time within the segment
-        // interpolate via a function which has inputs: oddStates and StateDerivatives of the segment, nondim Time and DeltaTime (do not make same mistake as last time!)
-        // store new node in the newDesignVector
 }
 
 void computeTimeIntervals(const Eigen::VectorXd collocationDesignVector, const int numberOfCollocationPoints, Eigen::VectorXd& timeIntervals, Eigen::VectorXd& nodeTimes)
@@ -273,7 +421,7 @@ void computeSegmentErrors(Eigen::VectorXd collocationDesignVector, const Eigen::
 
 }
 
-void applyMeshRefinement(Eigen::MatrixXd& collocationDesignVector, const Eigen::VectorXd thrustAndMassParameters, int numberOfCollocationPoints )
+void applyMeshRefinement(Eigen::MatrixXd& collocationDesignVector, Eigen::VectorXd& segmentErrorDistribution, const Eigen::VectorXd thrustAndMassParameters, int numberOfCollocationPoints )
 {
 
     int numberOfSegments = numberOfCollocationPoints - 1;
@@ -325,6 +473,9 @@ void applyMeshRefinement(Eigen::MatrixXd& collocationDesignVector, const Eigen::
     Eigen::VectorXd newDesignVector(currentCollocationDesignVector.rows()); newDesignVector.setZero();
     computeNewMesh( currentCollocationDesignVector, thrustAndMassParameters, nodeTimes, newNodeTimes, numberOfCollocationPoints, newDesignVector);
 
+    // output the desired quantities
+    collocationDesignVector.block(0,0,collocationDesignVector.rows(),1) = newDesignVector;
+    segmentErrorDistribution = segmentErrors;
 
 
 }
