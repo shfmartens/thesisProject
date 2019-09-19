@@ -646,7 +646,7 @@ void retrieveLegendreGaussLobattoConstaints(const std::string desiredQuantity, E
 }
 
 
-void computeCollocationDefects(Eigen::MatrixXd& collocationDefectVector, Eigen::MatrixXd& collocationDesignVector, const Eigen::MatrixXd oddStates, const Eigen::MatrixXd oddStatesDerivatives, Eigen::VectorXd timeIntervals, Eigen::VectorXd thrustAndMassParameters, const int numberOfCollocationPoints, const double initialTime, const int continuationIndex, const Eigen::MatrixXd phaseConstraintVector)
+void computeCollocationDefects(Eigen::MatrixXd& collocationDefectVector, Eigen::MatrixXd& collocationDesignVector, const Eigen::MatrixXd oddStates, const Eigen::MatrixXd oddStatesDerivatives, Eigen::VectorXd timeIntervals, Eigen::VectorXd thrustAndMassParameters, const int numberOfCollocationPoints, const double initialTime, const int continuationIndex, const Eigen::VectorXd previousDesignVector)
 {
     // Load relevant constants
     Eigen::MatrixXd oddTimesMatrix(8,8);            Eigen::MatrixXd evenTimesMatrix(8,3);
@@ -832,16 +832,15 @@ void computeCollocationDefects(Eigen::MatrixXd& collocationDefectVector, Eigen::
 // Compute phase constraint
     if ( continuationIndex == 1)
     {
-        Eigen::Vector6d derivativeFirstPoint = phaseConstraintVector.block(0,1,6,1);
-        Eigen::Vector6d increment = collocationDesignVector.block(0,0,6,1) - phaseConstraintVector.block(0,0,6,1);
-        double phaseConstraint = increment.transpose() * derivativeFirstPoint;
-        collocationDefectVector(collocationDefectVector.rows()-1,0) = phaseConstraint;
+        double integralPhaseConstraint = computeIntegralPhaseConstraint(collocationDesignVector, numberOfCollocationPoints, previousDesignVector );
+
+        collocationDefectVector(collocationDefectVector.rows()-1,0) = integralPhaseConstraint;
     }
 
 }
 
 
-Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, const double massParameter, int& numberOfCollocationPoints, Eigen::VectorXd& collocatedGuess, Eigen::VectorXd& collocatedNodes, Eigen::VectorXd& deviationNorms, Eigen::VectorXd& collocatedDefects, const int continuationIndex, const Eigen::MatrixXd phaseConstraintVector,
+Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, const double massParameter, int& numberOfCollocationPoints, Eigen::VectorXd& collocatedGuess, Eigen::VectorXd& collocatedNodes, Eigen::VectorXd& deviationNorms, Eigen::VectorXd& collocatedDefects, const int continuationIndex, const Eigen::VectorXd previousDesignVector,
                                                           double maxPositionDeviationFromPeriodicOrbit,  double maxVelocityDeviationFromPeriodicOrbit,  double maxPeriodDeviationFromPeriodicOrbit, const int maxNumberOfCollocationIterations, const double maximumErrorTolerance)
 {
     // ======= initialize variables and rewrite input for the collocation procedure ====== //
@@ -897,8 +896,7 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
 
         while (distributionDeltaPreviousIteration > distributionDeltaCurrentIteration and distributionDeltaCurrentIteration > 1.0E-12)
         {
-
-            computeCollocationDefects(collocationDefectVector, collocationDesignVector, oddStates, oddStatesDerivatives, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, initialTime, continuationIndex, phaseConstraintVector);
+            computeCollocationDefects(collocationDefectVector, collocationDesignVector, oddStates, oddStatesDerivatives, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, initialTime, continuationIndex, previousDesignVector);
 
             collocationDeviationNorms = computeCollocationDeviationNorms(collocationDefectVector, collocationDesignVector, numberOfCollocationPoints);
 
@@ -923,20 +921,24 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
             std::cout << "collocationDefectVector.Norm(): " << collocationDefectVector.norm() << std::endl;
             std::cout << "distributionDeltaCurrentIteration: " << distributionDeltaCurrentIteration << std::endl;
 
-
             Eigen::VectorXd initialDesignVector = collocationDesignVector.block(0,0,collocationDesignVector.rows(),1);
 
             // ======= Start the loop for collocation procedure ====== //
             while( (collocationDefectVector.norm() > 1.0E-12) && continueColloc  )
             {
-
+                std::cout << "loop: " << numberOfCorrections << std::endl;
                 // compute the correction
                 Eigen::VectorXd collocationCorrectionVector(collocationDesignVector.size());
                 collocationCorrectionVector.setZero();
-                collocationCorrectionVector = computeCollocationCorrection(collocationDefectVector, collocationDesignVector, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, continuationIndex, phaseConstraintVector);
+
+                std::cout << "correctionVector computation start: " << numberOfCorrections << std::endl;
+
+                collocationCorrectionVector = computeCollocationCorrection(collocationDefectVector, collocationDesignVector, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, continuationIndex, previousDesignVector);
+                std::cout << "correctionVectorComputed: " << numberOfCorrections << std::endl;
+
 
                 // apply line search, select design vector which produces the smallest norm
-                applyLineSearchAttenuation(collocationCorrectionVector, collocationDefectVector, collocationDesignVector, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, continuationIndex, phaseConstraintVector);
+                applyLineSearchAttenuation(collocationCorrectionVector, collocationDefectVector, collocationDesignVector, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, continuationIndex, previousDesignVector);
 
                 // Relax the tolerances if a certain number of corrections is reached
                 numberOfCorrections++;
@@ -984,10 +986,11 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
 
             }
 
+            std::cout << "CONVERGENCE REACHED!" << std::endl;
+
             // store the solution in a seperate variables
             Eigen::VectorXd convergedDesignVector = collocationDesignVector.block(0,0,collocationDesignVector.rows(),1);
             Eigen::VectorXd convergedDefectVector = collocationDefectVector.block(0,0,collocationDefectVector.rows(),1);
-
 
             // Apply mesh refinement and compute the errors per segment
             applyMeshRefinement( collocationDesignVector, segmentErrorDistribution, thrustAndMassParameters, numberOfCollocationPoints);
@@ -1025,7 +1028,6 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
                 maximumErrorPerSegment = segmentErrorDistribution.maxCoeff();
                 meshRefinementCounter++;
             }
-
 
 
         }

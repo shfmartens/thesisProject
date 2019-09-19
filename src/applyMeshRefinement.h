@@ -9,6 +9,9 @@
 
 Eigen::VectorXd computeStateViaPolynomialInterpolation(const Eigen::MatrixXd segmentOddStates, const Eigen::MatrixXd segmentOddStateDerivatives, const double deltaTime, const double interpolationTime);
 
+Eigen::VectorXcd computeStateViaPolynomialInterpolationComplex(const Eigen::MatrixXcd segmentOddStates, const Eigen::MatrixXcd segmentOddStateDerivatives, std::complex<double> deltaTime, std::complex<double> interpolationTime);
+
+
 void computeInterpolationSegmentsAndTimes(const Eigen::VectorXd newNodeTimes, const Eigen::VectorXd oldNodeTimes, const int numberOfCollocationPoints, Eigen::VectorXd& newOddPointTimesDimensional, Eigen::VectorXd& newOddPointTimesNormalized, Eigen::VectorXd& oddPointsSegments, Eigen::VectorXd& newTimeIntervals );
 
 void computeNewMesh(const Eigen::VectorXd collocationDesignVector, const Eigen::VectorXd thrustAndMassParameters, const Eigen::VectorXd nodeTimes, const Eigen::VectorXd newNodeTimes, const int numberOfCollocationPoints, Eigen::VectorXd& newDesignVector);

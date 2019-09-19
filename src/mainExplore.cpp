@@ -38,6 +38,13 @@ double massParameter = tudat::gravitation::circular_restricted_three_body_proble
 double maximumThrust = 0.1;
 int main (){
 
+Eigen::VectorXd testVector = Eigen::VectorXd::Zero(6);
+for(int i = 0; i < 6; i ++)
+{
+ testVector(i) = static_cast<double>(i+1);
+}
+
+Eigen::VectorXcd testVectorComplex = testVector;
 
 //     //================================
 //     //== Compute equilibria, comment out when computing low-thrust intial positions ==

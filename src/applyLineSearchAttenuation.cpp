@@ -125,7 +125,7 @@ void recomputeTimeProperties(const Eigen::MatrixXd temporaryDesignVector, double
 }
 
 
-void applyLineSearchAttenuation(const Eigen::VectorXd collocationCorrectionVector,  Eigen::MatrixXd& collocationDefectVector,  Eigen::MatrixXd& collocationDesignVector, Eigen::VectorXd timeIntervals, const Eigen::VectorXd thrustAndMassParameters, const int numberOfCollocationPoints, const int continuationIndex, const Eigen::MatrixXd phaseConstraintVector)
+void applyLineSearchAttenuation(const Eigen::VectorXd collocationCorrectionVector,  Eigen::MatrixXd& collocationDefectVector,  Eigen::MatrixXd& collocationDesignVector, Eigen::VectorXd timeIntervals, const Eigen::VectorXd thrustAndMassParameters, const int numberOfCollocationPoints, const int continuationIndex, const Eigen::VectorXd phaseConstraintVector)
 {
 
     Eigen::MatrixXd minimumNormDesignVector(collocationDesignVector.rows(),collocationDesignVector.cols());;
@@ -186,10 +186,10 @@ void applyLineSearchAttenuation(const Eigen::VectorXd collocationCorrectionVecto
 
         } else if ( collocationDefectVectorTemp.norm() < minimumNormDefectVector.norm() )
         {
-//            std::cout << "\nREACHED alpha: " << attenuationFactor(i) << std::endl;
-//            std::cout << "startingNormBeforeCorrection: " <<  collocationDefectVector.norm() << std::endl;
-//            std::cout << "minimumNormDefectVectorNorm: " << minimumNormDefectVector.norm()<< std::endl;
-//            std::cout << "collocationDefectVectorTemp: " << collocationDefectVectorTemp.norm()<< std::endl;
+            //std::cout << "\nREACHED alpha: " << attenuationFactor(i) << std::endl;
+            //std::cout << "startingNormBeforeCorrection: " <<  collocationDefectVector.norm() << std::endl;
+            //std::cout << "minimumNormDefectVectorNorm: " << minimumNormDefectVector.norm()<< std::endl;
+            //std::cout << "collocationDefectVectorTemp: " << collocationDefectVectorTemp.norm()<< std::endl;
 
 
             minimumNormDesignVector = collocationDesignVectorTemp;

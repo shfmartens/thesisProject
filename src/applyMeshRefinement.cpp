@@ -64,6 +64,38 @@ Eigen::VectorXd computeStateViaPolynomialInterpolation(const Eigen::MatrixXd seg
 
 }
 
+Eigen::VectorXcd computeStateViaPolynomialInterpolationComplex(const Eigen::MatrixXcd segmentOddStates, const Eigen::MatrixXcd segmentOddStateDerivatives, std::complex<double> deltaTime, std::complex<double> interpolationTime)
+{
+    // Define relevant variables
+    Eigen::VectorXcd outputVector(6);                                             outputVector.setZero();
+    Eigen::MatrixXd oddTimesMatrix(8,8);                                         oddTimesMatrix.setZero();
+    retrieveLegendreGaussLobattoConstaints("oddTimesMatrix", oddTimesMatrix);
+    Eigen::MatrixXcd oddTimesMatrixComplex = oddTimesMatrix;
+
+    // determine the polynomialCoefficient Matrix
+    Eigen::MatrixXcd dynamicsMatrix(6,8);                    dynamicsMatrix.setZero();
+    Eigen::MatrixXcd polynomialCoefficientMatrix(6,8);       polynomialCoefficientMatrix.setZero();
+    dynamicsMatrix.block(0,0,6,4) = segmentOddStates;
+    dynamicsMatrix.block(0,4,6,4) = deltaTime * segmentOddStateDerivatives;
+
+    polynomialCoefficientMatrix = dynamicsMatrix * oddTimesMatrixComplex.inverse();
+
+    // construct the interpolationVector
+    Eigen::VectorXcd interpolationTimeVector(8); interpolationTimeVector.setZero();
+    interpolationTimeVector(0) = std::complex<double>(1.0,0.0);
+    interpolationTimeVector(1) = pow(interpolationTime, 1.0);
+    interpolationTimeVector(2) = pow(interpolationTime, 2.0);
+    interpolationTimeVector(3) = pow(interpolationTime, 3.0);
+    interpolationTimeVector(4) = pow(interpolationTime, 4.0);
+    interpolationTimeVector(5) = pow(interpolationTime, 5.0);
+    interpolationTimeVector(6) = pow(interpolationTime, 6.0);
+    interpolationTimeVector(7) = pow(interpolationTime, 7.0);
+
+    outputVector = polynomialCoefficientMatrix * interpolationTimeVector;
+
+    return outputVector;
+}
+
 void computeInterpolationSegmentsAndTimes(const Eigen::VectorXd newNodeTimes, const Eigen::VectorXd currentNodeTimes, const int numberOfCollocationPoints, Eigen::VectorXd& newOddPointTimesDimensional, Eigen::VectorXd& newOddPointTimesNormalized, Eigen::VectorXd& oddPointsSegments, Eigen::VectorXd& newTimeIntervals )
 {
 

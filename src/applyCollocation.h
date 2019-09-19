@@ -30,10 +30,10 @@ void computeMeshStates(Eigen::VectorXd currentNodeAndTime, Eigen::VectorXd nextN
 
 void retrieveLegendreGaussLobattoConstaints(const std::string desiredQuantity, Eigen::MatrixXd& outputMatrix);
 
-void computeCollocationDefects(Eigen::MatrixXd& collocationDefectVector, Eigen::MatrixXd& collocationDesignVector, const Eigen::MatrixXd oddStates, const Eigen::MatrixXd oddStatesDerivatives, Eigen::VectorXd timeIntervals, Eigen::VectorXd thrustAndMassParameters, const int numberOfCollocationPoints, const double initialTime, const int continuationIndex, const Eigen::MatrixXd phaseConstraintVector);
+void computeCollocationDefects(Eigen::MatrixXd& collocationDefectVector, Eigen::MatrixXd& collocationDesignVector, const Eigen::MatrixXd oddStates, const Eigen::MatrixXd oddStatesDerivatives, Eigen::VectorXd timeIntervals, Eigen::VectorXd thrustAndMassParameters, const int numberOfCollocationPoints, const double initialTime, const int continuationIndex, const Eigen::VectorXd previousDesignVector);
 
 
-Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuesss, const double massParameter, int& numberOfCollocationPoints, Eigen::VectorXd& collocatedGuess, Eigen::VectorXd& collocatedNodes, Eigen::VectorXd& deviationNorms, Eigen::VectorXd& collocatedDefects, const int continuationIndex, const Eigen::MatrixXd phaseConstraintVector,
+Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuesss, const double massParameter, int& numberOfCollocationPoints, Eigen::VectorXd& collocatedGuess, Eigen::VectorXd& collocatedNodes, Eigen::VectorXd& deviationNorms, Eigen::VectorXd& collocatedDefects, const int continuationIndex, const Eigen::VectorXd previousDesignVector,
                                                           double maxPositionDeviationFromPeriodicOrbit,  double maxVelocityDeviationFromPeriodicOrbit,  double maxPeriodDeviationFromPeriodicOrbit, const int maxNumberOfCollocationIterations = 100, const double maximumErrorTolerance = 1.0E-8 );
 
 
