@@ -169,6 +169,7 @@ double computeIntegralPhaseConstraint(const Eigen::MatrixXd collocationDesignVec
     Eigen::VectorXd phaseConstraintPoincare (currentNumberOfOddPoints);    phaseConstraintPoincare.setZero();
     Eigen::VectorXd phaseConstraintLiterature (currentNumberOfOddPoints);  phaseConstraintLiterature.setZero();
 
+    double alternativeOuput = 0.0;
     for(int i = 0; i < currentNumberOfOddPoints; i++)
     {
         Eigen::VectorXd currentIncrement = incrementOddPoints.segment(6*i,6);
@@ -177,7 +178,7 @@ double computeIntegralPhaseConstraint(const Eigen::MatrixXd collocationDesignVec
 
         phaseConstraintPoincare(i) = currentIncrement.transpose() * previousOddDerivative;
         phaseConstraintLiterature(i) = currentOddPoint.transpose() * previousOddDerivative;
-
+        alternativeOuput = alternativeOuput + currentIncrement.transpose() * previousOddDerivative;
     }
 
     // could it be that absolute version should be summed?
@@ -185,6 +186,8 @@ double computeIntegralPhaseConstraint(const Eigen::MatrixXd collocationDesignVec
 
     std::cout << "phaseConstraintPoincare:  \n" << phaseConstraintPoincare << std::endl;
     std::cout << "phaseIntegralConstraint:  " << phaseIntegralConstraint << std::endl;
+    std::cout << "alternativeOuput:  \n" << alternativeOuput << std::endl;
+
     std::cout << "completed computeIntegralPhaseConstraint " << std::endl;
 
 
