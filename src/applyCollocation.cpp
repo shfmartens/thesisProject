@@ -897,6 +897,9 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
         while (distributionDeltaPreviousIteration > distributionDeltaCurrentIteration and distributionDeltaCurrentIteration > 1.0E-12)
         {
             computeCollocationDefects(collocationDefectVector, collocationDesignVector, oddStates, oddStatesDerivatives, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, initialTime, continuationIndex, previousDesignVector);
+            std::cout << "collocationDefectVector: " << collocationDefectVector << std::endl;
+
+            std::runtime_error("MANUALLY ABORTED THE CODE");
 
             collocationDeviationNorms = computeCollocationDeviationNorms(collocationDefectVector, collocationDesignVector, numberOfCollocationPoints);
 
@@ -926,16 +929,13 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
             // ======= Start the loop for collocation procedure ====== //
             while( (collocationDefectVector.norm() > 1.0E-12) && continueColloc  )
             {
-                std::cout << "loop: " << numberOfCorrections << std::endl;
                 // compute the correction
                 Eigen::VectorXd collocationCorrectionVector(collocationDesignVector.size());
                 collocationCorrectionVector.setZero();
 
-                std::cout << "correctionVector computation start: " << numberOfCorrections << std::endl;
 
                 collocationCorrectionVector = computeCollocationCorrection(collocationDefectVector, collocationDesignVector, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, continuationIndex, previousDesignVector);
-                std::cout << "correctionVectorComputed: " << numberOfCorrections << std::endl;
-
+                std::cout << "collocationCorrectionVector: " << collocationCorrectionVector << std::endl;
 
                 // apply line search, select design vector which produces the smallest norm
                 applyLineSearchAttenuation(collocationCorrectionVector, collocationDefectVector, collocationDesignVector, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, continuationIndex, previousDesignVector);
@@ -986,7 +986,6 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
 
             }
 
-            std::cout << "CONVERGENCE REACHED!" << std::endl;
 
             // store the solution in a seperate variables
             Eigen::VectorXd convergedDesignVector = collocationDesignVector.block(0,0,collocationDesignVector.rows(),1);

@@ -396,6 +396,7 @@ Eigen::VectorXd computeCollocationCorrection(const Eigen::MatrixXd defectVector,
     Eigen::MatrixXd jacobiMatrix(defectVector.rows(), ( designVector.rows() ) );
     jacobiMatrix.setZero();
 
+    std::cout << "designVector.rows(): " << designVector.rows() << std::endl;
 
     // Construct the partial derivatives by computing the derivatives per segment
     Eigen::MatrixXd jacobiSegment(18,26);
@@ -496,11 +497,11 @@ Eigen::VectorXd computeCollocationCorrection(const Eigen::MatrixXd defectVector,
 
 
 
-    for (int i = 0; i < designVector.rows(); i++)
+    for (int i = 0; i < jacobiMatrix.cols(); i++)
     {
-        Eigen::VectorXcd inputDesignVector(designVector.rows()); inputDesignVector.setZero();
+        Eigen::VectorXcd inputDesignVector(jacobiMatrix.cols()); inputDesignVector.setZero();
 
-        inputDesignVector = designVector.block(0,0,designVector.rows(),1);
+        inputDesignVector = designVector.block(0,0,jacobiMatrix.cols(),1);
 
         inputDesignVector(i) = inputDesignVector(i) + increment;
 

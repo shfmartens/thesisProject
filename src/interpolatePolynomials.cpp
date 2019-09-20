@@ -106,6 +106,8 @@ double computeIntegralPhaseConstraint(const Eigen::MatrixXd collocationDesignVec
     int previousNumberOfCollocationPoints = previousNumberOfSegments+1;
     int previousNumberOfOddPoints = 3*previousNumberOfSegments+1;
 
+    std::cout << "previousNumberOfSegments: " << previousNumberOfSegments << std::endl;
+
 
     // Compute the properties of the previous guess, necessary for interpolation
     Eigen::VectorXd thrustAndMassParameters = previousDesignVector.segment(6,4);
