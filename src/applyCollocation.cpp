@@ -832,17 +832,19 @@ void computeCollocationDefects(Eigen::MatrixXd& collocationDefectVector, Eigen::
 
 // Compute phase constraint
     int lengthDefectVectorMinusOne = static_cast<int>(collocationDefectVector.rows()) - 1;
+    double integralPhaseConstraint = 0.0;
     if ( continuationIndex == 1)
     {
         std::cout << "entering computeIntegralPhaseConstraint " << std::endl;
 
-        double integralPhaseConstraint = computeIntegralPhaseConstraint(collocationDesignVector, numberOfCollocationPoints, previousDesignVector );
+        integralPhaseConstraint = computeIntegralPhaseConstraint(collocationDesignVector, numberOfCollocationPoints, previousDesignVector );
 
         std::cout << "exited computeIntegralPhaseConstraint " << std::endl;
         std::cout << "putting integralPhaseConstraint in colloc vector " << std::endl;
 
         std::cout << "lengthDefectVectorMinusOne: " << lengthDefectVectorMinusOne << std::endl;
         std::cout << "collocationDefectVector.rows()-1: " << collocationDefectVector.rows()-1 << std::endl;
+
         collocationDefectVector(collocationDefectVector.rows()-1,0) = integralPhaseConstraint;
 
         std::cout << "integralPhaseConstraint stored " << std::endl;
