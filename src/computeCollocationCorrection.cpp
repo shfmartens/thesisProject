@@ -22,9 +22,23 @@ double computeComplexPhaseDerivative(const Eigen::VectorXcd currentDesignVector,
     int currentNumberOfSegments = numberOfCollocationPoints - 1;
     int currentNumberOfOddPoints = 3*currentNumberOfSegments+1;
 
-    int previousNumberOfSegments = (((previousDesignVector.rows())/11)-1)/3;
+    int previousNumberOfSegments = (((static_cast<int>(previousDesignVector.rows()))/11)-1)/3;
     int previousNumberOfCollocationPoints = previousNumberOfSegments+1;
     int previousNumberOfOddPoints = 3*previousNumberOfSegments+1;
+
+    std::cout << "===== CHECK INPUT: =======" << std::endl;
+    std::cout << "currentDesignVector: \n" << currentDesignVector << std::endl;
+    std::cout << "numberOfCollocationPoints: \n" << numberOfCollocationPoints << std::endl;
+    std::cout << "previousDesignVector: \n" << previousDesignVector << std::endl;
+    std::cout << "epsilon: " << epsilon << std::endl;
+
+    std::cout << "phaseIntegralDerivative: " << phaseIntegralDerivative << std::endl
+              << "currentNumberOfSegments: " << currentNumberOfSegments << std::endl
+              << "currentNumberOfOddPoints: " << currentNumberOfOddPoints << std::endl
+              << "previousNumberOfSegments: " << previousNumberOfCollocationPoints << std::endl
+              << "previousNumberOfOddPoints: " << previousNumberOfOddPoints << std::endl;
+
+
 
 
     // Compute the properties of the previous guess, necessary for interpolation and put them in complex format
