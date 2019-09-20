@@ -899,8 +899,6 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
             computeCollocationDefects(collocationDefectVector, collocationDesignVector, oddStates, oddStatesDerivatives, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, initialTime, continuationIndex, previousDesignVector);
             std::cout << "collocationDefectVector: " << collocationDefectVector << std::endl;
 
-            std::runtime_error("MANUALLY ABORTED THE CODE");
-
             collocationDeviationNorms = computeCollocationDeviationNorms(collocationDefectVector, collocationDesignVector, numberOfCollocationPoints);
 
             double positionDefectDeviations = collocationDeviationNorms(0);

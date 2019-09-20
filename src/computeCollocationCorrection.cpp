@@ -392,16 +392,20 @@ Eigen::VectorXd computeCollocationCorrection(const Eigen::MatrixXd defectVector,
     outputVector.setZero();
     double epsilon = 1.0e-10;
     std::complex<double> increment(0.0,epsilon);
-    int numberOfNodes = 3*(numberOfCollocationPoints - 1) + 1;
+    int numberOfOddPoints= 3*(numberOfCollocationPoints - 1) + 1;
     Eigen::MatrixXd jacobiMatrix(defectVector.rows(), ( designVector.rows() ) );
     jacobiMatrix.setZero();
 
+    std::cout << "defectVector.rows(): " << defectVector.rows() << std::endl;
     std::cout << "designVector.rows(): " << designVector.rows() << std::endl;
+    std::cout << "jacobiMatrix.rows(): " << jacobiMatrix.rows() << std::endl;
+    std::cout << "jacobiMatrix.cols(): " << jacobiMatrix.cols() << std::endl;
+
+
+
 
     // Construct the partial derivatives by computing the derivatives per segment
     Eigen::MatrixXd jacobiSegment(18,26);
-    Eigen::MatrixXd jacobiIntegralPhaseSegment(1,26);
-
 
     Eigen::MatrixXd jacobiPeriodicitySegment(6,jacobiMatrix.cols());
     Eigen::MatrixXd jacobiIntegralPhaseConstraint(1,jacobiMatrix.cols());
@@ -409,7 +413,6 @@ Eigen::VectorXd computeCollocationCorrection(const Eigen::MatrixXd defectVector,
 
 
     jacobiSegment.setZero();
-    jacobiIntegralPhaseSegment.setZero();
     jacobiPeriodicitySegment.setZero();
     jacobiIntegralPhaseConstraint.setZero();
     jacobiPhaseHamiltonianSegment.setZero();
@@ -522,6 +525,8 @@ Eigen::VectorXd computeCollocationCorrection(const Eigen::MatrixXd defectVector,
         jacobiMatrix.block( ( jacobiMatrix.rows()-6 ), 0, 6, jacobiMatrix.cols()) = jacobiPeriodicitySegment;
 
     }
+
+    std::cout << "jacobiIntegralPhaseConstraint: " << jacobiIntegralPhaseConstraint << std::endl;
 
 
     // should I use umfpack or other things, compare to two different methods for sparsity
