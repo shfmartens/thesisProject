@@ -506,8 +506,6 @@ Eigen::VectorXd computeCollocationCorrection(const Eigen::MatrixXd defectVector,
 
     }
 
-    std::cout << "jacobiIntegralPhaseConstraint: " << jacobiIntegralPhaseConstraint << std::endl;
-
 
     // should I use umfpack or other things, compare to two different methods for sparsity
     Eigen::VectorXd outputVectorBDC(designVector.rows());
