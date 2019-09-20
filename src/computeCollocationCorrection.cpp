@@ -24,20 +24,6 @@ double computeComplexPhaseDerivative(const Eigen::VectorXcd currentDesignVector,
 
     int previousNumberOfSegments = (((static_cast<int>(previousDesignVector.rows()))/11)-1)/3;
     int previousNumberOfCollocationPoints = previousNumberOfSegments+1;
-    int previousNumberOfOddPoints = 3*previousNumberOfSegments+1;
-
-    std::cout << "===== CHECK INPUT: =======" << std::endl;
-    std::cout << "currentDesignVector: \n" << currentDesignVector << std::endl;
-    std::cout << "numberOfCollocationPoints: \n" << numberOfCollocationPoints << std::endl;
-    std::cout << "previousDesignVector: \n" << previousDesignVector << std::endl;
-    std::cout << "epsilon: " << epsilon << std::endl;
-
-    std::cout << "phaseIntegralDerivative: " << phaseIntegralDerivative << std::endl
-              << "currentNumberOfSegments: " << currentNumberOfSegments << std::endl
-              << "currentNumberOfOddPoints: " << currentNumberOfOddPoints << std::endl
-              << "previousNumberOfSegments: " << previousNumberOfCollocationPoints << std::endl
-              << "previousNumberOfOddPoints: " << previousNumberOfOddPoints << std::endl;
-
 
 
 
@@ -47,11 +33,11 @@ double computeComplexPhaseDerivative(const Eigen::VectorXcd currentDesignVector,
     Eigen::MatrixXd oddStateDerivatives(6*previousNumberOfSegments,4);
     Eigen::VectorXd timeIntervals(previousNumberOfSegments);
 
-
     computeSegmentProperties(previousDesignVector, thrustAndMassParameters, previousNumberOfCollocationPoints, oddStates,
                              oddStateDerivatives, timeIntervals);
 
-    Eigen::VectorXcd thrustAndMassParametersComplex(4); thrustAndMassParameters.setZero();
+
+    Eigen::VectorXcd thrustAndMassParametersComplex(4); thrustAndMassParametersComplex.setZero();
     thrustAndMassParametersComplex= thrustAndMassParameters;
     Eigen::MatrixXcd oddStatesComplex(6*previousNumberOfSegments,4);  oddStatesComplex.setZero();
     oddStatesComplex = oddStates;
@@ -71,44 +57,45 @@ double computeComplexPhaseDerivative(const Eigen::VectorXcd currentDesignVector,
     rewriteDesignVectorToFullFormatComplex(currentDesignVector, numberOfCollocationPoints, thrustAndMassParametersComplex, currentDesignVectorFullFormat);
 
 
-
     computeTimeAndSegmentInformationFromPhaseComplex(currentDesignVectorFullFormat, previousDesignVectorComplex, numberOfCollocationPoints, oddStatesComplex, previousNumberOfCollocationPoints,
                                                      oddPointTimesDimensional, oddPointTimesNormalized, segmentVector);
 
 
     // perform Interpolation and compute the derivatives
-    Eigen::VectorXcd incrementOddPoints(6*currentNumberOfOddPoints);              incrementOddPoints.setZero();
-    Eigen::VectorXcd currentGuessOddPoints(6*currentNumberOfOddPoints);           currentGuessOddPoints.setZero();
-    Eigen::VectorXcd previousGuessOddPointsSynced(6*currentNumberOfOddPoints);    previousGuessOddPointsSynced.setZero();
+    Eigen::VectorXcd incrementOddPoints(6*currentNumberOfOddPoints);               incrementOddPoints.setZero();
+    Eigen::VectorXcd currentGuessOddPoints(6*currentNumberOfOddPoints);            currentGuessOddPoints.setZero();
+    Eigen::VectorXcd previousGuessOddPointsSynced(6*currentNumberOfOddPoints);     previousGuessOddPointsSynced.setZero();
     Eigen::VectorXcd previousGuessOddDerivatesSynced(6*currentNumberOfOddPoints);  previousGuessOddDerivatesSynced.setZero();
-    Eigen::VectorXcd oddPointPhaseConstraints(currentNumberOfOddPoints); oddPointPhaseConstraints.setZero();
+    Eigen::VectorXcd oddPointPhaseConstraints(currentNumberOfOddPoints);           oddPointPhaseConstraints.setZero();
 
     for(int i = 0; i < currentNumberOfOddPoints; i++)
     {
         Eigen::VectorXcd oddPointStateVectorCurrentGuess(6); oddPointStateVectorCurrentGuess.setZero();
         Eigen::VectorXcd oddPointStateVectorPreviousGuess(6); oddPointStateVectorPreviousGuess.setZero();
-
         Eigen::VectorXcd oddPointDerivativePreviousGuess(6); oddPointDerivativePreviousGuess.setZero();
 
         // select relevant parameters for interpolation
         auto segmentNumber = static_cast<int>(segmentVector(i));
         std::complex<double> interpolationTime = oddPointTimesNormalized(i);
-        std::complex<double> oddPointTime = oddPointTimesDimensional(i);
         std::complex<double> segmentTimeInterval = timeIntervalsComplex(segmentNumber);
 
         Eigen::MatrixXcd segmentOddStates = oddStatesComplex.block(6*segmentNumber,0,6,4);
-        Eigen::MatrixXcd segmentOddStateDerivatives = oddStateDerivatives.block(6*segmentNumber,0,6,4);
+        Eigen::MatrixXcd segmentOddStateDerivatives = oddStateDerivativesComplex.block(6*segmentNumber,0,6,4);
 
         // perform interpolation
-        Eigen::VectorXcd interpolatedOddPoint = computeStateViaPolynomialInterpolationComplex(segmentOddStates, segmentOddStateDerivatives, segmentTimeInterval, interpolationTime);
-        Eigen::VectorXcd oddPointStateVectorInclParameters(10);
+        Eigen::VectorXcd interpolatedOddPoint(6); interpolatedOddPoint.setZero();
+        interpolatedOddPoint = computeStateViaPolynomialInterpolationComplex(segmentOddStates, segmentOddStateDerivatives, segmentTimeInterval, interpolationTime);
+        Eigen::VectorXcd oddPointStateVectorInclParameters(10); oddPointStateVectorInclParameters.setZero();
         oddPointStateVectorInclParameters.segment(0,6) = interpolatedOddPoint;
         oddPointStateVectorInclParameters.segment(6,4) = thrustAndMassParametersComplex;
 
         // Fill relevant variables
         oddPointStateVectorPreviousGuess= interpolatedOddPoint;
+
+
         oddPointDerivativePreviousGuess = computeComplexStateDerivative( interpolatedOddPoint, thrustAndMassParameters );
         oddPointStateVectorCurrentGuess = currentDesignVectorFullFormat.segment(i*11,6);
+
 
         // Store in constraint components in the vectors
         previousGuessOddPointsSynced.segment(6*i,6)     = oddPointStateVectorPreviousGuess;
@@ -118,12 +105,10 @@ double computeComplexPhaseDerivative(const Eigen::VectorXcd currentDesignVector,
 
     }
 
-
     // Compute versions of the integral constraint
     Eigen::VectorXcd phaseConstraintPoincare (currentNumberOfOddPoints);    phaseConstraintPoincare.setZero();
     Eigen::VectorXcd phaseConstraintLiterature (currentNumberOfOddPoints);  phaseConstraintLiterature.setZero();
 
-    double quantityCheck = 0.0;
     for(int i = 0; i < currentNumberOfOddPoints; i++)
     {
         Eigen::VectorXcd currentIncrement = incrementOddPoints.segment(6*i,6);
@@ -138,17 +123,8 @@ double computeComplexPhaseDerivative(const Eigen::VectorXcd currentDesignVector,
 
     }
 
-
-
-
     // Compute derivative via complex multistep method
     phaseIntegralDerivative = ((phaseConstraintPoincare.sum()).imag())/epsilon;
-
-//    std::cout  << "\nphaseConstraintPoincare: \n" << phaseConstraintPoincare << std::endl
-//               << "phaseConstraintPoincare.sum(): \n" << phaseConstraintPoincare.sum() << std::endl
-//                  << "phaseConstraintPoincare.sum().imag: \n" << (phaseConstraintPoincare.sum()).imag() << std::endl
-//                  << "phaseIntegralDerivative: \n" << phaseIntegralDerivative << std::endl
-//               << "====== FINISHED CHECK OF INTEGRAL CONSTRAINT ====== "<< std::endl;
 
     return phaseIntegralDerivative;
 }
@@ -410,14 +386,6 @@ Eigen::VectorXd computeCollocationCorrection(const Eigen::MatrixXd defectVector,
     Eigen::MatrixXd jacobiMatrix(defectVector.rows(), ( designVector.rows() ) );
     jacobiMatrix.setZero();
 
-    std::cout << "defectVector.rows(): " << defectVector.rows() << std::endl;
-    std::cout << "designVector.rows(): " << designVector.rows() << std::endl;
-    std::cout << "jacobiMatrix.rows(): " << jacobiMatrix.rows() << std::endl;
-    std::cout << "jacobiMatrix.cols(): " << jacobiMatrix.cols() << std::endl;
-
-
-
-
     // Construct the partial derivatives by computing the derivatives per segment
     Eigen::MatrixXd jacobiSegment(18,26);
 
@@ -526,8 +494,6 @@ Eigen::VectorXd computeCollocationCorrection(const Eigen::MatrixXd defectVector,
          jacobiIntegralPhaseConstraint(0,i) =phaseDerivative;
 
     }
-
-    std::cout << "computing JacobiIntegralPhaseConstraint completed " << std::endl;
 
 
     if (continuationIndex == 1)

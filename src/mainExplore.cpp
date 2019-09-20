@@ -31,6 +31,7 @@
 #include "stateDerivativeModelAugmented.h"
 #include "omp.h"
 #include "applyCollocation.h"
+#include "computeCollocationCorrection.h"
 
 
 
@@ -43,8 +44,6 @@ for(int i = 0; i < 6; i ++)
 {
  testVector(i) = static_cast<double>(i+1);
 }
-
-Eigen::VectorXcd testVectorComplex = testVector;
 
 //     //================================
 //     //== Compute equilibria, comment out when computing low-thrust intial positions ==

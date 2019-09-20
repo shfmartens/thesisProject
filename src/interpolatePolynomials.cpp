@@ -106,8 +106,6 @@ double computeIntegralPhaseConstraint(const Eigen::MatrixXd collocationDesignVec
     int previousNumberOfCollocationPoints = previousNumberOfSegments+1;
     int previousNumberOfOddPoints = 3*previousNumberOfSegments+1;
 
-    std::cout << "previousNumberOfSegments: " << previousNumberOfSegments << std::endl;
-
 
     // Compute the properties of the previous guess, necessary for interpolation
     Eigen::VectorXd thrustAndMassParameters = previousDesignVector.segment(6,4);
@@ -144,7 +142,6 @@ double computeIntegralPhaseConstraint(const Eigen::MatrixXd collocationDesignVec
         // select relevant parameters for interpolation
         auto segmentNumber = static_cast<int>(segmentVector(i));
         double interpolationTime = oddPointTimesNormalized(i);
-        double oddPointTime = oddPointTimesDimensional(i);
         double segmentTimeInterval = timeIntervals(segmentNumber);
 
         Eigen::MatrixXd segmentOddStates = oddStates.block(6*segmentNumber,0,6,4);
@@ -171,7 +168,7 @@ double computeIntegralPhaseConstraint(const Eigen::MatrixXd collocationDesignVec
     // Compute versions of the integral constraint
     Eigen::VectorXd phaseConstraintPoincare (currentNumberOfOddPoints);    phaseConstraintPoincare.setZero();
     Eigen::VectorXd phaseConstraintLiterature (currentNumberOfOddPoints);  phaseConstraintLiterature.setZero();
-    double quantityCheck = 0.0;
+
     for(int i = 0; i < currentNumberOfOddPoints; i++)
     {
         Eigen::VectorXd currentIncrement = incrementOddPoints.segment(6*i,6);
