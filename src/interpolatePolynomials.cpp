@@ -97,6 +97,7 @@ void rewriteDesignVectorToFullFormat(const Eigen::MatrixXd collocationDesignVect
 
 double computeIntegralPhaseConstraint(const Eigen::MatrixXd collocationDesignVector, const int numberOfCollocationPoints,const Eigen::VectorXd previousDesignVector )
 {
+    std::cout << "START computeIntegralPhaseConstraint " << std::endl;
     // initialize variables
     double phaseIntegralConstraint = 0.0;
     int currentNumberOfSegments = numberOfCollocationPoints - 1;
@@ -181,6 +182,9 @@ double computeIntegralPhaseConstraint(const Eigen::MatrixXd collocationDesignVec
 
     // could it be that absolute version should be summed?
     phaseIntegralConstraint = phaseConstraintPoincare.sum();
+
+    std::cout << "completed computeIntegralPhaseConstraint " << std::endl;
+
 
     return phaseIntegralConstraint;
 }

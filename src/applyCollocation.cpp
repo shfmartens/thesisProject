@@ -648,6 +648,7 @@ void retrieveLegendreGaussLobattoConstaints(const std::string desiredQuantity, E
 
 void computeCollocationDefects(Eigen::MatrixXd& collocationDefectVector, Eigen::MatrixXd& collocationDesignVector, const Eigen::MatrixXd oddStates, const Eigen::MatrixXd oddStatesDerivatives, Eigen::VectorXd timeIntervals, Eigen::VectorXd thrustAndMassParameters, const int numberOfCollocationPoints, const double initialTime, const int continuationIndex, const Eigen::VectorXd previousDesignVector)
 {
+    std::cout << "start DEFECT FUNCTION " << std::endl;
     // Load relevant constants
     Eigen::MatrixXd oddTimesMatrix(8,8);            Eigen::MatrixXd evenTimesMatrix(8,3);
     Eigen::MatrixXd evenTimesMatrixDerivative(8,3); Eigen::MatrixXd weightingMatrixEvenStates(3,3);
@@ -837,6 +838,9 @@ void computeCollocationDefects(Eigen::MatrixXd& collocationDefectVector, Eigen::
         collocationDefectVector(collocationDefectVector.rows()-1,0) = integralPhaseConstraint;
     }
 
+    std::cout << "COMPLETED DEFECT FUNCTION " << std::endl;
+
+
 }
 
 
@@ -933,10 +937,12 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
 
 
                 collocationCorrectionVector = computeCollocationCorrection(collocationDefectVector, collocationDesignVector, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, continuationIndex, previousDesignVector);
-                std::cout << "collocationCorrectionVector: " << collocationCorrectionVector << std::endl;
+                std::cout << "apply line search for loop: " << numberOfCorrections << std::endl;
 
                 // apply line search, select design vector which produces the smallest norm
                 applyLineSearchAttenuation(collocationCorrectionVector, collocationDefectVector, collocationDesignVector, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, continuationIndex, previousDesignVector);
+
+                std::cout << "Completed line search for loop: " << numberOfCorrections << std::endl;
 
                 // Relax the tolerances if a certain number of corrections is reached
                 numberOfCorrections++;
@@ -1047,7 +1053,7 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
 
             // compute the new number of collocation points
             double currentNumberOfCollocationPoints = static_cast<double>(numberOfCollocationPoints);
-            double currentNumberOfSegments =  static_cast<double>(currentNumberOfCollocationPoints-1.0);
+            double currentNumberOfSegments =  static_cast<double>(currentNumberOfCollocationPoints) -1.0;
             double orderOfCollocationScheme = 12.0;
 
             double newNumberSegments = std::round( currentNumberOfSegments * pow((10.0*maximumErrorPerSegment)/maximumErrorTolerance,1.0/(orderOfCollocationScheme+1.0)) + 5);
