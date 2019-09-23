@@ -65,7 +65,7 @@ void rewriteDesignVectorToFullFormat(const Eigen::MatrixXd collocationDesignVect
     nodeTimes.setZero();
     retrieveLegendreGaussLobattoConstaints("nodeTimes", nodeTimes);
 
-    for (int i = 0; i < numberOfCollocationPoints; i++)
+    for (int i = 0; i < numberOfCollocationPoints-1; i++)
     {
         Eigen::VectorXd localRewrittenVector(44); localRewrittenVector.setZero();
 
