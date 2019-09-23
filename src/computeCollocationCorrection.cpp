@@ -124,7 +124,7 @@ double computeComplexPhaseDerivative(const Eigen::VectorXcd currentDesignVector,
     }
 
     // Compute derivative via complex multistep method
-    phaseIntegralDerivative = ((phaseConstraintPoincare.sum()).imag())/epsilon;
+    phaseIntegralDerivative = ((phaseConstraintPoincare(0)).imag())/epsilon;
 
     return phaseIntegralDerivative;
 }

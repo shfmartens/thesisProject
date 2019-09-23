@@ -179,7 +179,7 @@ double computeIntegralPhaseConstraint(const Eigen::MatrixXd collocationDesignVec
     }
 
     // could it be that absolute version should be summed?
-    phaseIntegralConstraint = phaseConstraintPoincare.sum();
+    phaseIntegralConstraint = phaseConstraintPoincare(0);
 
     return phaseIntegralConstraint;
 
