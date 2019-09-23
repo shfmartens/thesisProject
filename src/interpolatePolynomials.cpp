@@ -190,7 +190,8 @@ double computeIntegralPhaseConstraint(const Eigen::MatrixXd collocationDesignVec
     std::cout << "completed computeIntegralPhaseConstraint " << std::endl;
 
 
-    return alternativeOuput;
+    return phaseIntegralConstraint;
+
 }
 
 void computeTimeAndSegmentInformationFromPhaseComplex(const Eigen::VectorXcd currentDesignVector, const Eigen::VectorXcd previousDesignVector, const int currentNumberOfCollocationPoints, const Eigen::MatrixXcd oddStates, const int previousNumberOfCollocationPoints,
