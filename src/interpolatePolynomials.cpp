@@ -181,13 +181,13 @@ double computeIntegralPhaseConstraint(const Eigen::MatrixXd collocationDesignVec
         alternativeOuput = alternativeOuput + currentIncrement.transpose() * previousOddDerivative;
     }
 
-//    // could it be that absolute version should be summed?
-//    phaseIntegralConstraint = phaseConstraintPoincare.sum();
+    // could it be that absolute version should be summed?
+    phaseIntegralConstraint = phaseConstraintPoincare.sum();
 
-//    std::cout << "phaseConstraintPoincare:  \n" << phaseConstraintPoincare << std::endl;
-//    std::cout << "phaseIntegralConstraint:  " << phaseIntegralConstraint << std::endl;
-//    std::cout << "alternativeOuput:  \n" << alternativeOuput << std::endl;
-//    std::cout << "completed computeIntegralPhaseConstraint " << std::endl;
+    std::cout << "phaseConstraintPoincare:  \n" << phaseConstraintPoincare << std::endl;
+    std::cout << "phaseIntegralConstraint:  " << phaseIntegralConstraint << std::endl;
+    std::cout << "alternativeOuput:  \n" << alternativeOuput << std::endl;
+    std::cout << "completed computeIntegralPhaseConstraint " << std::endl;
 
 
     return phaseIntegralConstraint;
