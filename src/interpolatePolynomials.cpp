@@ -100,11 +100,11 @@ double computeIntegralPhaseConstraint(const Eigen::MatrixXd collocationDesignVec
     std::cout << "START computeIntegralPhaseConstraint " << std::endl;
     // initialize variables
     double phaseIntegralConstraint = 0.0;
-//    int currentNumberOfSegments = numberOfCollocationPoints - 1;
-//    int currentNumberOfOddPoints = 3*currentNumberOfSegments+1;
+    int currentNumberOfSegments = numberOfCollocationPoints - 1;
+    int currentNumberOfOddPoints = 3*currentNumberOfSegments+1;
 
-//    int previousNumberOfSegments = (((static_cast<int>(previousDesignVector.rows()))/11)-1)/3;
-//    int previousNumberOfCollocationPoints = previousNumberOfSegments+1;
+    int previousNumberOfSegments = (((static_cast<int>(previousDesignVector.rows()))/11)-1)/3;
+    int previousNumberOfCollocationPoints = previousNumberOfSegments+1;
 
 
 //    // Compute the properties of the previous guess, necessary for interpolation
