@@ -48,7 +48,7 @@ Eigen::MatrixXd collocationDesignVector = Eigen::MatrixXd::Zero(83,1);
 Eigen::VectorXd previousDesignVector = Eigen::VectorXd::Zero(11*numberOfOddPoints);
 
 std::ifstream inFile;
-std::string path = "/Users/Sjors/Desktop/designvector.txt";
+std::string path = "../designvector.txt";
 inFile.open(path);
 
 if (!inFile) {
@@ -71,7 +71,7 @@ if (!inFile) {
 inFile.close();
 
 std::ifstream inFile2;
-std::string path2 = "/Users/Sjors/Desktop/previousDesignVector.txt";
+std::string path2 = "../previousDesignVector.txt";
 inFile2.open(path2);
 
 if (!inFile2) {
