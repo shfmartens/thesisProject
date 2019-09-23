@@ -21,7 +21,7 @@ void rewriteDesignVectorToFullFormatComplex(const Eigen::VectorXcd collocationDe
     retrieveLegendreGaussLobattoConstaints("nodeTimes", nodeTimes);
     Eigen::MatrixXcd nodeTimesComplex = nodeTimes;
 
-    for (int i = 0; i < numberOfCollocationPoints; i++)
+    for (int i = 0; i < numberOfCollocationPoints-1; i++)
     {
         Eigen::VectorXcd localRewrittenVector(44); localRewrittenVector.setZero();
 
