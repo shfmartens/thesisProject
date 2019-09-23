@@ -123,15 +123,15 @@ double computeIntegralPhaseConstraint(const Eigen::MatrixXd collocationDesignVec
 
     rewriteDesignVectorToFullFormat(collocationDesignVector, numberOfCollocationPoints, thrustAndMassParameters, currentDesignVector);
 
-//    computeTimeAndSegmentInformationFromPhase(currentDesignVector, previousDesignVector, numberOfCollocationPoints, oddStates, previousNumberOfCollocationPoints,
-//                                              oddPointTimesDimensional, oddPointTimesNormalized, segmentVector);
+    computeTimeAndSegmentInformationFromPhase(currentDesignVector, previousDesignVector, numberOfCollocationPoints, oddStates, previousNumberOfCollocationPoints,
+                                              oddPointTimesDimensional, oddPointTimesNormalized, segmentVector);
 
-//    // perform Interpolation and compute the derivatives
-//    Eigen::VectorXd incrementOddPoints(6*currentNumberOfOddPoints);
-//    Eigen::VectorXd currentGuessOddPoints(6*currentNumberOfOddPoints);
-//    Eigen::VectorXd previousGuessOddPointsSynced(6*currentNumberOfOddPoints);
-//    Eigen::VectorXd previousGuessOddDerivatesSynced(6*currentNumberOfOddPoints);
-//    Eigen::VectorXd oddPointPhaseConstraints(currentNumberOfOddPoints); oddPointPhaseConstraints.setZero();
+    // perform Interpolation and compute the derivatives
+    Eigen::VectorXd incrementOddPoints(6*currentNumberOfOddPoints);
+    Eigen::VectorXd currentGuessOddPoints(6*currentNumberOfOddPoints);
+    Eigen::VectorXd previousGuessOddPointsSynced(6*currentNumberOfOddPoints);
+    Eigen::VectorXd previousGuessOddDerivatesSynced(6*currentNumberOfOddPoints);
+    Eigen::VectorXd oddPointPhaseConstraints(currentNumberOfOddPoints); oddPointPhaseConstraints.setZero();
 
 //    for(int i = 0; i < currentNumberOfOddPoints; i++)
 //    {
