@@ -100,94 +100,94 @@ double computeIntegralPhaseConstraint(const Eigen::MatrixXd collocationDesignVec
     std::cout << "START computeIntegralPhaseConstraint " << std::endl;
     // initialize variables
     double phaseIntegralConstraint = 0.0;
-    int currentNumberOfSegments = numberOfCollocationPoints - 1;
-    int currentNumberOfOddPoints = 3*currentNumberOfSegments+1;
+//    int currentNumberOfSegments = numberOfCollocationPoints - 1;
+//    int currentNumberOfOddPoints = 3*currentNumberOfSegments+1;
 
-    int previousNumberOfSegments = (((static_cast<int>(previousDesignVector.rows()))/11)-1)/3;
-    int previousNumberOfCollocationPoints = previousNumberOfSegments+1;
+//    int previousNumberOfSegments = (((static_cast<int>(previousDesignVector.rows()))/11)-1)/3;
+//    int previousNumberOfCollocationPoints = previousNumberOfSegments+1;
 
 
-    // Compute the properties of the previous guess, necessary for interpolation
-    Eigen::VectorXd thrustAndMassParameters = previousDesignVector.segment(6,4);
-    Eigen::MatrixXd oddStates(6*previousNumberOfSegments,4);
-    Eigen::MatrixXd oddStateDerivatives(6*previousNumberOfSegments,4);
-    Eigen::VectorXd timeIntervals(previousNumberOfSegments);
+//    // Compute the properties of the previous guess, necessary for interpolation
+//    Eigen::VectorXd thrustAndMassParameters = previousDesignVector.segment(6,4);
+//    Eigen::MatrixXd oddStates(6*previousNumberOfSegments,4);
+//    Eigen::MatrixXd oddStateDerivatives(6*previousNumberOfSegments,4);
+//    Eigen::VectorXd timeIntervals(previousNumberOfSegments);
 
-    computeSegmentProperties(previousDesignVector, thrustAndMassParameters, previousNumberOfCollocationPoints, oddStates, oddStateDerivatives, timeIntervals);
+//    computeSegmentProperties(previousDesignVector, thrustAndMassParameters, previousNumberOfCollocationPoints, oddStates, oddStateDerivatives, timeIntervals);
 
-    // compute the time information of the new nodes
-    Eigen::VectorXd currentDesignVector(11*currentNumberOfOddPoints);   currentDesignVector.setZero();
-    Eigen::VectorXd oddPointTimesDimensional(currentNumberOfOddPoints); oddPointTimesDimensional.setZero();
-    Eigen::VectorXd oddPointTimesNormalized(currentNumberOfOddPoints);  oddPointTimesNormalized.setZero();
-    Eigen::VectorXd segmentVector(currentNumberOfOddPoints);            segmentVector.setZero();
+//    // compute the time information of the new nodes
+//    Eigen::VectorXd currentDesignVector(11*currentNumberOfOddPoints);   currentDesignVector.setZero();
+//    Eigen::VectorXd oddPointTimesDimensional(currentNumberOfOddPoints); oddPointTimesDimensional.setZero();
+//    Eigen::VectorXd oddPointTimesNormalized(currentNumberOfOddPoints);  oddPointTimesNormalized.setZero();
+//    Eigen::VectorXd segmentVector(currentNumberOfOddPoints);            segmentVector.setZero();
 
-    rewriteDesignVectorToFullFormat(collocationDesignVector, numberOfCollocationPoints, thrustAndMassParameters, currentDesignVector);
+//    rewriteDesignVectorToFullFormat(collocationDesignVector, numberOfCollocationPoints, thrustAndMassParameters, currentDesignVector);
 
-    computeTimeAndSegmentInformationFromPhase(currentDesignVector, previousDesignVector, numberOfCollocationPoints, oddStates, previousNumberOfCollocationPoints,
-                                              oddPointTimesDimensional, oddPointTimesNormalized, segmentVector);
+//    computeTimeAndSegmentInformationFromPhase(currentDesignVector, previousDesignVector, numberOfCollocationPoints, oddStates, previousNumberOfCollocationPoints,
+//                                              oddPointTimesDimensional, oddPointTimesNormalized, segmentVector);
 
-    // perform Interpolation and compute the derivatives
-    Eigen::VectorXd incrementOddPoints(6*currentNumberOfOddPoints);
-    Eigen::VectorXd currentGuessOddPoints(6*currentNumberOfOddPoints);
-    Eigen::VectorXd previousGuessOddPointsSynced(6*currentNumberOfOddPoints);
-    Eigen::VectorXd previousGuessOddDerivatesSynced(6*currentNumberOfOddPoints);
-    Eigen::VectorXd oddPointPhaseConstraints(currentNumberOfOddPoints); oddPointPhaseConstraints.setZero();
+//    // perform Interpolation and compute the derivatives
+//    Eigen::VectorXd incrementOddPoints(6*currentNumberOfOddPoints);
+//    Eigen::VectorXd currentGuessOddPoints(6*currentNumberOfOddPoints);
+//    Eigen::VectorXd previousGuessOddPointsSynced(6*currentNumberOfOddPoints);
+//    Eigen::VectorXd previousGuessOddDerivatesSynced(6*currentNumberOfOddPoints);
+//    Eigen::VectorXd oddPointPhaseConstraints(currentNumberOfOddPoints); oddPointPhaseConstraints.setZero();
 
-    for(int i = 0; i < currentNumberOfOddPoints; i++)
-    {
-        Eigen::VectorXd oddPointStateVectorCurrentGuess(6); oddPointStateVectorCurrentGuess.setZero();
-        Eigen::VectorXd oddPointStateVectorPreviousGuess(6); oddPointStateVectorPreviousGuess.setZero();
-        Eigen::VectorXd oddPointDerivativePreviousGuess(6); oddPointDerivativePreviousGuess.setZero();
+//    for(int i = 0; i < currentNumberOfOddPoints; i++)
+//    {
+//        Eigen::VectorXd oddPointStateVectorCurrentGuess(6); oddPointStateVectorCurrentGuess.setZero();
+//        Eigen::VectorXd oddPointStateVectorPreviousGuess(6); oddPointStateVectorPreviousGuess.setZero();
+//        Eigen::VectorXd oddPointDerivativePreviousGuess(6); oddPointDerivativePreviousGuess.setZero();
 
-        // select relevant parameters for interpolation
-        auto segmentNumber = static_cast<int>(segmentVector(i));
-        double interpolationTime = oddPointTimesNormalized(i);
-        double segmentTimeInterval = timeIntervals(segmentNumber);
+//        // select relevant parameters for interpolation
+//        auto segmentNumber = static_cast<int>(segmentVector(i));
+//        double interpolationTime = oddPointTimesNormalized(i);
+//        double segmentTimeInterval = timeIntervals(segmentNumber);
 
-        Eigen::MatrixXd segmentOddStates = oddStates.block(6*segmentNumber,0,6,4);
-        Eigen::MatrixXd segmentOddStateDerivatives = oddStateDerivatives.block(6*segmentNumber,0,6,4);
+//        Eigen::MatrixXd segmentOddStates = oddStates.block(6*segmentNumber,0,6,4);
+//        Eigen::MatrixXd segmentOddStateDerivatives = oddStateDerivatives.block(6*segmentNumber,0,6,4);
 
-        // perform interpolation
-        Eigen::VectorXd interpolatedOddPoint = computeStateViaPolynomialInterpolation(segmentOddStates, segmentOddStateDerivatives, segmentTimeInterval, interpolationTime);
-        Eigen::VectorXd oddPointStateVectorInclParameters(10);
-        oddPointStateVectorInclParameters.segment(0,6) = interpolatedOddPoint;
-        oddPointStateVectorInclParameters.segment(6,4) = thrustAndMassParameters;
+//        // perform interpolation
+//        Eigen::VectorXd interpolatedOddPoint = computeStateViaPolynomialInterpolation(segmentOddStates, segmentOddStateDerivatives, segmentTimeInterval, interpolationTime);
+//        Eigen::VectorXd oddPointStateVectorInclParameters(10);
+//        oddPointStateVectorInclParameters.segment(0,6) = interpolatedOddPoint;
+//        oddPointStateVectorInclParameters.segment(6,4) = thrustAndMassParameters;
 
-        // Fill relevant variables
-        oddPointStateVectorPreviousGuess= interpolatedOddPoint;
-        oddPointDerivativePreviousGuess = computeStateDerivativeAugmented(0.0, getFullInitialStateAugmented(oddPointStateVectorInclParameters)).block(0,0,6,1);
-        oddPointStateVectorCurrentGuess = currentDesignVector.segment(i*11,6);
+//        // Fill relevant variables
+//        oddPointStateVectorPreviousGuess= interpolatedOddPoint;
+//        oddPointDerivativePreviousGuess = computeStateDerivativeAugmented(0.0, getFullInitialStateAugmented(oddPointStateVectorInclParameters)).block(0,0,6,1);
+//        oddPointStateVectorCurrentGuess = currentDesignVector.segment(i*11,6);
 
-        // Store in constraint components in the vectors
-        previousGuessOddPointsSynced.segment(6*i,6)     = oddPointStateVectorPreviousGuess;
-        previousGuessOddDerivatesSynced.segment(6*i,6)  = oddPointDerivativePreviousGuess;
-        currentGuessOddPoints.segment(6*i,6)            = oddPointStateVectorCurrentGuess;
-        incrementOddPoints.segment(6*i,6) = oddPointStateVectorCurrentGuess - oddPointStateVectorPreviousGuess;
-    }
+//        // Store in constraint components in the vectors
+//        previousGuessOddPointsSynced.segment(6*i,6)     = oddPointStateVectorPreviousGuess;
+//        previousGuessOddDerivatesSynced.segment(6*i,6)  = oddPointDerivativePreviousGuess;
+//        currentGuessOddPoints.segment(6*i,6)            = oddPointStateVectorCurrentGuess;
+//        incrementOddPoints.segment(6*i,6) = oddPointStateVectorCurrentGuess - oddPointStateVectorPreviousGuess;
+//    }
 
-    // Compute versions of the integral constraint
-    Eigen::VectorXd phaseConstraintPoincare (currentNumberOfOddPoints);    phaseConstraintPoincare.setZero();
-    Eigen::VectorXd phaseConstraintLiterature (currentNumberOfOddPoints);  phaseConstraintLiterature.setZero();
+//    // Compute versions of the integral constraint
+//    Eigen::VectorXd phaseConstraintPoincare (currentNumberOfOddPoints);    phaseConstraintPoincare.setZero();
+//    Eigen::VectorXd phaseConstraintLiterature (currentNumberOfOddPoints);  phaseConstraintLiterature.setZero();
 
-    double alternativeOuput = 0.0;
-    for(int i = 0; i < currentNumberOfOddPoints; i++)
-    {
-        Eigen::VectorXd currentIncrement = incrementOddPoints.segment(6*i,6);
-        Eigen::VectorXd currentOddPoint = currentGuessOddPoints.segment(6*i,6);
-        Eigen::VectorXd previousOddDerivative = previousGuessOddDerivatesSynced.segment(6*i,6);
+//    double alternativeOuput = 0.0;
+//    for(int i = 0; i < currentNumberOfOddPoints; i++)
+//    {
+//        Eigen::VectorXd currentIncrement = incrementOddPoints.segment(6*i,6);
+//        Eigen::VectorXd currentOddPoint = currentGuessOddPoints.segment(6*i,6);
+//        Eigen::VectorXd previousOddDerivative = previousGuessOddDerivatesSynced.segment(6*i,6);
 
-        phaseConstraintPoincare(i) = currentIncrement.transpose() * previousOddDerivative;
-        phaseConstraintLiterature(i) = currentOddPoint.transpose() * previousOddDerivative;
-        alternativeOuput = alternativeOuput + currentIncrement.transpose() * previousOddDerivative;
-    }
+//        phaseConstraintPoincare(i) = currentIncrement.transpose() * previousOddDerivative;
+//        phaseConstraintLiterature(i) = currentOddPoint.transpose() * previousOddDerivative;
+//        alternativeOuput = alternativeOuput + currentIncrement.transpose() * previousOddDerivative;
+//    }
 
-    // could it be that absolute version should be summed?
-    phaseIntegralConstraint = phaseConstraintPoincare.sum();
+//    // could it be that absolute version should be summed?
+//    phaseIntegralConstraint = phaseConstraintPoincare.sum();
 
-    std::cout << "phaseConstraintPoincare:  \n" << phaseConstraintPoincare << std::endl;
-    std::cout << "phaseIntegralConstraint:  " << phaseIntegralConstraint << std::endl;
-    std::cout << "alternativeOuput:  \n" << alternativeOuput << std::endl;
-    std::cout << "completed computeIntegralPhaseConstraint " << std::endl;
+//    std::cout << "phaseConstraintPoincare:  \n" << phaseConstraintPoincare << std::endl;
+//    std::cout << "phaseIntegralConstraint:  " << phaseIntegralConstraint << std::endl;
+//    std::cout << "alternativeOuput:  \n" << alternativeOuput << std::endl;
+//    std::cout << "completed computeIntegralPhaseConstraint " << std::endl;
 
 
     return phaseIntegralConstraint;
