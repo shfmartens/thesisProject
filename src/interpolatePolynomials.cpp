@@ -121,7 +121,7 @@ double computeIntegralPhaseConstraint(const Eigen::MatrixXd collocationDesignVec
     Eigen::VectorXd oddPointTimesNormalized(currentNumberOfOddPoints);  oddPointTimesNormalized.setZero();
     Eigen::VectorXd segmentVector(currentNumberOfOddPoints);            segmentVector.setZero();
 
-//    rewriteDesignVectorToFullFormat(collocationDesignVector, numberOfCollocationPoints, thrustAndMassParameters, currentDesignVector);
+    rewriteDesignVectorToFullFormat(collocationDesignVector, numberOfCollocationPoints, thrustAndMassParameters, currentDesignVector);
 
 //    computeTimeAndSegmentInformationFromPhase(currentDesignVector, previousDesignVector, numberOfCollocationPoints, oddStates, previousNumberOfCollocationPoints,
 //                                              oddPointTimesDimensional, oddPointTimesNormalized, segmentVector);
