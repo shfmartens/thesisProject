@@ -39,63 +39,6 @@ double massParameter = tudat::gravitation::circular_restricted_three_body_proble
 double maximumThrust = 0.1;
 int main (){
 
-int testCollocPoints = 5;
-int numberOfSegments = testCollocPoints-1;
-int numberOfOddPoints = 3*numberOfSegments+1;
-
-
-Eigen::MatrixXd collocationDesignVector = Eigen::MatrixXd::Zero(83,1);
-Eigen::VectorXd previousDesignVector = Eigen::VectorXd::Zero(11*numberOfOddPoints);
-
-std::ifstream inFile;
-//std::string path = "/Users/Sjors/Desktop/designvector.txt";
-std::string path = "../designvector.txt";
-
-inFile.open(path);
-
-if (!inFile) {
-    std::cout << "Unable to open file datafile.txt" << std::endl;
-} else
-{
-
-    int i = 0;
-    double x;
-    while(inFile >> x)
-    {
-
-        collocationDesignVector(i) = x;
-        i++;
-    }
-
-}
-
-
-inFile.close();
-
-std::ifstream inFile2;
-//std::string path2 = "/Users/Sjors/Desktop/previousDesignVector.txt";
-std::string path2 = "../previousDesignVector.txt";
-
-inFile2.open(path2);
-
-if (!inFile2) {
-    std::cout << "Unable to open file datafile.txt" << std::endl;
-} else
-{
-
-    int i = 0;
-    double x;
-    while(inFile2 >> x)
-    {
-        previousDesignVector(i) = x;
-        i++;
-    }
-
-}
-inFile2.close();
-std::cout.precision(14);
-double phaseConstraint = computeIntegralPhaseConstraint(collocationDesignVector, testCollocPoints, previousDesignVector);
-std::cout << "phaseConstraint: " << phaseConstraint << std::endl;
 
 //     //================================
 //     //== Compute equilibria, comment out when computing low-thrust intial positions ==
@@ -134,7 +77,7 @@ std::cout << "phaseConstraint: " << phaseConstraint << std::endl;
                 double accelerationAngle2 = 0.0;
                 double initialMass = 1.0;
                 double ySign = 1.0;
- //               createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, massParameter );
+                createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, massParameter );
 
 
             }
@@ -424,3 +367,62 @@ std::cout << "phaseConstraint: " << phaseConstraint << std::endl;
 
     return 0;
 }
+
+
+//int testCollocPoints = 5;
+//int numberOfSegments = testCollocPoints-1;
+//int numberOfOddPoints = 3*numberOfSegments+1;
+
+
+//Eigen::MatrixXd collocationDesignVector = Eigen::MatrixXd::Zero(83,1);
+//Eigen::VectorXd previousDesignVector = Eigen::VectorXd::Zero(11*numberOfOddPoints);
+
+//std::ifstream inFile;
+////std::string path = "/Users/Sjors/Desktop/designvector.txt";
+//std::string path = "../designvector.txt";
+
+//inFile.open(path);
+
+//if (!inFile) {
+//    std::cout << "Unable to open file datafile.txt" << std::endl;
+//} else
+//{
+
+//    int i = 0;
+//    double x;
+//    while(inFile >> x)
+//    {
+
+//        collocationDesignVector(i) = x;
+//        i++;
+//    }
+
+//}
+
+
+//inFile.close();
+
+//std::ifstream inFile2;
+////std::string path2 = "/Users/Sjors/Desktop/previousDesignVector.txt";
+//std::string path2 = "../previousDesignVector.txt";
+
+//inFile2.open(path2);
+
+//if (!inFile2) {
+//    std::cout << "Unable to open file datafile.txt" << std::endl;
+//} else
+//{
+
+//    int i = 0;
+//    double x;
+//    while(inFile2 >> x)
+//    {
+//        previousDesignVector(i) = x;
+//        i++;
+//    }
+
+//}
+//inFile2.close();
+//std::cout.precision(14);
+//double phaseConstraint = computeIntegralPhaseConstraint(collocationDesignVector, testCollocPoints, previousDesignVector);
+//std::cout << "phaseConstraint: " << phaseConstraint << std::endl;
