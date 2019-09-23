@@ -107,13 +107,13 @@ double computeIntegralPhaseConstraint(const Eigen::MatrixXd collocationDesignVec
     int previousNumberOfCollocationPoints = previousNumberOfSegments+1;
 
 
-//    // Compute the properties of the previous guess, necessary for interpolation
-//    Eigen::VectorXd thrustAndMassParameters = previousDesignVector.segment(6,4);
-//    Eigen::MatrixXd oddStates(6*previousNumberOfSegments,4);
-//    Eigen::MatrixXd oddStateDerivatives(6*previousNumberOfSegments,4);
-//    Eigen::VectorXd timeIntervals(previousNumberOfSegments);
+    // Compute the properties of the previous guess, necessary for interpolation
+    Eigen::VectorXd thrustAndMassParameters = previousDesignVector.segment(6,4);
+    Eigen::MatrixXd oddStates(6*previousNumberOfSegments,4);
+    Eigen::MatrixXd oddStateDerivatives(6*previousNumberOfSegments,4);
+    Eigen::VectorXd timeIntervals(previousNumberOfSegments);
 
-//    computeSegmentProperties(previousDesignVector, thrustAndMassParameters, previousNumberOfCollocationPoints, oddStates, oddStateDerivatives, timeIntervals);
+    computeSegmentProperties(previousDesignVector, thrustAndMassParameters, previousNumberOfCollocationPoints, oddStates, oddStateDerivatives, timeIntervals);
 
 //    // compute the time information of the new nodes
 //    Eigen::VectorXd currentDesignVector(11*currentNumberOfOddPoints);   currentDesignVector.setZero();
