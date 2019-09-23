@@ -165,21 +165,21 @@ double computeIntegralPhaseConstraint(const Eigen::MatrixXd collocationDesignVec
         incrementOddPoints.segment(6*i,6) = oddPointStateVectorCurrentGuess - oddPointStateVectorPreviousGuess;
     }
 
-//    // Compute versions of the integral constraint
-//    Eigen::VectorXd phaseConstraintPoincare (currentNumberOfOddPoints);    phaseConstraintPoincare.setZero();
-//    Eigen::VectorXd phaseConstraintLiterature (currentNumberOfOddPoints);  phaseConstraintLiterature.setZero();
+    // Compute versions of the integral constraint
+    Eigen::VectorXd phaseConstraintPoincare (currentNumberOfOddPoints);    phaseConstraintPoincare.setZero();
+    Eigen::VectorXd phaseConstraintLiterature (currentNumberOfOddPoints);  phaseConstraintLiterature.setZero();
 
-//    double alternativeOuput = 0.0;
-//    for(int i = 0; i < currentNumberOfOddPoints; i++)
-//    {
-//        Eigen::VectorXd currentIncrement = incrementOddPoints.segment(6*i,6);
-//        Eigen::VectorXd currentOddPoint = currentGuessOddPoints.segment(6*i,6);
-//        Eigen::VectorXd previousOddDerivative = previousGuessOddDerivatesSynced.segment(6*i,6);
+    double alternativeOuput = 0.0;
+    for(int i = 0; i < currentNumberOfOddPoints; i++)
+    {
+        Eigen::VectorXd currentIncrement = incrementOddPoints.segment(6*i,6);
+        Eigen::VectorXd currentOddPoint = currentGuessOddPoints.segment(6*i,6);
+        Eigen::VectorXd previousOddDerivative = previousGuessOddDerivatesSynced.segment(6*i,6);
 
-//        phaseConstraintPoincare(i) = currentIncrement.transpose() * previousOddDerivative;
-//        phaseConstraintLiterature(i) = currentOddPoint.transpose() * previousOddDerivative;
-//        alternativeOuput = alternativeOuput + currentIncrement.transpose() * previousOddDerivative;
-//    }
+        phaseConstraintPoincare(i) = currentIncrement.transpose() * previousOddDerivative;
+        phaseConstraintLiterature(i) = currentOddPoint.transpose() * previousOddDerivative;
+        alternativeOuput = alternativeOuput + currentIncrement.transpose() * previousOddDerivative;
+    }
 
 //    // could it be that absolute version should be summed?
 //    phaseIntegralConstraint = phaseConstraintPoincare.sum();
