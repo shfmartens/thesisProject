@@ -115,13 +115,13 @@ double computeIntegralPhaseConstraint(const Eigen::MatrixXd collocationDesignVec
 
     computeSegmentProperties(previousDesignVector, thrustAndMassParameters, previousNumberOfCollocationPoints, oddStates, oddStateDerivatives, timeIntervals);
 
-//    // compute the time information of the new nodes
-//    Eigen::VectorXd currentDesignVector(11*currentNumberOfOddPoints);   currentDesignVector.setZero();
-//    Eigen::VectorXd oddPointTimesDimensional(currentNumberOfOddPoints); oddPointTimesDimensional.setZero();
-//    Eigen::VectorXd oddPointTimesNormalized(currentNumberOfOddPoints);  oddPointTimesNormalized.setZero();
-//    Eigen::VectorXd segmentVector(currentNumberOfOddPoints);            segmentVector.setZero();
+    // compute the time information of the new nodes
+    Eigen::VectorXd currentDesignVector(11*currentNumberOfOddPoints);   currentDesignVector.setZero();
+    Eigen::VectorXd oddPointTimesDimensional(currentNumberOfOddPoints); oddPointTimesDimensional.setZero();
+    Eigen::VectorXd oddPointTimesNormalized(currentNumberOfOddPoints);  oddPointTimesNormalized.setZero();
+    Eigen::VectorXd segmentVector(currentNumberOfOddPoints);            segmentVector.setZero();
 
-//    rewriteDesignVectorToFullFormat(collocationDesignVector, numberOfCollocationPoints, thrustAndMassParameters, currentDesignVector);
+    rewriteDesignVectorToFullFormat(collocationDesignVector, numberOfCollocationPoints, thrustAndMassParameters, currentDesignVector);
 
 //    computeTimeAndSegmentInformationFromPhase(currentDesignVector, previousDesignVector, numberOfCollocationPoints, oddStates, previousNumberOfCollocationPoints,
 //                                              oddPointTimesDimensional, oddPointTimesNormalized, segmentVector);
