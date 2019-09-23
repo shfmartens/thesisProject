@@ -398,31 +398,3 @@ int main (){
 //    }
 
 //}
-
-
-//inFile.close();
-
-//std::ifstream inFile2;
-////std::string path2 = "/Users/Sjors/Desktop/previousDesignVector.txt";
-//std::string path2 = "../previousDesignVector.txt";
-
-//inFile2.open(path2);
-
-//if (!inFile2) {
-//    std::cout << "Unable to open file datafile.txt" << std::endl;
-//} else
-//{
-
-//    int i = 0;
-//    double x;
-//    while(inFile2 >> x)
-//    {
-//        previousDesignVector(i) = x;
-//        i++;
-//    }
-
-//}
-//inFile2.close();
-//std::cout.precision(14);
-//double phaseConstraint = computeIntegralPhaseConstraint(collocationDesignVector, testCollocPoints, previousDesignVector);
-//std::cout << "phaseConstraint: " << phaseConstraint << std::endl;
