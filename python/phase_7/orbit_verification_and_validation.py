@@ -224,16 +224,6 @@ class DisplayPeriodicSolutions:
 
 
             missing_indices = sorted(list(set(list(range(-1, 6))) - set(sorting_indices)))
-            print(sorting_indices)
-            print(set(sorting_indices))
-            print(missing_indices)
-            print(list(set(list(range(-1, 6))) - set(sorting_indices)))
-            print(eigenvalue.imag[missing_indices[0]])
-            print(eigenvalue.real[missing_indices[0]])
-
-            print(eigenvalue.imag[missing_indices[1]])
-            print(eigenvalue.real[missing_indices[1]])
-
 
             if eigenvalue.real[missing_indices[0]] > eigenvalue.real[missing_indices[1]]:
                 sorting_indices[1] = missing_indices[0]
@@ -716,7 +706,7 @@ class DisplayPeriodicSolutions:
 
         arr[0, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
         arr[0, 0].xaxis.set_ticks(xticks)
-        print(l5)
+        print(len(self.continuationParameter))
 
         arr[0, 0].semilogy(self.continuationParameter, l1, c=self.plottingColors['lambda1'])
         arr[0, 0].semilogy(self.continuationParameter, l2, c=self.plottingColors['lambda2'])
@@ -975,10 +965,10 @@ if __name__ == '__main__':
                             display_periodic_solutions = DisplayPeriodicSolutions(orbit_type, lagrange_point, acceleration_magnitude, \
                                          alpha, beta, varying_quantity, low_dpi)
 
-                            #display_periodic_solutions.plot_families()
-                            #display_periodic_solutions.plot_periodicity_validation()
+                            display_periodic_solutions.plot_families()
+                            display_periodic_solutions.plot_periodicity_validation()
                             display_periodic_solutions.plot_monodromy_analysis()
-                            #display_periodic_solutions.plot_stability()
+                            display_periodic_solutions.plot_stability()
 
 
 
