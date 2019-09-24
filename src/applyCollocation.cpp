@@ -852,10 +852,14 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
                                                           double maxPositionDeviationFromPeriodicOrbit,  double maxVelocityDeviationFromPeriodicOrbit,  double maxPeriodDeviationFromPeriodicOrbit, const int maxNumberOfCollocationIterations, const double maximumErrorTolerance)
 {
     // ======= initialize variables and rewrite input for the collocation procedure ====== //
-    Eigen::VectorXd outputVector = Eigen::VectorXd::Zero(25);
+    Eigen::VectorXd outputVector = Eigen::VectorXd::Zero(27);
     Eigen::VectorXd outputDesignVector;
     Eigen::VectorXd outputDefectVector;
     double outputDeltaDistribution = 0.0;
+    int maxNumberOfCorrections  = 0;
+    int maxNumberOfCorrectionsEquidistribution  = 0;
+
+    double convergedGuessMaxSegmentError = 0.0;
 
     double maximumErrorPerSegment = 10.0*maximumErrorTolerance;
     Eigen::MatrixXd collocationGuessStart = initialCollocationGuess;
@@ -1014,6 +1018,10 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
             std::cout << "collocationDefectVector.Norm(): " << collocationDefectVector.norm() << std::endl;
             std::cout << "distributionDeltaCurrentIteration: " << distributionDeltaCurrentIteration << std::endl;
 
+            if ( numberOfCorrections > maxNumberOfCorrections)
+            {
+                maxNumberOfCorrections = numberOfCorrections;
+            }
 
             if (distributionDeltaCurrentIteration >= distributionDeltaPreviousIteration)
             {
@@ -1022,6 +1030,7 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
                 collocationDefectVector = collocationDefectVectorEquidistribution;
                 initialTime = collocationDesignVector(6);
                 distributionDeltaCurrentIteration = distributionDeltaPreviousIteration;
+                maxNumberOfCorrections = maxNumberOfCorrectionsEquidistribution;
             }
             else
             {
@@ -1029,6 +1038,7 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
                 collocationDesignVectorEquidistribution = convergedDesignVector;
                 collocationDefectVectorEquidistribution = convergedDefectVector;
                 maximumErrorPerSegment = segmentErrorDistribution.maxCoeff();
+                maxNumberOfCorrectionsEquidistribution = maxNumberOfCorrections;
                 meshRefinementCounter++;
             }
 
@@ -1078,7 +1088,7 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
             int finalNumberOfSegments = numberOfCollocationPoints-1;
             int finalNumberOfOddPoints = 3*finalNumberOfSegments+1;
 
-
+            deviationNorms = computeCollocationDeviationNorms( outputDefectVector, outputDesignVector, numberOfCollocationPoints);
             collocatedGuess.resize(11*finalNumberOfOddPoints);    collocatedGuess.setZero();
             collocatedNodes.resize(11*numberOfCollocationPoints); collocatedNodes.setZero();
 
@@ -1113,7 +1123,9 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
     outputVector.segment(12,10) = finalCondition;
     outputVector(22) = collocatedNodes(11*(numberOfCollocationPoints-1) + 10);
     outputVector(23) = hamiltonianEndState;
-    //outputVector(24) = numberOfCorrections;
+    outputVector(24) = maxNumberOfCorrections;
+    outputVector(25) = maximumErrorPerSegment;
+    outputVector(26) = outputDeltaDistribution;
 
 
     return outputVector;

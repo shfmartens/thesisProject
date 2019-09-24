@@ -165,14 +165,16 @@ void appendDifferentialCorrectionResultsVectorAugmented(
         std::vector< Eigen::VectorXd >& differentialCorrections, const Eigen::VectorXd deviationsNorms )
 {
 
-    Eigen::VectorXd tempDifferentialCorrection = Eigen::VectorXd( 18 );
+    Eigen::VectorXd tempDifferentialCorrection = Eigen::VectorXd( 21 );
 
 
     tempDifferentialCorrection( 0 ) = differentialCorrectionResult( 24 );  // numberOfIterations
-    tempDifferentialCorrection( 1 ) = hamiltonianFullPeriod;  // HamiltonianFullPeriod
-    tempDifferentialCorrection( 2 ) = differentialCorrectionResult( 22 );  // currentTime
-    tempDifferentialCorrection.segment(3,5) = deviationsNorms;
-    tempDifferentialCorrection.segment(8,10) = differentialCorrectionResult.segment(12,10);
+    tempDifferentialCorrection( 1 ) = differentialCorrectionResult( 25 );  // maximumErrorPerSegment
+    tempDifferentialCorrection( 2 ) = differentialCorrectionResult( 26 );  // DeltaErrorDistribution
+    tempDifferentialCorrection( 3 ) = hamiltonianFullPeriod;  // HamiltonianFullPeriod
+    tempDifferentialCorrection( 4 ) = differentialCorrectionResult( 22 );  // currentTime
+    tempDifferentialCorrection.segment(5,5) = deviationsNorms;
+    tempDifferentialCorrection.segment(10,10) = differentialCorrectionResult.segment(12,10);
 
 
     differentialCorrections.push_back(tempDifferentialCorrection);
@@ -591,7 +593,6 @@ Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initia
     Eigen::VectorXd initialStateVector(10);
     int numberOfOddPoints = (numberOfCollocationPoints-1)*3 + 1;
 
-
     // Correct state vector guess
     Eigen::VectorXd differentialCorrectionResult = applyPredictionCorrection(
                 librationPointNr, initialStateGuess, massParameter,  numberOfPatchPoints,
@@ -622,7 +623,10 @@ Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initia
     computeOrbitDeviations(differentialCorrectionResult.segment(25,11*numberOfPatchPoints), numberOfPatchPoints, propagatedStates, defectVector, stateHistoryTemp, massParameter);
     Eigen::VectorXd deviationNorms = computeDeviationNorms(defectVector,numberOfPatchPoints);
 
-    appendDifferentialCorrectionResultsVectorAugmented( hamiltonianFullPeriodDiffCorr, differentialCorrectionResult, differentialCorrections, deviationNorms );
+    Eigen::VectorXd DCResultsVector = Eigen::VectorXd(27); DCResultsVector.setZero();
+    DCResultsVector.segment(0,25) = differentialCorrectionResult.segment(0,25);
+
+    appendDifferentialCorrectionResultsVectorAugmented( hamiltonianFullPeriodDiffCorr, DCResultsVector, differentialCorrections, deviationNorms );
     Eigen::VectorXd statesConvergedGuess = differentialCorrectionResult.segment(25,11*numberOfPatchPoints);
 
     // store the multiple shooting converged guesses as converged colllocated formats in the
@@ -630,7 +634,6 @@ Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initia
     Eigen::MatrixXd oddNodesMatrix((11*(numberOfCollocationPoints-1)), 4 );
     computeOddPoints(redistributedNodes, oddNodesMatrix, numberOfCollocationPoints, massParameter, true);
     Eigen::VectorXd convergedGuessCollocationFormat = rewriteOddPointsToVector(oddNodesMatrix, numberOfCollocationPoints);
-
 
     appendContinuationStatesVectorAugmented( orbitNumber, numberOfOddPoints, differentialCorrectionResult(11), orbitalPeriod, convergedGuessCollocationFormat, statesContinuation);
 
@@ -873,7 +876,8 @@ void writeFinalResultsToFilesAugmented( const int librationPointNr, const std::s
                                        << differentialCorrections[i][10] << std::setw(25) << differentialCorrections[i][11] << std::setw(25)
                                        << differentialCorrections[i][12] << std::setw(25) << differentialCorrections[i][13] << std::setw(25)
                                        << differentialCorrections[i][14] << std::setw(25) << differentialCorrections[i][15] << std::setw(25)
-                                       << differentialCorrections[i][16] << std::setw(25) << differentialCorrections[i][17] << std::setw(25)  << std::endl;
+                                       << differentialCorrections[i][16] << std::setw(25) << differentialCorrections[i][17] << std::setw(25)
+                                       << differentialCorrections[i][18] << std::setw(25) << differentialCorrections[i][19] << std::setw(25) << std::endl;
         //std::cout << "i: " << std::endl;
         //std::cout << "size statesContinuation[i]: "  << (statesContinuation[i]).size() << std::endl;
         //std::cout << "size statesContinuation[i] - 2: "  << (statesContinuation[i]).size() - 2<< std::endl;
@@ -1032,7 +1036,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 // ============ CONTINUATION PROCEDURE ================== //
     // Set exit parameters of continuation procedure
-    int maximumNumberOfInitialConditions = 1000;
+    int maximumNumberOfInitialConditions = 2000;
     int numberOfInitialConditions;
     if (continuationIndex == 1)
     {
