@@ -27,7 +27,7 @@ from load_data import load_orbit, load_bodies_location, load_lagrange_points_loc
 load_initial_conditions_incl_M, load_manifold
 
 from load_data_augmented import load_orbit_augmented, load_lagrange_points_location_augmented, load_differential_correction, \
-    load_states_continuation, load_initial_conditions_augmented_incl_M
+    load_states_continuation, load_initial_conditions_augmented_incl_M, load_states_continuation_length
 
 class DisplayPeriodicSolutions:
     def __init__(self,orbit_type, lagrange_point_nr,  acceleration_magnitude, alpha, beta, varying_quantity, low_dpi):
@@ -74,7 +74,7 @@ class DisplayPeriodicSolutions:
             statesContinuation_df = load_states_continuation(self.hamiltonian_filepath + self.continuation_fileName)
             differentialCorrections_df = load_differential_correction(self.hamiltonian_filepath + self.correction_fileName)
             initial_conditions_incl_m_df = load_initial_conditions_augmented_incl_M(self.hamiltonian_filepath + self.monodromy_fileName)
-
+            statesContinuationLength_df = load_states_continuation_length(self.hamiltonian_filepath + self.continuation_fileName)
         # Generate the lists with hamiltonians, periods and number of iterations and deviations after convergence
         self.Hlt = []
         self.alphaContinuation = []
@@ -89,10 +89,12 @@ class DisplayPeriodicSolutions:
         self.velocityDeviationAfterConvergence = []
         self.velocityInteriorDeviationAfterConvergence = []
         self.velocityExteriorDeviationAfterConvergence = []
-        self.periodDeviationAfterConvergence = []
-
-
-
+        self.stateDeviationAfterConvergence = []
+        self.phaseDeviationAfterConvergence = []
+        self.totalDeviationAfterConvergence = []
+        self.numberOfCollocationPoints = []
+        for row in statesContinuationLength_df.iterrows():
+            self.numberOfCollocationPoints.append(((len(row[1])-3)/11 - 1)/3+1)
         for row in statesContinuation_df.iterrows():
             self.orbitsId.append(row[0])
             if row[1][1] < 0:
@@ -109,7 +111,9 @@ class DisplayPeriodicSolutions:
             self.velocityDeviationAfterConvergence.append(row[1][6])
             self.velocityInteriorDeviationAfterConvergence.append(row[1][7])
             self.velocityExteriorDeviationAfterConvergence.append(row[1][8])
-            self.periodDeviationAfterConvergence.append(row[1][9])
+            self.stateDeviationAfterConvergence.append(np.sqrt(row[1][5] ** 2 + row[1][6] ** 2))
+            self.phaseDeviationAfterConvergence.append(np.sqrt(row[1][9]**2))
+            self.totalDeviationAfterConvergence.append(np.sqrt(row[1][5] ** 2 + row[1][6] ** 2 + row[1][9] ** 2))
 
 
         # Determine which parameter is the varying parameter
@@ -138,6 +142,8 @@ class DisplayPeriodicSolutions:
         self.deviation_zdot = []
         self.deviation_position_norm = []
         self.deviation_velocity_norm = []
+        self.deviation_state_norm = []
+
 
 
         for i in range(len(self.continuationParameter)):
@@ -164,6 +170,8 @@ class DisplayPeriodicSolutions:
             self.deviation_zdot.append(np.abs(zdotDeviation))
             self.deviation_position_norm.append(np.sqrt(xDeviation ** 2 + yDeviation  ** 2 + zDeviation ** 2 ))
             self.deviation_velocity_norm.append(np.sqrt(xdotDeviation ** 2 + ydotDeviation  ** 2 + zdotDeviation ** 2 ))
+            self.deviation_state_norm.append(np.sqrt(xDeviation ** 2 + yDeviation  ** 2 + zDeviation ** 2  + \
+                                                    xdotDeviation ** 2 + ydotDeviation  ** 2 + zdotDeviation ** 2 ))
 
         # Analyse monodromy matrix
         self.eigenvalues = []
@@ -216,8 +224,18 @@ class DisplayPeriodicSolutions:
 
 
             missing_indices = sorted(list(set(list(range(-1, 6))) - set(sorting_indices)))
+            print(sorting_indices)
+            print(set(sorting_indices))
+            print(missing_indices)
+            print(list(set(list(range(-1, 6))) - set(sorting_indices)))
+            print(eigenvalue.imag[missing_indices[0]])
+            print(eigenvalue.real[missing_indices[0]])
 
-            if eigenvalue.imag[missing_indices[0]] > eigenvalue.imag[missing_indices[1]]:
+            print(eigenvalue.imag[missing_indices[1]])
+            print(eigenvalue.real[missing_indices[1]])
+
+
+            if eigenvalue.real[missing_indices[0]] > eigenvalue.real[missing_indices[1]]:
                 sorting_indices[1] = missing_indices[0]
                 sorting_indices[4] = missing_indices[1]
             else:
@@ -227,7 +245,6 @@ class DisplayPeriodicSolutions:
             if len(sorting_indices) > len(set(sorting_indices)):
                 print('\nWARNING: SORTING INDEX IS NOT UNIQUE FOR ' + self.orbitType + ' AT L' + str(
                      self.lagrangePointNr))
-                print(eigenvalue)
                 if len(idx_real_one) != 2:
                     idx_real_one = []
                     # Find indices of the first pair of real eigenvalue equal to one
@@ -245,14 +262,8 @@ class DisplayPeriodicSolutions:
                     sorting_indices = [-1, -1, -1, -1, -1, -1]
                     sorting_indices[2] = idx_real_one[0]
                     sorting_indices[3] = idx_real_one[1]
-                    print('minimum angle = ' + str(
-                        min(abs(np.angle(eigenvalue[list(set(range(6)) - set(idx_real_one))], deg=True)))))
-                    print('maximum angle = ' + str(
-                        max(abs(np.angle(eigenvalue[list(set(range(6)) - set(idx_real_one))], deg=True)))))
                     # Assume two times real one and two conjugate pairs
                     for idx, l in enumerate(eigenvalue):
-                        print(idx)
-                        print(abs(np.angle(l, deg=True)))
                         # min(abs(np.angle(eigenvalue[list(set(range(6)) - set(idx_real_one))], deg=True)))
                         # if abs(np.angle(l, deg=True))%180 == min(abs(np.angle(eigenvalue[list(set(range(6)) - set(idx_real_one))], deg=True)) %180):
                         if l.real == eigenvalue[list(set(range(6)) - set(idx_real_one))].real.max():
@@ -378,7 +389,7 @@ class DisplayPeriodicSolutions:
         #  =========== Plot layout settings ===============
 
         # plot specific spacing properties
-        self.orbitSpacingFactor = 1
+        self.orbitSpacingFactor = 20
 
         # scale properties
         self.spacingFactor = 1.05
@@ -555,14 +566,15 @@ class DisplayPeriodicSolutions:
         f, arr = plt.subplots(3, 2, figsize=self.figSize)
         linewidth = 1
         ylim = [1e-16, 1e-4]
+        ylim2 = [1e-19, 1e-1]
 
         xlim = [min(self.continuationParameter), max(self.continuationParameter)]
         xticks = (np.linspace(min(self.Hlt), max(self.Hlt), num=self.numberOfXTicks))
 
         arr[0, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
         arr[0, 0].xaxis.set_ticks(xticks)
-        arr[0, 0].set_title('Position deviation after convergence')
-        arr[0, 0].semilogy(self.continuationParameter, self.positionDeviationAfterConvergence, linewidth=linewidth, c=self.plottingColors['singleLine'],label='$\\sqrt{(\\sum_{i=1}^n \\Delta x_{i}^2 + \\Delta y_{i}^2 + \\Delta z_{i}^2) }$')
+        arr[0, 0].set_title('Defect vector magnitude after convergence')
+        arr[0, 0].semilogy(self.continuationParameter, self.totalDeviationAfterConvergence, linewidth=linewidth, c=self.plottingColors['singleLine'],label='$||F||$')
         arr[0, 0].legend(frameon=True, loc='upper right')
         arr[0, 0].set_xlim(xlim)
         arr[0, 0].set_ylim(ylim)
@@ -577,14 +589,14 @@ class DisplayPeriodicSolutions:
         arr[0, 1].set_xlim(xlim)
         arr[0, 1].set_ylim(ylim)
 
-        arr[1, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
-        arr[1, 0].xaxis.set_ticks(xticks)
-        arr[1, 0].set_title('Velocity deviation after convergence')
-        arr[1, 0].semilogy(self.continuationParameter, self.velocityDeviationAfterConvergence, linewidth=linewidth, c=self.plottingColors['singleLine'], label='$\\sqrt{(\\sum_{i=1}^n \\Delta x_{i}^2 + \\Delta y_{i}^2 + \\Delta z_{i}^2) }$')
-        arr[1, 0].legend(frameon=True, loc='upper right')
-        arr[1, 0].set_xlim(xlim)
-        arr[1, 0].set_ylim(ylim)
-        arr[1, 0].semilogy(self.continuationParameter, 5e-12 * np.ones(len(self.continuationParameter)), color=self.plottingColors['limit'], linewidth=1, linestyle='--')
+        arr[2, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
+        arr[2, 0].xaxis.set_ticks(xticks)
+        arr[2, 0].set_title('Distribution of errors over collocated trajectory')
+        arr[2, 0].semilogy(self.continuationParameter, self.maxDeltaError, linewidth=linewidth, c=self.plottingColors['singleLine'], label='max($e_{i}$)-min($e_{i}$)')
+        arr[2, 0].legend(frameon=True, loc='upper right')
+        arr[2, 0].set_xlim(xlim)
+        arr[2, 0].set_ylim(ylim)
+        arr[2, 0].semilogy(self.continuationParameter, 1e-12 * np.ones(len(self.continuationParameter)), color=self.plottingColors['limit'], linewidth=1, linestyle='--')
 
         arr[1, 1].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
         arr[1, 1].xaxis.set_ticks(xticks)
@@ -595,26 +607,36 @@ class DisplayPeriodicSolutions:
         arr[1, 1].set_xlim(xlim)
         arr[1, 1].set_ylim(ylim)
 
-        arr[2, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
-        arr[2, 0].xaxis.set_ticks(xticks)
-        arr[2, 0].set_title('Time deviation at full period')
-        arr[2, 0].set_xlim(xlim)
-        arr[2, 0].set_ylim(ylim)
-        arr[2, 0].semilogy(self.continuationParameter, self.periodDeviationAfterConvergence, linewidth=linewidth, c=self.plottingColors['singleLine'],label='$\\sqrt{(\\sum_{i=1}^n \\Delta t_{i}^2 }$')
-        arr[2, 0].semilogy(self.continuationParameter, 1.0e-12 * np.ones(len(self.continuationParameter)), color=self.plottingColors['limit'], linewidth=1, linestyle='--')
-        arr[2, 0].legend(frameon=True, loc='upper right')
+        arr[1, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
+        arr[1, 0].xaxis.set_ticks(xticks)
+        arr[1, 0].set_title('Maximum number of corrections')
+        arr[1, 0].set_xlim(xlim)
+        arr[1, 0].set_ylim([0, 100])
+        arr[1, 0].plot(self.continuationParameter, self.numberOfIterations, linewidth=linewidth, c=self.plottingColors['singleLine'],label='Number of corrections')
+        arr[1, 0].legend(frameon=True, loc='upper right')
 
         arr[2, 1].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
         arr[2, 1].xaxis.set_ticks(xticks)
-        arr[2, 1].set_title('Number of correction cycles')
+        arr[2, 1].set_title('Maximum collocation segment error')
         arr[2, 1].set_xlim(xlim)
-        arr[2, 1].set_ylim(0, 300)
-        arr[2, 1].plot(self.continuationParameter, self.numberOfIterations, linewidth=linewidth, c=self.plottingColors['singleLine'])
+        arr[2, 1].set_ylim([10e-12,1.0e-5])
+        arr[2, 1].tick_params(axis='y', labelcolor=self.plottingColors['tripleLine'][0])
+        arr[2, 1].semilogy(self.continuationParameter, self.maxSegmentError, linewidth=linewidth, c=self.plottingColors['tripleLine'][0])
+        ax2 = arr[2, 1].twinx()
+        ax2.tick_params(axis='y', labelcolor=self.plottingColors['tripleLine'][1])
+        ax2.plot(self.continuationParameter, self.numberOfCollocationPoints, linewidth=linewidth,color=self.plottingColors['tripleLine'][1])
+        ax2.set_ylim([0,20])
+        ax2.set_xlim(xlim)
+        ax2.grid(b=None)
 
-        arr[0, 0].set_ylabel('$\Delta \mathbf{r}$ [-]')
-        arr[1, 0].set_ylabel('$\Delta \mathbf{V}$ [-]')
-        arr[2, 0].set_ylabel('$\Delta t$ [-]')
-        arr[2, 1].set_ylabel('Number of iterations [-]')
+
+        arr[0, 0].set_ylabel('$||F||$ [-]')
+        arr[0, 1].set_ylabel('$\Delta \mathbf{R}$ [-]')
+        arr[2, 0].set_ylabel('max($e_{i}$) - min($e_{i}$)[-]')
+        arr[1, 1].set_ylabel('$\Delta \mathbf{V}$ [-]')
+        arr[1, 0].set_ylabel('Number of iterations [-]')
+        arr[2, 1].set_ylabel('max($e_{i}$)')
+        ax2.set_ylabel('Number of collocation points [-]')
         if self.varyingQuantity == 'Hamiltonian':
             arr[2, 0].set_xlabel('$H_{lt}$ [-]')
             arr[2, 1].set_xlabel('$H_{lt}$ [-]')
@@ -630,7 +652,7 @@ class DisplayPeriodicSolutions:
         for i in range(3):
             for j in range(2):
                 arr[i, j].grid(True, which='both', ls=':')
-
+        ax2.grid(False)
         plt.tight_layout()
         plt.subplots_adjust(top=0.9)
 
@@ -694,7 +716,7 @@ class DisplayPeriodicSolutions:
 
         arr[0, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
         arr[0, 0].xaxis.set_ticks(xticks)
-
+        print(l5)
 
         arr[0, 0].semilogy(self.continuationParameter, l1, c=self.plottingColors['lambda1'])
         arr[0, 0].semilogy(self.continuationParameter, l2, c=self.plottingColors['lambda2'])
@@ -953,10 +975,10 @@ if __name__ == '__main__':
                             display_periodic_solutions = DisplayPeriodicSolutions(orbit_type, lagrange_point, acceleration_magnitude, \
                                          alpha, beta, varying_quantity, low_dpi)
 
-                            display_periodic_solutions.plot_families()
-                            display_periodic_solutions.plot_periodicity_validation()
+                            #display_periodic_solutions.plot_families()
+                            #display_periodic_solutions.plot_periodicity_validation()
                             display_periodic_solutions.plot_monodromy_analysis()
-                            display_periodic_solutions.plot_stability()
+                            #display_periodic_solutions.plot_stability()
 
 
 

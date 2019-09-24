@@ -421,6 +421,10 @@ def load_states_continuation(file_path):
     data.columns = ['orbitID', 'hlt','x','y','z','xdot','ydot','zdot','alt','alpha','beta','m']
     return data
 
+def load_states_continuation_length(file_path):
+    data = pd.read_csv(file_path, delim_whitespace=True,header=None)
+    return data
+
 def load_differential_correction(file_path):
     data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(18)))
     data.columns = ['iterations', 'hlt','period','posDev','velDev','velIntDev','velExtDev','timeDev','x','y','z','xdot','ydot','zdot','alt','alpha','beta','m']

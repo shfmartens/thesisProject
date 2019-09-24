@@ -851,7 +851,6 @@ void computeCollocationDefects(Eigen::MatrixXd& collocationDefectVector, Eigen::
 Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, const double massParameter, int& numberOfCollocationPoints, Eigen::VectorXd& collocatedGuess, Eigen::VectorXd& collocatedNodes, Eigen::VectorXd& deviationNorms, Eigen::VectorXd& collocatedDefects, const int continuationIndex, const Eigen::VectorXd previousDesignVector,
                                                           double maxPositionDeviationFromPeriodicOrbit,  double maxVelocityDeviationFromPeriodicOrbit,  double maxPeriodDeviationFromPeriodicOrbit, const int maxNumberOfCollocationIterations, const double maximumErrorTolerance)
 {
-    std::cout << "previousDesignVector: \n" << previousDesignVector << std::endl;
 
     // ======= initialize variables and rewrite input for the collocation procedure ====== //
     Eigen::VectorXd outputVector = Eigen::VectorXd::Zero(27);
@@ -925,15 +924,15 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
             bool continueColloc = true;
             distributionDeltaPreviousIteration = distributionDeltaCurrentIteration;
 
-            std::cout << "\nDeviations at the start of collocation procedure: " << std::endl;
-            std::cout << "numberOfCorrections: " << numberOfCorrections << std::endl;
-            std::cout << "positionDefectDeviations: " << positionDefectDeviations << std::endl;
-            std::cout << "velocityDefectDeviations: " << velocityDefectDeviations << std::endl;
-            std::cout << "periodicityPositionDeviations: " << periodicityPositionDeviations << std::endl;
-            std::cout << "periodicityVelocityDeviations: " << periodicityVelocityDeviations << std::endl;
-            std::cout << "phaseDeviations: " << phaseDeviations << std::endl;
-            std::cout << "collocationDefectVector.Norm(): " << collocationDefectVector.norm() << std::endl;
-            std::cout << "distributionDeltaCurrentIteration: " << distributionDeltaCurrentIteration << std::endl;
+//            std::cout << "\nDeviations at the start of collocation procedure: " << std::endl;
+//            std::cout << "numberOfCorrections: " << numberOfCorrections << std::endl;
+//            std::cout << "positionDefectDeviations: " << positionDefectDeviations << std::endl;
+//            std::cout << "velocityDefectDeviations: " << velocityDefectDeviations << std::endl;
+//            std::cout << "periodicityPositionDeviations: " << periodicityPositionDeviations << std::endl;
+//            std::cout << "periodicityVelocityDeviations: " << periodicityVelocityDeviations << std::endl;
+//            std::cout << "phaseDeviations: " << phaseDeviations << std::endl;
+//            std::cout << "collocationDefectVector.Norm(): " << collocationDefectVector.norm() << std::endl;
+//            std::cout << "distributionDeltaCurrentIteration: " << distributionDeltaCurrentIteration << std::endl;
 
             Eigen::VectorXd initialDesignVector = collocationDesignVector.block(0,0,collocationDesignVector.rows(),1);
 
