@@ -851,6 +851,8 @@ void computeCollocationDefects(Eigen::MatrixXd& collocationDefectVector, Eigen::
 Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, const double massParameter, int& numberOfCollocationPoints, Eigen::VectorXd& collocatedGuess, Eigen::VectorXd& collocatedNodes, Eigen::VectorXd& deviationNorms, Eigen::VectorXd& collocatedDefects, const int continuationIndex, const Eigen::VectorXd previousDesignVector,
                                                           double maxPositionDeviationFromPeriodicOrbit,  double maxVelocityDeviationFromPeriodicOrbit,  double maxPeriodDeviationFromPeriodicOrbit, const int maxNumberOfCollocationIterations, const double maximumErrorTolerance)
 {
+    std::cout << "previousDesignVector: \n" << previousDesignVector << std::endl;
+
     // ======= initialize variables and rewrite input for the collocation procedure ====== //
     Eigen::VectorXd outputVector = Eigen::VectorXd::Zero(27);
     Eigen::VectorXd outputDesignVector;

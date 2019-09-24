@@ -1098,6 +1098,8 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                                      statesContinuation[ statesContinuation.size( ) - 2 ].segment( 3, 11*numberOfStates );
                  stateIncrement(0) = statesContinuation[ statesContinuation.size( ) - 1 ]( 1 ) -
                                      statesContinuation[ statesContinuation.size( ) - 2 ]( 1 );
+                 previousDesignVector = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*numberOfStates );
+
              } else
              {
                  std::cout << "number of patch point of guesses has been changed!!: " << std::endl
@@ -1115,6 +1117,12 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                  computeStateIncrementFromInterpolation(previousGuess, currentGuess, stateIncrementInterpolation );
 
                  stateIncrement.segment(1,11*numberOfStates) = stateIncrementInterpolation;
+
+                 // define previousDesignVector
+                 int previousNumberOfStates = (static_cast<int>(statesContinuation[ statesContinuation.size( ) - 1 ].size()) - 3)/11;
+                 previousDesignVector = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*previousNumberOfStates );
+
+
              }
                 Eigen::Vector6d x1 = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 6 );
                 Eigen::Vector6d x0 = statesContinuation[ statesContinuation.size( ) - 2 ].segment( 3, 6 );

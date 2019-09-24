@@ -81,6 +81,8 @@ class DisplayPeriodicSolutions:
         self.accelerationContinuation = []
 
         self.T = []
+        self.maxSegmentError = []
+        self.maxDeltaError = []
         self.orbitsId = []
         self.numberOfIterations = []
         self.positionDeviationAfterConvergence = []
@@ -100,12 +102,14 @@ class DisplayPeriodicSolutions:
 
         for row in differentialCorrections_df.iterrows():
             self.numberOfIterations.append(row[1][0])
-            self.T.append(row[1][2])
-            self.positionDeviationAfterConvergence.append(row[1][3])
-            self.velocityDeviationAfterConvergence.append(row[1][4])
-            self.velocityInteriorDeviationAfterConvergence.append(row[1][5])
-            self.velocityExteriorDeviationAfterConvergence.append(row[1][6])
-            self.periodDeviationAfterConvergence.append(row[1][7])
+            self.maxSegmentError.append(row[1][1])
+            self.maxDeltaError.append(row[1][2])
+            self.T.append(row[1][4])
+            self.positionDeviationAfterConvergence.append(row[1][5])
+            self.velocityDeviationAfterConvergence.append(row[1][6])
+            self.velocityInteriorDeviationAfterConvergence.append(row[1][7])
+            self.velocityExteriorDeviationAfterConvergence.append(row[1][8])
+            self.periodDeviationAfterConvergence.append(row[1][9])
 
 
         # Determine which parameter is the varying parameter
@@ -550,7 +554,7 @@ class DisplayPeriodicSolutions:
     def plot_periodicity_validation(self):
         f, arr = plt.subplots(3, 2, figsize=self.figSize)
         linewidth = 1
-        ylim = [1e-16, 1e-8]
+        ylim = [1e-16, 1e-4]
 
         xlim = [min(self.continuationParameter), max(self.continuationParameter)]
         xticks = (np.linspace(min(self.Hlt), max(self.Hlt), num=self.numberOfXTicks))
@@ -934,8 +938,8 @@ class DisplayPeriodicSolutions:
 if __name__ == '__main__':
     orbit_types = ['horizontal']
     lagrange_points = [1]
-    acceleration_magnitudes = [0.001]
-    alphas = [30.0, 60.0, 90.0, 120.0, 150.0, 180.0, 210.0, 240.0, 270.0, 300.0, 330.0]
+    acceleration_magnitudes = [0.0]
+    alphas = [0.0]
     betas = [0.0]
     low_dpi = True
     varying_quantities = ['Hamiltonian']
