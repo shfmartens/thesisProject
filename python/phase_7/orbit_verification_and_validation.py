@@ -552,7 +552,7 @@ class DisplayPeriodicSolutions:
     def plot_periodicity_validation(self):
         f, arr = plt.subplots(3, 2, figsize=self.figSize)
         linewidth = 1
-        ylim = [1e-16, 1e-8]
+        ylim = [1e-16, 1e-6]
         ylim2 = [1e-19, 1e-1]
         xlim = [min(self.continuationParameter), max(self.continuationParameter)]
         xticks = (np.linspace(min(self.Hlt), max(self.Hlt), num=self.numberOfXTicks))
