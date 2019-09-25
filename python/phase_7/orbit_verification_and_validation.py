@@ -611,7 +611,7 @@ class DisplayPeriodicSolutions:
         ax2 = arr[2, 1].twinx()
         ax2.tick_params(axis='y', labelcolor=self.plottingColors['tripleLine'][1])
         ax2.plot(self.continuationParameter, self.numberOfCollocationPoints, linewidth=linewidth,color=self.plottingColors['tripleLine'][1])
-        ax2.set_ylim([0,20])
+        ax2.set_ylim([0,40])
         ax2.set_xlim(xlim)
         ax2.grid(b=None)
 
