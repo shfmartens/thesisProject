@@ -417,9 +417,22 @@ def load_equilibria_alpha(file_path):
 
 
 def load_states_continuation(file_path):
-    data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(12)))
-    data.columns = ['orbitID', 'hlt','x','y','z','xdot','ydot','zdot','alt','alpha','beta','m']
-    return data
+    print(file_path)
+    #data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(12)))
+    #data.columns = ['orbitID', 'hlt','x','y','z','xdot','ydot','zdot','alt','alpha','beta','m']
+    input_file = open(file_path)
+
+    data = []
+    for i, line in enumerate(input_file):
+        lineSplitted = line.split()
+        nodes = ((((len(lineSplitted)-3)/11 ) -1 ) /3 )+1
+        data.append([float(lineSplitted[0]),float(lineSplitted[1]),float(lineSplitted[2]),float(lineSplitted[3]),float(lineSplitted[4]),
+                     float(lineSplitted[5]), float(lineSplitted[6]),float(lineSplitted[7]),float(lineSplitted[8]),float(lineSplitted[9]),
+                     float(lineSplitted[10]),float(lineSplitted[11]),float(lineSplitted[12]),nodes])
+
+    outputData = pd.DataFrame(data, columns=['orbitID', 'hlt','T','x','y','z','xdot','ydot','zdot','alt','alpha','beta','m','nodes'])
+    input_file.close()
+    return outputData
 
 def load_states_continuation_length(file_path):
     data = pd.read_csv(file_path, delim_whitespace=True,header=None)

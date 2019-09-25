@@ -74,7 +74,6 @@ class DisplayPeriodicSolutions:
             statesContinuation_df = load_states_continuation(self.hamiltonian_filepath + self.continuation_fileName)
             differentialCorrections_df = load_differential_correction(self.hamiltonian_filepath + self.correction_fileName)
             initial_conditions_incl_m_df = load_initial_conditions_augmented_incl_M(self.hamiltonian_filepath + self.monodromy_fileName)
-            statesContinuationLength_df = load_states_continuation_length(self.hamiltonian_filepath + self.continuation_fileName)
         # Generate the lists with hamiltonians, periods and number of iterations and deviations after convergence
         self.Hlt = []
         self.alphaContinuation = []
@@ -93,14 +92,12 @@ class DisplayPeriodicSolutions:
         self.phaseDeviationAfterConvergence = []
         self.totalDeviationAfterConvergence = []
         self.numberOfCollocationPoints = []
-        for row in statesContinuationLength_df.iterrows():
-            self.numberOfCollocationPoints.append(((len(row[1])-3)/11 - 1)/3+1)
         for row in statesContinuation_df.iterrows():
-            self.orbitsId.append(row[0])
-            if row[1][1] < 0:
-                self.Hlt.append(row[1][1])
-                self.accelerationContinuation.append(row[1][8])
-                self.alphaContinuation.append(row[1][9])
+            self.orbitsId.append(row[1][0])
+            self.Hlt.append(row[1][1])
+            self.accelerationContinuation.append(row[1][8])
+            self.alphaContinuation.append(row[1][9])
+            self.numberOfCollocationPoints.append(row[1][13])
 
         for row in differentialCorrections_df.iterrows():
             self.numberOfIterations.append(row[1][0])
@@ -555,9 +552,8 @@ class DisplayPeriodicSolutions:
     def plot_periodicity_validation(self):
         f, arr = plt.subplots(3, 2, figsize=self.figSize)
         linewidth = 1
-        ylim = [1e-16, 1e-4]
+        ylim = [1e-16, 1e-8]
         ylim2 = [1e-19, 1e-1]
-
         xlim = [min(self.continuationParameter), max(self.continuationParameter)]
         xticks = (np.linspace(min(self.Hlt), max(self.Hlt), num=self.numberOfXTicks))
 
@@ -609,7 +605,7 @@ class DisplayPeriodicSolutions:
         arr[2, 1].xaxis.set_ticks(xticks)
         arr[2, 1].set_title('Maximum collocation segment error')
         arr[2, 1].set_xlim(xlim)
-        arr[2, 1].set_ylim([10e-12,1.0e-5])
+        arr[2, 1].set_ylim([10e-15,1.0e-5])
         arr[2, 1].tick_params(axis='y', labelcolor=self.plottingColors['tripleLine'][0])
         arr[2, 1].semilogy(self.continuationParameter, self.maxSegmentError, linewidth=linewidth, c=self.plottingColors['tripleLine'][0])
         ax2 = arr[2, 1].twinx()
