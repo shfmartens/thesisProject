@@ -1072,6 +1072,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
     double targetHamiltonian;
     bool maxThrustOrFullRevolutionReached = false;
     double initialAngle = 0.0;
+    Eigen::VectorXd adaptedIncrementVector = Eigen::VectorXd::Zero(6);
 
     if (continuationIndex == 1)
     {
@@ -1098,6 +1099,27 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
               initialStateVectorContinuation = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*numberOfStates );
 
+              if (numberOfInitialConditions == 2)
+              {
+                 Eigen::VectorXd increment = Eigen::VectorXd::Zero(6);
+                 Eigen::VectorXd fullEquilibriumLocation = Eigen::VectorXd::Zero(6);
+                 fullEquilibriumLocation.segment(0,2) = createEquilibriumLocations(1, accelerationMagnitude, accelerationAngle, "acceleration", ySign, massParameter );
+                 increment = initialStateVectorContinuation.segment(0,6) - fullEquilibriumLocation;
+                 adaptedIncrementVector = increment / (increment.norm());
+
+                 std::cout << "fullEquilibriumLocation: \n" << fullEquilibriumLocation << std::endl;
+                 std::cout << "increment: \n" << increment << std::endl;
+                 std::cout << "adaptedIncrementVector: \n" << adaptedIncrementVector << std::endl;
+                 std::cout << "adaptedIncrementVector.norm: " << adaptedIncrementVector.norm() << std::endl;
+                 std::cout << "adaptedIncrementVector * 5: " << adaptedIncrementVector* 5 << std::endl;
+                 std::cout << "adaptedIncrementVector * 5: " << (adaptedIncrementVector* 5).norm() << std::endl;
+
+
+
+
+
+
+              }
 
               // SHOULD BE MINUS 1 BUT FOR CONSTRUCTION IS -2
               Eigen::VectorXd previousDesignVector = (statesContinuation[ statesContinuation.size( ) - 2 ].segment( 3, 11*numberOfStates ));
@@ -1108,17 +1130,35 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
               Eigen::VectorXd stateIncrement(11*numberOfStates+1);
               stateIncrement.setZero();
 
+
              if ( statesContinuation[ statesContinuation.size( ) - 1 ].size() == statesContinuation[ statesContinuation.size( ) - 2 ].size() )
              {
                  std::cout << "number of patch point of guesses is similar!: " << std::endl
                             << "size statesContinuation[size-2]: " << statesContinuation[ statesContinuation.size( ) - 2 ].size() << std::endl
                             << "size statesContinuation[size-1]: " << statesContinuation[ statesContinuation.size( ) - 1 ].size() << std::endl;
 
-                 stateIncrement.segment(1,11*numberOfStates) = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*numberOfStates ) -
-                                     statesContinuation[ statesContinuation.size( ) - 2 ].segment( 3, 11*numberOfStates );
-                 stateIncrement(0) = statesContinuation[ statesContinuation.size( ) - 1 ]( 1 ) -
-                                     statesContinuation[ statesContinuation.size( ) - 2 ]( 1 );
-                 previousDesignVector = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*numberOfStates );
+//                 stateIncrement.segment(1,11*numberOfStates) = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*numberOfStates ) -
+//                                     statesContinuation[ statesContinuation.size( ) - 2 ].segment( 3, 11*numberOfStates );
+//                 stateIncrement(0) = statesContinuation[ statesContinuation.size( ) - 1 ]( 1 ) -
+//                                     statesContinuation[ statesContinuation.size( ) - 2 ]( 1 );
+//                 previousDesignVector = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*numberOfStates );
+
+                 Eigen::VectorXd stateIncrementInterpolation(11*numberOfStates);  stateIncrementInterpolation.setZero();
+
+                  stateIncrement(0) = statesContinuation[ statesContinuation.size( ) - 1 ]( 1 ) -
+                                      statesContinuation[ statesContinuation.size( ) - 2 ]( 1 );
+
+                   Eigen::VectorXd previousGuess = statesContinuation[ statesContinuation.size( ) - 2 ];
+                   Eigen::VectorXd currentGuess = statesContinuation[ statesContinuation.size( ) - 1 ];
+
+                   computeStateIncrementFromInterpolation(previousGuess, currentGuess, stateIncrementInterpolation );
+                   stateIncrement.segment(1,11*numberOfStates) = stateIncrementInterpolation;
+
+                   // define previousDesignVector
+                   int previousNumberOfStates = (static_cast<int>(statesContinuation[ statesContinuation.size( ) - 1 ].size()) - 3)/11;
+                   previousDesignVector = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*previousNumberOfStates );
+
+
 
              } else
              {

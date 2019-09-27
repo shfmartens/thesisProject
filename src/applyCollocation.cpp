@@ -25,9 +25,11 @@
 #include "applyMeshRefinement.h"
 #include "interpolatePolynomials.h"
 
-void checkMeshTiming(const Eigen::MatrixXd collocationDesignVector, const int numberOfCollocationPoints)
+void
+checkMeshTiming(const Eigen::MatrixXd collocationDesignVector, const int numberOfCollocationPoints)
 {
 
+    int numberOfErrors = 0;
     Eigen::VectorXd timingVector = Eigen::VectorXd::Zero(numberOfCollocationPoints);
     for(int i = 0; i < numberOfCollocationPoints; i++)
     {
@@ -40,14 +42,24 @@ void checkMeshTiming(const Eigen::MatrixXd collocationDesignVector, const int nu
         if(timingVector(i-1) >= timingVector(i) )
         {
 
-            std::cout << "\nMesh is not correct, node i+1 is placed at earlier time than node i: " << std::endl
-                      << "numberOfSegments: " << numberOfCollocationPoints - 1 << std::endl
-                      << "segment number: " << i - 1 << std::endl
-                      << "node i + 1 time: " << timingVector(i) << std::endl
-                      << "node i  time: " << timingVector(i-1) << std::endl
-                      << "=======================================================================" << std::endl;
-
+//            std::cout << "\nMesh is not correct, node i+1 is placed at earlier time than node i: " << std::endl
+//                      << "numberOfSegments: " << numberOfCollocationPoints - 1 << std::endl
+//                      << "segment number: " << i - 1 << std::endl
+//                      << "node i + 1 time: " << timingVector(i) << std::endl
+//                      << "node i  time: " << timingVector(i-1) << std::endl
+//                      << "=======================================================================" << std::endl;
+            numberOfErrors++;
         }
+    }
+
+    if (numberOfErrors > 0)
+    {
+                    std::cout << "\nMesh is not correct, node i+1 is placed at earlier time than node i: " << std::endl
+                              << "numberOfSegments: " << numberOfCollocationPoints - 1 << std::endl
+                              << "numberOfErrors: " << numberOfErrors << std::endl
+                              << "=======================================================================" << std::endl;
+
+                    std::exit(1);
     }
 
 }
@@ -861,11 +873,15 @@ void computeCollocationDefects(Eigen::MatrixXd& collocationDefectVector, Eigen::
     if ( continuationIndex == 1 )
     {
 
-
         double integralPhaseConstraint = 0.0;
         integralPhaseConstraint = computeIntegralPhaseConstraint(collocationDesignVector, numberOfCollocationPoints, previousDesignVector );
-
         collocationDefectVector(collocationDefectVector.rows()-1,0) = integralPhaseConstraint;
+
+//        Eigen::VectorXd temporaryVector  = (collocationDesignVector.block(0,0,6,1) ).transpose() * previousDesignVector;
+//        collocationDefectVector(collocationDefectVector.rows()-1,0) = temporaryVector(0);
+
+//        std::cout << "previousDesignVector: \n" << previousDesignVector << std::endl;
+//        std::cout << "collocationDesignVector.block(0,0,6,1): \n" << collocationDesignVector.block(0,0,6,1) << std::endl;
 
     } else
     {
