@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+double computeComplexHamiltonianDerivative(const Eigen::VectorXcd inputDesignVector, const double massParameter, const double familyHamiltonian, Eigen::VectorXd thrustAndMassParameters, const double epsilon);
+
 double computeComplexPhaseDerivative(const Eigen::VectorXcd currentDesignVector, const int numberOfCollocationPoints, const Eigen::VectorXd previousDesignVector, const double epsilon);
 
 Eigen::VectorXcd computeComplexStateDerivative(const Eigen::VectorXcd singleOddState, Eigen::VectorXd thrustAndMassParameters);
@@ -24,7 +26,7 @@ std::complex<double> computeComplexJacobi(const Eigen::VectorXcd currentState, c
 double computeHamiltonianDerivativeUsingComplexStep( const Eigen::VectorXcd currentState, const Eigen::VectorXd thrustAndMassParameters, const double HamiltonianTarget, const double epsilon, const double massParameter );
 
 
-Eigen::VectorXd computeCollocationCorrection(const Eigen::MatrixXd collocationDefectVector, const Eigen::MatrixXd collocationDesignVectorconst, Eigen::VectorXd timeIntervals, Eigen::VectorXd thrustAndMassParameters, const int numberOfCollocationPoints, const int continuationIndex, const Eigen::MatrixXd phaseConstraintVector);
+Eigen::VectorXd computeCollocationCorrection(const Eigen::MatrixXd collocationDefectVector, const Eigen::MatrixXd collocationDesignVectorconst, Eigen::VectorXd timeIntervals, Eigen::VectorXd thrustAndMassParameters, const int numberOfCollocationPoints, const int continuationIndex, const Eigen::MatrixXd phaseConstraintVector, const double massParameter);
 
 
 

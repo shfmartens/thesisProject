@@ -14,6 +14,7 @@
 #include "interpolatePolynomials.h"
 #include "computeCollocationCorrection.h"
 
+
 double computeComplexPhaseDerivative(const Eigen::VectorXcd currentDesignVector, const int numberOfCollocationPoints, const Eigen::VectorXd previousDesignVector, const double epsilon)
 {
 
@@ -351,8 +352,11 @@ std::complex<double> computeComplexJacobi(const Eigen::VectorXcd currentState, c
 double computeHamiltonianDerivativeUsingComplexStep( const Eigen::VectorXcd currentState, const Eigen::VectorXd thrustAndMassParameters, const double hamiltonianTarget, const double epsilon, const double massParameter )
 {
 
+
     // compute complex jacobi
     std::complex<double> complexJacobi = computeComplexJacobi(currentState,  massParameter);
+
+
 
     // compute the innter product
     double acceleration = thrustAndMassParameters(0);
@@ -366,7 +370,6 @@ double computeHamiltonianDerivativeUsingComplexStep( const Eigen::VectorXcd curr
     std::complex<double> adaptedHamiltonian = -0.5*complexJacobi -  innerProduct;
     std::complex<double> defect = hamiltonianTarget - adaptedHamiltonian;
 
-
    double outputVector = ( defect.imag() / epsilon );
 
     // compute a complex version of the Hamiltonian!
@@ -375,7 +378,7 @@ double computeHamiltonianDerivativeUsingComplexStep( const Eigen::VectorXcd curr
 
 }
 
-Eigen::VectorXd computeCollocationCorrection(const Eigen::MatrixXd defectVector, const Eigen::MatrixXd designVector, const Eigen::VectorXd timeIntervals, Eigen::VectorXd thrustAndMassParameters, const int numberOfCollocationPoints, const int continuationIndex, const Eigen::MatrixXd phaseConstraintVector)
+Eigen::VectorXd computeCollocationCorrection(const Eigen::MatrixXd defectVector, const Eigen::MatrixXd designVector, const Eigen::VectorXd timeIntervals, Eigen::VectorXd thrustAndMassParameters, const int numberOfCollocationPoints, const int continuationIndex, const Eigen::MatrixXd phaseConstraintVector, const double massParameter)
 {
     // Declare and initialize main variables
     Eigen::VectorXd outputVector(designVector.rows());
@@ -442,14 +445,11 @@ Eigen::VectorXd computeCollocationCorrection(const Eigen::MatrixXd defectVector,
                 columnInitialState(j) = columnInitialState(j) + increment;
 
                 Eigen::VectorXd periodicityColumn(6);
-                double phaseDerivative = 0.0;
 
                 periodicityColumn.setZero();
 
                 periodicityColumn = computePeriodicityDerivativeUsingComplexStep(columnInitialState, finalState, epsilon);
-                phaseDerivative = computePhasePeriodicityDerivativeUsingComplexStep(columnInitialState, phaseConstraintVector, epsilon);
 
-                jacobiPhaseHamiltonianSegment(0,j) =  phaseDerivative;
                 jacobiPeriodicitySegment.block(0,j,6,1) = periodicityColumn;
             }
 
@@ -482,27 +482,37 @@ Eigen::VectorXd computeCollocationCorrection(const Eigen::MatrixXd defectVector,
 
 
 
-    for (int i = 0; i < jacobiMatrix.cols(); i++)
-    {
-        Eigen::VectorXcd inputDesignVector(jacobiMatrix.cols()); inputDesignVector.setZero();
-
-        inputDesignVector = designVector.block(0,0,jacobiMatrix.cols(),1);
-
-        inputDesignVector(i) = inputDesignVector(i) + increment;
-
-         double phaseDerivative = computeComplexPhaseDerivative(inputDesignVector, numberOfCollocationPoints, phaseConstraintVector, epsilon );
-         jacobiIntegralPhaseConstraint(0,i) =phaseDerivative;
-
-    }
-
-
     if (continuationIndex == 1)
     {
+        for (int i = 0; i < jacobiMatrix.cols(); i++)
+        {
+            Eigen::VectorXcd inputDesignVector(jacobiMatrix.cols()); inputDesignVector.setZero();
+
+            inputDesignVector = designVector.block(0,0,jacobiMatrix.cols(),1);
+
+            inputDesignVector(i) = inputDesignVector(i) + increment;
+
+             double phaseDerivative = computeComplexPhaseDerivative(inputDesignVector, numberOfCollocationPoints, phaseConstraintVector, epsilon );
+             jacobiIntegralPhaseConstraint(0,i) =phaseDerivative;
+
+        }
+
         jacobiMatrix.block( ( jacobiMatrix.rows()-7 ), 0, 6, jacobiMatrix.cols()) = jacobiPeriodicitySegment;
         jacobiMatrix.block( ( jacobiMatrix.rows()-1 ), 0, 1, jacobiMatrix.cols()) = jacobiIntegralPhaseConstraint;
     } else
     {
-        jacobiMatrix.block( ( jacobiMatrix.rows()-6 ), 0, 6, jacobiMatrix.cols()) = jacobiPeriodicitySegment;
+        for (int i = 0; i < 7; i++)
+        {
+            Eigen::VectorXcd inputDesignVector(7); inputDesignVector.setZero();
+            inputDesignVector = designVector.block(0,0,7,1);
+
+            inputDesignVector(i) = inputDesignVector(i) + increment;
+            double hamiltonianDerivative = computeHamiltonianDerivativeUsingComplexStep(inputDesignVector, thrustAndMassParameters, phaseConstraintVector(0), epsilon, massParameter);
+            jacobiPhaseHamiltonianSegment(0,i) = hamiltonianDerivative;
+        }
+
+        jacobiMatrix.block( ( jacobiMatrix.rows()-7 ), 0, 6, jacobiMatrix.cols()) = jacobiPeriodicitySegment;
+        jacobiMatrix.block( ( jacobiMatrix.rows()-1 ), 0, 1, jacobiMatrix.cols()) = jacobiPhaseHamiltonianSegment;
 
     }
 

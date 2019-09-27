@@ -25,6 +25,33 @@
 #include "applyMeshRefinement.h"
 #include "interpolatePolynomials.h"
 
+void checkMeshTiming(const Eigen::MatrixXd collocationDesignVector, const int numberOfCollocationPoints)
+{
+
+    Eigen::VectorXd timingVector = Eigen::VectorXd::Zero(numberOfCollocationPoints);
+    for(int i = 0; i < numberOfCollocationPoints; i++)
+    {
+        Eigen::VectorXd nodeVector = collocationDesignVector.block(19*i,0,7,1);
+        timingVector(i) = nodeVector(6);
+    }
+
+    for(int i = 1; i < numberOfCollocationPoints; i++)
+    {
+        if(timingVector(i-1) >= timingVector(i) )
+        {
+
+            std::cout << "\nMesh is not correct, node i+1 is placed at earlier time than node i: " << std::endl
+                      << "numberOfSegments: " << numberOfCollocationPoints - 1 << std::endl
+                      << "segment number: " << i - 1 << std::endl
+                      << "node i + 1 time: " << timingVector(i) << std::endl
+                      << "node i  time: " << timingVector(i-1) << std::endl
+                      << "=======================================================================" << std::endl;
+
+        }
+    }
+
+}
+
 
 void  writeTrajectoryErrorDataToFile(const int numberOfCollocationPoints, const Eigen::VectorXd fullPeriodDeviations, const Eigen::VectorXd defectVectorMS, const Eigen::VectorXd collocatedDefects, const Eigen::VectorXd integrationErrors, const int magnitudeNoiseOffset, const double amplitude )
 {
@@ -831,17 +858,30 @@ void computeCollocationDefects(Eigen::MatrixXd& collocationDefectVector, Eigen::
 
 // Compute phase constraint
     int lengthDefectVectorMinusOne = static_cast<int>(collocationDefectVector.rows()) - 1;
-    double integralPhaseConstraint = 0.0;
     if ( continuationIndex == 1 )
     {
 
 
-
+        double integralPhaseConstraint = 0.0;
         integralPhaseConstraint = computeIntegralPhaseConstraint(collocationDesignVector, numberOfCollocationPoints, previousDesignVector );
 
         collocationDefectVector(collocationDefectVector.rows()-1,0) = integralPhaseConstraint;
 
+    } else
+    {
+        Eigen::VectorXd stateVector(10); stateVector.setZero();
+        stateVector.segment(0,6) = oddStates.block(0,0,6,1);
+        stateVector.segment(6,4) = thrustAndMassParameters;
+
+        extern double massParameter;
+        double firstStateHamiltonian = computeHamiltonian(massParameter,stateVector);
+        double hamiltonianConstraint = previousDesignVector(0)-firstStateHamiltonian;
+        collocationDefectVector(collocationDefectVector.rows()-1,0) = hamiltonianConstraint;
+
     }
+
+   // check if the mesh does not go backwards in time
+    checkMeshTiming(collocationDesignVector,numberOfCollocationPoints);
 
 
 
@@ -891,7 +931,8 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
             lengthOfDefectVector = (numberOfCollocationPoints-1)*18+6+1;
         } else
         {
-            lengthOfDefectVector = (numberOfCollocationPoints-1)*18+6;
+
+            lengthOfDefectVector = (numberOfCollocationPoints-1)*18+6+1;
         }
 
         Eigen::VectorXd collocationDeviationNorms(5);
@@ -935,16 +976,22 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
 //            std::cout << "distributionDeltaCurrentIteration: " << distributionDeltaCurrentIteration << std::endl;
 
             Eigen::VectorXd initialDesignVector = collocationDesignVector.block(0,0,collocationDesignVector.rows(),1);
-
+            double initialTolerance = 1.0e-12;
             // ======= Start the loop for collocation procedure ====== //
-            while( (collocationDefectVector.norm() > 1.0E-12) && continueColloc  )
+            std::cout << "\nstart collocation solving: " << std::endl;
+            auto start = std::chrono::high_resolution_clock::now();
+            while( (collocationDefectVector.norm() > initialTolerance) && continueColloc  )
             {
                 // compute the correction
                 Eigen::VectorXd collocationCorrectionVector(collocationDesignVector.rows());
                 collocationCorrectionVector.setZero();
 
+                if (numberOfCorrections % 100 == 0)
+                {
+                    std::cout << "collocation correction number: " <<  numberOfCorrections << std::endl;
+                }
 
-                collocationCorrectionVector = computeCollocationCorrection(collocationDefectVector, collocationDesignVector, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, continuationIndex, previousDesignVector);
+                collocationCorrectionVector = computeCollocationCorrection(collocationDefectVector, collocationDesignVector, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, continuationIndex, previousDesignVector, massParameter);
 
                 // apply line search, select design vector which produces the smallest norm
                 applyLineSearchAttenuation(collocationCorrectionVector, collocationDefectVector, collocationDesignVector, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, continuationIndex, previousDesignVector);
@@ -953,34 +1000,30 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
                 numberOfCorrections++;
                 if ( numberOfCorrections > maxNumberOfCollocationIterations)
                 {
-                                maxPositionDeviationFromPeriodicOrbit = 1.0E-11;
-                                maxVelocityDeviationFromPeriodicOrbit = 1.0E-11;
-
+                                //initialTolerance = 1.0E-11;
                 }
 
                 if ( numberOfCorrections > 2*maxNumberOfCollocationIterations)
                 {
-                                maxPositionDeviationFromPeriodicOrbit = 1.0E-10;
-                                maxVelocityDeviationFromPeriodicOrbit = 1.0E-10;
+                                //initialTolerance = 1.0E-10;
 
                 }
 
                 if ( numberOfCorrections > 3*maxNumberOfCollocationIterations)
                 {
-                                maxPositionDeviationFromPeriodicOrbit = 1.0E-9;
-                                maxVelocityDeviationFromPeriodicOrbit = 1.0E-9;
+
+                                //initialTolerance = 1.0e-09;
 
                 }
                 if ( numberOfCorrections > 3*maxNumberOfCollocationIterations+1)
                 {
-                                maxPositionDeviationFromPeriodicOrbit = 1.0E-7;
-                                maxVelocityDeviationFromPeriodicOrbit = 1.0E-7;
+                                //initialTolerance = 1.0E-7;
+
 
                 }
                 if ( numberOfCorrections > 3*maxNumberOfCollocationIterations+2)
                 {
-                                maxPositionDeviationFromPeriodicOrbit = 1.0E-4;
-                                maxVelocityDeviationFromPeriodicOrbit = 1.0E-4;
+                                //initialTolerance = 1.0e-04;
 
                 }
 
@@ -994,6 +1037,9 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
                 phaseDeviations = collocationDeviationNorms(4);
 
             }
+            auto stop = std::chrono::high_resolution_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
+            std::cout << "collocation solved in number of seconds: " << duration.count() << std::endl;
 
 
             // store the solution in a seperate variables
@@ -1001,13 +1047,26 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
             Eigen::VectorXd convergedDefectVector = collocationDefectVector.block(0,0,collocationDefectVector.rows(),1);
 
             // Apply mesh refinement and compute the errors per segment
+            std::cout << "\nstart applyMeshRefinement: " << std::endl;
+            auto startMesh = std::chrono::high_resolution_clock::now();
             applyMeshRefinement( collocationDesignVector, segmentErrorDistribution, thrustAndMassParameters, numberOfCollocationPoints);
+            auto stopMesh = std::chrono::high_resolution_clock::now();
+            auto durationMesh = std::chrono::duration_cast<std::chrono::milliseconds>(stopMesh - startMesh);
+            std::cout << "applyMeshRefinement solved in number of milliseconds: " << durationMesh.count() << std::endl;
+
             Eigen::VectorXd meshRefinedDesignVector = collocationDesignVector.block(0,0,collocationDesignVector.rows(),1);
             Eigen::VectorXd timeShiftCollocation = computeProcedureTimeShifts( initialDesignVector, convergedDesignVector, numberOfCollocationPoints);
             Eigen::VectorXd timeShiftMeshRefinement = computeProcedureTimeShifts( convergedDesignVector, meshRefinedDesignVector, numberOfCollocationPoints);
+
+            std::cout << "\nstart computeSegmentProperties: " << std::endl;
+            auto startSegment = std::chrono::high_resolution_clock::now();
             computeSegmentProperties( collocationDesignVector, thrustAndMassParameters, numberOfCollocationPoints, oddStates, oddStatesDerivatives, timeIntervals);
             initialTime = collocationDesignVector(6);
             distributionDeltaCurrentIteration = segmentErrorDistribution.maxCoeff() - segmentErrorDistribution.minCoeff();
+            auto stopSegment = std::chrono::high_resolution_clock::now();
+            auto durationsegment = std::chrono::duration_cast<std::chrono::milliseconds>(startSegment - stopSegment);
+            std::cout << "computeSegmentProperties solved in number of milliseconds: " << durationsegment.count() << std::endl;
+
 
 
             std::cout << "\nTRAJECTORY CONVERGED AFTER " << numberOfCorrections << " COLLOCATION CORRECTIONS, REMAINING DEVIATIONS: " << std::endl;
@@ -1072,7 +1131,13 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
 
             collocationGuessStart.resize(11*(numberOfCollocationPoints-1),4); collocationGuessStart.setZero();
 
+            std::cout << "\nstart interpolatePolynomials: " << std::endl;
+            auto startInterpolate = std::chrono::high_resolution_clock::now();
             interpolatePolynomials(collocationDesignVector, oldNumberOfCollocationPoints, collocationGuessStart, numberOfCollocationPoints, thrustAndMassParameters, massParameter  );
+            auto stopInterpolate = std::chrono::high_resolution_clock::now();
+            auto durationInterpolate = std::chrono::duration_cast<std::chrono::milliseconds>(startInterpolate - stopInterpolate);
+            std::cout << "interpolatePolynomials solved in number of milliseconds: " << durationInterpolate.count() << std::endl;
+
 
             std::cout << "new Number Of Patch Points: : " << numberOfCollocationPoints << std::endl;
 
