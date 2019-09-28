@@ -310,17 +310,26 @@ Eigen::VectorXd computePeriodicityDerivativeUsingComplexStep(Eigen::VectorXcd in
 
 }
 
-double computePhasePeriodicityDerivativeUsingComplexStep(const Eigen::VectorXcd columnInitialState, const Eigen::MatrixXd phaseConstraintVector, const double epsilon)
+double computePoincarePhaseDerivativeUsingComplexStep(const Eigen::VectorXcd columnInitialState, Eigen::VectorXd thrustAndMassParameters, const Eigen::VectorXd phaseConstraintVector, const double epsilon)
 {
     double outputVector = 0.0;
 
 
-    Eigen::VectorXcd previousState = phaseConstraintVector.block(0,0,6,1);
-    Eigen::VectorXcd initialDerivative = phaseConstraintVector.block(0,1,6,1);
-    Eigen::VectorXcd increment = columnInitialState - previousState;
-    std::complex<double> defect = increment.transpose()*initialDerivative;
+    Eigen::VectorXcd increment = phaseConstraintVector.block(0,0,6,1);
+
+    Eigen::VectorXcd currentDerivative = computeComplexStateDerivative(columnInitialState, thrustAndMassParameters);
+    //Eigen::VectorXcd increment = columnInitialState - previousState;
+    std::complex<double> defect = increment.transpose()*currentDerivative;
 
     outputVector = defect.imag() / epsilon;
+
+//    std::cout << "\n == Checking the function == " << std::endl
+//               << "columnInitialState: \n" << columnInitialState << std::endl
+//               << "phaseConstraintVector " << phaseConstraintVector << std::endl
+//               << "increment: \n" << increment << std::endl
+//               << "currentDerivative \n" << currentDerivative << std::endl
+//               << "defect: \n" << defect << std::endl
+//               << "outputVector: \n" << outputVector << std::endl;
 
     return outputVector;
 
@@ -378,7 +387,7 @@ double computeHamiltonianDerivativeUsingComplexStep( const Eigen::VectorXcd curr
 
 }
 
-Eigen::VectorXd computeCollocationCorrection(const Eigen::MatrixXd defectVector, const Eigen::MatrixXd designVector, const Eigen::VectorXd timeIntervals, Eigen::VectorXd thrustAndMassParameters, const int numberOfCollocationPoints, const int continuationIndex, const Eigen::MatrixXd phaseConstraintVector, const double massParameter)
+Eigen::VectorXd computeCollocationCorrection(const Eigen::MatrixXd defectVector, const Eigen::MatrixXd designVector, const Eigen::VectorXd timeIntervals, Eigen::VectorXd thrustAndMassParameters, const int numberOfCollocationPoints, const int continuationIndex, const Eigen::VectorXd phaseConstraintVector, const double massParameter)
 {
     // Declare and initialize main variables
     Eigen::VectorXd outputVector(designVector.rows());
@@ -484,15 +493,15 @@ Eigen::VectorXd computeCollocationCorrection(const Eigen::MatrixXd defectVector,
 
     if (continuationIndex == 1)
     {
-        for (int i = 0; i < jacobiMatrix.cols(); i++)
+        for (int i = 0; i < 7; i++)
         {
-            Eigen::VectorXcd inputDesignVector(jacobiMatrix.cols()); inputDesignVector.setZero();
+            Eigen::VectorXcd inputDesignVector(7); inputDesignVector.setZero();
 
-            inputDesignVector = designVector.block(0,0,jacobiMatrix.cols(),1);
+            inputDesignVector = designVector.block(0,0,7,1);
 
             inputDesignVector(i) = inputDesignVector(i) + increment;
 
-             double phaseDerivative = computeComplexPhaseDerivative(inputDesignVector, numberOfCollocationPoints, phaseConstraintVector, epsilon );
+             double phaseDerivative = computePoincarePhaseDerivativeUsingComplexStep(inputDesignVector, thrustAndMassParameters ,phaseConstraintVector, epsilon );
              jacobiIntegralPhaseConstraint(0,i) =phaseDerivative;
 
         }

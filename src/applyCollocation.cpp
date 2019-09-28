@@ -873,15 +873,23 @@ void computeCollocationDefects(Eigen::MatrixXd& collocationDefectVector, Eigen::
     if ( continuationIndex == 1 )
     {
 
-        double integralPhaseConstraint = 0.0;
-        integralPhaseConstraint = computeIntegralPhaseConstraint(collocationDesignVector, numberOfCollocationPoints, previousDesignVector );
-        collocationDefectVector(collocationDefectVector.rows()-1,0) = integralPhaseConstraint;
+        //double integralPhaseConstraint = 0.0;
+        //integralPhaseConstraint = computeIntegralPhaseConstraint(collocationDesignVector, numberOfCollocationPoints, previousDesignVector );
+        //collocationDefectVector(collocationDefectVector.rows()-1,0) = integralPhaseConstraint;
 
-//        Eigen::VectorXd temporaryVector  = (collocationDesignVector.block(0,0,6,1) ).transpose() * previousDesignVector;
-//        collocationDefectVector(collocationDefectVector.rows()-1,0) = temporaryVector(0);
+        Eigen::Vector6d derivative = oddStatesDerivatives.block(0,0,6,1);
+
+
+        Eigen::VectorXd temporaryVector  = (oddStatesDerivatives.block(0,0,6,1) ).transpose() * previousDesignVector;
+        collocationDefectVector(collocationDefectVector.rows()-1,0) = previousDesignVector.dot(derivative);
+
 
 //        std::cout << "previousDesignVector: \n" << previousDesignVector << std::endl;
 //        std::cout << "collocationDesignVector.block(0,0,6,1): \n" << collocationDesignVector.block(0,0,6,1) << std::endl;
+//        std::cout << "oddStatesDerivatives.block(0,0,6,1): \n" << oddStatesDerivatives.block(0,0,6,1) << std::endl;
+//        std::cout << "inner product: \n" << previousDesignVector.dot(derivative) << std::endl;
+//        std::cout << "transpose: \n" <<(oddStatesDerivatives.block(0,0,6,1) ).transpose() * previousDesignVector << std::endl;
+
 
     } else
     {

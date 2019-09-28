@@ -1050,7 +1050,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 // ============ CONTINUATION PROCEDURE ================== //
     // Set exit parameters of continuation procedure
-    int maximumNumberOfInitialConditions = 2000;
+    int maximumNumberOfInitialConditions = 400;
     int numberOfInitialConditions;
     if (continuationIndex == 1)
     {
@@ -1105,7 +1105,8 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                  Eigen::VectorXd fullEquilibriumLocation = Eigen::VectorXd::Zero(6);
                  fullEquilibriumLocation.segment(0,2) = createEquilibriumLocations(1, accelerationMagnitude, accelerationAngle, "acceleration", ySign, massParameter );
                  increment = initialStateVectorContinuation.segment(0,6) - fullEquilibriumLocation;
-                 adaptedIncrementVector = increment / (increment.norm());
+                 adaptedIncrementVector = 10.0 *increment / (increment.norm());
+
 
                  std::cout << "fullEquilibriumLocation: \n" << fullEquilibriumLocation << std::endl;
                  std::cout << "increment: \n" << increment << std::endl;
@@ -1209,7 +1210,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
               computeOddPoints(initialStateVectorContinuation, oddNodesMatrix, numberOfCollocationPoints, massParameter, false);
 
 
-              stateVectorInclSTM = getCollocatedAugmentedInitialState( oddNodesMatrix, numberOfInitialConditions, librationPointNr, orbitType, continuationIndex, previousDesignVector,
+              stateVectorInclSTM = getCollocatedAugmentedInitialState( oddNodesMatrix, numberOfInitialConditions, librationPointNr, orbitType, continuationIndex, adaptedIncrementVector,
                                                                        massParameter, numberOfPatchPoints, numberOfCollocationPoints, initialConditions,
                                                                        differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
 

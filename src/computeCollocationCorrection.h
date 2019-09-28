@@ -19,14 +19,14 @@ Eigen::VectorXd computePeriodicityDerivativeUsingComplexStep(Eigen::VectorXcd in
 
 void recomputeTimeProperties(const Eigen::MatrixXd temporaryDesignVector, double& initialTime, Eigen::VectorXd& timeIntervals, const int numberOfCollocationPoints);
 
-double computePhasePeriodicityDerivativeUsingComplexStep(const Eigen::VectorXcd columnInitialState, const Eigen::VectorXd phaseConstraintVector, const double epsilon);
+double computePoincarePhaseDerivativeUsingComplexStep(const Eigen::VectorXcd columnInitialState, const Eigen::VectorXd thrustAndMassParameters, const Eigen::VectorXd phaseConstraintVector, const double epsilon);
 
 std::complex<double> computeComplexJacobi(const Eigen::VectorXcd currentState, const double massParameter);
 
 double computeHamiltonianDerivativeUsingComplexStep( const Eigen::VectorXcd currentState, const Eigen::VectorXd thrustAndMassParameters, const double HamiltonianTarget, const double epsilon, const double massParameter );
 
 
-Eigen::VectorXd computeCollocationCorrection(const Eigen::MatrixXd collocationDefectVector, const Eigen::MatrixXd collocationDesignVectorconst, Eigen::VectorXd timeIntervals, Eigen::VectorXd thrustAndMassParameters, const int numberOfCollocationPoints, const int continuationIndex, const Eigen::MatrixXd phaseConstraintVector, const double massParameter);
+Eigen::VectorXd computeCollocationCorrection(const Eigen::MatrixXd collocationDefectVector, const Eigen::MatrixXd collocationDesignVectorconst, Eigen::VectorXd timeIntervals, Eigen::VectorXd thrustAndMassParameters, const int numberOfCollocationPoints, const int continuationIndex, const Eigen::VectorXd phaseConstraintVector, const double massParameter);
 
 
 
