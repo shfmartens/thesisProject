@@ -877,11 +877,23 @@ void computeCollocationDefects(Eigen::MatrixXd& collocationDefectVector, Eigen::
         //integralPhaseConstraint = computeIntegralPhaseConstraint(collocationDesignVector, numberOfCollocationPoints, previousDesignVector );
         //collocationDefectVector(collocationDefectVector.rows()-1,0) = integralPhaseConstraint;
 
+        //Poincare Phase condition
         Eigen::Vector6d derivative = oddStatesDerivatives.block(0,0,6,1);
-
-
         Eigen::VectorXd temporaryVector  = (oddStatesDerivatives.block(0,0,6,1) ).transpose() * previousDesignVector;
         collocationDefectVector(collocationDefectVector.rows()-1,0) = previousDesignVector.dot(derivative);
+
+
+        //Poincare Literature
+        //Eigen::Vector6d currentFirstState = oddStates.block(0,0,6,1);
+        //collocationDefectVector(collocationDefectVector.rows()-1,0) = currentFirstState.dot( previousDesignVector);
+
+        //std::cout << "currentFirstState: \n" << currentFirstState << std::endl;
+        //std::cout << "currentFirstState: \n" << previousDesignVector << std::endl;
+        //std::cout << "dot: \n" << currentFirstState.dot( previousDesignVector) << std::endl;
+        //std::cout << "dot: \n" << (oddStates.block(0,0,6,1) ).transpose() * previousDesignVector  << std::endl;
+
+
+
 
 
 //        std::cout << "previousDesignVector: \n" << previousDesignVector << std::endl;

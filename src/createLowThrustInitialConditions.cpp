@@ -1050,7 +1050,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 // ============ CONTINUATION PROCEDURE ================== //
     // Set exit parameters of continuation procedure
-    int maximumNumberOfInitialConditions = 400;
+    int maximumNumberOfInitialConditions = 500;
     int numberOfInitialConditions;
     if (continuationIndex == 1)
     {
@@ -1107,6 +1107,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                  increment = initialStateVectorContinuation.segment(0,6) - fullEquilibriumLocation;
                  adaptedIncrementVector = 10.0 *increment / (increment.norm());
 
+                 //adaptedIncrementVector = computeStateDerivativeAugmented(0.0, getFullInitialStateAugmented( initialStateVectorContinuation.segment(0,10) ) ).block(0,0,6,1);
 
                  std::cout << "fullEquilibriumLocation: \n" << fullEquilibriumLocation << std::endl;
                  std::cout << "increment: \n" << increment << std::endl;
@@ -1114,6 +1115,10 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                  std::cout << "adaptedIncrementVector.norm: " << adaptedIncrementVector.norm() << std::endl;
                  std::cout << "adaptedIncrementVector * 5: " << adaptedIncrementVector* 5 << std::endl;
                  std::cout << "adaptedIncrementVector * 5: " << (adaptedIncrementVector* 5).norm() << std::endl;
+
+                    //std::cout << "first state of most recent guess: \n" << initialStateVectorContinuation.segment(0,6) << std::endl;
+                    //std::cout << "adaptedIncrementVector: \n" << adaptedIncrementVector << std::endl;
+
 
 
 
