@@ -959,7 +959,6 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
 
         extractDurationAndDynamicsFromInput(collocationGuessStart, initialCollocationGuessDerivatives, numberOfCollocationPoints,oddStates, oddStatesDerivatives,timeIntervals);
 
-
         // compute the input to the correction algorithm
         int lengthOfDefectVector;
         if (continuationIndex == 1)

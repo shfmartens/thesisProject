@@ -13,6 +13,22 @@
 #include "applyLineSearchAttenuation.h"
 #include "applyMeshRefinement.h"
 
+void checkMeshAfterNewTimeComputation(const Eigen::VectorXd newNodeTimes, const int numberOfCollocationPoints)
+{
+    for(int i = 1; i < numberOfCollocationPoints; i++ )
+    {
+        if(newNodeTimes(i-1) >= newNodeTimes(i) )
+        {
+            std::cout << "checkMeshAfterNewTimeComputation, error in mesh: " << std::endl
+                       << "i: " << i << std::endl
+                       << "time i-1: " << newNodeTimes(i-1) << std::endl
+                       << "time i: " << newNodeTimes(i) << std::endl;
+
+        }
+
+    }
+}
+
 Eigen::VectorXd computeProcedureTimeShifts(Eigen::VectorXd collocationDesignVectorInitial, Eigen::VectorXd collocationDesignVectorFinal, const int numberOfCollocationPoints)
 {
     // initialize outputVector //
