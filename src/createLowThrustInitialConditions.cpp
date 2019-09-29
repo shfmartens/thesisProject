@@ -31,6 +31,7 @@
 #include "applyMeshRefinement.h"
 #include "interpolatePolynomials.h"
 #include "refineOrbitHamiltonian.h"
+#include "initialiseContinuationFromTextFile.h"
 
 void appendResultsVectorAugmented(const double hamiltonian, const double orbitalPeriod, const Eigen::VectorXd& initialStateVector,
         const Eigen::MatrixXd& stateVectorInclSTM, std::vector< Eigen::VectorXd >& initialConditions )
@@ -996,7 +997,10 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                               const double massParameter, const int numberOfPatchPoints, const int initialNumberOfCollocationPoints, const double maxPositionDeviationFromPeriodicOrbit, const double maxVelocityDeviationFromPeriodicOrbit, const double maxPeriodDeviationFromPeriodicOrbit, const double maxEigenvalueDeviation,
                               const boost::function< double( const Eigen::VectorXd&, const int ) > pseudoArcLengthFunctionAugmented ) {
 
-    std::cout << "\nCreate initial conditions:\n" << std::endl;
+    bool startContinuationFromTextFile = true;
+    std::cout << "\nCreate initial conditions:" << std::endl;
+    std::cout << "Start continuation from text file: " << startContinuationFromTextFile << "\n"<<std::endl;
+
 
     // Set output maximum precision
     std::cout.precision(std::numeric_limits<double>::digits10);
@@ -1014,7 +1018,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
     int numberOfCollocationPoints;
     // Obtain ballistic initial guesses and refine them
 
-    if (continuationIndex == 1)
+    if (continuationIndex == 1 and startContinuationFromTextFile == false)
     {
         linearApproximationResultIteration1 = getLowThrustInitialStateVectorGuess(librationPointNr, ySign, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 0);
         linearApproximationResultIteration2 = getLowThrustInitialStateVectorGuess(librationPointNr, ySign, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 1);
@@ -1027,7 +1031,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                     linearApproximationResultIteration2, computeHamiltonian( massParameter, linearApproximationResultIteration1.segment(0,10)), 1,
                    librationPointNr, orbitType, massParameter, numberOfPatchPoints, initialNumberOfCollocationPoints, false, initialConditions, differentialCorrections, statesContinuation,
                     maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
-    } else
+    } else if (startContinuationFromTextFile == false)
     {
         std::cout << "StatesContinuationVector: computed" << std::endl;
 
@@ -1077,6 +1081,38 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
     if (continuationIndex == 1)
     {
         numberOfCollocationPoints = initialNumberOfCollocationPoints;
+
+        if (startContinuationFromTextFile == true)
+        {
+            Eigen::VectorXd statesContinuationVectorFirstGuess;
+            Eigen::VectorXd statesContinuationVectorSecondGuess;
+            int numberOfCollocationPointsFirstGuess;
+            int numberOfCollocationPointsSecondGuess;
+
+            initialiseContinuationFromTextFile( librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2,
+                                                -1.516776129756689, -1.516655149071308, ySign, massParameter,
+                                                statesContinuationVectorFirstGuess, statesContinuationVectorSecondGuess,
+                                                numberOfCollocationPointsFirstGuess, numberOfCollocationPointsSecondGuess, adaptedIncrementVector, numberOfInitialConditions);
+
+            // Compute the interior points and nodes for each segment, this is the input for the getCollocated State
+          Eigen::MatrixXd oddNodesMatrixFirst((11*(numberOfCollocationPoints-1)), 4 );
+          computeOddPoints(statesContinuationVectorFirstGuess, oddNodesMatrixFirst, numberOfCollocationPointsFirstGuess, massParameter, false);
+
+          Eigen::MatrixXd oddNodesMatrixSecond((11*(numberOfCollocationPoints-1)), 4 );
+          computeOddPoints(statesContinuationVectorFirstGuess, oddNodesMatrixSecond, numberOfCollocationPointsSecondGuess, massParameter, false);
+
+          int orbitNumberFirstGuess = numberOfInitialConditions-2;
+          int orbitNumberSecondGuess = numberOfInitialConditions-2;
+
+
+            Eigen::MatrixXd stateVectorInclSTMFirst = getCollocatedAugmentedInitialState(oddNodesMatrixFirst, orbitNumberFirstGuess, librationPointNr, orbitType, 1, adaptedIncrementVector,
+                                                                                    massParameter, numberOfCollocationPointsFirstGuess, numberOfCollocationPointsFirstGuess, initialConditions, differentialCorrections,
+                                                                                    statesContinuation, 1.0E-12, 1.0E-12, 1.0E-12);
+            Eigen::MatrixXd stateVectorInclSTMSecond = getCollocatedAugmentedInitialState(oddNodesMatrixFirst, orbitNumberFirstGuess, librationPointNr, orbitType, 1, adaptedIncrementVector,
+                                                                                    massParameter, numberOfCollocationPointsFirstGuess, numberOfCollocationPointsFirstGuess, initialConditions, differentialCorrections,
+                                                                                    statesContinuation, 1.0E-12, 1.0E-12, 1.0E-12);
+        }
+
     }
 
     while( ( numberOfInitialConditions < maximumNumberOfInitialConditions ) && continueNumericalContinuation)
