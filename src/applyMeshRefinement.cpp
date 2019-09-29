@@ -13,8 +13,9 @@
 #include "applyLineSearchAttenuation.h"
 #include "applyMeshRefinement.h"
 
-void checkMeshAfterNewTimeComputation(const Eigen::VectorXd newNodeTimes, const int numberOfCollocationPoints)
+void checkMeshAfterNewTimeComputation(const Eigen::VectorXd newNodeTimes, const int numberOfCollocationPoints, const Eigen::VectorXd NodeTimes)
 {
+    bool meshIsValid = true;
     for(int i = 1; i < numberOfCollocationPoints; i++ )
     {
         if(newNodeTimes(i-1) >= newNodeTimes(i) )
@@ -24,8 +25,16 @@ void checkMeshAfterNewTimeComputation(const Eigen::VectorXd newNodeTimes, const 
                        << "time i-1: " << newNodeTimes(i-1) << std::endl
                        << "time i: " << newNodeTimes(i) << std::endl;
 
+            meshIsValid = false;
+
         }
 
+    }
+
+    if (meshIsValid == false)
+    {
+        std::cout << "\noldMeshTimes: \n" << NodeTimes << std::endl
+                  << "newMeshTimes: \n" << newNodeTimes << std::endl;
     }
 }
 
@@ -515,6 +524,8 @@ void applyMeshRefinement(Eigen::MatrixXd& collocationDesignVector, Eigen::Vector
 
         }
     }
+
+    checkMeshAfterNewTimeComputation(newNodeTimes, numberOfCollocationPoints, nodeTimes);
 
 
     // interpolate the polynomials
