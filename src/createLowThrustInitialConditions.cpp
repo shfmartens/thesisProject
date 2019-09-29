@@ -1054,7 +1054,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 // ============ CONTINUATION PROCEDURE ================== //
     // Set exit parameters of continuation procedure
-    int maximumNumberOfInitialConditions = 500;
+    int maximumNumberOfInitialConditions = 600;
     int numberOfInitialConditions;
     if (continuationIndex == 1)
     {
@@ -1089,28 +1089,33 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
             int numberOfCollocationPointsFirstGuess;
             int numberOfCollocationPointsSecondGuess;
 
+            //-1.516776129756689, -1.516655149071308
+            //-1.516897555604876
+
             initialiseContinuationFromTextFile( librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2,
-                                                -1.516776129756689, -1.516655149071308, ySign, massParameter,
+                                                -1.516897555604876, -1.516776129756689, ySign, massParameter,
                                                 statesContinuationVectorFirstGuess, statesContinuationVectorSecondGuess,
                                                 numberOfCollocationPointsFirstGuess, numberOfCollocationPointsSecondGuess, adaptedIncrementVector, numberOfInitialConditions);
 
             // Compute the interior points and nodes for each segment, this is the input for the getCollocated State
-          Eigen::MatrixXd oddNodesMatrixFirst((11*(numberOfCollocationPoints-1)), 4 );
+          Eigen::MatrixXd oddNodesMatrixFirst((11*(numberOfCollocationPointsFirstGuess-1)), 4 );
           computeOddPoints(statesContinuationVectorFirstGuess, oddNodesMatrixFirst, numberOfCollocationPointsFirstGuess, massParameter, false);
 
-          Eigen::MatrixXd oddNodesMatrixSecond((11*(numberOfCollocationPoints-1)), 4 );
-          computeOddPoints(statesContinuationVectorFirstGuess, oddNodesMatrixSecond, numberOfCollocationPointsSecondGuess, massParameter, false);
+          Eigen::MatrixXd oddNodesMatrixSecond((11*(numberOfCollocationPointsSecondGuess-1)), 4 );
+          computeOddPoints(statesContinuationVectorSecondGuess, oddNodesMatrixSecond, numberOfCollocationPointsSecondGuess, massParameter, false);
 
           int orbitNumberFirstGuess = numberOfInitialConditions-2;
-          int orbitNumberSecondGuess = numberOfInitialConditions-2;
+          int orbitNumberSecondGuess = numberOfInitialConditions-1;
 
 
             Eigen::MatrixXd stateVectorInclSTMFirst = getCollocatedAugmentedInitialState(oddNodesMatrixFirst, orbitNumberFirstGuess, librationPointNr, orbitType, 1, adaptedIncrementVector,
                                                                                     massParameter, numberOfCollocationPointsFirstGuess, numberOfCollocationPointsFirstGuess, initialConditions, differentialCorrections,
                                                                                     statesContinuation, 1.0E-12, 1.0E-12, 1.0E-12);
-            Eigen::MatrixXd stateVectorInclSTMSecond = getCollocatedAugmentedInitialState(oddNodesMatrixFirst, orbitNumberFirstGuess, librationPointNr, orbitType, 1, adaptedIncrementVector,
+            Eigen::MatrixXd stateVectorInclSTMSecond = getCollocatedAugmentedInitialState(oddNodesMatrixSecond, orbitNumberSecondGuess, librationPointNr, orbitType, 1, adaptedIncrementVector,
                                                                                     massParameter, numberOfCollocationPointsFirstGuess, numberOfCollocationPointsFirstGuess, initialConditions, differentialCorrections,
                                                                                     statesContinuation, 1.0E-12, 1.0E-12, 1.0E-12);
+
+            numberOfCollocationPoints = numberOfCollocationPointsSecondGuess;
         }
 
     }
@@ -1157,10 +1162,6 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 
 
-
-
-
-
               }
 
               // SHOULD BE MINUS 1 BUT FOR CONSTRUCTION IS -2
@@ -1192,6 +1193,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
                    Eigen::VectorXd previousGuess = statesContinuation[ statesContinuation.size( ) - 2 ];
                    Eigen::VectorXd currentGuess = statesContinuation[ statesContinuation.size( ) - 1 ];
+
 
                    computeStateIncrementFromInterpolation(previousGuess, currentGuess, stateIncrementInterpolation );
                    stateIncrement.segment(1,11*numberOfStates) = stateIncrementInterpolation;
@@ -1226,10 +1228,10 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 
              }
-                Eigen::Vector6d x1 = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 6 );
-                Eigen::Vector6d x0 = statesContinuation[ statesContinuation.size( ) - 2 ].segment( 3, 6 );
-                Eigen::Vector6d difference = x1-x0;
-                Eigen::Vector6d x0dot = computeStateDerivativeAugmented(0.0, getFullInitialStateAugmented( statesContinuation[ statesContinuation.size( ) - 2 ].segment( 3, 10 ))).block(0,0,6,1);
+//                Eigen::Vector6d x1 = statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 6 );
+//                Eigen::Vector6d x0 = statesContinuation[ statesContinuation.size( ) - 2 ].segment( 3, 6 );
+//                Eigen::Vector6d difference = x1-x0;
+//                Eigen::Vector6d x0dot = computeStateDerivativeAugmented(0.0, getFullInitialStateAugmented( statesContinuation[ statesContinuation.size( ) - 2 ].segment( 3, 10 ))).block(0,0,6,1);
 
 
 //                std::cout << "\n===== TESTING INTEGRAL PHASE CONSTRAINT =====" << std::endl
@@ -1245,6 +1247,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 
                 initialStateVectorContinuation = initialStateVectorContinuation + pseudoArcLengthCorrection* stateIncrement.segment(1,numberOfStates*11);
+
 
                  // Compute the interior points and nodes for each segment, this is the input for the getCollocated State
               Eigen::MatrixXd oddNodesMatrix((11*(numberOfCollocationPoints-1)), 4 );
