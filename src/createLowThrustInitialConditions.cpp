@@ -997,7 +997,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                               const double massParameter, const int numberOfPatchPoints, const int initialNumberOfCollocationPoints, const double maxPositionDeviationFromPeriodicOrbit, const double maxVelocityDeviationFromPeriodicOrbit, const double maxPeriodDeviationFromPeriodicOrbit, const double maxEigenvalueDeviation,
                               const boost::function< double( const Eigen::VectorXd&, const int ) > pseudoArcLengthFunctionAugmented ) {
 
-    bool startContinuationFromTextFile = true;
+    bool startContinuationFromTextFile = false;
     std::cout << "\nCreate initial conditions:" << std::endl;
     std::cout << "Start continuation from text file: " << startContinuationFromTextFile << "\n"<<std::endl;
 
