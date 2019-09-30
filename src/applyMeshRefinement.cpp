@@ -622,7 +622,7 @@ void applyMeshRefinement(Eigen::MatrixXd& collocationDesignVector, Eigen::Vector
     //std::cout << "newNodeTimes Tom implementation: \n " << newNodeTimes << std::endl;
     //std::cout << "newNodeTimes Sjors implementation: \n" << newNodeTimesAlt << std::endl;
 
-    //newNodeTimes = newNodeTimesAlt;
+    newNodeTimes = newNodeTimesAlt;
 
     checkMeshAfterNewTimeComputation(newNodeTimes, numberOfCollocationPoints, nodeTimes);
 
