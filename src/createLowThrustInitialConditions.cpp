@@ -1055,7 +1055,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 // ============ CONTINUATION PROCEDURE ================== //
     // Set exit parameters of continuation procedure
-    int maximumNumberOfInitialConditions = 1300;
+    int maximumNumberOfInitialConditions = 50;
     int numberOfInitialConditions;
     if (continuationIndex == 1)
     {
@@ -1169,7 +1169,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
               }
 
               // SHOULD BE MINUS 1 BUT FOR CONSTRUCTION IS -2
-              Eigen::VectorXd previousDesignVector = (statesContinuation[ statesContinuation.size( ) - 2 ].segment( 3, 11*numberOfStates ));
+              Eigen::VectorXd previousDesignVector = (statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*numberOfStates ));
 
 
 
