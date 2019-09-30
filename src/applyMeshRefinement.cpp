@@ -615,12 +615,12 @@ void applyMeshRefinement(Eigen::MatrixXd& collocationDesignVector, Eigen::Vector
     newNodeTimesAlt = computeAlternativeMesh(meshIntegral, numberOfCollocationPoints, nodeTimes, timeIntervals, eightOrderDerivatives);
     //newNodeTimes = newNodeTimesAlt;
 
-    checkMeshAfterNewTimeComputation(newNodeTimesAlt, numberOfCollocationPoints, nodeTimes);
+    checkMeshAfterNewTimeComputation(newNodeTimes, numberOfCollocationPoints, nodeTimes);
 
 
     // interpolate the polynomials
     Eigen::VectorXd newDesignVector(currentCollocationDesignVector.rows()); newDesignVector.setZero();
-    computeNewMesh( currentCollocationDesignVector, thrustAndMassParameters, nodeTimes, newNodeTimesAlt, numberOfCollocationPoints, newDesignVector);
+    computeNewMesh( currentCollocationDesignVector, thrustAndMassParameters, nodeTimes, newNodeTimes, numberOfCollocationPoints, newDesignVector);
 
     // output the desired quantities
     collocationDesignVector.block(0,0,collocationDesignVector.rows(),1) = newDesignVector;
