@@ -983,6 +983,8 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
         double distributionDeltaPreviousIteration = 1.0E3;
         double distributionDeltaCurrentIteration = 1.0E2;
 
+        std::cout << "start equidistribution loop collocation! " << std::endl;
+
         while (distributionDeltaPreviousIteration > distributionDeltaCurrentIteration and distributionDeltaCurrentIteration > 1.0E-12)
         {
             computeCollocationDefects(collocationDefectVector, collocationDesignVector, oddStates, oddStatesDerivatives, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, initialTime, continuationIndex, previousDesignVector);

@@ -1032,6 +1032,8 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                     linearApproximationResultIteration2, computeHamiltonian( massParameter, linearApproximationResultIteration1.segment(0,10)), 1,
                    librationPointNr, orbitType, massParameter, numberOfPatchPoints, initialNumberOfCollocationPoints, false, initialConditions, differentialCorrections, statesContinuation,
                     maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
+
+
     } else if (startContinuationFromTextFile == false)
     {
         std::cout << "StatesContinuationVector: computed" << std::endl;
@@ -1101,6 +1103,8 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                                                 statesContinuationVectorFirstGuess, statesContinuationVectorSecondGuess,
                                                 numberOfCollocationPointsFirstGuess, numberOfCollocationPointsSecondGuess, adaptedIncrementVector, numberOfInitialConditions);
 
+            std::cout << "statesContinuationVectorFirstGuess: " << statesContinuationVectorFirstGuess << std::endl;
+
             // Compute the interior points and nodes for each segment, this is the input for the getCollocated State
           Eigen::MatrixXd oddNodesMatrixFirst((11*(numberOfCollocationPointsFirstGuess-1)), 4 );
           computeOddPoints(statesContinuationVectorFirstGuess, oddNodesMatrixFirst, numberOfCollocationPointsFirstGuess, massParameter, false);
@@ -1110,7 +1114,6 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
           int orbitNumberFirstGuess = numberOfInitialConditions-2;
           int orbitNumberSecondGuess = numberOfInitialConditions-1;
-
 
             Eigen::MatrixXd stateVectorInclSTMFirst = getCollocatedAugmentedInitialState(oddNodesMatrixFirst, orbitNumberFirstGuess, librationPointNr, orbitType, 1, adaptedIncrementVector,
                                                                                     massParameter, numberOfCollocationPointsFirstGuess, numberOfCollocationPointsFirstGuess, initialConditions, differentialCorrections,
