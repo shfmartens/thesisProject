@@ -13,6 +13,26 @@
 #include "applyLineSearchAttenuation.h"
 #include "applyMeshRefinement.h"
 
+void verifyMeshProcedures(const Eigen::VectorXd meshIntegral, const int numberOfCollocationPoints, const Eigen::VectorXd nodeTimes, const Eigen::VectorXd newNodeTimes, const Eigen::VectorXd newNodeTimesAlt, const Eigen::VectorXd timeIntervals, const Eigen::VectorXd eightOrderDerivatives)
+{
+    std::cout << "===== verifyMeshProcedures ===== " << std::endl
+              << "numberOfCollocationPoints: " << numberOfCollocationPoints << std::endl
+              << "meshIntegral: \n" << meshIntegral << std::endl
+              << "nodeTimes: \n" << nodeTimes << std::endl
+              << "newNodeTimes: \n" << newNodeTimes << std::endl
+              << "newNodeTimesAlt: \n" << newNodeTimesAlt << std::endl
+              << "timeIntervals: \n" << timeIntervals << std::endl
+              << "eightOrderDerivatives: \n" << eightOrderDerivatives << std::endl;
+
+
+    // compute Integral values at both
+
+
+
+
+}
+
+
 Eigen::VectorXd computeAlternativeMesh(const Eigen::VectorXd meshIntegral, const int numberOfCollocationPoints, const Eigen::VectorXd nodeTimes, const Eigen::VectorXd timeIntervals, const Eigen::VectorXd eightOrderDerivatives )
 {
 
@@ -615,12 +635,14 @@ void applyMeshRefinement(Eigen::MatrixXd& collocationDesignVector, Eigen::Vector
     newNodeTimesAlt = computeAlternativeMesh(meshIntegral, numberOfCollocationPoints, nodeTimes, timeIntervals, eightOrderDerivatives);
     //newNodeTimes = newNodeTimesAlt;
 
-    checkMeshAfterNewTimeComputation(newNodeTimes, numberOfCollocationPoints, nodeTimes);
+    verifyMeshProcedures(meshIntegral, numberOfCollocationPoints, nodeTimes, newNodeTimes, newNodeTimesAlt, timeIntervals, eightOrderDerivatives);
+
+    checkMeshAfterNewTimeComputation(newNodeTimesAlt, numberOfCollocationPoints, nodeTimes);
 
 
     // interpolate the polynomials
     Eigen::VectorXd newDesignVector(currentCollocationDesignVector.rows()); newDesignVector.setZero();
-    computeNewMesh( currentCollocationDesignVector, thrustAndMassParameters, nodeTimes, newNodeTimes, numberOfCollocationPoints, newDesignVector);
+    computeNewMesh( currentCollocationDesignVector, thrustAndMassParameters, nodeTimes, newNodeTimesAlt, numberOfCollocationPoints, newDesignVector);
 
     // output the desired quantities
     collocationDesignVector.block(0,0,collocationDesignVector.rows(),1) = newDesignVector;
