@@ -618,11 +618,11 @@ void applyMeshRefinement(Eigen::MatrixXd& collocationDesignVector, Eigen::Vector
 
     newNodeTimesAlt =  computeAlternativeMesh(meshIntegral, numberOfCollocationPoints,  nodeTimes, timeIntervals, eightOrderDerivatives );
 
-    std::cout << "oldNodeTimes: \n " << nodeTimes << std::endl;
-    std::cout << "newNodeTimes Tom implementation: \n " << newNodeTimes << std::endl;
-    std::cout << "newNodeTimes Sjors implementation: \n" << newNodeTimesAlt << std::endl;
+    //std::cout << "oldNodeTimes: \n " << nodeTimes << std::endl;
+    //std::cout << "newNodeTimes Tom implementation: \n " << newNodeTimes << std::endl;
+    //std::cout << "newNodeTimes Sjors implementation: \n" << newNodeTimesAlt << std::endl;
 
-
+    //newNodeTimes = newNodeTimesAlt;
 
     checkMeshAfterNewTimeComputation(newNodeTimes, numberOfCollocationPoints, nodeTimes);
 
