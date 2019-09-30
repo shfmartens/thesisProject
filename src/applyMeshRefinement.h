@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+void computeAlternativeMesh(const Eigen::VectorXd meshIntegral, const int numberOfCollocationPoints, const Eigen::VectorXd nodeTimes, const Eigen::VectorXd timeIntervals );
+
 void checkMeshAfterNewTimeComputation(const Eigen::VectorXd newNodeTimes, const int numberOfCollocationPoints, const Eigen::VectorXd nodeTimes);
 
 Eigen::VectorXd computeStateViaPolynomialInterpolation(const Eigen::MatrixXd segmentOddStates, const Eigen::MatrixXd segmentOddStateDerivatives, const double deltaTime, const double interpolationTime);

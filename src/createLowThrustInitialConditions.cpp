@@ -1089,8 +1089,11 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
             int numberOfCollocationPointsFirstGuess;
             int numberOfCollocationPointsSecondGuess;
 
-            //-1.516776129756689, -1.516655149071308
-            //-1.516897555604876
+            //-1.516776129756689, 500
+            //-1.516897555604876  499
+
+            //-1.594170534760879e+00 000
+            //-1.594170243726332e+00 001
 
             initialiseContinuationFromTextFile( librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2,
                                                 -1.516897555604876, -1.516776129756689, ySign, massParameter,
