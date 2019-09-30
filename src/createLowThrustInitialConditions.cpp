@@ -998,7 +998,6 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                               const boost::function< double( const Eigen::VectorXd&, const int ) > pseudoArcLengthFunctionAugmented ) {
 
     bool startContinuationFromTextFile = true;
-
     std::cout << "\nCreate initial conditions:" << std::endl;
     std::cout << "Start continuation from text file: " << startContinuationFromTextFile << "\n"<<std::endl;
 
@@ -1032,8 +1031,6 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                     linearApproximationResultIteration2, computeHamiltonian( massParameter, linearApproximationResultIteration1.segment(0,10)), 1,
                    librationPointNr, orbitType, massParameter, numberOfPatchPoints, initialNumberOfCollocationPoints, false, initialConditions, differentialCorrections, statesContinuation,
                     maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
-
-
     } else if (startContinuationFromTextFile == false)
     {
         std::cout << "StatesContinuationVector: computed" << std::endl;
@@ -1057,7 +1054,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 // ============ CONTINUATION PROCEDURE ================== //
     // Set exit parameters of continuation procedure
-    int maximumNumberOfInitialConditions = 50;
+    int maximumNumberOfInitialConditions = 1300;
     int numberOfInitialConditions;
     if (continuationIndex == 1)
     {
@@ -1092,18 +1089,16 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
             int numberOfCollocationPointsFirstGuess;
             int numberOfCollocationPointsSecondGuess;
 
-            //-1.516776129756689, 500
-            //-1.516897555604876  499
-
-            //-1.594170534760879e+00 000
-            //-1.594170243726332e+00 001
-
+           // ORBIT ID // HAMILTONIAN
+           // 000      // -1.594170534760879
+           // 001      // -1.594170243726332
+           // 498      // -1.516776129756689
+           // 499      // -1.516655149071308
+           //
             initialiseContinuationFromTextFile( librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2,
-                                                1.594170534760879, -1.594170243726332, ySign, massParameter,
+                                                -1.594170534760879, -1.594170243726332, ySign, massParameter,
                                                 statesContinuationVectorFirstGuess, statesContinuationVectorSecondGuess,
                                                 numberOfCollocationPointsFirstGuess, numberOfCollocationPointsSecondGuess, adaptedIncrementVector, numberOfInitialConditions);
-
-            std::cout << "statesContinuationVectorFirstGuess: " << statesContinuationVectorFirstGuess << std::endl;
 
             // Compute the interior points and nodes for each segment, this is the input for the getCollocated State
           Eigen::MatrixXd oddNodesMatrixFirst((11*(numberOfCollocationPointsFirstGuess-1)), 4 );
@@ -1114,6 +1109,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
           int orbitNumberFirstGuess = numberOfInitialConditions-2;
           int orbitNumberSecondGuess = numberOfInitialConditions-1;
+
 
             Eigen::MatrixXd stateVectorInclSTMFirst = getCollocatedAugmentedInitialState(oddNodesMatrixFirst, orbitNumberFirstGuess, librationPointNr, orbitType, 1, adaptedIncrementVector,
                                                                                     massParameter, numberOfCollocationPointsFirstGuess, numberOfCollocationPointsFirstGuess, initialConditions, differentialCorrections,
@@ -1172,7 +1168,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
               }
 
               // SHOULD BE MINUS 1 BUT FOR CONSTRUCTION IS -2
-              Eigen::VectorXd previousDesignVector = (statesContinuation[ statesContinuation.size( ) - 1 ].segment( 3, 11*numberOfStates ));
+              Eigen::VectorXd previousDesignVector = (statesContinuation[ statesContinuation.size( ) - 2 ].segment( 3, 11*numberOfStates ));
 
 
 

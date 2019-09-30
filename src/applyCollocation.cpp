@@ -25,8 +25,7 @@
 #include "applyMeshRefinement.h"
 #include "interpolatePolynomials.h"
 
-void
-checkMeshTiming(const Eigen::MatrixXd collocationDesignVector, const int numberOfCollocationPoints)
+void checkMeshTiming(const Eigen::MatrixXd collocationDesignVector, const int numberOfCollocationPoints)
 {
 
     int numberOfErrors = 0;
@@ -982,8 +981,6 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
         // ======= Start the loop for mesh refinement ====== //
         double distributionDeltaPreviousIteration = 1.0E3;
         double distributionDeltaCurrentIteration = 1.0E2;
-
-        std::cout << "start equidistribution loop collocation! " << std::endl;
 
         while (distributionDeltaPreviousIteration > distributionDeltaCurrentIteration and distributionDeltaCurrentIteration > 1.0E-12)
         {

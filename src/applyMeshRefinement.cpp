@@ -513,8 +513,8 @@ void computeSegmentErrors(Eigen::VectorXd collocationDesignVector, const Eigen::
 
     computeSegmentProperties(collocationDesignVector, thrustAndMassParameters, numberOfCollocationPoints, oddStates, oddStateDerivatives, timeIntervals );
 
-    computeSegmentDerivatives(segmentDerivatives, oddStates, oddStateDerivatives, timeIntervals, numberOfCollocationPoints);
 
+    computeSegmentDerivatives(segmentDerivatives, oddStates, oddStateDerivatives, timeIntervals, numberOfCollocationPoints);
 
     Eigen::VectorXd eightOrderDerivativeMagnitudes = Eigen::VectorXd::Zero(numberOfSegments);
     for(int i = 0; i < numberOfSegments; i++)
@@ -550,6 +550,7 @@ void computeSegmentErrors(Eigen::VectorXd collocationDesignVector, const Eigen::
         eightOrderDerivativeMagnitudes(i) = eightOrderDerivative;
     }
 
+
     // compute the errors per segment
     Eigen::VectorXd timeIntervalsSquared = timeIntervals.cwiseProduct(timeIntervals);
     Eigen::VectorXd timeIntervalsToThePowerFourth = timeIntervalsSquared.cwiseProduct(timeIntervalsSquared);
@@ -559,7 +560,6 @@ void computeSegmentErrors(Eigen::VectorXd collocationDesignVector, const Eigen::
 
     segmentErrors = outputVector;
     eightOrderDerivatives = eightOrderDerivativeMagnitudes;
-
 
 }
 
@@ -574,15 +574,13 @@ void applyMeshRefinement(Eigen::MatrixXd& collocationDesignVector, Eigen::Vector
     Eigen::VectorXd nodeTimes(numberOfCollocationPoints);    nodeTimes.setZero();
     Eigen::VectorXd meshIntegral(numberOfSegments);          meshIntegral.setZero();
     Eigen::VectorXd newNodeTimes(numberOfCollocationPoints); newNodeTimes.setZero();
-    Eigen::VectorXd newNodeTimesAlt(numberOfCollocationPoints); newNodeTimes.setZero();
-
+    Eigen::VectorXd newNodeTimesAlt(numberOfCollocationPoints); newNodeTimesAlt.setZero();
 
     currentCollocationDesignVector = collocationDesignVector.block(0,0,collocationDesignVector.rows(),1);
 
     computeSegmentErrors(currentCollocationDesignVector, thrustAndMassParameters, numberOfCollocationPoints, segmentErrors, eightOrderDerivatives );
 
     computeTimeIntervals(currentCollocationDesignVector, numberOfCollocationPoints, timeIntervals, nodeTimes);
-
 
 
     // compute the mesh integral
@@ -595,8 +593,6 @@ void applyMeshRefinement(Eigen::MatrixXd& collocationDesignVector, Eigen::Vector
 
 
     }
-
-
 
     // compute the new node times!
     double deltaIntegralNew = meshIntegral((meshIntegral.rows()-1)) / numberOfSegments;
@@ -615,21 +611,16 @@ void applyMeshRefinement(Eigen::MatrixXd& collocationDesignVector, Eigen::Vector
         }
     }
 
+    // compute the correct node time!
+    newNodeTimesAlt = computeAlternativeMesh(meshIntegral, numberOfCollocationPoints, nodeTimes, timeIntervals, eightOrderDerivatives);
+    //newNodeTimes = newNodeTimesAlt;
 
-    newNodeTimesAlt =  computeAlternativeMesh(meshIntegral, numberOfCollocationPoints,  nodeTimes, timeIntervals, eightOrderDerivatives );
-
-    //std::cout << "oldNodeTimes: \n " << nodeTimes << std::endl;
-    //std::cout << "newNodeTimes Tom implementation: \n " << newNodeTimes << std::endl;
-    //std::cout << "newNodeTimes Sjors implementation: \n" << newNodeTimesAlt << std::endl;
-
-    newNodeTimes = newNodeTimesAlt;
-
-    checkMeshAfterNewTimeComputation(newNodeTimes, numberOfCollocationPoints, nodeTimes);
+    checkMeshAfterNewTimeComputation(newNodeTimesAlt, numberOfCollocationPoints, nodeTimes);
 
 
     // interpolate the polynomials
     Eigen::VectorXd newDesignVector(currentCollocationDesignVector.rows()); newDesignVector.setZero();
-    computeNewMesh( currentCollocationDesignVector, thrustAndMassParameters, nodeTimes, newNodeTimes, numberOfCollocationPoints, newDesignVector);
+    computeNewMesh( currentCollocationDesignVector, thrustAndMassParameters, nodeTimes, newNodeTimesAlt, numberOfCollocationPoints, newDesignVector);
 
     // output the desired quantities
     collocationDesignVector.block(0,0,collocationDesignVector.rows(),1) = newDesignVector;
