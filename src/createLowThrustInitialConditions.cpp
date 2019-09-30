@@ -998,6 +998,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                               const boost::function< double( const Eigen::VectorXd&, const int ) > pseudoArcLengthFunctionAugmented ) {
 
     bool startContinuationFromTextFile = true;
+
     std::cout << "\nCreate initial conditions:" << std::endl;
     std::cout << "Start continuation from text file: " << startContinuationFromTextFile << "\n"<<std::endl;
 
