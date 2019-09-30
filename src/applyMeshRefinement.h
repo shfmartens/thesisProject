@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-void computeAlternativeMesh(const Eigen::VectorXd meshIntegral, const int numberOfCollocationPoints, const Eigen::VectorXd nodeTimes, const Eigen::VectorXd timeIntervals );
+Eigen::VectorXd computeAlternativeMesh(const Eigen::VectorXd meshIntegral, const int numberOfCollocationPoints, const Eigen::VectorXd nodeTimes, const Eigen::VectorXd timeIntervals, const Eigen::VectorXd eightOrderDerivatives );
 
 void checkMeshAfterNewTimeComputation(const Eigen::VectorXd newNodeTimes, const int numberOfCollocationPoints, const Eigen::VectorXd nodeTimes);
 
