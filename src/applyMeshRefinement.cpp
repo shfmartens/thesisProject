@@ -16,17 +16,115 @@
 void verifyMeshProcedures(const Eigen::VectorXd meshIntegral, const int numberOfCollocationPoints, const Eigen::VectorXd nodeTimes, const Eigen::VectorXd newNodeTimes, const Eigen::VectorXd newNodeTimesAlt, const Eigen::VectorXd timeIntervals, const Eigen::VectorXd eightOrderDerivatives)
 {
     std::cout << "===== verifyMeshProcedures ===== " << std::endl
-              << "numberOfCollocationPoints: " << numberOfCollocationPoints << std::endl
-              << "meshIntegral: \n" << meshIntegral << std::endl
+//              << "numberOfCollocationPoints: " << numberOfCollocationPoints << std::endl
+//              << "meshIntegral: \n" << meshIntegral << std::endl
               << "nodeTimes: \n" << nodeTimes << std::endl
               << "newNodeTimes: \n" << newNodeTimes << std::endl
-              << "newNodeTimesAlt: \n" << newNodeTimesAlt << std::endl
-              << "timeIntervals: \n" << timeIntervals << std::endl
-              << "eightOrderDerivatives: \n" << eightOrderDerivatives << std::endl;
+              << "newNodeTimesAlt: \n" << newNodeTimesAlt << std::endl;
+//              << "timeIntervals: \n" << timeIntervals << std::endl
+//              << "eightOrderDerivatives: \n" << eightOrderDerivatives << std::endl;
+
+    Eigen::VectorXd integralValueAtNodes(numberOfCollocationPoints); integralValueAtNodes.setZero();
+    integralValueAtNodes(0) = 0.0;
+    integralValueAtNodes.segment(1,numberOfCollocationPoints-1) = meshIntegral;
+
+    // compute Integral values for both meshes
+    int numberOfSegments = numberOfCollocationPoints - 1;
+    Eigen::MatrixXd meshIntervalMatrix(numberOfSegments,2);
+
+        for(int i = 1; i < numberOfCollocationPoints; i++)
+        {
+            meshIntervalMatrix(i-1,0) = nodeTimes(i-1);
+            meshIntervalMatrix(i-1,1) = nodeTimes(i);
+
+        }
 
 
-    // compute Integral values at both
+    // Determine on which segments the two new meshes lie!
+     Eigen::VectorXd newSegmentVector(numberOfCollocationPoints); newSegmentVector.setZero();
+     Eigen::VectorXd newSegmentVectorAlt(numberOfCollocationPoints); newSegmentVectorAlt.setZero();
 
+    for(int i = 0; i < numberOfCollocationPoints; i++)
+    {
+
+        double newNodeTime = newNodeTimes(i);
+        double newNodeTimeAlt = newNodeTimesAlt(i);
+
+        for (int j = 0; j < numberOfSegments; j++)
+        {
+            if (newNodeTime >= meshIntervalMatrix(j,0) and newNodeTime <= meshIntervalMatrix(j,1) )
+            {
+                newSegmentVector(i) = static_cast<double>(j);
+            }
+            if (newNodeTimeAlt >= meshIntervalMatrix(j,0) and newNodeTimeAlt <= meshIntervalMatrix(j,1) )
+            {
+                newSegmentVectorAlt(i) = static_cast<double>(j);
+            }
+        }
+
+    }
+
+    // determine values of integrals of new meshes
+    Eigen::VectorXd meshIntegralEquidistributed(numberOfCollocationPoints);      meshIntegralEquidistributed.setZero();
+    Eigen::VectorXd meshIntegralsAtNewMesh(numberOfCollocationPoints);           meshIntegralsAtNewMesh.setZero();
+    Eigen::VectorXd meshIntegralsAtNewMeshAlt(numberOfCollocationPoints);        meshIntegralsAtNewMeshAlt.setZero();
+
+    double equalMeshIncrementPerSegment = integralValueAtNodes(numberOfCollocationPoints-1)/static_cast<double>(numberOfSegments);
+
+    for(int i = 0; i < numberOfCollocationPoints; i++)
+    {
+        int segmentNumber = static_cast<int>(newSegmentVector(i));
+        double segmentStartTime = meshIntervalMatrix(segmentNumber,0);
+        double segmentStartIntegralValue = integralValueAtNodes(segmentNumber);
+        double segmentSlope =  std::pow(eightOrderDerivatives(segmentNumber),1.0/8.0);
+        double newMeshTime = newNodeTimes(i);
+        double deltaTime = newMeshTime - segmentStartTime;
+
+
+        meshIntegralsAtNewMesh(i) = segmentStartIntegralValue + deltaTime * segmentSlope;
+        meshIntegralEquidistributed(i) = static_cast<double>(i)*equalMeshIncrementPerSegment;
+
+
+    }
+
+    for(int i = 0; i < numberOfCollocationPoints; i++)
+    {
+        int segmentNumber = static_cast<int>(newSegmentVectorAlt(i));
+        double segmentStartTime = meshIntervalMatrix(segmentNumber,0);
+        double segmentStartIntegralValue = integralValueAtNodes(segmentNumber);
+        double segmentSlope =  std::pow(eightOrderDerivatives(segmentNumber),1.0/8.0);
+        double newMeshTime = newNodeTimesAlt(i);
+        double deltaTime = newMeshTime - segmentStartTime;
+
+
+        meshIntegralsAtNewMeshAlt(i) = segmentStartIntegralValue + deltaTime * segmentSlope;
+
+    }
+
+//    std::cout << "integralValueAtNodes: \n" << integralValueAtNodes << std::endl;
+//    std::cout << "meshIntervalMatrix: \n" << meshIntervalMatrix << std::endl;
+//    std::cout << "newSegmentVector: \n" << newSegmentVector << std::endl;
+//    std::cout << "newSegmentVectorAlt: \n" << newSegmentVectorAlt << std::endl;
+//    std::cout << "meshIntegralsAtNewMesh: \n" << meshIntegralsAtNewMesh << std::endl;
+//    std::cout << "meshIntegralsAtNewMeshAlt: \n" << meshIntegralsAtNewMeshAlt << std::endl;
+//    std::cout << "meshIntegralEquidistributed: \n" << meshIntegralEquidistributed << std::endl;
+
+
+
+    //        if (i == 0 or i == 4)
+    //        {
+    //            std::cout << "\n checking the properties: == " << std::endl
+    //                      << "i: " << i << std::endl
+    //                      << "segmentNumber: " << segmentNumber << std::endl
+    //                      << "segmentStartTime: " << segmentStartTime << std::endl
+    //                      << "segmentStartIntegralValue: " << segmentStartIntegralValue << std::endl
+    //                      << "segmentSlope^8: " << std::pow(segmentSlope,8.0) << std::endl
+    //                      << "newMeshTime: " << newMeshTime << std::endl
+    //                      << "deltaTime: " << deltaTime << std::endl;
+
+
+
+    //        }
 
 
 
@@ -80,7 +178,9 @@ Eigen::VectorXd computeAlternativeMesh(const Eigen::VectorXd meshIntegral, const
     // determine in which segment the new nodes lie!
     for(int i = 0; i < numberOfCollocationPoints; i++)
     {
+
         double currentNodeIntegralValue = meshIntegralNewMesh(i);
+
         for (int j = 0; j < numberOfSegments; j++)
         {
             if(currentNodeIntegralValue >=  meshIntegralIntervals(j,0) and currentNodeIntegralValue <= meshIntegralIntervals(j,1))
@@ -88,6 +188,18 @@ Eigen::VectorXd computeAlternativeMesh(const Eigen::VectorXd meshIntegral, const
                 newNodeTimesSegmentVector(i) = static_cast<double>(j);
             }
         }
+
+
+        if (i == 0)
+        {
+            newNodeTimesSegmentVector(i) = 0.0;
+        }
+
+        if (i == (numberOfCollocationPoints-1))
+        {
+            newNodeTimesSegmentVector(i) = static_cast<double>(numberOfSegments-1);
+        }
+
     }
 
     // compute the new nodeTimes
@@ -105,6 +217,14 @@ Eigen::VectorXd computeAlternativeMesh(const Eigen::VectorXd meshIntegral, const
 
 
 //    std::cout << "\n === reached alternative mesh function ====" << std::endl
+//              << "meshIntegralOldMesh: \n" << meshIntegralOldMesh << std::endl
+//              << "integralDerivative: \n" << integralDerivative << std::endl
+//              << "meshIntegralIntervals: \n" << meshIntegralIntervals << std::endl
+//              << "meshIntegralNewMesh: \n" << meshIntegralNewMesh << std::endl
+//              << "newNodeTimesSegVec: \n" << newNodeTimesSegmentVector << std::endl;
+
+
+
 //              //<<"meshIntegralOldMesh: \n" << meshIntegralOldMesh << std::endl
 //              //<<"meshIntegralNewMesh: \n" << meshIntegralNewMesh << std::endl
 //              //<< "meshIntegralIntervals: \n" << meshIntegralIntervals << std::endl
@@ -616,7 +736,6 @@ void applyMeshRefinement(Eigen::MatrixXd& collocationDesignVector, Eigen::Vector
 
     // compute the new node times!
     double deltaIntegralNew = meshIntegral((meshIntegral.rows()-1)) / numberOfSegments;
-
     for(int i = 0; i < numberOfCollocationPoints; i++)
     {
         if (i == 0 or i == (numberOfCollocationPoints-1) )
