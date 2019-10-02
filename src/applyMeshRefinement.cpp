@@ -15,12 +15,13 @@
 
 void verifyMeshProcedures(const Eigen::VectorXd meshIntegral, const int numberOfCollocationPoints, const Eigen::VectorXd nodeTimes, const Eigen::VectorXd newNodeTimes, const Eigen::VectorXd newNodeTimesAlt, const Eigen::VectorXd timeIntervals, const Eigen::VectorXd eightOrderDerivatives)
 {
-    std::cout << "===== verifyMeshProcedures ===== " << std::endl
+
+//    std::cout << "===== verifyMeshProcedures ===== " << std::endl
 //              << "numberOfCollocationPoints: " << numberOfCollocationPoints << std::endl
 //              << "meshIntegral: \n" << meshIntegral << std::endl
-              << "nodeTimes: \n" << nodeTimes << std::endl
-              << "newNodeTimes: \n" << newNodeTimes << std::endl
-              << "newNodeTimesAlt: \n" << newNodeTimesAlt << std::endl;
+//              << "nodeTimes: \n" << nodeTimes << std::endl
+//              << "newNodeTimes: \n" << newNodeTimes << std::endl
+//              << "newNodeTimesAlt: \n" << newNodeTimesAlt << std::endl;
 //              << "timeIntervals: \n" << timeIntervals << std::endl
 //              << "eightOrderDerivatives: \n" << eightOrderDerivatives << std::endl;
 

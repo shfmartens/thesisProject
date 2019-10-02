@@ -1054,7 +1054,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 // ============ CONTINUATION PROCEDURE ================== //
     // Set exit parameters of continuation procedure
-    int maximumNumberOfInitialConditions = 1300;
+    int maximumNumberOfInitialConditions = 10000;
     int numberOfInitialConditions;
     if (continuationIndex == 1)
     {

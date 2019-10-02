@@ -1034,30 +1034,30 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
                 numberOfCorrections++;
                 if ( numberOfCorrections > maxNumberOfCollocationIterations)
                 {
-                                //initialTolerance = 1.0E-11;
+                                initialTolerance = 1.0E-11;
                 }
 
                 if ( numberOfCorrections > 2*maxNumberOfCollocationIterations)
                 {
-                                //initialTolerance = 1.0E-10;
+                                initialTolerance = 1.0E-10;
 
                 }
 
                 if ( numberOfCorrections > 3*maxNumberOfCollocationIterations)
                 {
 
-                                //initialTolerance = 1.0e-09;
+                               initialTolerance = 1.0e-09;
 
                 }
                 if ( numberOfCorrections > 3*maxNumberOfCollocationIterations+1)
                 {
-                                //initialTolerance = 1.0E-7;
+                                initialTolerance = 1.0E-7;
 
 
                 }
                 if ( numberOfCorrections > 3*maxNumberOfCollocationIterations+2)
                 {
-                                //initialTolerance = 1.0e-04;
+                                initialTolerance = 1.0e-04;
 
                 }
 
