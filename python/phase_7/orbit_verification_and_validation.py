@@ -78,6 +78,7 @@ class DisplayPeriodicSolutions:
         self.Hlt = []
         self.alphaContinuation = []
         self.accelerationContinuation = []
+        self.x = []
 
         self.T = []
         self.maxSegmentError = []
@@ -95,6 +96,7 @@ class DisplayPeriodicSolutions:
         for row in statesContinuation_df.iterrows():
             self.orbitsId.append(row[1][0])
             self.Hlt.append(row[1][1])
+            self.x = [row[1][3]]
             self.accelerationContinuation.append(row[1][8])
             self.alphaContinuation.append(row[1][9])
             self.numberOfCollocationPoints.append(row[1][13])
@@ -115,7 +117,8 @@ class DisplayPeriodicSolutions:
 
         # Determine which parameter is the varying parameter
         if self.varyingQuantity == 'Hamiltonian':
-            self.continuationParameter = self.Hlt
+            #self.continuationParameter = self.Hlt
+            self.continuationParameter = self.x
         if self.varyingQuantity == 'Acceleration':
             self.continuationParameter = self.accelerationContinuation
         if self.varyingQuantity == 'Alpha':
