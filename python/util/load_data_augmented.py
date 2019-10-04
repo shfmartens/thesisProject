@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import math
 
 def load_orbit_augmented(file_path):
     data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(11)))
@@ -385,6 +386,26 @@ def cr3bplt_velocity(x_loc, y_loc, acc, alpha, Hlt):
 
     vSquared = 2*Hlt + 2*alt_x*x_loc + 2*alt_y*y_loc + x_loc ** 2 + y_loc ** 2 + 2 * (1 - massParameter) / r_1 + 2 * massParameter / r_2
     return vSquared
+
+def compute_phase(x,y, librationPointNr):
+    EARTH_GRAVITATIONAL_PARAMETER = 3.986004418E14
+    SUN_GRAVITATIONAL_PARAMETER = 1.32712440018e20
+    MOON_GRAVITATIONAL_PARAMETER = SUN_GRAVITATIONAL_PARAMETER / (328900.56 * (1.0 + 81.30059))
+    massParameter = MOON_GRAVITATIONAL_PARAMETER / (MOON_GRAVITATIONAL_PARAMETER + EARTH_GRAVITATIONAL_PARAMETER)
+
+    outputVariable = 0.0
+
+    if librationPointNr < 3:
+        x_argument = x - (1.0 - massParameter)
+        y_argument = y
+        phase = math.atan2(y_argument,x_argument)
+
+        if phase < 0:
+            outputVariable = phase + 2*np.pi
+        else:
+            outputVariable = phase
+
+    return outputVariable
 
 def potential_deviation(acc, alpha, x, y):
     EARTH_GRAVITATIONAL_PARAMETER = 3.986004418E14

@@ -27,7 +27,7 @@ from load_data import load_orbit, load_bodies_location, load_lagrange_points_loc
 load_initial_conditions_incl_M, load_manifold
 
 from load_data_augmented import load_orbit_augmented, load_lagrange_points_location_augmented, load_differential_correction, \
-    load_states_continuation, load_initial_conditions_augmented_incl_M, load_states_continuation_length
+    load_states_continuation, load_initial_conditions_augmented_incl_M, load_states_continuation_length, compute_phase
 
 class DisplayPeriodicSolutions:
     def __init__(self,orbit_type, lagrange_point_nr,  acceleration_magnitude, alpha, beta, varying_quantity, low_dpi):
@@ -70,7 +70,7 @@ class DisplayPeriodicSolutions:
                                        str("{:12.11f}".format(self.alpha)) + '_' + \
                                        str("{:12.11f}".format(self.beta)) + '_initial_conditions.txt')
 
-        if self.varyingQuantity == 'Hamiltonian':
+        if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
             statesContinuation_df = load_states_continuation(self.hamiltonian_filepath + self.continuation_fileName)
             differentialCorrections_df = load_differential_correction(self.hamiltonian_filepath + self.correction_fileName)
             initial_conditions_incl_m_df = load_initial_conditions_augmented_incl_M(self.hamiltonian_filepath + self.monodromy_fileName)
@@ -79,7 +79,8 @@ class DisplayPeriodicSolutions:
         self.alphaContinuation = []
         self.accelerationContinuation = []
         self.x = []
-
+        self.phase = []
+        self.y = []
         self.T = []
         self.maxSegmentError = []
         self.maxDeltaError = []
@@ -94,11 +95,13 @@ class DisplayPeriodicSolutions:
         self.totalDeviationAfterConvergence = []
         self.numberOfCollocationPoints = []
         for row in statesContinuation_df.iterrows():
-            self.orbitsId.append(row[1][0])
+            self.orbitsId.append(row[1][0]+1)
             self.Hlt.append(row[1][1])
             self.x.append(row[1][3])
+            self.phase.append(compute_phase(row[1][3],row[1][4],self.lagrangePointNr))
+            self.y.append(row[1][4])
             self.accelerationContinuation.append(row[1][8])
-            self.alphaContinuation.append(row[1][9])
+            self.alphaContinuation.append(row[1][9]/180.0*np.pi)
             self.numberOfCollocationPoints.append(row[1][13])
 
         for row in differentialCorrections_df.iterrows():
@@ -116,9 +119,10 @@ class DisplayPeriodicSolutions:
 
 
         # Determine which parameter is the varying parameter
-        if self.varyingQuantity == 'Hamiltonian':
-            #self.continuationParameter = self.Hlt
+        if self.varyingQuantity == 'xcor':
             self.continuationParameter = self.x
+        if self.varyingQuantity == 'Hamiltonian':
+            self.continuationParameter = self.Hlt
         if self.varyingQuantity == 'Acceleration':
             self.continuationParameter = self.accelerationContinuation
         if self.varyingQuantity == 'Alpha':
@@ -127,16 +131,21 @@ class DisplayPeriodicSolutions:
         # Determine heatmap for level of the continuation parameter
         self.numberOfPlotColorIndices = len(self.continuationParameter)
         self.plotColorIndexBasedOnContinuation = []
-        if self.varyingQuantity == 'Hamiltonian':
-            # for hamiltonian in self.Hlt:
-            #     self.plotColorIndexBasedOnContinuation.append(int(np.round(
-            #         (hamiltonian - min(self.continuationParameter)) / (max(self.continuationParameter) - min(self.continuationParameter)) * (
-            #                         self.numberOfPlotColorIndices - 1))))
-                for xcoor in self.x:
-                    self.plotColorIndexBasedOnContinuation.append(int(np.round(
-                        (xcoor - min(self.continuationParameter)) / (
-                                    max(self.continuationParameter) - min(self.continuationParameter)) * (
-                                self.numberOfPlotColorIndices - 1))))
+        if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'x':
+             for hamiltonian in self.Hlt:
+                 self.plotColorIndexBasedOnContinuation.append(int(np.round(
+                     (hamiltonian - min(self.Hlt)) / (max(self.Hlt) - min(self.Hlt)) * (
+                                     self.numberOfPlotColorIndices - 1))))
+        else:
+            for hamiltonian in self.continuationParameter:
+                 self.plotColorIndexBasedOnContinuation.append(int(np.round(
+                     (hamiltonian - min(self.continuationParameter)) / (max(self.continuationParameter) - min(self.continuationParameter)) * (
+                                     self.numberOfPlotColorIndices - 1))))
+                # for xcoor in self.x:
+                #     self.plotColorIndexBasedOnContinuation.append(int(np.round(
+                #         (xcoor - min(self.continuationParameter)) / (
+                #                     max(self.continuationParameter) - min(self.continuationParameter)) * (
+                #                 self.numberOfPlotColorIndices - 1))))
 
         # Determine deviations at full period
 
@@ -518,7 +527,7 @@ class DisplayPeriodicSolutions:
 
         cbar = plt.colorbar(sm, cax=cax, label='$H_{lt}$ [-]', format='%1.4f', **kw)
 
-        if self.varyingQuantity == 'Hamiltonian':
+        if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
             if self.lowDPI:
                 fig.savefig('../../data/figures/orbits/varying_hamiltonian/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
                             + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
@@ -564,7 +573,7 @@ class DisplayPeriodicSolutions:
         ylim = [1e-16, 1e-8]
         ylim2 = [1e-19, 1e-1]
         xlim = [min(self.continuationParameter), max(self.continuationParameter)]
-        xticks = (np.linspace(min(self.Hlt), max(self.Hlt), num=self.numberOfXTicks))
+        xticks = (np.linspace(min(self.continuationParameter), max(self.continuationParameter), num=self.numberOfXTicks))
 
         arr[0, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
         arr[0, 0].xaxis.set_ticks(xticks)
@@ -632,6 +641,9 @@ class DisplayPeriodicSolutions:
         arr[1, 0].set_ylabel('Number of iterations [-]')
         arr[2, 1].set_ylabel('max($e_{i}$)')
         ax2.set_ylabel('Number of collocation points [-]')
+        if self.varyingQuantity == 'xcor':
+            arr[2, 0].set_xlabel('x [-]')
+            arr[2, 1].set_xlabel('x [-]')
         if self.varyingQuantity == 'Hamiltonian':
             arr[2, 0].set_xlabel('$H_{lt}$ [-]')
             arr[2, 1].set_xlabel('$H_{lt}$ [-]')
@@ -652,7 +664,7 @@ class DisplayPeriodicSolutions:
         plt.subplots_adjust(top=0.9)
 
 
-        if self.varyingQuantity == 'Hamiltonian':
+        if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($a_{lt} = ' + str(
             "{:3.1f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Periodicity constraints verification',size=self.suptitleSize)
         if self.varyingQuantity == 'Acceleration':
@@ -663,7 +675,7 @@ class DisplayPeriodicSolutions:
                 "{:3.1f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.1f}".format(self.accelerationMagnitude))  + ' - Periodicity constraints verification', size=self.suptitleSize)
 
 
-        if self.varyingQuantity == 'Hamiltonian':
+        if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
             if self.lowDPI:
                 plt.savefig('../../data/figures/orbits/varying_hamiltonian/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
                 "{:7.6f}".format(self.alpha)) + '_periodicity_constraints.png', transparent=True, dpi=self.dpi, bbox_inches='tight')
@@ -700,7 +712,7 @@ class DisplayPeriodicSolutions:
 
         xlim = [min(self.continuationParameter), max(self.continuationParameter)]
 
-        xticks = (np.linspace(min(self.Hlt), max(self.Hlt), num=self.numberOfXTicks))
+        xticks = (np.linspace(min(self.continuationParameter), max(self.continuationParameter), num=self.numberOfXTicks))
 
         l1 = [abs(entry) for entry in self.lambda1]
         l2 = [abs(entry) for entry in self.lambda2]
@@ -751,17 +763,22 @@ class DisplayPeriodicSolutions:
         arr[1, 1].semilogy(self.continuationParameter, l4zoom, c=self.plottingColors['doubleLine'][1], linewidth=1, linestyle=':')
         arr[1, 1].semilogy(self.continuationParameter, 1.0e-3 * np.ones(len(self.continuationParameter)), color=self.plottingColors['limit'], linewidth=1, linestyle='--')
 
+        if self.varyingQuantity == 'Hamiltonian':
+            arr[1, 0].set_xlabel('$H_{lt}$ [-]')
+            arr[1, 1].set_xlabel('$H_{lt}$ [-]')
+        if self.varyingQuantity == 'xcor':
+            arr[1, 0].set_xlabel('x [-]')
+            arr[1, 1].set_xlabel('x [-]')
 
 
 
         # arr[1, 1].set_ylim([0, 1.5e-3])
         arr[1, 1].set_ylabel(' $||\lambda_3|-1|$ [-]')
         arr[1, 1].set_title('Error in eigenvalue pair denoting periodicity')
-        arr[1, 0].set_xlabel('x [-]')
-        arr[1, 1].set_xlabel('x [-]')
+
         arr[1, 0].set_title('Order of linear instability')
 
-        if self.varyingQuantity == 'Hamiltonian':
+        if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($a_{lt} = ' + str(
             "{:3.1f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + '- Monodromy matrix eigensystem validation',size=self.suptitleSize)
         if self.varyingQuantity == 'Acceleration':
@@ -772,7 +789,7 @@ class DisplayPeriodicSolutions:
                 "{:3.1f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.1f}".format(self.accelerationMagnitude))  + ' - Monodromy matrix eigensystem validation', size=self.suptitleSize)
 
 
-        if self.varyingQuantity == 'Hamiltonian':
+        if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
             if self.lowDPI:
                 plt.savefig('../../data/figures/orbits/varying_hamiltonian/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
                 "{:7.6f}".format(self.alpha)) + '_monodromy_analysis.png', transparent=True, dpi=self.dpi, bbox_inches='tight')
@@ -880,11 +897,11 @@ class DisplayPeriodicSolutions:
         arr[2, 1].set_ylim([1e-1, 1e1])
         arr[2, 1].set_title('$v_2$')
 
-        if varying_quantity == 'Hamiltonian':
+        if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
             xlabel = '$H_{lt}$ [-]'
-        if varying_quantity == 'Acceleration':
+        if self.varyingQuantity == 'Acceleration':
             xlabel = '$a_{lt}$ [-]'
-        if varying_quantity == 'Alpha':
+        if self.varyingQuantity == 'Alpha':
             xlabel = '$\\alpha$ [-]'
 
 
@@ -907,7 +924,7 @@ class DisplayPeriodicSolutions:
         plt.tight_layout()
         plt.subplots_adjust(top=0.9)
 
-        if self.varyingQuantity == 'Hamiltonian':
+        if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($a_{lt} = ' + str(
             "{:3.1f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + '- Eigenvalues $\lambda_i$ \& stability indices $v_i$',size=self.suptitleSize)
         if self.varyingQuantity == 'Acceleration':
@@ -918,7 +935,7 @@ class DisplayPeriodicSolutions:
                 "{:3.1f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.1f}".format(self.accelerationMagnitude))  + ' - Eigenvalues $\lambda_i$ \& stability indices $v_i$', size=self.suptitleSize)
 
 
-        if self.varyingQuantity == 'Hamiltonian':
+        if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
             if self.lowDPI:
                 plt.savefig('../../data/figures/orbits/varying_hamiltonian/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
                 "{:7.6f}".format(self.alpha)) + '_stability.png', transparent=True, dpi=self.dpi, bbox_inches='tight')
@@ -949,6 +966,117 @@ class DisplayPeriodicSolutions:
 
         pass
 
+    def plot_continuation_procedure(self):
+        f, arr = plt.subplots(2, 2, figsize=self.figSize)
+        size = 7
+
+        xlim = [1,len(self.orbitsId)]
+        ylimSpacing = (max(self.Hlt)-min(self.Hlt))*0.05
+
+
+        arr[0,0].plot(self.orbitsId,self.Hlt,c=self.plottingColors['singleLine'], linewidth=1,label='$H_{lt}$ [-]')
+        arr[0,0].set_xlim(xlim)
+        arr[0,0].set_ylim(min(self.Hlt)-ylimSpacing,max(self.Hlt)+ylimSpacing)
+        arr[0,0].set_title('$H_{lt}$ evolution')
+        arr[0,0].set_xlabel('orbit Number [-]')
+        arr[0,1].set_ylabel('$H_{lt}$ [-]')
+        arr[0,0].legend(frameon=True, loc='upper right')
+
+
+
+
+        arr[0,1].plot(self.orbitsId,self.alphaContinuation,c=self.plottingColors['singleLine'], linewidth=1,label='$\\alpha$ [-]')
+        arr[0,1].set_xlim(xlim)
+        arr[0,1].set_ylim([0, 2*np.pi])
+        arr[0,1].set_title('$\\alpha$ evolution')
+        arr[0,1].set_xlabel('orbit Number [-]')
+        arr[0,1].set_ylabel('$\\alpha$ [-]')
+        arr[0,1].legend(frameon=True, loc='upper right')
+
+
+
+        arr[1,0].plot(self.orbitsId,self.accelerationContinuation,c=self.plottingColors['singleLine'], linewidth=1,label='$a_{lt}$ [-]')
+        arr[1,0].set_xlim(xlim)
+        arr[1,0].set_ylim([0, 0.1])
+        arr[1,0].set_title('$a_{lt}$ evolution')
+        arr[1,0].set_xlabel('orbit Number [-]')
+        arr[1,0].set_ylabel('$a_{lt}$ [-]')
+        arr[1,0].legend(frameon=True, loc='upper right')
+
+
+
+        arr[1,1].plot(self.orbitsId,self.x,c=self.plottingColors['tripleLine'][0], linewidth=1,label='$x$ [-]')
+        arr[1,1].plot(self.orbitsId,self.y,c=self.plottingColors['tripleLine'][1], linewidth=1,label='$y$ [-]')
+        #arr[1,1].plot(self.orbitsId,self.phase,c=self.plottingColors['tripleLine'][2], linewidth=1)
+        arr[1,1].set_xlim(xlim)
+        arr[1,1].set_title('Spatial and phase evolution')
+        arr[1,1].set_xlabel('orbit Number [-]')
+        arr[1,1].set_ylabel('$x$ [-], $y$ [-]')
+
+
+        ax2 = arr[1, 1].twinx()
+        ax2.tick_params(axis='phase [-]', labelcolor=self.plottingColors['tripleLine'][2])
+        ax2.plot(self.orbitsId, self.phase, linewidth=1,color=self.plottingColors['tripleLine'][2],label='$\\phi$ [-]')
+        ax2.set_ylim([0, 2*np.pi])
+        ax2.set_xlim(xlim)
+        ax2.grid(b=None)
+        arr[1,1].legend(frameon=True, loc='upper right')
+        ax2.legend(frameon=True, loc='lower right')
+
+
+
+
+        for i in range(2):
+            for j in range(2):
+                arr[i, j].grid(True, which='both', ls=':')
+
+        plt.tight_layout()
+        plt.subplots_adjust(top=0.9)
+
+        if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
+            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($a_{lt} = ' + str(
+            "{:3.1f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + '- Numerical continuation validation ',size=self.suptitleSize)
+        if self.varyingQuantity == 'Acceleration':
+            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
+                "{:3.1f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Numerical continuation validation', size=self.suptitleSize)
+        if self.varyingQuantity == 'Alpha':
+            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
+                "{:3.1f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.1f}".format(self.accelerationMagnitude))  + ' - Numerical continuation validation', size=self.suptitleSize)
+
+
+        if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
+            if self.lowDPI:
+                plt.savefig('../../data/figures/orbits/varying_hamiltonian/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
+                "{:7.6f}".format(self.alpha)) + '_continuation_analysis.png', transparent=True, dpi=self.dpi, bbox_inches='tight')
+            else:
+                plt.savefig('../../data/figures/orbits/varying_hamiltonian/L' + str(
+                self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
+                "{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
+                "{:7.6f}".format(self.alpha)) + '_continuation_analysis.png', transparent=True, bbox_inches='tight')
+        if self.varyingQuantity == 'Acceleration':
+            if self.lowDPI:
+                plt.savefig('../../data/figures/orbits/varying_acceleration/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
+                "{:7.6f}".format(self.alpha)) + '_continuation_analysis.png', transparent=True, dpi=self.dpi, bbox_inches='tight')
+            else:
+                plt.savefig('../../data/figures/orbits/varying_acceleration/L' + str(
+                self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
+                "{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
+                "{:7.6f}".format(self.alpha)) + '_continuation_analysis.png', transparent=True, bbox_inches='tight')
+        if self.varyingQuantity == 'Alpha':
+            if self.lowDPI:
+                plt.savefig('../../data/figures/orbits/varying_alpha/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
+                "{:7.6f}".format(self.alpha)) + '_continuation_analysis.png', transparent=True, dpi=self.dpi, bbox_inches='tight')
+            else:
+                plt.savefig('../../data/figures/orbits/varying_alpha/L' + str(
+                self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
+                "{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
+                "{:7.6f}".format(self.alpha)) + '_continuation_analysis.png', transparent=True, bbox_inches='tight')
+
+
+
+        pass
+
+
 
 
 
@@ -956,10 +1084,10 @@ if __name__ == '__main__':
     orbit_types = ['horizontal']
     lagrange_points = [1]
     acceleration_magnitudes = [0.001]
-    alphas = [30.0,150.0,210.0,330.0]
+    alphas = [30.0,330.0,150.0,210.0]
     betas = [0.0]
     low_dpi = True
-    varying_quantities = ['Hamiltonian']
+    varying_quantities = ['xcor']
 
     for orbit_type in orbit_types:
         for lagrange_point in lagrange_points:
@@ -974,7 +1102,7 @@ if __name__ == '__main__':
                             display_periodic_solutions.plot_periodicity_validation()
                             display_periodic_solutions.plot_monodromy_analysis()
                             display_periodic_solutions.plot_stability()
-
+                            display_periodic_solutions.plot_continuation_procedure()
 
 
                             del display_periodic_solutions
