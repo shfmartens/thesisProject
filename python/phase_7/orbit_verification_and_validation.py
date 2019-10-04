@@ -127,9 +127,15 @@ class DisplayPeriodicSolutions:
         # Determine heatmap for level of the continuation parameter
         self.numberOfPlotColorIndices = len(self.continuationParameter)
         self.plotColorIndexBasedOnContinuation = []
-        for hamiltonian in self.Hlt:
-            self.plotColorIndexBasedOnContinuation.append(int(np.round(
-                (hamiltonian - min(self.continuationParameter)) / (max(self.continuationParameter) - min(self.continuationParameter)) * (
+        if self.varyingQuantity == 'Hamiltonian':
+            # for hamiltonian in self.Hlt:
+            #     self.plotColorIndexBasedOnContinuation.append(int(np.round(
+            #         (hamiltonian - min(self.continuationParameter)) / (max(self.continuationParameter) - min(self.continuationParameter)) * (
+            #                         self.numberOfPlotColorIndices - 1))))
+                for xcoor in self.x:
+                    self.plotColorIndexBasedOnContinuation.append(int(np.round(
+                        (xcoor - min(self.continuationParameter)) / (
+                                    max(self.continuationParameter) - min(self.continuationParameter)) * (
                                 self.numberOfPlotColorIndices - 1))))
 
         # Determine deviations at full period
