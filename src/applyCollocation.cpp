@@ -25,7 +25,7 @@
 #include "applyMeshRefinement.h"
 #include "interpolatePolynomials.h"
 
-void checkMeshTiming(const Eigen::MatrixXd collocationDesignVector, const int numberOfCollocationPoints)
+void checkMeshTiming(const Eigen::MatrixXd collocationDesignVector, const int numberOfCollocationPoints, const Eigen::VectorXd thrustAndMassParameters)
 {
 
     int numberOfErrors = 0;
@@ -54,6 +54,7 @@ void checkMeshTiming(const Eigen::MatrixXd collocationDesignVector, const int nu
     if (numberOfErrors > 0)
     {
                     std::cout << "\nMesh is not correct, node i+1 is placed at earlier time than node i: " << std::endl
+                              << "thrustAndMassParameters " << thrustAndMassParameters << std::endl
                               << "numberOfSegments: " << numberOfCollocationPoints - 1 << std::endl
                               << "numberOfErrors: " << numberOfErrors << std::endl
                               << "=======================================================================" << std::endl;
@@ -916,7 +917,7 @@ void computeCollocationDefects(Eigen::MatrixXd& collocationDefectVector, Eigen::
     }
 
    // check if the mesh does not go backwards in time
-    checkMeshTiming(collocationDesignVector,numberOfCollocationPoints);
+    checkMeshTiming(collocationDesignVector,numberOfCollocationPoints, thrustAndMassParameters);
 
 
 
@@ -984,6 +985,7 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
 
         while (distributionDeltaPreviousIteration > distributionDeltaCurrentIteration and distributionDeltaCurrentIteration > 1.0E-12)
         {
+            std::cout << "\nfirst defect computation!: " << std::endl;
             computeCollocationDefects(collocationDefectVector, collocationDesignVector, oddStates, oddStatesDerivatives, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, initialTime, continuationIndex, previousDesignVector);
 
             collocationDeviationNorms = computeCollocationDeviationNorms(collocationDefectVector, collocationDesignVector, numberOfCollocationPoints);

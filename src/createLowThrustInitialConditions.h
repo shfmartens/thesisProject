@@ -53,7 +53,7 @@ bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differenti
                        const double maxEigenvalueDeviation = 1.0e-3 );
 
 Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::VectorXd& initialStateGuess, const int orbitNumber,
-                                          const int librationPointNr, const std::string& orbitType, const int continuationIndex, const Eigen::VectorXd previousDesignVector, const double massParameter, const int numberOfPatchPoints, int& numberOfCollocationPoints,
+                                          const int librationPointNr, const std::string& orbitType, const int continuationIndex, const Eigen::VectorXd previousDesignVector, bool& continuationDirectionReversed, const double massParameter, const int numberOfPatchPoints, int& numberOfCollocationPoints,
                                           std::vector< Eigen::VectorXd >& initialConditions,
                                           std::vector< Eigen::VectorXd >& differentialCorrections,
                                           std::vector< Eigen::VectorXd >& statesContinuation,

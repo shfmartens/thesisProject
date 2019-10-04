@@ -5,6 +5,8 @@
 #include "Eigen/Core"
 #include <map>
 
+void checkMeshTiming(const Eigen::MatrixXd collocationDesignVector, const int numberOfCollocationPoints, const Eigen::VectorXd thrustAndMassParameters);
+
 Eigen::VectorXd computeProcedureTimeShifts(Eigen::VectorXd collocationDesignVectorInitial, Eigen::VectorXd collocationDesignVectorFinal, const int numberOfCollocationPoints);
 
 void  writeTrajectoryErrorDataToFile(const int numberOfCollocationPoints, const Eigen::VectorXd fullPeriodDeviations, const Eigen::VectorXd defectVectorMS, const Eigen::VectorXd collocatedDefects, const Eigen::VectorXd collcationSegmentErrors, const int magnitudeNoiseOffset, const double amplitude );

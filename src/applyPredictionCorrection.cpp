@@ -43,8 +43,7 @@ void shiftConvergedTrajectoryGuess(int librationPointNr, Eigen::VectorXd current
     }
 
 
-
- // Determine Target Angle
+ // Determine starting Angle
     double startingAngle;
         if (librationPointNr < 3)
         {
@@ -59,13 +58,18 @@ void shiftConvergedTrajectoryGuess(int librationPointNr, Eigen::VectorXd current
             startingAngle = startingAngle + 360.0;
         }
 
+        //std::cout << "targetAngle: " << targetAngle << std::endl;
+        //std::cout << "startingAngle: " << startingAngle << std::endl;
+
+
+
  // Determine integration Direction
     int direction;
         if (startingAngle - targetAngle > 0 )
         {
             if ( librationPointNr == 1)
             {
-                direction = 1;
+                direction = -1;
             }
             if (librationPointNr == 2)
             {
@@ -75,7 +79,7 @@ void shiftConvergedTrajectoryGuess(int librationPointNr, Eigen::VectorXd current
         {
             if ( librationPointNr == 1)
             {
-                direction = -1;
+                direction = 1;
             }
             if (librationPointNr == 2)
             {
@@ -517,7 +521,7 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
 
     currentTrajectoryGuess.segment(11*(numberOfPatchPoints-1), 10) = currentTrajectoryGuess.segment(0,10);
 
-    //std::cout << "output DiffCor First State: \n" << currentTrajectoryGuess.segment(0,11) << std::endl;
+    std::cout << "output DiffCor First State: \n" << currentTrajectoryGuess.segment(0,11) << std::endl;
     //std::cout << "output DiffCor final State: \n" << currentTrajectoryGuess.segment(11*(numberOfPatchPoints-1),11) << std::endl;
     //std::cout << "Difference Initial and final PP : \n" << currentTrajectoryGuess.segment(0,11) - currentTrajectoryGuess.segment(11*(numberOfPatchPoints-1),11) << std::endl;
 
@@ -528,7 +532,7 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
 
     shiftConvergedTrajectoryGuess(librationPointNr, currentTrajectoryGuess, initialStateVector, offsetUnitVector, convergedTrajectoryGuess, massParameter, numberOfPatchPoints );
 
-    //std::cout << "output shifted First State: \n" << convergedTrajectoryGuess.segment(0,11) << std::endl;
+    std::cout << "output shifted First State: \n" << convergedTrajectoryGuess.segment(0,11) << std::endl;
     //std::cout << "output shifted Final State: \n" << convergedTrajectoryGuess.segment(11*(numberOfPatchPoints-1),11) << std::endl;
 
 
