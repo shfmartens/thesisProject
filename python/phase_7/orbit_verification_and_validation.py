@@ -96,7 +96,7 @@ class DisplayPeriodicSolutions:
         for row in statesContinuation_df.iterrows():
             self.orbitsId.append(row[1][0])
             self.Hlt.append(row[1][1])
-            self.x = [row[1][3]]
+            self.x.append([row[1][3]])
             self.accelerationContinuation.append(row[1][8])
             self.alphaContinuation.append(row[1][9])
             self.numberOfCollocationPoints.append(row[1][13])
