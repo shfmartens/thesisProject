@@ -951,6 +951,16 @@ bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differenti
         {
             continueNumericalContinuation = checkEigenvalues( stateVectorInclSTM, maxEigenvalueDeviation, false );
         }
+
+        // Check if final condition is within two times of the the radius of the center of the Earth
+        if (continueNumericalContinuation == true )
+        {
+            // compute angle relative to the positive x-axis. with equilibrium
+            // compute the closest surface position.
+            // for L1 moonPosition - spacecraft position, each element should be larger than zero
+            // for L2 moon position - spacecraftPosition, each element should be smaller than zero
+
+        }
     }
     return continueNumericalContinuation;
 }
@@ -1054,7 +1064,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 // ============ CONTINUATION PROCEDURE ================== //
     // Set exit parameters of continuation procedure
-    int maximumNumberOfInitialConditions = 10000;
+    int maximumNumberOfInitialConditions = 50;
     int numberOfInitialConditions;
     if (continuationIndex == 1)
     {

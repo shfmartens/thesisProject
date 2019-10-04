@@ -57,16 +57,37 @@ int main (){
 //                  << "=================" << std::endl;
 
 //    }
+    double semiMajorAxis = 384400*1000;
+    double EarthGravPar = tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER;
+    double MoonGravPar = tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER;
+    double GravConst = tudat::physical_constants::GRAVITATIONAL_CONSTANT;
+    double moonMass = MoonGravPar/GravConst;
+
+    std::cout.precision(14);
+    double period = tudat::basic_astrodynamics::computeKeplerOrbitalPeriod(semiMajorAxis, EarthGravPar, moonMass  );
+    double velocity = semiMajorAxis / (period/(2.0*tudat::mathematical_constants::PI));
+    std::cout << "semi major axis [m]: " << semiMajorAxis << std::endl;
+    std::cout << "EARTH GM [[m^3 s^-2]]: " << EarthGravPar << std::endl;
+    std::cout << "Moon GM [[m^3 s^-2]]: " << MoonGravPar << std::endl;
+    std::cout << "GravConst [meter^3 per kilogram per second^2]: " << GravConst << std::endl;
+    std::cout << "moonMass []: " << moonMass << std::endl;
+    std::cout << "period []: " << (period /tudat::physical_constants::SIDEREAL_DAY)<< std::endl;
+    std::cout << "velocity []: " << velocity << std::endl;
+    std::cout << "eps: " << std::numeric_limits<double>::epsilon( ) << std::endl;
+
+
+
+
 
 
     // ================================
     // == Compute initial conditions ==
     // ================================
         
-    #pragma omp parallel num_threads(13)
+    #pragma omp parallel num_threads(1)
     {
         #pragma omp for
-        for (unsigned int i=1; i<=13; i++) {
+        for (unsigned int i=1; i<=1; i++) {
             if (i ==1)
             {
                 std::cout << "Run Thread " << i << std::endl;
