@@ -125,7 +125,7 @@ void recomputeTimeProperties(const Eigen::MatrixXd temporaryDesignVector, double
 }
 
 
-void applyLineSearchAttenuation(const Eigen::VectorXd collocationCorrectionVector,  Eigen::MatrixXd& collocationDefectVector,  Eigen::MatrixXd& collocationDesignVector, Eigen::VectorXd timeIntervals, const Eigen::VectorXd thrustAndMassParameters, const int numberOfCollocationPoints, const int continuationIndex, const Eigen::VectorXd phaseConstraintVector)
+void applyLineSearchAttenuation(const Eigen::VectorXd collocationCorrectionVector,  Eigen::MatrixXd& collocationDefectVector,  Eigen::MatrixXd& collocationDesignVector, Eigen::VectorXd timeIntervals, const Eigen::VectorXd thrustAndMassParameters, const int numberOfCollocationPoints, const int continuationIndex, const Eigen::VectorXd phaseConstraintVector, const int orbitNumber)
 {
 
     Eigen::MatrixXd minimumNormDesignVector(collocationDesignVector.rows(),collocationDesignVector.cols());;
@@ -173,7 +173,7 @@ void applyLineSearchAttenuation(const Eigen::VectorXd collocationCorrectionVecto
 
 
 
-        computeCollocationDefects(collocationDefectVectorTemp, collocationDesignVectorTemp, oddStates, oddStatesDerivatives, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, initialTime, continuationIndex, phaseConstraintVector );
+        computeCollocationDefects(collocationDefectVectorTemp, collocationDesignVectorTemp, oddStates, oddStatesDerivatives, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, initialTime, continuationIndex, phaseConstraintVector, orbitNumber );
 
         //std::cout << "computeCollocationDefectsCompleted: " << std::endl;
 

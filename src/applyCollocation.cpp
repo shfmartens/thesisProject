@@ -25,7 +25,7 @@
 #include "applyMeshRefinement.h"
 #include "interpolatePolynomials.h"
 
-void checkMeshTiming(const Eigen::MatrixXd collocationDesignVector, const int numberOfCollocationPoints, const Eigen::VectorXd thrustAndMassParameters)
+void checkMeshTiming(const Eigen::MatrixXd collocationDesignVector, const int numberOfCollocationPoints, const Eigen::VectorXd thrustAndMassParameters, const int orbitNumber)
 {
 
     int numberOfErrors = 0;
@@ -57,6 +57,7 @@ void checkMeshTiming(const Eigen::MatrixXd collocationDesignVector, const int nu
                               << "thrustAndMassParameters " << thrustAndMassParameters << std::endl
                               << "numberOfSegments: " << numberOfCollocationPoints - 1 << std::endl
                               << "numberOfErrors: " << numberOfErrors << std::endl
+                              << "orbitNumber: " << orbitNumber << std::endl
                               << "=======================================================================" << std::endl;
 
                     std::exit(1);
@@ -685,7 +686,7 @@ void retrieveLegendreGaussLobattoConstaints(const std::string desiredQuantity, E
 }
 
 
-void computeCollocationDefects(Eigen::MatrixXd& collocationDefectVector, Eigen::MatrixXd& collocationDesignVector, const Eigen::MatrixXd oddStates, const Eigen::MatrixXd oddStatesDerivatives, Eigen::VectorXd timeIntervals, Eigen::VectorXd thrustAndMassParameters, const int numberOfCollocationPoints, const double initialTime, const int continuationIndex, const Eigen::VectorXd previousDesignVector)
+void computeCollocationDefects(Eigen::MatrixXd& collocationDefectVector, Eigen::MatrixXd& collocationDesignVector, const Eigen::MatrixXd oddStates, const Eigen::MatrixXd oddStatesDerivatives, Eigen::VectorXd timeIntervals, Eigen::VectorXd thrustAndMassParameters, const int numberOfCollocationPoints, const double initialTime, const int continuationIndex, const Eigen::VectorXd previousDesignVector, const int orbitNumber)
 {
     // Load relevant constants
     Eigen::MatrixXd oddTimesMatrix(8,8);            Eigen::MatrixXd evenTimesMatrix(8,3);
@@ -917,14 +918,14 @@ void computeCollocationDefects(Eigen::MatrixXd& collocationDefectVector, Eigen::
     }
 
    // check if the mesh does not go backwards in time
-    checkMeshTiming(collocationDesignVector,numberOfCollocationPoints, thrustAndMassParameters);
+    checkMeshTiming(collocationDesignVector,numberOfCollocationPoints, thrustAndMassParameters, orbitNumber);
 
 
 
 }
 
 
-Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, const double massParameter, int& numberOfCollocationPoints, Eigen::VectorXd& collocatedGuess, Eigen::VectorXd& collocatedNodes, Eigen::VectorXd& deviationNorms, Eigen::VectorXd& collocatedDefects, const int continuationIndex, const Eigen::VectorXd previousDesignVector,
+Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, const double massParameter, int& numberOfCollocationPoints, Eigen::VectorXd& collocatedGuess, Eigen::VectorXd& collocatedNodes, Eigen::VectorXd& deviationNorms, Eigen::VectorXd& collocatedDefects, const int continuationIndex, const Eigen::VectorXd previousDesignVector, const int orbitNumber,
                                                           double maxPositionDeviationFromPeriodicOrbit,  double maxVelocityDeviationFromPeriodicOrbit,  double maxPeriodDeviationFromPeriodicOrbit, const int maxNumberOfCollocationIterations, const double maximumErrorTolerance)
 {
 
@@ -986,7 +987,7 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
         while (distributionDeltaPreviousIteration > distributionDeltaCurrentIteration and distributionDeltaCurrentIteration > 1.0E-12)
         {
             std::cout << "\nfirst defect computation!: " << std::endl;
-            computeCollocationDefects(collocationDefectVector, collocationDesignVector, oddStates, oddStatesDerivatives, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, initialTime, continuationIndex, previousDesignVector);
+            computeCollocationDefects(collocationDefectVector, collocationDesignVector, oddStates, oddStatesDerivatives, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, initialTime, continuationIndex, previousDesignVector, orbitNumber);
 
             collocationDeviationNorms = computeCollocationDeviationNorms(collocationDefectVector, collocationDesignVector, numberOfCollocationPoints);
 
@@ -1030,7 +1031,7 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
                 collocationCorrectionVector = computeCollocationCorrection(collocationDefectVector, collocationDesignVector, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, continuationIndex, previousDesignVector, massParameter);
 
                 // apply line search, select design vector which produces the smallest norm
-                applyLineSearchAttenuation(collocationCorrectionVector, collocationDefectVector, collocationDesignVector, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, continuationIndex, previousDesignVector);
+                applyLineSearchAttenuation(collocationCorrectionVector, collocationDefectVector, collocationDesignVector, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, continuationIndex, previousDesignVector, orbitNumber);
 
                 // Relax the tolerances if a certain number of corrections is reached
                 numberOfCorrections++;
