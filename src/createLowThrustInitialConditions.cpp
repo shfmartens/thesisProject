@@ -518,7 +518,7 @@ Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::MatrixXd& initi
                                           std::vector< Eigen::VectorXd >& initialConditions,
                                           std::vector< Eigen::VectorXd >& differentialCorrections,
                                           std::vector< Eigen::VectorXd >& statesContinuation,
-                                                   const double maxPositionDeviationFromPeriodicOrbit, double maxVelocityDeviationFromPeriodicOrbit, const double maxPeriodDeviationFromPeriodicOrbit )
+                                                   const double maxPositionDeviationFromPeriodicOrbit, double maxVelocityDeviationFromPeriodicOrbit, const double maxPeriodDeviationFromPeriodicOrbit, const bool initialSolutionFromTextFile )
 {
     Eigen::VectorXd initialCollocationGuess;
     Eigen::VectorXd initialStateVector(10);
@@ -544,35 +544,42 @@ Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::MatrixXd& initi
     Eigen::MatrixXd stateVectorInclSTM = propagateOrbitAugmentedToFinalCondition(
                 getFullInitialStateAugmented( initialStateVector ), massParameter, orbitalPeriod, 1, stateHistory, 1000, 0.0 ).first;
 
-    // determine whethter the initial condition of input in this function and output of collocation algorithm are in the desired direction!
-    Eigen::VectorXd initialStateInput(3); initialStateInput.setZero();
-    Eigen::VectorXd initialStateColloc(3); initialStateColloc.setZero();
-    Eigen::VectorXd initialStateMoon(3); initialStateMoon.setZero();
+    std::cout << "\n propagation completed: \n" << stateVectorInclSTM.block(0,0,10,1) << std::endl;
 
-    initialStateInput = statesContinuation[statesContinuation.size()-1].segment(3,3);
-    initialStateColloc = collocatedNodes.block(0,0,3,1);
-    initialStateMoon(0) = 1.0-massParameter;
+    if (initialSolutionFromTextFile == false)
+    {
 
-    double distancePreviousGuess = (initialStateMoon-initialStateInput).norm();
-    double distanceCollocGuess = (initialStateMoon-initialStateColloc).norm();
+        // determine whethter the initial condition of input in this function and output of collocation algorithm are in the desired direction!
+        Eigen::VectorXd initialStateInput(3); initialStateInput.setZero();
+        Eigen::VectorXd initialStateColloc(3); initialStateColloc.setZero();
+        Eigen::VectorXd initialStateMoon(3); initialStateMoon.setZero();
+
+        initialStateInput = statesContinuation[statesContinuation.size()-1].segment(3,3);
+        initialStateColloc = collocatedNodes.block(0,0,3,1);
+        initialStateMoon(0) = 1.0-massParameter;
+
+        double distancePreviousGuess = (initialStateMoon-initialStateInput).norm();
+        double distanceCollocGuess = (initialStateMoon-initialStateColloc).norm();
+
+        if(distancePreviousGuess > distanceCollocGuess)
+        {
+            continuationDirectionReversed = false;
+        }else
+        {
+            continuationDirectionReversed = true;
+           std::cout << "continuationDirection is reverserd, cancel saving of result and inrease stateIncrement!" << std::endl;
+           std::cout << "initialStateInput: " << initialStateInput << std::endl;
+           std::cout << "initialStateColloc: " << initialStateColloc << std::endl;
+           std::cout << "initialStateMoon: " << initialStateMoon << std::endl;
+           std::cout << "distanceCollocGuess: " << distanceCollocGuess << std::endl;
 
 
+        }
 
-    if(distancePreviousGuess > distanceCollocGuess)
+    } else
     {
         continuationDirectionReversed = false;
-    }else
-    {
-        continuationDirectionReversed = true;
-       std::cout << "continuationDirection is reverserd, cancel saving of result and inrease stateIncrement!" << std::endl;
-       std::cout << "initialStateInput: " << initialStateInput << std::endl;
-       std::cout << "initialStateColloc: " << initialStateColloc << std::endl;
-       std::cout << "initialStateMoon: " << initialStateMoon << std::endl;
-       std::cout << "distanceCollocGuess: " << distanceCollocGuess << std::endl;
-
-
     }
-
 
 
     if ( continuationDirectionReversed == false )
@@ -1093,14 +1100,14 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
         bool continuationDirectionReversed = true;
         stateVectorInclSTM = getCollocatedAugmentedInitialState(oddNodesMatrix, 0, librationPointNr, orbitType, continuationIndex, hamiltonianVector, continuationDirectionReversed,
                                                                 massParameter, numberOfPatchPoints, numberOfCollocationPoints, initialConditions,
-                                                                differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
+                                                                differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit, false);
 
           }
 
 
 // ============ CONTINUATION PROCEDURE ================== //
     // Set exit parameters of continuation procedure
-    int maximumNumberOfInitialConditions = 930;
+    int maximumNumberOfInitialConditions = 931;
     int numberOfInitialConditions;
     if (continuationIndex == 1)
     {
@@ -1160,17 +1167,36 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
           int orbitNumberSecondGuess = numberOfInitialConditions-1;
 
             bool continuationDirectionReversed = true;
+
+//            std::cout << "Refinement of initial Guesses Reached" << std::endl
+//                      << "orbitNumberFirstGuess: " << orbitNumberFirstGuess << std::endl
+//                      << "orbitNumberFirstGuess: " << orbitNumberSecondGuess << std::endl
+//                      << "numberOfCollocationPointsFirstGuess: " << numberOfCollocationPointsFirstGuess << std::endl
+//                      << "numberOfCollocationPointsSecondGuess: " << numberOfCollocationPointsSecondGuess << std::endl
+//                      << "numberOfInitialConditions: " << numberOfInitialConditions << std::endl
+//                      << "adaptedIncrementVector: \n" << adaptedIncrementVector << std::endl;
+
+
+
+
+
             Eigen::MatrixXd stateVectorInclSTMFirst = getCollocatedAugmentedInitialState(oddNodesMatrixFirst, orbitNumberFirstGuess, librationPointNr, orbitType, 1, adaptedIncrementVector, continuationDirectionReversed,
                                                                                     massParameter, numberOfCollocationPointsFirstGuess, numberOfCollocationPointsFirstGuess, initialConditions, differentialCorrections,
-                                                                                    statesContinuation, 1.0E-12, 1.0E-12, 1.0E-12);
+                                                                                    statesContinuation, 1.0E-12, 1.0E-12, 1.0E-12, true);
+
             Eigen::MatrixXd stateVectorInclSTMSecond = getCollocatedAugmentedInitialState(oddNodesMatrixSecond, orbitNumberSecondGuess, librationPointNr, orbitType, 1, adaptedIncrementVector, continuationDirectionReversed,
                                                                                     massParameter, numberOfCollocationPointsFirstGuess, numberOfCollocationPointsFirstGuess, initialConditions, differentialCorrections,
-                                                                                    statesContinuation, 1.0E-12, 1.0E-12, 1.0E-12);
+                                                                                    statesContinuation, 1.0E-12, 1.0E-12, 1.0E-12, false);
+
+
 
             numberOfCollocationPoints = numberOfCollocationPointsSecondGuess;
+
         }
 
     }
+
+    std::cout << "initialization from text file completed! " << std::endl;
 
     while( ( numberOfInitialConditions < maximumNumberOfInitialConditions ) && continueNumericalContinuation)
     {
@@ -1288,7 +1314,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
                     stateVectorInclSTM = getCollocatedAugmentedInitialState( oddNodesMatrix, numberOfInitialConditions, librationPointNr, orbitType, continuationIndex, adaptedIncrementVector, continuationDirectionReversed,
                                                                              massParameter, numberOfPatchPoints, numberOfCollocationPoints, initialConditions,
-                                                                             differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
+                                                                             differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit, false);
 
                     if (continuationDirectionReversed == true )
                     {
@@ -1345,7 +1371,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
               bool continuationDirectionReversed = true;
               stateVectorInclSTM = getCollocatedAugmentedInitialState( oddNodesMatrix, numberOfInitialConditions, librationPointNr, orbitType, continuationIndex, previousDesignVector, continuationDirectionReversed,
                                                                        massParameter, numberOfPatchPoints, numberOfCollocationPoints, initialConditions,
-                                                                       differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
+                                                                       differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit, false);
 
 
 
@@ -1392,7 +1418,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
              bool continuationDirectionReversed = true;
              stateVectorInclSTM = getCollocatedAugmentedInitialState( oddNodesMatrix, numberOfInitialConditions, librationPointNr, orbitType, continuationIndex, previousDesignVector, continuationDirectionReversed,
                                                                       massParameter, numberOfPatchPoints, numberOfCollocationPoints, initialConditions,
-                                                                      differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
+                                                                      differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit, false);
 
           }
 

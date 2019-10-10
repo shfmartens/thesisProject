@@ -229,6 +229,7 @@ void initialiseContinuationFromTextFile (const int librationPointNr, const std::
 
       // compute adapted increment vector (seek orbit corresponding to  orbit number 1.000000)
       Eigen::VectorXd firstStateOfSecondOrbit = extractStatesContinuationVectorFromKnownOrbitNumber(continuation_fileName, 1);
+      std::cout << "firstSTateOfSecondorbit: \n" << firstStateOfSecondOrbit << std::endl;
 
 
       Eigen::VectorXd increment = Eigen::VectorXd::Zero(6);
@@ -236,6 +237,9 @@ void initialiseContinuationFromTextFile (const int librationPointNr, const std::
       fullEquilibriumLocation.segment(0,2) = createEquilibriumLocations(librationPointNr, accelerationMagnitude, accelerationAngle, "acceleration", ySign, massParameter );
       increment = firstStateOfSecondOrbit.segment(0,6) - fullEquilibriumLocation;
       adaptedIncrementVector = 10.0 *increment / (increment.norm());
+
+      std::cout << "increment: \n" << increment << std::endl;
+
 
     // Initialize the procedure by getCollocatedInitialState
 

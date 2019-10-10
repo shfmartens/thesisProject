@@ -57,7 +57,7 @@ Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::VectorXd& initi
                                           std::vector< Eigen::VectorXd >& initialConditions,
                                           std::vector< Eigen::VectorXd >& differentialCorrections,
                                           std::vector< Eigen::VectorXd >& statesContinuation,
-                                                   const double maxPositionDeviationFromPeriodicOrbit, double maxVelocityDeviationFromPeriodicOrbit, const double maxPeriodDeviationFromPeriodicOrbit );
+                                                   const double maxPositionDeviationFromPeriodicOrbit, double maxVelocityDeviationFromPeriodicOrbit, const double maxPeriodDeviationFromPeriodicOrbit, const bool initialSolutionFromTextFile );
 
 Eigen::VectorXd computeHamiltonianVaryingStateIncrement(const Eigen::VectorXd initialStateVector, const int numberOfCollocationPoints, const double massParameter);
 
