@@ -100,6 +100,7 @@ int main (){
                 createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile );
 
 
+
             }
             if (i ==2)
             {
