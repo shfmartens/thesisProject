@@ -69,21 +69,21 @@ void shiftConvergedTrajectoryGuess(int librationPointNr, Eigen::VectorXd current
         {
             if ( librationPointNr == 1)
             {
-                direction = -1;
+                direction = 1;
             }
             if (librationPointNr == 2)
             {
-                direction = -1;
+                direction = 1;
             }
         } else if (startingAngle - targetAngle < 0 )
         {
             if ( librationPointNr == 1)
             {
-                direction = 1;
+                direction = -1;
             }
             if (librationPointNr == 2)
             {
-                direction = 1;
+                direction = -1;
             }
 
         } else

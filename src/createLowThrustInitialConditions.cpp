@@ -561,7 +561,7 @@ Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::MatrixXd& initi
         double distancePreviousGuess = (initialStateMoon-initialStateInput).norm();
         double distanceCollocGuess = (initialStateMoon-initialStateColloc).norm();
 
-        if(distancePreviousGuess > distanceCollocGuess)
+        if(distancePreviousGuess < distanceCollocGuess)
         {
             continuationDirectionReversed = false;
         }else
@@ -1107,7 +1107,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 // ============ CONTINUATION PROCEDURE ================== //
     // Set exit parameters of continuation procedure
-    int maximumNumberOfInitialConditions = 1000;
+    int maximumNumberOfInitialConditions = 5000;
     int numberOfInitialConditions;
     if (continuationIndex == 1)
     {

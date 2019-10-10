@@ -334,8 +334,8 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, const double ySign, s
         yArgument = equilibriumStateVector(1);
         offsetAngle = atan2(yArgument, xArgument);
 
-        offsetVector(0) = -amplitude * cos(offsetAngle);
-        offsetVector(1) = -amplitude * sin(offsetAngle);
+        offsetVector(0) = amplitude * cos(offsetAngle);
+        offsetVector(1) = amplitude * sin(offsetAngle);
     } else
     {
         offsetVector(2) = amplitude;
