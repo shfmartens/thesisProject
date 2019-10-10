@@ -1039,11 +1039,10 @@ Eigen::VectorXd computeHamiltonianVaryingStateIncrement(const Eigen::VectorXd in
 }
 
 void createLowThrustInitialConditions( const int librationPointNr, const double ySign, const std::string& orbitType, const int continuationIndex, const double accelerationMagnitude, const double accelerationAngle,
-                                       const double accelerationAngle2, const double initialMass, const double familyHamiltonian,
+                                       const double accelerationAngle2, const double initialMass, const double familyHamiltonian, const bool startContinuationFromTextFile,
                               const double massParameter, const int numberOfPatchPoints, const int initialNumberOfCollocationPoints, const double maxPositionDeviationFromPeriodicOrbit, const double maxVelocityDeviationFromPeriodicOrbit, const double maxPeriodDeviationFromPeriodicOrbit, const double maxEigenvalueDeviation,
                               const boost::function< double( const Eigen::VectorXd&, const int ) > pseudoArcLengthFunctionAugmented ) {
 
-    bool startContinuationFromTextFile = false;
     std::cout << "\nCreate initial conditions:" << std::endl;
     std::cout << "Start continuation from text file: " << startContinuationFromTextFile << "\n"<<std::endl;
 
@@ -1136,14 +1135,17 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
             int numberOfCollocationPointsFirstGuess;
             int numberOfCollocationPointsSecondGuess;
 
-           // ORBIT ID // HAMILTONIAN
+           // ORBIT ID // HAMILTONIAN (L1 nat)
            // 000      // -1.594170534760879
            // 001      // -1.594170243726332
            // 498      // -1.516776129756689
            // 499      // -1.516655149071308
-           //
+
+            // ORBIT ID // HAMILTONIAN (L1 0.001 150 deg)
+           // 929      // -1.509901352006060
+           // 930      // -1.509790940125689
             initialiseContinuationFromTextFile( librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2,
-                                                -1.594170534760879, -1.594170243726332, ySign, massParameter,
+                                                -1.509901352006060, -1.509790940125689, ySign, massParameter,
                                                 statesContinuationVectorFirstGuess, statesContinuationVectorSecondGuess,
                                                 numberOfCollocationPointsFirstGuess, numberOfCollocationPointsSecondGuess, adaptedIncrementVector, numberOfInitialConditions);
 

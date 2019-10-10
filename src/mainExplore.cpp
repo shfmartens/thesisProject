@@ -96,7 +96,8 @@ int main (){
                 double initialMass = 1.0;
                 double ySign = 1.0;
                 double familyHamiltonian = -1.58;
-                createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian );
+                bool startContinuationFromTextFile = false;
+                createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile );
 
 
             }
@@ -111,7 +112,8 @@ int main (){
                 double initialMass = 1.0;
                 double ySign = 1.0;
                 double familyHamiltonian = -1.58;
-                createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian );
+                bool startContinuationFromTextFile = false;
+                createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile );
 
             }
             if (i ==3)
@@ -125,7 +127,8 @@ int main (){
                 double initialMass = 1.0;
                 double ySign = 1.0;
                 double familyHamiltonian = -1.58;
-                createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian );
+                bool startContinuationFromTextFile = false;
+                createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile );
 
             }
             if (i ==4)
@@ -139,7 +142,8 @@ int main (){
                 double initialMass = 1.0;
                 double ySign = 1.0;
                 double familyHamiltonian = -1.58;
-                createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian );
+                bool startContinuationFromTextFile = false;
+                createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile );
 
             }
             if (i ==5)
@@ -153,7 +157,8 @@ int main (){
                 double initialMass = 1.0;
                 double ySign = 1.0;
                 double familyHamiltonian = -1.58;
-                createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian );
+                bool startContinuationFromTextFile = false;
+                createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile );
 
             }
                 if (i ==6)
@@ -167,7 +172,8 @@ int main (){
                     double initialMass = 1.0;
                     double ySign = 1.0;
                     double familyHamiltonian = -1.58;
-                    createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian );
+                    bool startContinuationFromTextFile = true;
+                    createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile );
 
                 }
                 if (i ==7)
@@ -181,7 +187,8 @@ int main (){
                     double initialMass = 1.0;
                     double ySign = 1.0;
                     double familyHamiltonian = -1.58;
-                    createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian );
+                    bool startContinuationFromTextFile = false;
+                    createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile );
 
                 }
 
@@ -196,7 +203,8 @@ int main (){
                     double initialMass = 1.0;
                     double ySign = 1.0;
                     double familyHamiltonian = -1.58;
-                    createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian );
+                    bool startContinuationFromTextFile = false;
+                    createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile );
 
                 }
                 if (i ==9)
@@ -210,7 +218,8 @@ int main (){
                     double initialMass = 1.0;
                     double ySign = 1.0;
                     double familyHamiltonian = -1.58;
-                    createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian );
+                    bool startContinuationFromTextFile = false;
+                    createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile );
 
                 }
                 if (i ==10)
@@ -224,7 +233,8 @@ int main (){
                     double initialMass = 1.0;
                     double ySign = 1.0;
                     double familyHamiltonian = -1.58;
-                    createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian );
+                    bool startContinuationFromTextFile = false;
+                    createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile );
 
                 }
                 if (i ==11)
@@ -238,7 +248,8 @@ int main (){
                     double initialMass = 1.0;
                     double ySign = 1.0;
                     double familyHamiltonian = -1.58;
-                    createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian );
+                    bool startContinuationFromTextFile = false;
+                    createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile );
 
                   }
                     if (i ==12)
@@ -252,7 +263,8 @@ int main (){
                         double initialMass = 1.0;
                         double ySign = 1.0;
                         double familyHamiltonian = -1.58;
-                        createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian );
+                        bool startContinuationFromTextFile = false;
+                        createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile );
 
                     }
                     if (i ==13)
@@ -266,7 +278,8 @@ int main (){
                         double initialMass = 1.0;
                         double ySign = 1.0;
                         double familyHamiltonian = -1.58;
-                        createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian );
+                        bool startContinuationFromTextFile = false;
+                        createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile );
 
                     }
                     if (i ==14)
@@ -280,7 +293,8 @@ int main (){
                         double initialMass = 1.0;
                         double ySign = 1.0;
                         double familyHamiltonian = -1.58;
-                        createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian );
+                        bool startContinuationFromTextFile = false;
+                        createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile );
 
                     }
         }
