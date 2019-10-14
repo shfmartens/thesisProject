@@ -989,10 +989,19 @@ bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differenti
         if ( ( librationPointNr == 2 ) && ( orbitType == "horizontal" ) )
         {
             continueNumericalContinuation = checkEigenvalues( stateVectorInclSTM, maxEigenvalueDeviation, true );
+            if (continueNumericalContinuation == false)
+            {
+                std::cout << "\n\nEIGENPAIR DENOTING PERIODICITY DOES NOT SATISFY PERIODICITY REQUIREMENT\n\n" << std::endl;
+            }
         }
         else
         {
             continueNumericalContinuation = checkEigenvalues( stateVectorInclSTM, maxEigenvalueDeviation, false );
+
+            if (continueNumericalContinuation == false)
+            {
+                std::cout << "\n\nEIGENPAIR DENOTING PERIODICITY DOES NOT SATISFY PERIODICITY REQUIREMENT\n\n" << std::endl;
+            }
         }
 
         // Check if final condition is within two times of the the radius of the center of the Earth
