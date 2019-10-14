@@ -347,7 +347,7 @@ Eigen::Vector2d createEquilibriumLocations (const int librationPointNr, const do
     Eigen::Vector2d targetEquilibrium;
     Eigen::MatrixXd linearizedStability;
     Eigen::VectorXd fullEquilibriumVector(10); fullEquilibriumVector.setZero();
-    double angleModCondition = 2;
+    double angleModCondition = 2.0;
     double propagationTime = tudat::mathematical_constants::PI;
 
     fullEquilibriumVector(6) = thrustAcceleration;
