@@ -1009,7 +1009,7 @@ class DisplayPeriodicSolutions:
         arr[1,1].plot(self.orbitsId,self.y,c=self.plottingColors['tripleLine'][1], linewidth=1,label='$y$ [-]')
         #arr[1,1].plot(self.orbitsId,self.phase,c=self.plottingColors['tripleLine'][2], linewidth=1)
         arr[1,1].set_xlim(xlim)
-        arr[1,1].set_ylim([0.3,1])
+        arr[1,1].set_ylim([-1,1])
         arr[1,1].set_title('Spatial and phase evolution')
         arr[1,1].set_xlabel('orbit Number [-]')
         arr[1,1].set_ylabel('$x$ [-], $y$ [-]')
@@ -1088,7 +1088,7 @@ if __name__ == '__main__':
     alphas = [0.0]
     betas = [0.0]
     low_dpi = True
-    varying_quantities = ['Hamiltonian']
+    varying_quantities = ['xcor']
 
 
     for orbit_type in orbit_types:
