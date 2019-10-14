@@ -561,7 +561,7 @@ Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::MatrixXd& initi
         double distancePreviousGuess = (initialStateMoon-initialStateInput).norm();
         double distanceCollocGuess = (initialStateMoon-initialStateColloc).norm();
 
-        if(distancePreviousGuess < distanceCollocGuess)
+        if(distancePreviousGuess > distanceCollocGuess)
         {
             continuationDirectionReversed = false;
         }else
