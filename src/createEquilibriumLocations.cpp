@@ -22,13 +22,35 @@
 #include "functions/artificialLibrationPointLocationFunction1.h"
 #include "functions/artificialLibrationPointLocationFunction2.h"
 #include "functions/artificialLibrationPointLocationFunction3.h"
+#include "propagateOrbitAugmented.h"
 
 //#include "functions/signfunction.h"
 #include "applyMultivariateRootFinding.h"
 
 #include "createEquilibriumLocations.h"
 
-void writeResultsToFile (const int librationPointNr, const double parameterOfInterest, const std::string parameterSpecification, const double seedAngle, const double continuationDirection, std::map< double, Eigen::Vector3d > equilibriaCatalog, std::map <double, Eigen::MatrixXd > stabilityCatalog ) {
+Eigen::Vector6d computeDeviationAfterPropagation(const Eigen::Vector3d equilibriumLocationWithIterations, const double accelerationMagnitude, const double accelerationAngle, const double massParameter, const double finalTime)
+{
+    Eigen::Vector6d outputVector; outputVector.setZero();
+
+    // compute full initial state
+    Eigen::MatrixXd initialStateInclSTM(10,11); initialStateInclSTM.setZero();
+    initialStateInclSTM.block(0,0,2,1) = equilibriumLocationWithIterations.segment(0,2);
+    initialStateInclSTM(6,0) = accelerationMagnitude;
+    initialStateInclSTM(7,0) = accelerationAngle;
+    initialStateInclSTM(9,0) = 1.0;
+    initialStateInclSTM.block(0,1,10,10).setIdentity();
+
+    std::map<double, Eigen::VectorXd > stateHistory;
+    std::pair< Eigen::MatrixXd, double > finalStateInclSTMAndTime = propagateOrbitAugmentedToFinalCondition(initialStateInclSTM, massParameter, finalTime, 1, stateHistory, -1, 0.0);
+
+    Eigen::MatrixXd finalStateInclSTM = finalStateInclSTMAndTime.first;
+    outputVector = initialStateInclSTM.block(0,0,6,1) - finalStateInclSTM.block(0,0,6,1);
+
+    return outputVector;
+}
+
+void writeResultsToFile (const int librationPointNr, const double parameterOfInterest, const std::string parameterSpecification, const double seedAngle, const double continuationDirection, std::map< double, Eigen::Vector3d > equilibriaCatalog, std::map <double, Eigen::MatrixXd > stabilityCatalog, std::map< double, Eigen::Vector6d > deviationCatalog ) {
 
     std::string direction;
     if (continuationDirection > 0.0)
@@ -65,6 +87,20 @@ void writeResultsToFile (const int librationPointNr, const double parameterOfInt
                                                                           << ic->second(25)  << std::setw(25) << ic->second(26) << std::setw(25) << ic->second(27) << std::setw(25) << ic->second(28) << std::setw(25) << ic->second(29) << std::setw(25) << ic->second(30) << std::setw(25)
                                                                           << ic->second(31)  << std::setw(25) << ic->second(32) << std::setw(25) << ic->second(33) << std::setw(25) << ic->second(34) << std::setw(25) << ic->second(35) << std::endl;
     }
+
+    remove(("../data/data/raw/equilibria/L" + std::to_string(librationPointNr) + "_" + parameterSpecification + "_" + std::to_string(parameterOfInterest) + "_" + std::to_string(seedAngle) + "_" + direction + "_equilibria_deviation.txt").c_str());
+    std::ofstream textFileInitialConditionsDeviation;
+   textFileInitialConditionsDeviation.open(("../data/raw/equilibria/L" + std::to_string(librationPointNr) + "_" + parameterSpecification + "_" + std::to_string(parameterOfInterest) + "_" + std::to_string(seedAngle) + "_" + direction + "_equilibria_deviation.txt"));
+
+    textFileInitialConditionsDeviation.precision(std::numeric_limits<double>::digits10);
+
+    for(auto ic = deviationCatalog.cbegin(); ic != deviationCatalog.cend(); ++ic) {
+        textFileInitialConditionsDeviation << std::left << std::scientific                                          << std::setw(25)
+                                  << ic->first  << std::setw(25) << ic->second(0)  << std::setw(25) << ic->second(1) << std::setw(25) << ic->second(2) << std::setw(25) << ic->second(3) << std::setw(25) << ic->second(4) << std::setw(25) << ic->second(5) << std::endl;
+
+    }
+
+
 
 
 }
@@ -310,6 +346,12 @@ Eigen::Vector2d createEquilibriumLocations (const int librationPointNr, const do
     Eigen::Vector3d equilibriumLocationWithIterations;
     Eigen::Vector2d targetEquilibrium;
     Eigen::MatrixXd linearizedStability;
+    Eigen::VectorXd fullEquilibriumVector(10); fullEquilibriumVector.setZero();
+    double angleModCondition = 2;
+    double propagationTime = tudat::mathematical_constants::PI;
+
+    fullEquilibriumVector(6) = thrustAcceleration;
+    fullEquilibriumVector(9) = 1.0;
 
     if ( parameterSpecification == "acceleration")
     {
@@ -339,8 +381,10 @@ Eigen::Vector2d createEquilibriumLocations (const int librationPointNr, const do
                 for (int i = 1; i < 3; i++)
                      {
                         std::map< double, Eigen::Vector3d > equilibriaCatalog;
+                        std::map< double, Eigen::Vector6d > deviationCatalog;
                         std::map< double, Eigen::MatrixXd > stabilityCatalog;
                         equilibriaCatalog.clear();
+                        deviationCatalog.clear();
                         stabilityCatalog.clear();
 
                         // determine continuation direction
@@ -374,8 +418,13 @@ Eigen::Vector2d createEquilibriumLocations (const int librationPointNr, const do
                          equilibriumLocationWithIterations(3) = 1;
                          linearizedStability = computeEquilibriaStability(seedSolution, seedAngle, thrustAcceleration, massParameter);
 
+                         std::cout << "store first solution " << std::endl;
                          equilibriaCatalog[ seedAngle * tudat::mathematical_constants::PI / 180.0] = equilibriumLocationWithIterations;
                          stabilityCatalog[  seedAngle * tudat::mathematical_constants::PI / 180.0] = linearizedStability;
+                         deviationCatalog[  seedAngle * tudat::mathematical_constants::PI/  180.0] = computeDeviationAfterPropagation(equilibriumLocationWithIterations, thrustAcceleration, seedAngle, massParameter, propagationTime );
+
+                         std::cout << "first solution stored" << std::endl;
+
 
                          // Initialize rootfinding procedure parameters
                          int stepCounter = 1;
@@ -413,6 +462,26 @@ Eigen::Vector2d createEquilibriumLocations (const int librationPointNr, const do
 
                              }
 
+                             double alphaLog;
+
+                             if (alpha < 0.0)
+                             {
+                                 alphaLog = alpha + 360.0;
+                             } else if (alpha > 360.0)
+                             {
+                                 alphaLog = alpha - 360.0;
+                             } else
+                             {
+                                 alphaLog = alpha;
+                             }
+
+                             if (std::abs(std::fmod(alphaLog,angleModCondition)) < stepSize/10.0 or alphaLog > 357.0)
+                             {
+
+                                   deviationCatalog[  alphaLog * tudat::mathematical_constants::PI/  180.0] = computeDeviationAfterPropagation(equilibriumLocationWithIterations, thrustAcceleration, alphaLog, massParameter, propagationTime );
+
+                             }
+
                              stepCounter++;
 
                              double alphaCondition;
@@ -437,7 +506,7 @@ Eigen::Vector2d createEquilibriumLocations (const int librationPointNr, const do
 
                          }
 
-                         writeResultsToFile(librationPointNr, thrustAcceleration, "acceleration", seedAngle, continuationDirection,  equilibriaCatalog, stabilityCatalog);
+                         writeResultsToFile(librationPointNr, thrustAcceleration, "acceleration", seedAngle, continuationDirection,  equilibriaCatalog, stabilityCatalog, deviationCatalog);
 
 
                 }
@@ -456,14 +525,17 @@ Eigen::Vector2d createEquilibriumLocations (const int librationPointNr, const do
                      }
 
                      std::map< double, Eigen::Vector3d > equilibriaCatalog;
+                     std::map< double, Eigen::Vector6d > deviationCatalog;
                      std::map< double, Eigen::MatrixXd > stabilityCatalog;
                      equilibriaCatalog.clear();
                      stabilityCatalog.clear();
 
                      equilibriaCatalog[ 0.0 ] = Eigen::VectorXd::Zero(3);
                      stabilityCatalog[ 0.0 ] = Eigen::MatrixXd::Zero(6,6);
+                     deviationCatalog[0.0] = Eigen::Vector6d::Zero();
 
-                     writeResultsToFile(librationPointNr, thrustAcceleration, "acceleration", seedAngle, continuationDirection, equilibriaCatalog, stabilityCatalog);
+
+                     writeResultsToFile(librationPointNr, thrustAcceleration, "acceleration", seedAngle, continuationDirection, equilibriaCatalog, stabilityCatalog, deviationCatalog);
 
                 }
 
@@ -479,9 +551,14 @@ Eigen::Vector2d createEquilibriumLocations (const int librationPointNr, const do
     {
         bool seedExistence = true;
         std::map< double, Eigen::Vector3d > equilibriaCatalog;
+        std::map< double, Eigen::Vector6d > deviationCatalog;
+
         std::map< double, Eigen::MatrixXd > stabilityCatalog;
         equilibriaCatalog.clear();
         stabilityCatalog.clear();
+        deviationCatalog.clear();
+
+        double accModCondition = 0.2;
 
         seedSolution = computeSeedSolution(librationPointNr, 0.0, 0.0, maxDeviationFromSolution, massParameter, seedExistence );
         std::cout   << "==== targetEquilibriumCheck Start =====" << std::endl
@@ -496,6 +573,7 @@ Eigen::Vector2d createEquilibriumLocations (const int librationPointNr, const do
 
          equilibriaCatalog[ 0.0] = equilibriumLocationWithIterations;
          stabilityCatalog[  0.0] = linearizedStability;
+         deviationCatalog[  0.0] = computeDeviationAfterPropagation(equilibriumLocationWithIterations, 0.0, 0.0, massParameter, propagationTime);
 
          double accelerationStepSize = stepSize / 1000.0;
          double accelerationVariable = 0.0;
@@ -518,6 +596,15 @@ Eigen::Vector2d createEquilibriumLocations (const int librationPointNr, const do
                  equilibriaCatalog[ accelerationVariable ] = equilibriumLocationWithIterations;
                  stabilityCatalog [ accelerationVariable ] = linearizedStability;
 
+
+
+             }
+
+             if (std::abs(std::fmod(accelerationVariable,accModCondition)) < accelerationStepSize/10.0  )
+             {
+
+                 deviationCatalog[  accelerationVariable * tudat::mathematical_constants::PI/  180.0] = computeDeviationAfterPropagation(equilibriumLocationWithIterations, accelerationVariable, accelerationAngle, massParameter, 1.0);
+
              }
 
              stepCounter++;
@@ -527,7 +614,7 @@ Eigen::Vector2d createEquilibriumLocations (const int librationPointNr, const do
          double continuationDirection = 1.0;
          double seedAngle = 0.0;
 
-         writeResultsToFile(librationPointNr, accelerationAngle, "angle", seedAngle, continuationDirection,  equilibriaCatalog, stabilityCatalog);
+         writeResultsToFile(librationPointNr, accelerationAngle, "angle", seedAngle, continuationDirection,  equilibriaCatalog, stabilityCatalog, deviationCatalog);
 
 
     }

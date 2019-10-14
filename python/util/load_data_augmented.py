@@ -141,6 +141,11 @@ def load_equilibria_acceleration(file_path):
     data.columns = ['alpha', 'x', 'y', 'iterations']
     return data
 
+def load_equilibria_acceleration_deviation(file_path):
+    data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(7)))
+    data.columns = ['alpha', 'dx', 'dy', 'dz', 'dxdot', 'dydot', 'dzdot']
+    return data
+
 def compute_eigenvalue_contour(x_loc,y_loc,desiredType, desiredMode, threshold):
     EARTH_GRAVITATIONAL_PARAMETER = 3.986004418E14
     SUN_GRAVITATIONAL_PARAMETER = 1.32712440018e20

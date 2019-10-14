@@ -11,7 +11,10 @@
 
 #include <boost/function.hpp>
 
-void writeResultsToFile (const int librationPointNr, const double parameterOfInterest, const std::string parameterSpecification, const double seedAngle, const double continuationDirection, std::map< double, std::map <double, Eigen::Vector3d > > equilibriaCatalog, std::map <double, std::map <double, Eigen::MatrixXd > > stabilityCatalog );
+Eigen::Vector6d computeDeviationAfterPropagation(const Eigen::Vector3d equilibriumLocationWithIterations, const double accelerationMagnitude, const double accelerationAngle, const double massParameter, const double finalTime);
+
+void writeResultsToFile (const int librationPointNr, const double parameterOfInterest, const std::string parameterSpecification, const double seedAngle, const double continuationDirection, std::map< double, std::map <double, Eigen::Vector3d > > equilibriaCatalog, std::map <double, std::map <double, Eigen::MatrixXd > > stabilityCatalog,
+                          std::map <double, Eigen::Vector3d > deviationCatalog);
 
 
 Eigen::MatrixXd computeEquilibriaStability(Eigen::Vector2d equilibriumLocation, const double alpha, const double accelerationMagnitude, const double massParameter);
