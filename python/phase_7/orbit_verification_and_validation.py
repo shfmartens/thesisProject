@@ -394,7 +394,7 @@ class DisplayPeriodicSolutions:
         #  =========== Plot layout settings ===============
 
         # plot specific spacing properties
-        self.orbitSpacingFactor = 2
+        self.orbitSpacingFactor = 50
 
         # scale properties
         self.spacingFactor = 1.05
@@ -615,7 +615,7 @@ class DisplayPeriodicSolutions:
         arr[1, 0].xaxis.set_ticks(xticks)
         arr[1, 0].set_title('Maximum number of corrections')
         arr[1, 0].set_xlim(xlim)
-        arr[1, 0].set_ylim([0, 100])
+        arr[1, 0].set_ylim([0, 150])
         arr[1, 0].plot(self.continuationParameter, self.numberOfIterations, linewidth=linewidth, c=self.plottingColors['singleLine'],label='Number of corrections')
         arr[1, 0].legend(frameon=True, loc='upper right')
 
@@ -629,7 +629,7 @@ class DisplayPeriodicSolutions:
         ax2 = arr[2, 1].twinx()
         ax2.tick_params(axis='y', labelcolor=self.plottingColors['tripleLine'][1])
         ax2.plot(self.continuationParameter, self.numberOfCollocationPoints, linewidth=linewidth,color=self.plottingColors['tripleLine'][1])
-        ax2.set_ylim([0,40])
+        ax2.set_ylim([0,70])
         ax2.set_xlim(xlim)
         ax2.grid(b=None)
 
@@ -1009,7 +1009,7 @@ class DisplayPeriodicSolutions:
         arr[1,1].plot(self.orbitsId,self.y,c=self.plottingColors['tripleLine'][1], linewidth=1,label='$y$ [-]')
         #arr[1,1].plot(self.orbitsId,self.phase,c=self.plottingColors['tripleLine'][2], linewidth=1)
         arr[1,1].set_xlim(xlim)
-        arr[1,1].set_ylim([0.73,0.93])
+        arr[1,1].set_ylim([0.3,1])
         arr[1,1].set_title('Spatial and phase evolution')
         arr[1,1].set_xlabel('orbit Number [-]')
         arr[1,1].set_ylabel('$x$ [-], $y$ [-]')
