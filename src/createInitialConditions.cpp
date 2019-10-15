@@ -182,7 +182,7 @@ Eigen::Vector7d getInitialStateVectorGuess( const int librationPointNr, const st
 {
     double amplitude = getAmplitude( librationPointNr, orbitType, guessIteration );
     Eigen::Vector7d richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation(orbitType, librationPointNr, amplitude);
-
+    std::cout << "richardsonThirdOrderApproximationResult: \n" << richardsonThirdOrderApproximationResult << std::endl;
     return richardsonThirdOrderApproximationResult;
 }
 
