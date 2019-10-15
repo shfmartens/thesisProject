@@ -90,6 +90,9 @@ class initialGuessValidation:
         self.figSizeWide = (7 * (1 + np.sqrt(5)) / 2, 3.5)
         self.figureRatioWide = (7 * (1 + np.sqrt(5)) / 2) / 3.5
 
+        self.figSizThree = (7 * (1 + np.sqrt(5)) / 2,7*1.5)
+
+
         self.scaleDistanceXWide = self.scaleDistanceY * self.figureRatioWide
 
         n_colors = 6
@@ -1139,33 +1142,109 @@ class initialGuessValidation:
         plt.close()
         pass
 
+    def phase_space_plot(self):
+        fig = plt.figure(figsize=self.figSizThree)
+        ax1 = fig.add_subplot(3, 2, 1)
+        ax2 = fig.add_subplot(3, 2, 2)
+        ax3 = fig.add_subplot(3, 2, 3)
+        ax4 = fig.add_subplot(3, 2, 4)
+        ax5 = fig.add_subplot(3, 2, 5)
+        ax6 = fig.add_subplot(3, 2, 6)
+
+        ax1title = '$L_{1}$($a_{lt}$ = 0.1, $\\alpha$=90.0$^{\\circ}$) approximate periodic solutions'
+        ax1.set_title(ax1title)
+        ax3title = '$L_{1}$($a_{lt}$ = 0.1, $||A||$=$1.0 \\cdot 10^{-4}$) approximate periodic solutions'
+        ax3.set_title(ax3title)
+        ax5title = '$L_{1}$($\\alpha$ = 120$^{\\circ}$, $||A||$=$1.0 \\cdot 10^{-4}$) approximate periodic solutions'
+        ax5.set_title(ax5title)
+
+        ax2title = 'Position and velocity deviation after one orbital revolution'
+        ax2.set_title(ax2title)
+        ax4title = 'Position and velocity deviation after one orbital revolution'
+        ax4.set_title(ax4title)
+        ax6title = 'Position and velocity deviation after one orbital revolution'
+        ax6.set_title(ax6title)
+
+        ax1.set_xlabel('x [-]')
+        ax1.set_ylabel('y [-]')
+        ax1.grid(True, which='both', ls=':')
+
+        ax2.set_xlabel('$||A||$ [-]')
+        ax2.set_ylabel('$||\\Delta \\bar{R}||$ [-], $||\\Delta \\bar{V}||$, [-]')
+        ax2.grid(True, which='both', ls=':')
+
+        ax3.set_xlabel('x [-]')
+        ax3.set_ylabel('y [-]')
+        ax3.grid(True, which='both', ls=':')
+
+        ax4.set_xlabel('$\\alpha$ [rad]')
+        ax4.set_ylabel('$||\\Delta \\bar{R}||$ [-], $||\\Delta \\bar{V}||$, [-]')
+        ax4.grid(True, which='both', ls=':')
+
+        ax5.set_xlabel('x [-]')
+        ax5.set_ylabel('y [-]')
+        ax5.grid(True, which='both', ls=':')
+
+        ax6.set_xlabel('$a_{lt}$ [-]')
+        ax6.set_ylabel('$||\\Delta \\bar{R}||$ [-], $||\\Delta \\bar{V}||$, [-]')
+        ax6.grid(True, which='both', ls=':')
+
+        suptitle = fig.suptitle('Floquet targeter - periodic solution deviation evolution', size=self.suptitleSize)
 
 
+        fig.tight_layout()
+        fig.subplots_adjust(top=0.9)
 
-    pass
+        if self.lowDpi:
+            fig.savefig('../../data/figures/initial_guess/phase_space_plot.png', transparent=True, dpi=self.dpi)
+            # bbox_extra_artists=(lgd1, lgd2, suptitle), bbox_inches='tight'
+        else:
+            fig.savefig('../../data/figures/initial_guess/phase_space_plot', transparent=True)
+
+        plt.close()
+        pass
 
 if __name__ == '__main__':
-    lagrange_point_nrs = [4]
+    lagrange_point_nrs = [1]
     orbit_type = 'horizontal'
-    alt_values = [0.0]
-    angles = [00.0]
+    alt_values = [0.1]
+    angles = [0.0]
     amplitudes = [1.0E-5]
-    correction_times = [0.05]
+    correction_times = [50.0]
     low_dpi = True
 
     for lagrange_point_nr in lagrange_point_nrs:
-        for alt_value in alt_values:
-            for angle in angles:
-                for amplitude in amplitudes:
-                    initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_value, \
-                                                                         angle, amplitude, correction_times, low_dpi)
+     for alt_value in alt_values:
+        for angle in angles:
+            for correction_time in correction_times:
+                initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_value, \
+                angle, amplitudes, correction_time, low_dpi)
 
-                    initial_guess_validation.plot_correction_time_effect()
-                    #initial_guess_validation.plot_corrections_effect()
+                initial_guess_validation.phase_space_plot()
 
+                del initial_guess_validation
 
+    # lagrange_point_nrs = [1]
+    # orbit_type = 'horizontal'
+    # alt_values = [0.1]
+    # angles = [00.0]
+    # amplitudes = [1.0E-5]
+    # correction_times = [50.0]
+    # low_dpi = True
 
-                    del initial_guess_validation
+    # for lagrange_point_nr in lagrange_point_nrs:
+    #     for alt_value in alt_values:
+    #         for angle in angles:
+    #             for amplitude in amplitudes:
+    #                 initial_guess_validation = initialGuessValidation(lagrange_point_nr, orbit_type, alt_value, \
+    #                                                                      angle, amplitude, correction_times, low_dpi)
+    #
+    #                 initial_guess_validation.plot_correction_time_effect()
+    #                 #initial_guess_validation.plot_corrections_effect()
+    #
+    #
+    #
+    #                 del initial_guess_validation
 
     # lagrange_point_nrs = [1]
     # orbit_type = 'horizontal'
