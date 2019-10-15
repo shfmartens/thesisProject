@@ -106,7 +106,7 @@ double getEarthMoonAmplitude( const int librationPointNr, const std::string& orb
         {
             if (librationPointNr == 1)
             {
-                amplitude = 1.0e-4;
+                amplitude = 6.6314921505e-4;
             }
             else if (librationPointNr == 2)
             {
@@ -183,7 +183,11 @@ Eigen::Vector7d getInitialStateVectorGuess( const int librationPointNr, const st
     double amplitude = getAmplitude( librationPointNr, orbitType, guessIteration );
     Eigen::Vector7d richardsonThirdOrderApproximationResult = richardsonThirdOrderApproximation(orbitType, librationPointNr, amplitude);
 
+    std::cout << "richardsonThirdOrderApproximationResult: \n" << richardsonThirdOrderApproximationResult << std::endl;
+
+
     return richardsonThirdOrderApproximationResult;
+
 }
 
 Eigen::MatrixXd getCorrectedInitialState( const Eigen::Vector6d& initialStateGuess, double orbitalPeriod, const int orbitNumber,

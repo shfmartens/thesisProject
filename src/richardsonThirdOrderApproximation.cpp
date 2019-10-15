@@ -56,6 +56,10 @@ Eigen::VectorXd richardsonThirdOrderApproximation(std::string orbitType, int lib
 
         // Let Newton-Raphson search for the root.
         gammaL = newtonRaphson.execute( LibrationPointLocationFunction, LibrationPointLocationFunction->getInitialGuess( ) );
+
+        std::cout << "gammaL " << gammaL << std::endl;
+
+
         c2 = 1.0 / pow(gammaL, 3.0) * (pow(1.0,2.0) * massParameter + pow(-1.0,2.0) * (1.0 - massParameter) * pow(gammaL, 2.0+1.0) / pow((1.0 - gammaL), (2.0+1.0)));
         c3 = 1.0 / pow(gammaL, 3.0) * (pow(1.0,3.0) * massParameter + pow(-1.0,3.0) * (1.0 - massParameter) * pow(gammaL, 3.0+1.0) / pow((1.0 - gammaL), (3.0+1.0)));
         c4 = 1.0 / pow(gammaL, 3.0) * (pow(1.0,4.0) * massParameter + pow(-1.0,4.0) * (1.0 - massParameter) * pow(gammaL, 4.0+1.0) / pow((1.0 - gammaL), (4.0+1.0)));
