@@ -1218,59 +1218,59 @@ class DisplayEquilibriaValidation:
 
         counter = 0
         plotFrequency = 1
-        if self.accelerationMagnitude < 0.01:
-            for lagrangePointNr in self.lagrangePointNrs:
-                equilibria_df = load_equilibria_acceleration_deviation('../../data/raw/equilibria/L' + str(lagrangePointNr) \
-                                                          + '_acceleration_' \
-                                                          + str(
-                        "{:7.6f}".format(self.accelerationMagnitude)) + '_' + '0.000000_backward_equilibria_deviation.txt')
+        for lagrangePointNr in self.lagrangePointNrs:
 
-                deviationPositionList = []
-                deviationVelocityList = []
-                alpha = []
-                listCounter = 0
-                for row in equilibria_df.iterrows():
-                    if listCounter % plotFrequency == 0:
-                        alpha.append(row[1][0])
-                        deviationPosition = np.sqrt(row[1][1] ** 2 + row[1][2] ** 2 + row[1][3] ** 2)
-                        deviationVelocity = np.sqrt(row[1][4] ** 2 + row[1][5] ** 2 + row[1][6] ** 2)
-                        deviationPositionList.append(deviationPosition)
-                        deviationVelocityList.append(deviationVelocity)
+             if lagrangePointNr == 1:
+                 equilibria_df = load_equilibria_acceleration_deviation(
+                     '../../data/raw/equilibria/equilibria_val/L' + str(lagrangePointNr) + '_acceleration_' + str(
+                         "{:7.6f}".format(self.accelerationMagnitude)) + '_' + '0.000000_backward_equilibria_deviation.txt')
+             if lagrangePointNr == 2:
+                equilibria_df = load_equilibria_acceleration_deviation('../../data/raw/equilibria/equilibria_val/L' + str(lagrangePointNr) \
+                                                + '_acceleration_' \
+                                                + str(
+                "{:7.6f}".format(self.accelerationMagnitude)) + '_' + '0.000000_backward_equilibria_deviation.txt')
 
-                    listCounter = listCounter + 1
+             if lagrangePointNr == 3:
+                 equilibria_df = load_equilibria_acceleration_deviation(
+                     '../../data/raw/equilibria/equilibria_val/L' + str(lagrangePointNr) \
+                     + '_acceleration_' \
+                     + str(
+                         "{:7.6f}".format(self.accelerationMagnitude)) + '_' + '0.000000_backward_equilibria_deviation.txt')
+
+             if lagrangePointNr == 4:
+                 equilibria_df = load_equilibria_acceleration_deviation(
+                     '../../data/raw/equilibria/equilibria_val/L' + str(lagrangePointNr) \
+                     + '_acceleration_' \
+                     + str(
+                         "{:7.6f}".format(self.accelerationMagnitude)) + '_' + '180.000000_backward_equilibria_deviation.txt')
+
+             if lagrangePointNr == 5:
+                 equilibria_df = load_equilibria_acceleration_deviation(
+                     '../../data/raw/equilibria/equilibria_val/L' + str(lagrangePointNr) \
+                     + '_acceleration_' \
+                     + str(
+                         "{:7.6f}".format(self.accelerationMagnitude)) + '_' + '180.000000_backward_equilibria_deviation.txt')
+
+             deviationPositionList = []
+             deviationVelocityList = []
+             alpha = []
+             listCounter = 0
+             for row in equilibria_df.iterrows():
+                if listCounter % plotFrequency == 0:
+                    alpha.append(row[1][0])
+                    deviationPosition = np.sqrt(row[1][1] ** 2 + row[1][2] ** 2 + row[1][3] ** 2)
+                    deviationVelocity = np.sqrt(row[1][4] ** 2 + row[1][5] ** 2 + row[1][6] ** 2)
+                    deviationPositionList.append(deviationPosition)
+                    deviationVelocityList.append(deviationVelocity)
+
+                listCounter = listCounter + 1
 
 
-                labelString = '$E_' + str(lagrangePointNr) + '$'
-                ax1.semilogy(alpha, deviationPositionList, label=labelString,
-                color=sns.color_palette('viridis', 5)[lagrangePointNr - 1])
-                ax2.semilogy(alpha, deviationVelocityList, label=labelString,
-                             color=sns.color_palette('viridis', 5)[lagrangePointNr - 1])
-
-
-        if self.accelerationMagnitude > 0.01:
-            for lagrangePointNr in self.lagrangePointNrs:
-                if lagrangePointNr < 6:
-
-                    equilibria_df = load_equilibria_acceleration_deviation('../../data/raw/equilibria/L' + str(lagrangePointNr) \
-                                                              + '_acceleration_' \
-                                                              + str(
-                        "{:7.6f}".format(self.accelerationMagnitude)) + '_' + '0.000000_backward_equilibria_deviation.txt')
-
-                    deviationPositionList = []
-                    deviationVelocityList = []
-                    alpha = []
-                    listCounter = 0
-
-                    for row in equilibria_df.iterrows():
-                        if listCounter % plotFrequency == 0:
-                            alpha.append(row[1][0])
-                            deviationPosition = np.sqrt(row[1][1] ** 2 + row[1][2] ** 2 + row[1][3] ** 2)
-                            deviationVelocity = np.sqrt(row[1][4] ** 2 + row[1][5] ** 2 + row[1][6] ** 2)
-                            deviationPositionList.append(deviationPosition)
-                            deviationVelocityList.append(deviationVelocity)
-
-                        listCounter = listCounter + 1
-
+             labelString = '$E_' + str(lagrangePointNr) + '$'
+             ax1.semilogy(alpha, deviationPositionList, label=labelString,
+             color=sns.color_palette('viridis', 5)[lagrangePointNr - 1])
+             ax2.semilogy(alpha, deviationVelocityList, label=labelString,
+             color=sns.color_palette('viridis', 5)[lagrangePointNr - 1])
 
                 # if lagrangePointNr == 3:
                 #
@@ -1315,14 +1315,6 @@ class DisplayEquilibriaValidation:
                 #
                 #print(deviationPositionList)
                 # print(deviationVelocityList)
-                print(alpha)
-
-
-                labelString = '$E_' + str(lagrangePointNr) + '$'
-                ax1.semilogy(alpha, deviationPositionList, label=labelString,
-                              color=sns.color_palette('viridis', 5)[lagrangePointNr - 1])
-                ax2.semilogy(alpha, deviationVelocityList, label=labelString,
-                              color=sns.color_palette('viridis', 5)[lagrangePointNr - 1])
 
         ylim = [0, 1.0e-13]
         xlim = [0, 2 * np.pi]
@@ -1368,7 +1360,7 @@ class DisplayEquilibriaValidation:
 
 if __name__ == '__main__':
     low_dpi = True
-    lagrange_point_nrs = [1]
+    lagrange_point_nrs = [2]
     acceleration_magnitudes = [0.003, 0.00873, 0.07, 0.1, 0.15, 0.2, 0.25]
     seeds = [0.0,180.0]
     continuations = ['backward','forward']
@@ -1387,7 +1379,7 @@ if __name__ == '__main__':
 
 
     #del display_equilibria_validation
-    lagrange_point_nrs = [4]
+    lagrange_point_nrs = [1]
     acceleration_magnitudes = [0.1]
 
     for acceleration_magnitude in acceleration_magnitudes:

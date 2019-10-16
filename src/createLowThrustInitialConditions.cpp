@@ -488,22 +488,22 @@ Eigen::VectorXd getLowThrustInitialStateVectorGuess( const int librationPointNr,
 
     initialGuessParameters = getInitialGuessParameters(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, continuationIndex, guessIteration );
 
-    Eigen::ArrayXd amplitudeArray = Eigen::ArrayXd::LinSpaced(91,1.0E-5,1.0E-4);
+    Eigen::ArrayXd amplitudeArray = Eigen::ArrayXd::LinSpaced(2,9.9E-5,1.0E-4);
     //std::cout << "amplitudeArray: \n" << amplitudeArray << std::endl;
 
-//    for(int i = 0; i < 91; i++)
+//    for(int i = 0; i < 2; i++)
 //    {
 //        lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, ySign, orbitType, amplitudeArray(i), initialGuessParameters(1), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
 //    }
 
-//    Eigen::ArrayXd alphaArray = Eigen::ArrayXd::LinSpaced(361,0,360);
-//    std::cout << "alphaArray: \n" << alphaArray << std::endl;
-//    for(int i = 0; i < 361; i++)
-//    {
-//        lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, ySign, orbitType, 1.0E-4, initialGuessParameters(1), alphaArray(i), initialGuessParameters(3), initialMass, numberOfPatchPoints );
-//    }
+    Eigen::ArrayXd alphaArray = Eigen::ArrayXd::LinSpaced(361,0,360);
+    std::cout << "alphaArray: \n" << alphaArray << std::endl;
+    for(int i = 0; i < 361; i++)
+    {
+        lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, ySign, orbitType, 1.0E-4, initialGuessParameters(1), alphaArray(i), initialGuessParameters(3), initialMass, numberOfPatchPoints );
+    }
 
-    lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, ySign, orbitType, initialGuessParameters(0), initialGuessParameters(1), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
+    //lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, ySign, orbitType, initialGuessParameters(0), initialGuessParameters(1), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
 
 
     return lowThrustInitialStateVectorGuess;
@@ -1097,16 +1097,16 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
     if (continuationIndex == 1 and startContinuationFromTextFile == false)
     {
         linearApproximationResultIteration1 = getLowThrustInitialStateVectorGuess(librationPointNr, ySign, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 0);
-        linearApproximationResultIteration2 = getLowThrustInitialStateVectorGuess(librationPointNr, ySign, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 1);
+//        linearApproximationResultIteration2 = getLowThrustInitialStateVectorGuess(librationPointNr, ySign, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 1);
 
-        stateVectorInclSTM =  getCorrectedAugmentedInitialState(
-                    linearApproximationResultIteration1, computeHamiltonian( massParameter, linearApproximationResultIteration1.segment(0,10)), 0,
-                   librationPointNr, orbitType, massParameter, numberOfPatchPoints, initialNumberOfCollocationPoints,false, initialConditions, differentialCorrections, statesContinuation,
-                    maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
-        stateVectorInclSTM =  getCorrectedAugmentedInitialState(
-                    linearApproximationResultIteration2, computeHamiltonian( massParameter, linearApproximationResultIteration1.segment(0,10)), 1,
-                   librationPointNr, orbitType, massParameter, numberOfPatchPoints, initialNumberOfCollocationPoints, false, initialConditions, differentialCorrections, statesContinuation,
-                    maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
+//        stateVectorInclSTM =  getCorrectedAugmentedInitialState(
+//                    linearApproximationResultIteration1, computeHamiltonian( massParameter, linearApproximationResultIteration1.segment(0,10)), 0,
+//                   librationPointNr, orbitType, massParameter, numberOfPatchPoints, initialNumberOfCollocationPoints,false, initialConditions, differentialCorrections, statesContinuation,
+//                    maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
+//        stateVectorInclSTM =  getCorrectedAugmentedInitialState(
+//                    linearApproximationResultIteration2, computeHamiltonian( massParameter, linearApproximationResultIteration1.segment(0,10)), 1,
+//                   librationPointNr, orbitType, massParameter, numberOfPatchPoints, initialNumberOfCollocationPoints, false, initialConditions, differentialCorrections, statesContinuation,
+//                    maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
     } else if (startContinuationFromTextFile == false)
     {
         std::cout << "StatesContinuationVector: computed" << std::endl;
@@ -1131,7 +1131,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 // ============ CONTINUATION PROCEDURE ================== //
     // Set exit parameters of continuation procedure
-    int maximumNumberOfInitialConditions = 405;
+    int maximumNumberOfInitialConditions = 0;
     int numberOfInitialConditions;
     if (continuationIndex == 1)
     {
