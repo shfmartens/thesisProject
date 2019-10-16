@@ -1191,6 +1191,286 @@ class initialGuessValidation:
 
         suptitle = fig.suptitle('Floquet targeter - periodic solution deviation evolution', size=self.suptitleSize)
 
+        ##### PLOT 1 ####
+
+        # data plot 1
+        acc1 = 0.1
+        alpha1 = 90.0
+        ampArray = np.linspace(1.0E-5,7.8E-5,num=69)
+        ampArray2 = [1.0e-5,4.0e-5,7.0e-5]
+
+        min_x1 = 1000
+        max_x1 = -1000
+        min_y1 = 1000
+        max_y1 = -1000
+
+        for k in ampArray2:
+            if k < 3.0e-5:
+                legendString = '$|A| = 1.0 \\cdot 10^{-5}$'
+                colourstamp = 0
+            if k > 3.0e-5 and k < 5.0e-5:
+                legendString = '$|A| = 4.0 \\cdot 10^{-5}$'
+                colourstamp = 1
+            if k > 5.0e-5 and k < 8.0e-5:
+                legendString = '$|A| = 7.0 \\cdot 10^{-5}$'
+                colourstamp = 2
+            orbit_df = load_orbit_augmented(
+                '../../data/raw/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
+                + str("{:7.6f}".format(acc1)) + '_' \
+                + str("{:7.6f}".format(alpha1)) + '_' + str("{:7.6f}".format(k)) \
+                + '_' + str("{:7.6f}".format(50.0)) \
+                + '_stateHistory.txt')
+
+            if min(orbit_df['x']) < min_x1:
+                min_x1 = min(orbit_df['x'])
+            if max(orbit_df['x']) > max_x1:
+                max_x1 = max(orbit_df['x'])
+            if min(orbit_df['y']) < min_y1:
+                min_y1 = min(orbit_df['y'])
+            if max(orbit_df['y']) > max_y1:
+                max_y1 = max(orbit_df['y'])
+
+            ax1.plot(orbit_df['x'],orbit_df['y'], color=sns.color_palette('viridis', 4)[colourstamp], linewidth=1,label=legendString )
+
+        scaleDistance1 = max((max_x1 - min_x1),(max_y1 - min_y1))
+
+        Xmiddle1 = min_x1 + (max_x1-min_x1) / 2
+        Ymiddle1 = min_y1 + (max_y1-min_y1) / 2
+
+        ax1.set_xlim([(Xmiddle1 - 0.5 * scaleDistance1 * self.figureRatio * self.spacingFactor),
+                      (Xmiddle1 + 0.5 * scaleDistance1 * self.figureRatio * self.spacingFactor)])
+        ax1.set_ylim([Ymiddle1 - 0.5 * scaleDistance1 * self.spacingFactor, Ymiddle1 + 0.5 * scaleDistance1 * self.spacingFactor])
+
+        lgd1 = ax1.legend(frameon=True, loc='upper left', bbox_to_anchor=(0, 1), prop={'size': 8})
+
+        lagrange_points_df = load_lagrange_points_location_augmented(acc1, alpha1)
+        if self.lagrangePointNr == 1:
+            lagrange_point_nrs = ['L1']
+        if self.lagrangePointNr == 2:
+            lagrange_point_nrs = ['L2']
+
+        for lagrange_point_nr in lagrange_point_nrs:
+            ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                        color='black', marker='x')
+
+        deviation_list = []
+        for i in ampArray:
+            orbit_df = load_orbit_augmented(
+                '../../data/raw/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
+                + str("{:7.6f}".format(acc1)) + '_' \
+                + str("{:7.6f}".format(alpha1)) + '_' + str("{:7.6f}".format(i)) \
+                + '_' + str("{:7.6f}".format(50.0)) \
+                + '_stateHistory.txt')
+
+            deviations = orbit_df.head(1).values[0] - orbit_df.tail(1).values[0]
+            deltaR = np.linalg.norm(deviations[1:4])
+            deltaV = np.linalg.norm(deviations[4:7])
+            deviation_list.append([i, deltaR, deltaV])
+
+        deviation_df = pd.DataFrame(deviation_list, columns=['amplitude', 'deltaR', 'deltaV'])
+        ax2.plot(deviation_df['amplitude'], deviation_df['deltaR'], label='$|\\Delta R|$',color=sns.color_palette('viridis', 2)[0], linewidth=1)
+        ax2.plot(deviation_df['amplitude'], deviation_df['deltaV'], label='$|\\Delta V|$',color=sns.color_palette('viridis', 2)[1], linewidth=1)
+
+        ax2.set_xlim([min(deviation_df['amplitude']), max(deviation_df['amplitude'])])
+        ax2.set_ylim([0, max(max(deviation_df['deltaV']),max(deviation_df['deltaR'])) * self.spacingFactor])
+
+        ticksLocators = [0.00001, 0.00004, 0.00007, 0.0001]
+        labels = ('$1.0 \\cdot 10^{-5}$', '$4.0 \\cdot 10^{-5}$', '$7.0 \\cdot 10^{-5}$', '$1.0 \\cdot 10^{-4}$')
+        ax2.set_xticks(ticksLocators, minor=False)
+        ax2.set_xticklabels(labels, fontdict=None, minor=False)
+
+        ##### PLOT 2 ####
+        # acc2 = 0.1
+        # amp2 = 1.0e-4
+        # alphaArray = np.linspace(0, 360, num=361)
+        # alphaArray2 = [0,30]
+        #
+        # min_x2 = 1000
+        # max_x2 = -1000
+        # min_y2 = 1000
+        # max_y2 = -1000
+        #
+        # for k in alphaArray2:
+        #     if k < 15:
+        #         legendString = '$\\alpha = 0^{\\circ}$'
+        #         colourstamp = 0
+        #     if k > 30 and k < 80:
+        #         legendString = '$\\alpha = 60^{\\circ}$'
+        #         colourstamp = 1
+        #     if k > 80 and k < 130:
+        #         legendString = '$\\alpha = 120^{\\circ}$'
+        #         colourstamp = 2
+        #     if k > 130 and k < 190:
+        #         legendString = '$\\alpha = 180^{\\circ}$'
+        #         colourstamp = 3
+        #     if k > 190 and k < 250:
+        #         legendString = '$\\alpha = 240^{\\circ}$'
+        #         colourstamp = 4
+        #     if k > 250 and k < 310:
+        #         legendString = '$\\alpha = 300^{\\circ}$'
+        #         colourstamp = 5
+        #     orbit_df = load_orbit_augmented(
+        #         '../../data/raw/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
+        #         + str("{:7.6f}".format(acc2)) + '_' \
+        #         + str("{:7.6f}".format(k)) + '_' + str("{:7.6f}".format(amp2)) \
+        #         + '_' + str("{:7.6f}".format(50.0)) \
+        #         + '_stateHistory.txt')
+        #
+        #     if min(orbit_df['x']) < min_x2:
+        #         min_x2 = min(orbit_df['x'])
+        #     if max(orbit_df['x']) > max_x2:
+        #         max_x2 = max(orbit_df['x'])
+        #     if min(orbit_df['y']) < min_y2:
+        #         min_y2 = min(orbit_df['y'])
+        #     if max(orbit_df['y']) > max_y2:
+        #         max_y2 = max(orbit_df['y'])
+        #
+        #     ax3.plot(orbit_df['x'], orbit_df['y'], color=sns.color_palette('viridis', 6)[colourstamp], linewidth=1,
+        #              label=legendString)
+        #
+        #     lagrange_points_df = load_lagrange_points_location_augmented(acc2, i)
+        #     if self.lagrangePointNr == 1:
+        #         lagrange_point_nrs = ['L1']
+        #     if self.lagrangePointNr == 2:
+        #         lagrange_point_nrs = ['L2']
+        #
+        #     for lagrange_point_nr in lagrange_point_nrs:
+        #         ax3.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+        #                     color=sns.color_palette('viridis', 6)[colourstamp], marker='x')
+        #
+        # scaleDistance2 = max((max_x2 - min_x2), (max_y2 - min_y2))
+        #
+        # Xmiddle2 = min_x2 + (max_x2 - min_x2) / 2
+        # Ymiddle2 = min_y2 + (max_y2 - min_y2) / 2
+        #
+        # ax3.set_xlim([(Xmiddle2 - 0.5 * scaleDistance2 * self.figureRatio * self.spacingFactor),
+        #               (Xmiddle2 + 0.5 * scaleDistance2 * self.figureRatio * self.spacingFactor)])
+        # ax3.set_ylim([Ymiddle2 - 0.5 * scaleDistance2 * self.spacingFactor,
+        #               Ymiddle2 + 0.5 * scaleDistance2 * self.spacingFactor])
+        #
+        # lgd3 = ax3.legend(frameon=True, loc='upper left', bbox_to_anchor=(0, 1), prop={'size': 8})
+        #
+        # deviation_list2 = []
+        # for i in alphaArray:
+        #     orbit_df = load_orbit_augmented(
+        #         '../../data/raw/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
+        #         + str("{:7.6f}".format(acc2)) + '_' \
+        #         + str("{:7.6f}".format(i)) + '_' + str("{:7.6f}".format(amp2)) \
+        #         + '_' + str("{:7.6f}".format(50.0)) \
+        #         + '_stateHistory.txt')
+        #
+        #     deviations = orbit_df.head(1).values[0] - orbit_df.tail(1).values[0]
+        #     deltaR = np.linalg.norm(deviations[1:4])
+        #     deltaV = np.linalg.norm(deviations[4:7])
+        #     deviation_list2.append([i, deltaR, deltaV])
+        #
+        # deviation_df2 = pd.DataFrame(deviation_list2, columns=['amplitude', 'deltaR', 'deltaV'])
+        # ax4.plot(deviation_df2['amplitude'], deviation_df2['deltaR'], label='$|\\Delta R|$',
+        #          color=sns.color_palette('viridis', 2)[0], linewidth=1)
+        # ax4.plot(deviation_df2['amplitude'], deviation_df2['deltaV'], label='$|\\Delta V|$',
+        #          color=sns.color_palette('viridis', 2)[1], linewidth=1)
+
+        ax4.set_xlim([0, 2*np.pi])
+        ticksLocators4 = [0, 0.5 * np.pi, np.pi, 1.5 * np.pi, 2.0 * np.pi]
+        labels4 = ('0', '$\\frac{1}{2}\\pi$', '$\\pi$', '$\\frac{3}{2}\\pi$', '$2\\pi$')
+        ax4.set_xticks(ticksLocators4, minor=False)
+        ax4.set_xticklabels(labels4, fontdict=None, minor=False)
+
+        ### plot 3
+        # alpha3 = 120.0
+        # amp3 = 1.0e-4
+        # accArray = np.linspace(0, 0.1, num=101)
+        # accArray2 = [0, 0.025, 0.05, 0.075, 0.1]
+        #
+        # min_x3 = 1000
+        # max_x3 = -1000
+        # min_y3 = 1000
+        # max_y3 = -1000
+        #
+        # for s in accArray2:
+        #     if k < 0.02:
+        #         legendString = '$a_{lt} = 0.0$'
+        #         colourstamp = 0
+        #     if k > 0.03 and k < 0.04:
+        #         legendString = '$a_{lt} = 0.025$'
+        #         colourstamp = 1
+        #     if k > 0.04 and k < 0.06:
+        #         legendString = '$a_{lt} = 0.05$'
+        #         colourstamp = 2
+        #     if k > 0.06 and k < 0.08:
+        #         legendString = '$a_{lt} = 0.075$'
+        #         colourstamp = 3
+        #     if k > 0.08 and k < 0.11:
+        #         legendString = '$a_{lt} = 0.1$'
+        #         colourstamp = 4
+        #
+        #     orbit_df = load_orbit_augmented(
+        #         '../../data/raw/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
+        #         + str("{:7.6f}".format(s)) + '_' \
+        #         + str("{:7.6f}".format(alpha3)) + '_' + str("{:7.6f}".format(amp3)) \
+        #         + '_' + str("{:7.6f}".format(50.0)) \
+        #         + '_stateHistory.txt')
+        #
+        #     if min(orbit_df['x']) < min_x3:
+        #         min_x3 = min(orbit_df['x'])
+        #     if max(orbit_df['x']) > max_x3:
+        #         max_x3 = max(orbit_df['x'])
+        #     if min(orbit_df['y']) < min_y3:
+        #         min_y3 = min(orbit_df['y'])
+        #     if max(orbit_df['y']) > max_y3:
+        #         max_y3 = max(orbit_df['y'])
+        #
+        #     ax5.plot(orbit_df['x'], orbit_df['y'], color=sns.color_palette('viridis', 5)[colourstamp], linewidth=1,
+        #              label=legendString)
+        #
+        #     lagrange_points_df = load_lagrange_points_location_augmented(i, alpha3)
+        #     if self.lagrangePointNr == 1:
+        #         lagrange_point_nrs = ['L1']
+        #     if self.lagrangePointNr == 2:
+        #         lagrange_point_nrs = ['L2']
+        #
+        #     for lagrange_point_nr in lagrange_point_nrs:
+        #         ax5.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+        #                     color=sns.color_palette('viridis', 5)[colourstamp], marker='x')
+        #
+        # scaleDistance3 = max((max_x3 - min_x3), (max_y3 - min_y3))
+        #
+        # Xmiddle3 = min_x3 + (max_x3 - min_x3) / 2
+        # Ymiddle3 = min_y3 + (max_y3 - min_y3) / 2
+        #
+        # ax5.set_xlim([(Xmiddle3 - 0.5 * scaleDistance3 * self.figureRatio * self.spacingFactor),
+        #               (Xmiddle3 + 0.5 * scaleDistance3 * self.figureRatio * self.spacingFactor)])
+        # ax5.set_ylim([Ymiddle3 - 0.5 * scaleDistance3 * self.spacingFactor,
+        #               Ymiddle3 + 0.5 * scaleDistance3 * self.spacingFactor])
+        #
+        # lgd5 = ax5.legend(frameon=True, loc='upper left', bbox_to_anchor=(0, 1), prop={'size': 8})
+        #
+        # deviation_list3 = []
+        # for i in accArray:
+        #     orbit_df = load_orbit_augmented(
+        #         '../../data/raw/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
+        #         + str("{:7.6f}".format(i)) + '_' \
+        #         + str("{:7.6f}".format(alpha3)) + '_' + str("{:7.6f}".format(amp3)) \
+        #         + '_' + str("{:7.6f}".format(50.0)) \
+        #         + '_stateHistory.txt')
+        #
+        #     deviations = orbit_df.head(1).values[0] - orbit_df.tail(1).values[0]
+        #     deltaR = np.linalg.norm(deviations[1:4])
+        #     deltaV = np.linalg.norm(deviations[4:7])
+        #     deviation_list3.append([i, deltaR, deltaV])
+        #
+        # deviation_df3 = pd.DataFrame(deviation_list3, columns=['amplitude', 'deltaR', 'deltaV'])
+        # ax6.plot(deviation_df3['amplitude'], deviation_df3['deltaR'], label='$|\\Delta R|$',
+        #          color=sns.color_palette('viridis', 2)[0], linewidth=1)
+        # ax6.plot(deviation_df3['amplitude'], deviation_df3['deltaV'], label='$|\\Delta V|$',
+        #          color=sns.color_palette('viridis', 2)[1], linewidth=1)
+        #
+        #
+        ax6.set_xlim([0, 0.1])
+        ticksLocators6 = [0, 0.025, 0.05, 0.075, 0.1]
+        labels6 = ('0', '0.025', '0.05', '0.075', '0.1')
+        ax6.set_xticks(ticksLocators6, minor=False)
+        ax6.set_xticklabels(labels6, fontdict=None, minor=False)
 
         fig.tight_layout()
         fig.subplots_adjust(top=0.9)
