@@ -1097,16 +1097,16 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
     if (continuationIndex == 1 and startContinuationFromTextFile == false)
     {
         linearApproximationResultIteration1 = getLowThrustInitialStateVectorGuess(librationPointNr, ySign, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 0);
-//        linearApproximationResultIteration2 = getLowThrustInitialStateVectorGuess(librationPointNr, ySign, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 1);
+        linearApproximationResultIteration2 = getLowThrustInitialStateVectorGuess(librationPointNr, ySign, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 1);
 
-//        stateVectorInclSTM =  getCorrectedAugmentedInitialState(
-//                    linearApproximationResultIteration1, computeHamiltonian( massParameter, linearApproximationResultIteration1.segment(0,10)), 0,
-//                   librationPointNr, orbitType, massParameter, numberOfPatchPoints, initialNumberOfCollocationPoints,false, initialConditions, differentialCorrections, statesContinuation,
-//                    maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
-//        stateVectorInclSTM =  getCorrectedAugmentedInitialState(
-//                    linearApproximationResultIteration2, computeHamiltonian( massParameter, linearApproximationResultIteration1.segment(0,10)), 1,
-//                   librationPointNr, orbitType, massParameter, numberOfPatchPoints, initialNumberOfCollocationPoints, false, initialConditions, differentialCorrections, statesContinuation,
-//                    maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
+        stateVectorInclSTM =  getCorrectedAugmentedInitialState(
+                    linearApproximationResultIteration1, computeHamiltonian( massParameter, linearApproximationResultIteration1.segment(0,10)), 0,
+                   librationPointNr, orbitType, massParameter, numberOfPatchPoints, initialNumberOfCollocationPoints,false, initialConditions, differentialCorrections, statesContinuation,
+                    maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
+        stateVectorInclSTM =  getCorrectedAugmentedInitialState(
+                    linearApproximationResultIteration2, computeHamiltonian( massParameter, linearApproximationResultIteration1.segment(0,10)), 1,
+                   librationPointNr, orbitType, massParameter, numberOfPatchPoints, initialNumberOfCollocationPoints, false, initialConditions, differentialCorrections, statesContinuation,
+                    maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
     } else if (startContinuationFromTextFile == false)
     {
         std::cout << "StatesContinuationVector: computed" << std::endl;
