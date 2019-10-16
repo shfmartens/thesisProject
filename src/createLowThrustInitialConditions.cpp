@@ -496,11 +496,11 @@ Eigen::VectorXd getLowThrustInitialStateVectorGuess( const int librationPointNr,
 //        lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, ySign, orbitType, amplitudeArray(i), initialGuessParameters(1), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
 //    }
 
-    Eigen::ArrayXd alphaArray = Eigen::ArrayXd::LinSpaced(361,0,360);
-    std::cout << "alphaArray: \n" << alphaArray << std::endl;
-    for(int i = 0; i < 361; i++)
+    Eigen::ArrayXd accArray = Eigen::ArrayXd::LinSpaced(101,0,0.1);
+    std::cout << "accArray: \n" << accArray << std::endl;
+    for(int i = 0; i < 101; i++)
     {
-        lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, ySign, orbitType, 1.0E-4, initialGuessParameters(1), alphaArray(i), initialGuessParameters(3), initialMass, numberOfPatchPoints );
+        lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, ySign, orbitType, 1.0E-4, accArray(i), 120.0, initialGuessParameters(3), initialMass, numberOfPatchPoints );
     }
 
     //lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, ySign, orbitType, initialGuessParameters(0), initialGuessParameters(1), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );

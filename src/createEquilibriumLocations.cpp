@@ -347,8 +347,8 @@ Eigen::Vector2d createEquilibriumLocations (const int librationPointNr, const do
     Eigen::Vector2d targetEquilibrium;
     Eigen::MatrixXd linearizedStability;
     Eigen::VectorXd fullEquilibriumVector(10); fullEquilibriumVector.setZero();
-    double angleModCondition = 2;
-    double propagationTime = tudat::mathematical_constants::PI;
+    //double angleModCondition = 2;
+    //double propagationTime = tudat::mathematical_constants::PI;
 
     fullEquilibriumVector(6) = thrustAcceleration;
     fullEquilibriumVector(9) = 1.0;
@@ -475,12 +475,12 @@ Eigen::Vector2d createEquilibriumLocations (const int librationPointNr, const do
                                  alphaLog = alpha;
                              }
 
-                             if (std::abs(std::fmod(alphaLog,angleModCondition)) < stepSize/10.0 or std::abs(alphaLog - 359.5) < stepSize/10 or std::abs(alphaLog - 179.5) < stepSize/10 )
-                             {
+//                             if (std::abs(std::fmod(alphaLog,angleModCondition)) < stepSize/10.0 or std::abs(alphaLog - 359.5) < stepSize/10 or std::abs(alphaLog - 179.5) < stepSize/10 )
+//                             {
 
-                                   deviationCatalog[  alphaLog * tudat::mathematical_constants::PI/  180.0] = computeDeviationAfterPropagation(equilibriumLocationWithIterations, thrustAcceleration, alphaLog, massParameter, propagationTime );
+//                                   deviationCatalog[  alphaLog * tudat::mathematical_constants::PI/  180.0] = computeDeviationAfterPropagation(equilibriumLocationWithIterations, thrustAcceleration, alphaLog, massParameter, propagationTime );
 
-                             }
+//                             }
 
                              stepCounter++;
 
