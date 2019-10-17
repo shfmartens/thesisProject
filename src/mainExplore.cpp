@@ -173,7 +173,7 @@ int main (){
                     double initialMass = 1.0;
                     double ySign = 1.0;
                     double familyHamiltonian = -1.58;
-                    bool startContinuationFromTextFile = true;
+                    bool startContinuationFromTextFile = false;
                     createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile );
 
                 }
