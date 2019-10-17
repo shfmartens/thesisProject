@@ -1181,7 +1181,7 @@ class DisplayEquilibriaValidation:
         ax4.set_xticks(ticksLocators, minor=False)
         ax4.set_xticklabels(labels, fontdict=None, minor=False)
 
-        ax2.legend(frameon=True, loc='upper right',bbox_to_anchor=(1.22, 1.04))
+        lgd = ax2.legend(frameon=True, loc='upper right',bbox_to_anchor=(1.22, 1.04))
 
 
 
@@ -1194,10 +1194,11 @@ class DisplayEquilibriaValidation:
         fig.suptitle('Defect vector verification of $\\alpha$-varying equilibria contours',size=20)
 
         fig.tight_layout()
-        fig.subplots_adjust(top=0.9,right=0.9)
+        fig.subplots_adjust(top=0.9)
 
         if self.lowDPI:
-            fig.savefig('../../data/figures/equilibria/contourVerification.png', transparent=True, dpi=self.dpi)
+            print('test')
+            fig.savefig('../../data/figures/equilibria/contourVerification.png', transparent=True, dpi=self.dpi, bbox_extra_artists=(lgd), bbox_inches='tight')
         else:
             fig.savefig('../../data/figures/equilibria/contourVerification.pdf', transparent=True)
 
@@ -1221,16 +1222,19 @@ class DisplayEquilibriaValidation:
         for lagrangePointNr in self.lagrangePointNrs:
 
              if lagrangePointNr == 1:
+                 labelString = '$E_' + str(lagrangePointNr) + '$'
                  equilibria_df = load_equilibria_acceleration_deviation(
                      '../../data/raw/equilibria/equilibria_val/L' + str(lagrangePointNr) + '_acceleration_' + str(
                          "{:7.6f}".format(self.accelerationMagnitude)) + '_' + '0.000000_backward_equilibria_deviation.txt')
              if lagrangePointNr == 2:
-                equilibria_df = load_equilibria_acceleration_deviation('../../data/raw/equilibria/equilibria_val/L' + str(lagrangePointNr) \
+                 labelString = '$E_' + str(lagrangePointNr) + '$'
+                 equilibria_df = load_equilibria_acceleration_deviation('../../data/raw/equilibria/equilibria_val/L' + str(lagrangePointNr) \
                                                 + '_acceleration_' \
                                                 + str(
                 "{:7.6f}".format(self.accelerationMagnitude)) + '_' + '0.000000_backward_equilibria_deviation.txt')
 
              if lagrangePointNr == 3:
+                 labelString = '$E_' + str(lagrangePointNr) + '$'
                  equilibria_df = load_equilibria_acceleration_deviation(
                      '../../data/raw/equilibria/equilibria_val/L' + str(lagrangePointNr) \
                      + '_acceleration_' \
@@ -1238,6 +1242,7 @@ class DisplayEquilibriaValidation:
                          "{:7.6f}".format(self.accelerationMagnitude)) + '_' + '0.000000_backward_equilibria_deviation.txt')
 
              if lagrangePointNr == 4:
+                 labelString = '$E_' + str(lagrangePointNr) + '$'
                  equilibria_df = load_equilibria_acceleration_deviation(
                      '../../data/raw/equilibria/equilibria_val/L' + str(lagrangePointNr) \
                      + '_acceleration_' \
@@ -1245,6 +1250,7 @@ class DisplayEquilibriaValidation:
                          "{:7.6f}".format(self.accelerationMagnitude)) + '_' + '180.000000_backward_equilibria_deviation.txt')
 
              if lagrangePointNr == 5:
+                 labelString = '$E_' + str(lagrangePointNr) + '$'
                  equilibria_df = load_equilibria_acceleration_deviation(
                      '../../data/raw/equilibria/equilibria_val/L' + str(lagrangePointNr) \
                      + '_acceleration_' \
@@ -1259,7 +1265,11 @@ class DisplayEquilibriaValidation:
                 if listCounter % plotFrequency == 0:
                     alpha.append(row[1][0])
                     deviationPosition = np.sqrt(row[1][1] ** 2 + row[1][2] ** 2 + row[1][3] ** 2)
+                    if deviationPosition < 1.0e-20:
+                        deviationPosition = 1.0E-20
                     deviationVelocity = np.sqrt(row[1][4] ** 2 + row[1][5] ** 2 + row[1][6] ** 2)
+                    if deviationVelocity < 1.0e-20:
+                        deviationVelocity = 1.0E-20
                     deviationPositionList.append(deviationPosition)
                     deviationVelocityList.append(deviationVelocity)
 
@@ -1272,51 +1282,7 @@ class DisplayEquilibriaValidation:
              ax2.semilogy(alpha, deviationVelocityList, label=labelString,
              color=sns.color_palette('viridis', 5)[lagrangePointNr - 1])
 
-                # if lagrangePointNr == 3:
-                #
-                #     dfCounter = 0
-                #     customLagrangeNrs = [3, 4, 5]
-                #
-                #     for customLagrangeNr in customLagrangeNrs:
-                #         for seed in self.seeds:
-                #             for continuation in self.continuations:
-                #
-                #                 if dfCounter == 0:
-                #                     total_df = load_equilibria_acceleration_deviation(
-                #                             '../../data/raw/equilibria/L' + str(customLagrangeNr) \
-                #                             + '_acceleration_' \
-                #                             + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' \
-                #                             + str("{:7.6f}".format(seed)) + '_' + continuation + '_equilibria_deviation.txt')
-                #                 if dfCounter > 0:
-                #                         equilibria_df = load_equilibria_acceleration_deviation(
-                #                             '../../data/raw/equilibria/L' + str(lagrangePointNr) \
-                #                             + '_acceleration_' \
-                #                             + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' \
-                #                             + str("{:7.6f}".format(seed)) + '_' + continuation + '_equilibria_deviation.txt')
-                #                         total_df = total_df.append(equilibria_df, ignore_index=True)
-                #
-                #                 dfCounter = dfCounter + 1
-                #
-                #     total_df.sort_values('alpha', ascending=True)
-                #
-                #     deviationPositionList = []
-                #     deviationVelocityList = []
-                #     alpha = []
-                #     listCounter = 0
-                #     for row in equilibria_df.iterrows():
-                #         if listCounter % plotFrequency == 0:
-                #             alpha.append(row[1][0])
-                #             deviationPosition = np.sqrt(row[1][1] ** 2 + row[1][2] ** 2 + row[1][3] ** 2)
-                #             deviationVelocity = np.sqrt(row[1][4] ** 2 + row[1][5] ** 2 + row[1][6] ** 2)
-                #             deviationPositionList.append(deviationPosition)
-                #             deviationVelocityList.append(deviationVelocity)
-                #
-                #         listCounter = listCounter + 1
-                #
-                #print(deviationPositionList)
-                # print(deviationVelocityList)
-
-        ylim = [0, 1.0e-13]
+        ylim = [1.0e-21, 1.0e-11]
         xlim = [0, 2 * np.pi]
         ax1.set_ylim(ylim)
         ax2.set_ylim(ylim)
@@ -1325,9 +1291,9 @@ class DisplayEquilibriaValidation:
         ax1.set_xlim(xlim)
         ax2.set_xlim(xlim)
 
-        titleString = 'Position deviation after $\\frac{1}{2\\pi}$ synodic period'
+        titleString = 'Position deviation after a synodic half period'
         ax1.set_title(titleString)
-        titleString = 'Velocity deviation after $\\frac{1}{2\\pi}$ synodic period'
+        titleString = 'Velocity deviation after a synodic half period'
         ax2.set_title(titleString)
 
 
@@ -1336,19 +1302,23 @@ class DisplayEquilibriaValidation:
         labels = ('0', '$\\frac{1}{2}\\pi$', '\\pi', '$\\frac{3}{2}\\pi$', '2\\pi')
         ax1.set_xticks(ticksLocators, minor=False)
         ax1.set_xticklabels(labels, fontdict=None, minor=False)
+        ax1.semilogy(np.linspace(0,2*np.pi,num=100), 1e-12 * np.ones(100), color='black', linewidth=1, linestyle='--')
+
 
         ax2.set_xticks(ticksLocators, minor=False)
         ax2.set_xticklabels(labels, fontdict=None, minor=False)
-
-        ax2.legend(frameon=True, loc='upper right', bbox_to_anchor=(1.22, 1.04))
-
+        ax2.semilogy(np.linspace(0,2*np.pi,num=100), 1e-12 * np.ones(100), color='black', linewidth=1, linestyle='--')
 
 
-        suptitleString = 'Deviation validation of $\\alpha$-varying equilibria contours($a_{lt} = $' + str(self.accelerationMagnitude) + ')'
+        lgd = ax2.legend(frameon=True, loc='upper right', bbox_to_anchor=(1.22, 1.04))
+
+
+
+        suptitleString = 'Deviation validation of $\\alpha$-varying equilibria contours ($a_{lt} = $' + str(self.accelerationMagnitude) + ')'
         fig.suptitle(suptitleString, size=20)
 
         fig.tight_layout()
-        fig.subplots_adjust(top=0.8)
+        fig.subplots_adjust(top=0.8,right=0.9)
 
         if self.lowDPI:
             fig.savefig('../../data/figures/equilibria/contourValidation.png', transparent=True, dpi=self.dpi)
@@ -1379,7 +1349,7 @@ if __name__ == '__main__':
 
 
     #del display_equilibria_validation
-    lagrange_point_nrs = [1]
+    lagrange_point_nrs = [1,2,3,4,5]
     acceleration_magnitudes = [0.1]
 
     for acceleration_magnitude in acceleration_magnitudes:
