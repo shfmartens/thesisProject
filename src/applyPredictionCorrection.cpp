@@ -313,7 +313,7 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
                                             const int maxNumberOfIterations )
 {
     std::cout << "\nAPPLY PREDICTION CORRECTION\n" << std::endl;
-    double amplitude = 1.0E-1;
+    double amplitude = 1.0E-3;
     double correctionTime = 0.05;
     double timeINIT = 0.0;
     double timeLI = 0.0;

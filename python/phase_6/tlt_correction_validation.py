@@ -215,7 +215,7 @@ class TLTCorrectorValidation:
 
 
 
-        ax1.scatter(orbit_df['x'],orbit_df['y'],color=self.plottingColors['singleLine'],linewidth=self.lineWidth, label='Current guess',s=0.1)
+        ax1.plot(orbit_df['x'],orbit_df['y'],color=self.plottingColors['singleLine'],linewidth=self.lineWidth, label='Current guess')
 
 
         patch_points_df_previous = patch_points_df
@@ -301,7 +301,7 @@ class TLTCorrectorValidation:
 
 
                 if i == 1 and j == 2:
-                    ax3.scatter(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],linewidth=self.lineWidth, label='Current guess')
+                    ax3.plot(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],linewidth=self.lineWidth, label='Current guess')
                     ax3.plot(orbit_df_previous['x'], orbit_df_previous['y'], color=self.plottingColors['doubleLine'][0],linewidth=self.lineWidth,linestyle='--', label='Previous guess')
 
                     ax3.scatter(patch_points_df['x'], patch_points_df['y'], color='black', marker=self.currentPatchStyle, s=self.patchSize, label='Current patch points')
@@ -345,7 +345,7 @@ class TLTCorrectorValidation:
                     lgd4 = ax4.legend(frameon=True, loc='upper left', bbox_to_anchor=(0, 1), prop={'size': 8})
 
                 if i == 2 and j == 2:
-                    ax5.scatter(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],
+                    ax5.plot(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],
                             linewidth=self.lineWidth, label='Current guess')
                     ax5.plot(orbit_df_previous['x'], orbit_df_previous['y'],
                             color=self.plottingColors['doubleLine'][0], linewidth=self.lineWidth, linestyle='--',
@@ -385,7 +385,7 @@ class TLTCorrectorValidation:
                     lgd6 = ax6.legend(frameon=True, loc='upper left', bbox_to_anchor=(0, 1), prop={'size': 8})
 
                 if i == 3 and j == 2:
-                    ax7.scatter(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],
+                    ax7.plot(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],
                             linewidth=self.lineWidth, label='Current guess')
                     ax7.plot(orbit_df_previous['x'], orbit_df_previous['y'],
                             color=self.plottingColors['doubleLine'][0], linewidth=self.lineWidth, linestyle='--',
@@ -993,7 +993,7 @@ if __name__ == '__main__':
     acceleration_magnitudes = [0.1]
     alphas = [90.0]
     orbit_type = 'horizontal'
-    amplitudes = [0.01]
+    amplitudes = [0.001]
     numbers_of_patch_points = [4]
     correction_times = [0.05]
     numbers_of_cycles = [2,3,4]
@@ -1032,16 +1032,16 @@ if __name__ == '__main__':
     #
     #                         del tlt_corrector_validation
     #
-    amplitudes = [0.0001,0.001,0.01]
-    numbers_of_patch_points = [4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
-
-    for lagrange_point_nr in lagrange_point_nrs:
-        for acceleration_magnitude in acceleration_magnitudes:
-            for alpha in alphas:
-                for correction_time in correction_times:
-                    tlt_corrector_validation = TLTCorrectorValidation(lagrange_point_nr, orbit_type, acceleration_magnitude,
-                                                                       alpha, amplitudes, numbers_of_patch_points,correction_time, numbers_of_cycles,low_dpi)
-
-                    tlt_corrector_validation.plot_sensitivity_analysis()
-
-                    del tlt_corrector_validation
+    # amplitudes = [0.0001,0.001,0.01]
+    # numbers_of_patch_points = [4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+    #
+    # for lagrange_point_nr in lagrange_point_nrs:
+    #     for acceleration_magnitude in acceleration_magnitudes:
+    #         for alpha in alphas:
+    #             for correction_time in correction_times:
+    #                 tlt_corrector_validation = TLTCorrectorValidation(lagrange_point_nr, orbit_type, acceleration_magnitude,
+    #                                                                    alpha, amplitudes, numbers_of_patch_points,correction_time, numbers_of_cycles,low_dpi)
+    #
+    #                 tlt_corrector_validation.plot_sensitivity_analysis()
+    #
+    #                 del tlt_corrector_validation
