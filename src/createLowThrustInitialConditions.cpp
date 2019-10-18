@@ -489,7 +489,7 @@ Eigen::VectorXd getLowThrustInitialStateVectorGuess( const int librationPointNr,
     initialGuessParameters = getInitialGuessParameters(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, continuationIndex, guessIteration );
 
 
-    lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, ySign, orbitType, 1.0E-3, initialGuessParameters(1), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
+    lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, ySign, orbitType, initialGuessParameters(0), initialGuessParameters(1), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
 
 
     return lowThrustInitialStateVectorGuess;
@@ -992,16 +992,16 @@ bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differenti
             continueNumericalContinuation = checkEigenvalues( stateVectorInclSTM, maxEigenvalueDeviation, true );
             if (continueNumericalContinuation == false)
             {
-                std::cout << "\n\nEIGENPAIR DENOTING PERIODICITY DOES NOT SATISFY PERIODICITY REQUIREMENT\n\n" << std::endl;
+                std::cout << "\n\nEIGENPAIR DENOTING PERIODICITY DOES NOT SATISFY PERIODICITY REQUIREMENT MODULE\n\n" << std::endl;
             }
         }
         else
         {
-            continueNumericalContinuation = checkEigenvalues( stateVectorInclSTM, maxEigenvalueDeviation, false );
+            continueNumericalContinuation = checkEigenvalues( stateVectorInclSTM, maxEigenvalueDeviation, true );
 
             if (continueNumericalContinuation == false)
             {
-                std::cout << "\n\nEIGENPAIR DENOTING PERIODICITY DOES NOT SATISFY PERIODICITY REQUIREMENT\n\n" << std::endl;
+                std::cout << "\n\nEIGENPAIR DENOTING PERIODICITY DOES NOT SATISFY PERIODICITY REQUIREMEN REAL\n\n" << std::endl;
             }
         }
 
@@ -1083,16 +1083,16 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
     if (continuationIndex == 1 and startContinuationFromTextFile == false)
     {
         linearApproximationResultIteration1 = getLowThrustInitialStateVectorGuess(librationPointNr, ySign, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 0);
-        //linearApproximationResultIteration2 = getLowThrustInitialStateVectorGuess(librationPointNr, ySign, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 1);
+        linearApproximationResultIteration2 = getLowThrustInitialStateVectorGuess(librationPointNr, ySign, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 1);
 
         stateVectorInclSTM =  getCorrectedAugmentedInitialState(
                     linearApproximationResultIteration1, computeHamiltonian( massParameter, linearApproximationResultIteration1.segment(0,10)), 0,
                    librationPointNr, orbitType, massParameter, numberOfPatchPoints, initialNumberOfCollocationPoints,false, initialConditions, differentialCorrections, statesContinuation,
                     maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
-//        stateVectorInclSTM =  getCorrectedAugmentedInitialState(
-//                    linearApproximationResultIteration2, computeHamiltonian( massParameter, linearApproximationResultIteration1.segment(0,10)), 1,
-//                   librationPointNr, orbitType, massParameter, numberOfPatchPoints, initialNumberOfCollocationPoints, false, initialConditions, differentialCorrections, statesContinuation,
-//                    maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
+        stateVectorInclSTM =  getCorrectedAugmentedInitialState(
+                    linearApproximationResultIteration2, computeHamiltonian( massParameter, linearApproximationResultIteration1.segment(0,10)), 1,
+                   librationPointNr, orbitType, massParameter, numberOfPatchPoints, initialNumberOfCollocationPoints, false, initialConditions, differentialCorrections, statesContinuation,
+                    maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
     } else if (startContinuationFromTextFile == false)
     {
         std::cout << "StatesContinuationVector: computed" << std::endl;
