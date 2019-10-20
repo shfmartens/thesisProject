@@ -337,8 +337,8 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, const double ySign, s
         yArgument = equilibriumStateVector(1);
         offsetAngle = atan2(yArgument, xArgument);
 
-        offsetVector(0) = -amplitude * cos(offsetAngle);
-        offsetVector(1) = -amplitude * sin(offsetAngle);
+        offsetVector(0) = amplitude * cos(offsetAngle);
+        offsetVector(1) = amplitude * sin(offsetAngle);
     } else
     {
         offsetVector(2) = amplitude;
@@ -402,6 +402,7 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, const double ySign, s
             currentTimeRev            = finalTimeStateRev.second;
             Eigen::VectorXd stateVectorOnly = stateVectorInclSTMRev.block( 0, 0, 10, 1 );
 
+
             // Set the initial Time to the next correction point
             initialTime = currentTimeRev;
 
@@ -419,8 +420,6 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, const double ySign, s
 
             //omputeMotionDecomposition(librationPointNr, orbitType, statePropagationMatrix, Eigen::MatrixXd::Identity(6,6), equilibriumStateVector.segment(0,6) - initialStateVector.segment(0,6), 0.0, 1.0E-13);
 
-
-
             numberOfCorrections++;
 
         }
@@ -434,6 +433,29 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, const double ySign, s
 
     std::cout << "estimated period: " << currentTimeRev << std::endl;
     //std::cout << "numberOfCorrections: " << numberOfCorrections << std::endl;
+
+//    std::map<double, Eigen::VectorXd > stateHistoryTemp;
+//    std::pair< Eigen::MatrixXd, double > validationStateSTMTIME = propagateOrbitAugmentedToFinalCondition(getFullInitialStateAugmented(initialStateVectorCorrected), massParameter, currentTimeRev, 1, stateHistoryTemp, -1, 0.0 );
+//    Eigen::MatrixXd stateVectorInclSTMVal     = validationStateSTMTIME.first;
+//    double currentTimeVal            = validationStateSTMTIME.second;
+//    Eigen::VectorXd stateVectorOnly = stateVectorInclSTMVal.block( 0, 0, 10, 1 );
+//    Eigen::MatrixXd MONODROMY = stateVectorInclSTMVal.block( 0, 1, 6, 6 );
+
+//    Eigen::Vector6d deviationsVAL = initialStateVectorCorrected.segment(0,6)-stateVectorOnly.segment(0,6);
+
+//    Eigen::EigenSolver< Eigen::MatrixXd > eigM( MONODROMY );
+//    Eigen::VectorXcd  eigenValues = eigM.eigenvalues();
+
+//    std::cout << "\n == VAL FC TLT == " << std::endl
+//              << "Delta R: " << (deviationsVAL.segment(0,3)).norm() << std ::endl
+//              << "Delta V: " << (deviationsVAL.segment(3,3)).norm() << std ::endl
+//              << "M eigenvalues: " << eigenValues<< std ::endl
+//              << "M eigenvalues mod: " << 1.0 - std::abs(eigenValues(2))<< std ::endl
+//              << "M eigenvalues mod: " << 1.0 - std::abs(eigenValues(2).real())<< std ::endl
+//              << "M det: " <<1.0 -  MONODROMY.determinant()  << std ::endl;
+
+
+
 
 
     // 6. Discretize the trajectory in specified number of patch points

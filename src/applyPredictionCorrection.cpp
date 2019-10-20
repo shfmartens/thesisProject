@@ -69,7 +69,7 @@ void shiftConvergedTrajectoryGuess(int librationPointNr, Eigen::VectorXd current
         {
             if ( librationPointNr == 1)
             {
-                direction = -1;
+                direction = 1;
             }
             if (librationPointNr == 2)
             {
@@ -79,7 +79,7 @@ void shiftConvergedTrajectoryGuess(int librationPointNr, Eigen::VectorXd current
         {
             if ( librationPointNr == 1)
             {
-                direction = 1;
+                direction = -1;
             }
             if (librationPointNr == 2)
             {
@@ -313,7 +313,7 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
                                             const int maxNumberOfIterations )
 {
     std::cout << "\nAPPLY PREDICTION CORRECTION\n" << std::endl;
-    double amplitude = 1.0E-3;
+    double amplitude = 1.0E-4;
     double correctionTime = 0.05;
     double timeINIT = 0.0;
     double timeLI = 0.0;
@@ -590,30 +590,3 @@ Eigen::VectorXd applyPredictionCorrection(const int librationPointNr,
     return outputVector;
 }
 
-// test deviations at full perio
-//    std::map< double, Eigen::VectorXd > stateHistoryShift;
-//    std::pair< Eigen::MatrixXd, double > endStateAndSTMAndTime = propagateOrbitAugmentedToFinalCondition(
-//                getFullInitialStateAugmented(currentTrajectoryGuess.segment(0,10)), massParameter,
-//                currentTrajectoryGuess(11*(numberOfPatchPoints-1)+10), 1, stateHistoryShift, -1, currentTrajectoryGuess(10));
-
-//    Eigen::MatrixXd endStateAndSTM = endStateAndSTMAndTime.first;
-//    double endTime = endStateAndSTMAndTime.second;
-//    Eigen::MatrixXd stateVectorEnd = endStateAndSTM.block(0,0,10,1);
-
-//    std::pair< Eigen::MatrixXd, double > endStateAndSTMAndTimeShift = propagateOrbitAugmentedToFinalCondition(
-//                getFullInitialStateAugmented(convergedTrajectoryGuess.segment(0,10)), massParameter,
-//                convergedTrajectoryGuess(11*(numberOfPatchPoints-1)+10), 1, stateHistoryShift, -1, convergedTrajectoryGuess(10));
-
-//    Eigen::MatrixXd endStateAndSTMShift = endStateAndSTMAndTimeShift.first;
-//    double endTimeShift = endStateAndSTMAndTimeShift.second;
-//    Eigen::MatrixXd stateVectorEndShift = endStateAndSTMShift.block(0,0,10,1);
-
-//    std::cout << "\n=== Check the unshifted error at full period: == " << std::endl
-//              << "finalTime: " << endTime << std::endl
-//              << "deviation of finTime: " << currentTrajectoryGuess(11*(numberOfPatchPoints-1)+10) - endTime << std::endl
-//              << "deviation between initial and final State: \n" << currentTrajectoryGuess.segment(0,10) - stateVectorEnd << std::endl;
-
-//    std::cout << "\n=== Check the unshifted error at full period: == " << std::endl
-//              << "finalTime: " << endTimeShift << std::endl
-//              << "deviation of finTime: " << convergedTrajectoryGuess(11*(numberOfPatchPoints-1)+10) - endTimeShift << std::endl
-//              << "deviation between initial and final State: \n" << convergedTrajectoryGuess.segment(0,10) - stateVectorEndShift << std::endl;

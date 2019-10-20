@@ -213,11 +213,26 @@ class TLTCorrectorValidation:
                         + '_' + str(self.numberOfPatchPoints) + '_' + str("{:7.6f}".format(self.correctionTime)) \
                         + '_0_0_stateHistory.txt')
 
+        propagated_states_df = load_propagated_states(
+            '../../data/raw/tlt_corrector/L' + str(self.lagrangePointNr) + '_' \
+            + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' \
+            + str("{:7.6f}".format(self.alpha)) + '_' + str("{:7.6f}".format(self.amplitude)) \
+            + '_' + str(self.numberOfPatchPoints) + '_' + str("{:7.6f}".format(self.correctionTime)) \
+            + '_0_0_propagatedStates.txt', self.numberOfPatchPoints - 1)
+
+        # print(orbit_df.loc[orbit_df['x'] == propagated_states_df['x'][0]])
+        # print(orbit_df.loc[orbit_df['x'] == propagated_states_df['x'][1]])
+        # print(orbit_df.loc[orbit_df['x'] == propagated_states_df['x'][2]])
+        # print(orbit_df.loc[orbit_df['x'] == propagated_states_df['x'][3]])
+        #
+        #
+        # print(orbit_df.iloc[69])
+        # print(orbit_df.iloc[139])
+        # print(orbit_df.iloc[209])
+        # print(orbit_df.iloc[279])
 
 
-        ax1.plot(orbit_df['x'],orbit_df['y'],color=self.plottingColors['singleLine'],linewidth=self.lineWidth, label='Current guess')
-
-
+        ax1.plot(orbit_df['x'].iloc[0:69],orbit_df['y'].iloc[0:69],color=self.plottingColors['singleLine'],linewidth=self.lineWidth, label='Current guess')
         patch_points_df_previous = patch_points_df
 
         for row in patch_points_df.iterrows():
@@ -237,6 +252,12 @@ class TLTCorrectorValidation:
         ax1.scatter(patch_points_df['x'], patch_points_df['y'],color='black', marker=self.currentPatchStyle,s=self.patchSize, label='Current patch points')
 
         lgd1 = ax1.legend(frameon=True, loc='upper left', bbox_to_anchor=(0, 1), prop={'size': 8})
+
+        ax1.plot(orbit_df['x'].iloc[70:139], orbit_df['y'].iloc[70:139], color=self.plottingColors['singleLine'],linewidth=self.lineWidth)
+
+        ax1.plot(orbit_df['x'].iloc[140:209], orbit_df['y'].iloc[140:209], color=self.plottingColors['singleLine'],linewidth=self.lineWidth)
+        #
+        ax1.plot(orbit_df['x'].iloc[210:279], orbit_df['y'].iloc[210:279], color=self.plottingColors['singleLine'],linewidth=self.lineWidth)
 
         for i in range(1,self.numberOfCycles+1):
             for j in range(1,3):
@@ -265,6 +286,7 @@ class TLTCorrectorValidation:
                     "{:7.6f}".format(self.correctionTime)) \
                                                     + '_' + str(i) + '_' + str(j) + '_stateHistory.txt')
                 if i == 1 and j == 1:
+
                     ax2.plot(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],linewidth=self.lineWidth, label='Current Guess')
 
                     for row in patch_points_df.iterrows():
@@ -301,13 +323,23 @@ class TLTCorrectorValidation:
 
 
                 if i == 1 and j == 2:
-                    ax3.plot(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],linewidth=self.lineWidth, label='Current guess')
+                    # print(orbit_df.loc[orbit_df['x'] == propagated_states_df['x'][0]])
+                    # print(orbit_df.loc[orbit_df['x'] == propagated_states_df['x'][1]])
+                    # print(orbit_df.loc[orbit_df['x'] == propagated_states_df['x'][2]])
+                    # print(orbit_df.loc[orbit_df['x'] == propagated_states_df['x'][3]])
+
+                    ax3.plot(orbit_df['x'].iloc[0:69], orbit_df['y'].iloc[0:69], color=self.plottingColors['singleLine'],linewidth=self.lineWidth, label='Current guess')
                     ax3.plot(orbit_df_previous['x'], orbit_df_previous['y'], color=self.plottingColors['doubleLine'][0],linewidth=self.lineWidth,linestyle='--', label='Previous guess')
 
                     ax3.scatter(patch_points_df['x'], patch_points_df['y'], color='black', marker=self.currentPatchStyle, s=self.patchSize, label='Current patch points')
                     ax3.scatter(patch_points_df_previous['x'], patch_points_df_previous['y'], color='black', marker=self.previousPatchStyle, s=self.patchSize, label='Previous patch points')
 
                     lgd3 = ax3.legend(frameon=True, loc='upper left', bbox_to_anchor=(0, 1), prop={'size': 8})
+                    ax3.plot(orbit_df['x'].iloc[70:139], orbit_df['y'].iloc[70:139], color=self.plottingColors['singleLine'],linewidth=self.lineWidth)
+                    ax3.plot(orbit_df['x'].iloc[140:209], orbit_df['y'].iloc[140:209], color=self.plottingColors['singleLine'],linewidth=self.lineWidth)
+                    ax3.plot(orbit_df['x'].iloc[210:279], orbit_df['y'].iloc[210:279], color=self.plottingColors['singleLine'],linewidth=self.lineWidth)
+
+
                 if i == 2 and j == 1:
                     ax4.plot(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],linewidth=self.lineWidth,label='Current guess')
 
@@ -345,8 +377,13 @@ class TLTCorrectorValidation:
                     lgd4 = ax4.legend(frameon=True, loc='upper left', bbox_to_anchor=(0, 1), prop={'size': 8})
 
                 if i == 2 and j == 2:
-                    ax5.plot(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],
-                            linewidth=self.lineWidth, label='Current guess')
+                    # print(orbit_df.loc[orbit_df['x'] == propagated_states_df['x'][0]])
+                    # print(orbit_df.loc[orbit_df['x'] == propagated_states_df['x'][1]])
+                    # print(orbit_df.loc[orbit_df['x'] == propagated_states_df['x'][2]])
+                    # print(orbit_df.loc[orbit_df['x'] == propagated_states_df['x'][3]])
+
+                    ax5.plot(orbit_df['x'].iloc[0:69], orbit_df['y'].iloc[0:69], color=self.plottingColors['singleLine'],linewidth=self.lineWidth, label='Current guess')
+
                     ax5.plot(orbit_df_previous['x'], orbit_df_previous['y'],
                             color=self.plottingColors['doubleLine'][0], linewidth=self.lineWidth, linestyle='--',
                             label='Previous guess')
@@ -357,7 +394,12 @@ class TLTCorrectorValidation:
                                     marker=self.previousPatchStyle, s=self.patchSize, label='Previous patch points')
 
                     lgd5 = ax5.legend(frameon=True, loc='upper left', bbox_to_anchor=(0, 1), prop={'size': 8})
-
+                    ax5.plot(orbit_df['x'].iloc[70:139], orbit_df['y'].iloc[70:139],
+                             color=self.plottingColors['singleLine'], linewidth=self.lineWidth)
+                    ax5.plot(orbit_df['x'].iloc[140:209], orbit_df['y'].iloc[140:209],
+                             color=self.plottingColors['singleLine'], linewidth=self.lineWidth)
+                    ax5.plot(orbit_df['x'].iloc[210:279], orbit_df['y'].iloc[210:279],
+                             color=self.plottingColors['singleLine'], linewidth=self.lineWidth)
 
                 if i == 3 and j == 1:
                     ax6.plot(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],
@@ -385,8 +427,8 @@ class TLTCorrectorValidation:
                     lgd6 = ax6.legend(frameon=True, loc='upper left', bbox_to_anchor=(0, 1), prop={'size': 8})
 
                 if i == 3 and j == 2:
-                    ax7.plot(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],
-                            linewidth=self.lineWidth, label='Current guess')
+                    ax7.plot(orbit_df['x'].iloc[0:69], orbit_df['y'].iloc[0:69], color=self.plottingColors['singleLine'],linewidth=self.lineWidth, label='Current guess')
+
                     ax7.plot(orbit_df_previous['x'], orbit_df_previous['y'],
                             color=self.plottingColors['doubleLine'][0], linewidth=self.lineWidth, linestyle='--',
                             label='Previous guess')
@@ -397,7 +439,12 @@ class TLTCorrectorValidation:
                                     marker=self.previousPatchStyle, s=self.patchSize, label='Previous patch points')
 
                     lgd7 = ax7.legend(frameon=True, loc='upper left', bbox_to_anchor=(0, 1), prop={'size': 8})
-
+                    ax7.plot(orbit_df['x'].iloc[70:139], orbit_df['y'].iloc[70:139],
+                             color=self.plottingColors['singleLine'], linewidth=self.lineWidth)
+                    ax7.plot(orbit_df['x'].iloc[140:209], orbit_df['y'].iloc[140:209],
+                             color=self.plottingColors['singleLine'], linewidth=self.lineWidth)
+                    ax7.plot(orbit_df['x'].iloc[210:279], orbit_df['y'].iloc[210:279],
+                             color=self.plottingColors['singleLine'], linewidth=self.lineWidth)
 
                 if i == 4 and j == 1:
                     ax8.plot(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],
@@ -457,10 +504,10 @@ class TLTCorrectorValidation:
         ax4.set_xlim([(Xmiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(Xmiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
         ax4.set_ylim([Ymiddle - 0.5 * scaleDistance * self.spacingFactor, Ymiddle + 0.5 * scaleDistance * self.spacingFactor])
 
-        ax1.set_title('Initial guess from Floquet Controller')
-        ax2.set_title('Output from Level I corrector')
-        ax3.set_title('Output from Level II corrector')
-        ax4.set_title('Output from Level I corrector')
+        ax1.set_title('Initial guess from Floquet controller')
+        ax2.set_title('Cycle 1 - Level I ouput')
+        ax3.set_title('Cycle 1 - Level II ouput')
+        ax4.set_title('Cycle 2 - Level I ouput')
 
         if self.numberOfCycles > 2:
             ax5.set_xlim([(Xmiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(Xmiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
@@ -469,8 +516,8 @@ class TLTCorrectorValidation:
             ax6.set_xlim([(Xmiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(Xmiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
             ax6.set_ylim([Ymiddle - 0.5 * scaleDistance * self.spacingFactor,Ymiddle + 0.5 * scaleDistance * self.spacingFactor])
 
-            ax5.set_title('Output from Level II corrector')
-            ax6.set_title('Output from Level I corrector')
+            ax5.set_title('Cycle 2 - Level II ouput')
+            ax6.set_title('Cycle 3 - Level I ouput')
 
         if self.numberOfCycles > 3:
             ax7.set_xlim([(Xmiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(Xmiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
@@ -479,16 +526,16 @@ class TLTCorrectorValidation:
             ax8.set_xlim([(Xmiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(Xmiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
             ax8.set_ylim([Ymiddle - 0.5 * scaleDistance * self.spacingFactor,Ymiddle + 0.5 * scaleDistance * self.spacingFactor])
 
-            ax7.set_title('Output from Level II corrector')
-            ax8.set_title('Output from Level I corrector')
+            ax7.set_title('Cycle 3 - Level II ouput')
+            ax8.set_title('Cycle 4 - Level I ouput')
 
         # Add a subtitle and do a tight layout
-        suptitle = fig.suptitle('$L_{' + str(self.lagrangePointNr) + '}$ ($a_{lt} = ' + str(
-            "{:2.1e}".format(self.accelerationMagnitude)) + ' $, $\\alpha =' + str(
-            "{:3.1f}".format(self.alpha)) + '$ $|A| = '+ str(
-            "{:2.1e}".format(self.amplitude)) +' $) Correction procedure ', size=self.suptitleSize)
+        # suptitle = fig.suptitle('$L_{' + str(self.lagrangePointNr) + '}$ ($a_{lt} = ' + str(
+        #     "{:2.1e}".format(self.accelerationMagnitude)) + ' $, $\\alpha =' + str(
+        #     "{:3.1f}".format(self.alpha)) + '$ $|A| = '+ str(
+        #     "{:2.1e}".format(self.amplitude)) +' $) Correction procedure ', size=self.suptitleSize)
 
-
+        suptitle = fig.suptitle('$L_{' + str(self.lagrangePointNr) + '}$ ($a_{lt} = 0.1$, $\\alpha =90.0^{\\circ}$, $||A|| = 8.0 \\cdot 10^{-3} '' $) - Correction procedure ', size=self.suptitleSize)
 
         fig.tight_layout()
         if self.numberOfCycles == 2:
@@ -520,14 +567,14 @@ class TLTCorrectorValidation:
 
         ax1 = fig.add_subplot(1, 2, 1)
         ax2 = fig.add_subplot(1, 2, 2)
-
+        ax3 = fig.add_subplot(1, 2, 1)
 
         ax1.set_xlabel('Corrector Cycle [-]')
         ax1.set_ylabel('$| \\Delta R |$, $| \\Delta V |$ [-]')
         ax1.grid(True, which='both', ls=':')
 
         ax2.set_xlabel('Corrector Cycle  [-]')
-        ax2.set_ylabel('Number of corrections [-]')
+        ax2.set_ylabel('Computational cost [s]')
         ax2.grid(True, which='both', ls=':')
 
 
@@ -578,6 +625,11 @@ class TLTCorrectorValidation:
         xlabelTuple = ('Input', )
         loopIndex = 1
         indLabel = [0]
+        indLabelSecond = [0,1,2,3,4,5,6,7,8,9,10,11]
+        xlabelTupleSecond = ('','I','II','I','II','I','II','I','II','I','II','I')
+
+
+
 
         for i in range(1, numberOfCycles + 1):
             string = 'Cycle ' + str(i)
@@ -585,50 +637,82 @@ class TLTCorrectorValidation:
 
             if i == 1:
                 indLabel = np.append(indLabel,[1.5])
+
             elif i == numberOfCycles:
                 indLabel = np.append(indLabel, indLabel[len(indLabel) - 1] + 1.5)
+
+
             else:
                 indLabel = np.append(indLabel,indLabel[len(indLabel)-1]+2)
 
 
         ind = np.arange(len(deviation_df['cycle']))
-        indTEST = np.arange(numberOfCycles+1)*1.5
 
-        #print(ind)
-        #print(indLabel)
-        #print(xlabelTuple)
 
-        ax1.bar(ind - self.widthBar/2, deviation_df['deltaR'], self.widthBar, label='$|\Delta R|$',color=self.plottingColors['lambda6'])
-        ax1.bar(ind + self.widthBar/2, deviation_df['deltaV'], self.widthBar, label='$|\Delta V|$',color=self.plottingColors['lambda3'])
+        ax1.bar(ind - self.widthBar/2, deviation_df['deltaR'], self.widthBar, label='$||\Delta R||$',color=self.plottingColors['lambda6'])
+        ax1.bar(ind + self.widthBar/2, deviation_df['deltaV'], self.widthBar, label='$||\Delta V||$',color=self.plottingColors['lambda3'])
         ax1.set_yscale('log')
-        ax1.hlines(1.0E-12,min(ind)-1,max(ind)+1,color='black',linestyle='--',label='Tolerance')
+        ax1.hlines(1.0E-12,min(ind)-1,max(ind)+1,color='black',linestyle='--',label=' $||\Delta R ||$ Tolerance')
+        ax1.hlines(5.0E-12,min(ind)-1,max(ind)+1,color='black',linestyle='-.',label=' $||\Delta V ||$ Tolerance')
+
         ax1.set_xlim(min(ind)-1,max(ind)+1)
+
+
+        # ax2.set_ylim([0, 40])
+        # ax2.set_yticks([0,10,20,30,40])
+        # ax2.set_yticklabels(('0','10','20','30','40'))
+
+        ax3 = ax1.twiny()
+        ax3.set_xlim(min(ind)-1,max(ind)+1)
+        ax3.grid(False)
+
+        ax4 = ax2.twiny()
+        ax4.set_xlim(min(ind) - 1, max(ind) + 1)
+        ax4.grid(False)
+
+        ax5 = ax2.twinx()
+        ax5.set_xlim(min(ind) - 1, max(ind) + 1)
+        ax2.set_xlim(min(ind) - 1, max(ind) + 1)
+
+        ax5.grid(False)
+        ax5.set_ylim([0,8])
+
 
         ax1.set_xticks(indLabel)
         ax1.set_xticklabels(xlabelTuple)
 
+        ax3.set_xticks(indLabelSecond)
+        ax3.set_xticklabels(xlabelTupleSecond)
+
+        ax4.set_xticks(indLabelSecond)
+        ax4.set_xticklabels(xlabelTupleSecond)
+
         ax2.bar(ind - self.widthBar / 2, deviation_df['time'], self.widthBar, label='Time',color=self.plottingColors['lambda6'])
-        ax2.bar(ind + self.widthBar / 2, deviation_df['iterations'], self.widthBar, label='Iterations',color=self.plottingColors['lambda3'])
+        ax2.bar(-2, 2, self.widthBar, label='Iterations Level I',color=self.plottingColors['lambda3'])
+
+        ax5.bar(ind + self.widthBar / 2, deviation_df['iterations'], self.widthBar, label='Iterations Level I',color=self.plottingColors['lambda3'])
         ax2.set_yscale('log')
+        ax2.set_ylim([0,10e2])
 
         ax2.set_xticks(indLabel)
         ax2.set_xticklabels(xlabelTuple)
 
-        lgd1 = ax1.legend(frameon=True, loc='upper right', prop={'size': 9})
-        lgd2 = ax2.legend(frameon=True, loc='upper right', prop={'size': 9})
+        lgd1 = ax1.legend(frameon=True, loc='upper right', prop={'size': 7})
+        lgd2 = ax2.legend(frameon=True, loc='upper right', prop={'size': 7})
 
 
-        suptitle = fig.suptitle('$L_{' + str(self.lagrangePointNr) + '}$ ($a_{lt} = ' + str(
-            "{:2.1e}".format(self.accelerationMagnitude)) + ' $, $\\alpha =' + str(
-            "{:3.1f}".format(self.alpha)) + '$ $|A| = ' + str(
-            "{:2.1e}".format(self.amplitude)) + ' $) Convergence behaviour using ' + str(self.numberOfPatchPoints) + ' patch points ', size=self.suptitleSize)
+        # suptitle = fig.suptitle('$L_{' + str(self.lagrangePointNr) + '}$ ($a_{lt} = ' + str(
+        #     "{:2.1e}".format(self.accelerationMagnitude)) + ' $, $\\alpha =' + str(
+        #     "{:3.1f}".format(self.alpha)) + '$ $|A| = ' + str(
+        #     "{:2.1e}".format(self.amplitude)) + ' $) Convergence behaviour using ' + str(self.numberOfPatchPoints) + ' patch points ', size=self.suptitleSize)
+        suptitle = fig.suptitle('$L_{' + str(self.lagrangePointNr) + '}$ ($a_{lt} = 0.1$, $\\alpha =90.0^{\\circ}$, $||A|| = 8.0 \\cdot 10^{-3} '' $) - Convergence behaviour using ' + str(self.numberOfPatchPoints) + ' patch points ', size=self.suptitleSize)
 
-        ax1.set_title('State deviations')
-        ax2.set_title('Level I required corrections')
-
+        ax1.set_title('State defects', y=1.10)
+        ax2.set_title('TLT computational cost and Level I behaviour', y=1.10)
+        ax5.set_ylabel('Number of corrections [-]')
 
         fig.tight_layout()
-        fig.subplots_adjust(top=0.83)
+        fig.subplots_adjust(top=0.77)
 
 
 
@@ -681,12 +765,12 @@ class TLTCorrectorValidation:
         ax6.set_ylabel('y [-]')
         ax6.grid(True, which='both', ls=':')
 
-        ax1.set_title('$|A|$ = ' + str(self.amplitude[0]))
-        ax2.set_title('Patch point influence')
-        ax3.set_title('$|A|$ = ' + str(self.amplitude[1]))
-        ax4.set_title('Patch point influence')
-        ax5.set_title('$|A|$ = ' + str(self.amplitude[2]))
-        ax6.set_title('Patch point influence')
+        ax1.set_title('$||A|| = 1.0 \\cdot 10^{-4}$ ')
+        ax2.set_title('Convergence behaviour at $||A||=1.0 \\cdot 10^{-4}$')
+        ax3.set_title('$||A|| = 1.0 \\cdot 10^{-3} $')
+        ax4.set_title('Convergence behaviour at $||A||=1.0 \\cdot 10^{-3}$')
+        ax5.set_title('$||A|| = 1.0 \\cdot 10^{-2} $')
+        ax6.set_title('Convergence behaviour at $||A||=1.0 \\cdot 10^{-2}$')
 
         bodies_df = load_bodies_location()
         u = np.linspace(0, 2 * np.pi, 100)
@@ -818,7 +902,7 @@ class TLTCorrectorValidation:
                         point_influence_df['cycles'][0]) + '_1_stateHistory.txt')
 
                 ax1.plot(df_min['x'], df_min['y'], color=self.plottingColors['lambda6'], linewidth=self.lineWidth,
-                         label=str((point_influence_df['patchpoint'][0])) + ' patch points')
+                         label=str((point_influence_df['patchpoint'][0])) + ' nodes')
 
                 if min(df_min['x']) < min_x1:
                     min_x1 = min(df_min['x'])
@@ -839,7 +923,7 @@ class TLTCorrectorValidation:
 
                 ax1.plot(df_max['x'], df_max['y'], color=self.plottingColors['lambda3'], linewidth=self.lineWidth,
                          label=str(
-                             (point_influence_df['patchpoint'][len(point_influence_df) - 1])) + ' patch points')
+                             (point_influence_df['patchpoint'][len(point_influence_df) - 1])) + ' nodes')
 
                 if min(df_max['x']) < min_x1:
                     min_x1 = min(df_max['x'])
@@ -868,7 +952,7 @@ class TLTCorrectorValidation:
                             point_influence_df['cycles'][0]) + '_1_stateHistory.txt')
 
                     ax3.plot(df_min['x'], df_min['y'], color=self.plottingColors['lambda6'], linewidth=self.lineWidth,
-                             label=str((point_influence_df['patchpoint'][0])) + ' patch points')
+                             label=str((point_influence_df['patchpoint'][0])) + ' nodes')
 
                     if min(df_min['x']) < min_x3:
                         min_x3 = min(df_min['x'])
@@ -889,7 +973,7 @@ class TLTCorrectorValidation:
 
                     ax3.plot(df_max['x'], df_max['y'], color=self.plottingColors['lambda3'], linewidth=self.lineWidth,
                              label=str(
-                                 (point_influence_df['patchpoint'][len(point_influence_df) - 1])) + ' patch points')
+                                 (point_influence_df['patchpoint'][len(point_influence_df) - 1])) + ' nodes')
 
                     if min(df_max['x']) < min_x3:
                         min_x3 = min(df_max['x'])
@@ -913,7 +997,7 @@ class TLTCorrectorValidation:
                     "{:7.6f}".format(self.correctionTime)) + '_' + str(point_influence_df['cycles'][0]) + '_1_stateHistory.txt')
 
                 ax5.plot(df_min['x'], df_min['y'], color=self.plottingColors['lambda6'], linewidth=self.lineWidth,
-                         label=str((point_influence_df['patchpoint'][0])) + ' patch points')
+                         label=str((point_influence_df['patchpoint'][0])) + ' nodes')
 
                 if min(df_min['x']) < min_x5:
                     min_x5 = min(df_min['x'])
@@ -929,7 +1013,7 @@ class TLTCorrectorValidation:
                     + '_' + str(point_influence_df['cycles'][len(point_influence_df) - 1]) + '_1_stateHistory.txt')
 
                 ax5.plot(df_max['x'], df_max['y'], color=self.plottingColors['lambda3'], linewidth=self.lineWidth,
-                         label=str((point_influence_df['patchpoint'][len(point_influence_df) - 1])) + ' patch points')
+                         label=str((point_influence_df['patchpoint'][len(point_influence_df) - 1])) + ' nodes')
 
                 if min(df_max['x']) < min_x5:
                     min_x5 = min(df_max['x'])
@@ -969,9 +1053,11 @@ class TLTCorrectorValidation:
         ax6.set_ylim(0,max_cycles+1)
 
 
-        suptitle = fig.suptitle('$L_{' + str(self.lagrangePointNr) + '}$ ($a_{lt} = ' + str(
-            "{:2.1e}".format(self.accelerationMagnitude)) + ' $, $\\alpha =' + str(
-            "{:3.1f}".format(self.alpha)) +' $) Sensitivity analysis ', size=self.suptitleSize)
+        # suptitle = fig.suptitle('$L_{' + str(self.lagrangePointNr) + '}$ ($a_{lt} = ' + str(
+        #     "{:2.1e}".format(self.accelerationMagnitude)) + ' $, $\\alpha =' + str(
+        #     "{:3.1f}".format(self.alpha)) +' $) Sensitivity analysis ', size=self.suptitleSize)
+
+        suptitle = fig.suptitle('$L_{' + str(self.lagrangePointNr) + '}$ ($a_{lt} = 0.1  $, $\\alpha = 90.0^{\\circ}$) -  Influence of number of nodes', size=self.suptitleSize)
 
         fig.tight_layout()
         fig.subplots_adjust(top=0.9)
@@ -993,32 +1079,32 @@ if __name__ == '__main__':
     acceleration_magnitudes = [0.1]
     alphas = [90.0]
     orbit_type = 'horizontal'
-    amplitudes = [0.001]
-    numbers_of_patch_points = [4]
+    amplitudes = [0.008]
+    numbers_of_patch_points = [5]
     correction_times = [0.05]
     numbers_of_cycles = [2,3,4]
     low_dpi = False
 
-    for lagrange_point_nr in lagrange_point_nrs:
-        for acceleration_magnitude in acceleration_magnitudes:
-            for alpha in alphas:
-                for amplitude in amplitudes:
-                    for number_of_patch_points in numbers_of_patch_points:
-                        for correction_time in correction_times:
-                            for number_of_cycles in numbers_of_cycles:
-                                tlt_corrector_validation = TLTCorrectorValidation(lagrange_point_nr, orbit_type, acceleration_magnitude, alpha, \
-                                                                              amplitude, number_of_patch_points, correction_time, number_of_cycles, low_dpi)
-
-
-                                tlt_corrector_validation.plot_tlt_visualization()
-
-                                del tlt_corrector_validation
+    # for lagrange_point_nr in lagrange_point_nrs:
+    #     for acceleration_magnitude in acceleration_magnitudes:
+    #         for alpha in alphas:
+    #             for amplitude in amplitudes:
+    #                 for number_of_patch_points in numbers_of_patch_points:
+    #                     for correction_time in correction_times:
+    #                         for number_of_cycles in numbers_of_cycles:
+    #                             tlt_corrector_validation = TLTCorrectorValidation(lagrange_point_nr, orbit_type, acceleration_magnitude, alpha, \
+    #                                                                           amplitude, number_of_patch_points, correction_time, number_of_cycles, low_dpi)
     #
-    # amplitudes = [0.0001,0.001,0.01]
-    # numbers_of_patch_points = [4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+    #
+    #                             tlt_corrector_validation.plot_tlt_visualization()
+    #
+    #                             del tlt_corrector_validation
+    # #
+    # amplitudes = [0.008]
+    # numbers_of_patch_points = [5]
     # correction_times = [0.05]
-    #
-    #
+
+
     # for lagrange_point_nr in lagrange_point_nrs:
     #     for acceleration_magnitude in acceleration_magnitudes:
     #         for alpha in alphas:
@@ -1031,17 +1117,17 @@ if __name__ == '__main__':
     #                         tlt_corrector_validation.plot_convergence_behaviour()
     #
     #                         del tlt_corrector_validation
-    #
-    # amplitudes = [0.0001,0.001,0.01]
-    # numbers_of_patch_points = [4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
-    #
-    # for lagrange_point_nr in lagrange_point_nrs:
-    #     for acceleration_magnitude in acceleration_magnitudes:
-    #         for alpha in alphas:
-    #             for correction_time in correction_times:
-    #                 tlt_corrector_validation = TLTCorrectorValidation(lagrange_point_nr, orbit_type, acceleration_magnitude,
-    #                                                                    alpha, amplitudes, numbers_of_patch_points,correction_time, numbers_of_cycles,low_dpi)
-    #
-    #                 tlt_corrector_validation.plot_sensitivity_analysis()
-    #
-    #                 del tlt_corrector_validation
+
+    amplitudes = [0.0001,0.001,0.01]
+    numbers_of_patch_points = [4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+
+    for lagrange_point_nr in lagrange_point_nrs:
+        for acceleration_magnitude in acceleration_magnitudes:
+            for alpha in alphas:
+                for correction_time in correction_times:
+                    tlt_corrector_validation = TLTCorrectorValidation(lagrange_point_nr, orbit_type, acceleration_magnitude,
+                                                                       alpha, amplitudes, numbers_of_patch_points,correction_time, numbers_of_cycles,low_dpi)
+
+                    tlt_corrector_validation.plot_sensitivity_analysis()
+
+                    del tlt_corrector_validation
