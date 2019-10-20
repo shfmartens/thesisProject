@@ -516,7 +516,7 @@ double computeHamiltonian (const double massParameter, const Eigen::VectorXd sta
 }
 
 Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::MatrixXd& initialOddPoints, const int orbitNumber,
-                                          const int librationPointNr, const std::string& orbitType, const int continuationIndex, const Eigen::VectorXd previousDesignVector, bool& continuationDirectionReversed, const double massParameter, const int numberOfPatchPoints, int& numberOfCollocationPoints,
+                                          const int librationPointNr, const std::string& orbitType, const int continuationIndex, const Eigen::VectorXd previousDesignVector, bool& continuationDirectionReversed, bool& stableCollocationProcedure, const double massParameter, const int numberOfPatchPoints, int& numberOfCollocationPoints,
                                           std::vector< Eigen::VectorXd >& initialConditions,
                                           std::vector< Eigen::VectorXd >& differentialCorrections,
                                           std::vector< Eigen::VectorXd >& statesContinuation,
@@ -532,9 +532,14 @@ Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::MatrixXd& initi
     Eigen::VectorXd collocatedNodes;
     Eigen::VectorXd collocatedDefects;
 
-    Eigen::VectorXd collocationResult = applyCollocation(initialOddPoints, massParameter, numberOfCollocationPoints, collocatedGuess, collocatedNodes, deviationNorms, collocatedDefects, continuationIndex, previousDesignVector, orbitNumber,
+    Eigen::VectorXd collocationResult = applyCollocation(initialOddPoints, massParameter, numberOfCollocationPoints, collocatedGuess, collocatedNodes, deviationNorms, collocatedDefects, continuationIndex, previousDesignVector, orbitNumber, stableCollocationProcedure,
                                                          maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
 
+    if (stableCollocationProcedure == false )
+    {
+        std::cout << "collocation procedure has become unstable at orbit number " << orbitNumber << std::endl;
+        return Eigen::MatrixXd::Zero(10,11);
+    }
     int numberOfOddPoints = (numberOfCollocationPoints-1)*3 + 1;
     initialStateVector = collocationResult.segment( 0, 10 );
     double orbitalPeriod = collocationResult( 10 );
@@ -1129,7 +1134,8 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
         Eigen::VectorXd hamiltonianVector = Eigen::VectorXd::Zero(1);
         hamiltonianVector(0) = familyHamiltonian;
         bool continuationDirectionReversed = true;
-        stateVectorInclSTM = getCollocatedAugmentedInitialState(oddNodesMatrix, 0, librationPointNr, orbitType, continuationIndex, hamiltonianVector, continuationDirectionReversed,
+        bool stableCollocationProcedure = true;
+        stateVectorInclSTM = getCollocatedAugmentedInitialState(oddNodesMatrix, 0, librationPointNr, orbitType, continuationIndex, hamiltonianVector, continuationDirectionReversed, stableCollocationProcedure,
                                                                 massParameter, numberOfPatchPoints, numberOfCollocationPoints, initialConditions,
                                                                 differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit, false);
 
@@ -1157,6 +1163,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
     double pseudoArcLengthCorrection = 0.0;
     bool continueNumericalContinuation = true;
+    bool stableCollocationProcedure = true;
     double targetHamiltonian;
     bool maxThrustOrFullRevolutionReached = false;
     double initialAngle = 0.0;
@@ -1226,11 +1233,11 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 
 
-            Eigen::MatrixXd stateVectorInclSTMFirst = getCollocatedAugmentedInitialState(oddNodesMatrixFirst, orbitNumberFirstGuess, librationPointNr, orbitType, 1, adaptedIncrementVector, continuationDirectionReversed,
+            Eigen::MatrixXd stateVectorInclSTMFirst = getCollocatedAugmentedInitialState(oddNodesMatrixFirst, orbitNumberFirstGuess, librationPointNr, orbitType, 1, adaptedIncrementVector, continuationDirectionReversed, stableCollocationProcedure,
                                                                                     massParameter, numberOfCollocationPointsFirstGuess, numberOfCollocationPointsFirstGuess, initialConditions, differentialCorrections,
                                                                                     statesContinuation, 1.0E-12, 1.0E-12, 1.0E-12, true);
 
-            Eigen::MatrixXd stateVectorInclSTMSecond = getCollocatedAugmentedInitialState(oddNodesMatrixSecond, orbitNumberSecondGuess, librationPointNr, orbitType, 1, adaptedIncrementVector, continuationDirectionReversed,
+            Eigen::MatrixXd stateVectorInclSTMSecond = getCollocatedAugmentedInitialState(oddNodesMatrixSecond, orbitNumberSecondGuess, librationPointNr, orbitType, 1, adaptedIncrementVector, continuationDirectionReversed, stableCollocationProcedure,
                                                                                     massParameter, numberOfCollocationPointsFirstGuess, numberOfCollocationPointsFirstGuess, initialConditions, differentialCorrections,
                                                                                     statesContinuation, 1.0E-12, 1.0E-12, 1.0E-12, false);
 
@@ -1244,7 +1251,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
     }
 
 
-    while( ( numberOfInitialConditions < maximumNumberOfInitialConditions ) && continueNumericalContinuation)
+    while( ( numberOfInitialConditions < maximumNumberOfInitialConditions ) && continueNumericalContinuation && stableCollocationProcedure)
     {
 
         std::cout << "========== Numerical continuation Status Update L" << librationPointNr << "_" << orbitType << "_" << "acc = " << accelerationMagnitude << ", alpha = " << accelerationAngle <<  " ========== "<< std::endl
@@ -1278,7 +1285,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                 bool continuationDirectionReversed = true;
                 double multiplicationFactor = 1.0;
                 double numberOfCollocationPointsBeforeLoop = numberOfCollocationPoints;
-                while(continuationDirectionReversed == true and multiplicationFactor < 10.0)
+                while(continuationDirectionReversed == true and multiplicationFactor < 10.0 and stableCollocationProcedure == true)
                 {
                     numberOfCollocationPoints = numberOfCollocationPointsBeforeLoop;
                     // perform numerical continuation
@@ -1340,10 +1347,13 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                     computeOddPoints(initialStateVectorContinuation, oddNodesMatrix, numberOfCollocationPoints, massParameter, false);
 
 
-                    stateVectorInclSTM = getCollocatedAugmentedInitialState( oddNodesMatrix, numberOfInitialConditions, librationPointNr, orbitType, continuationIndex, adaptedIncrementVector, continuationDirectionReversed,
+                    stateVectorInclSTM = getCollocatedAugmentedInitialState( oddNodesMatrix, numberOfInitialConditions, librationPointNr, orbitType, continuationIndex, adaptedIncrementVector, continuationDirectionReversed, stableCollocationProcedure,
                                                                              massParameter, numberOfPatchPoints, numberOfCollocationPoints, initialConditions,
                                                                              differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit, false);
-
+                    if (stableCollocationProcedure == false)
+                    {
+                        continueNumericalContinuation == false;
+                    }
                     if (continuationDirectionReversed == true )
                     {
                         multiplicationFactor = multiplicationFactor + 2.0;
@@ -1356,6 +1366,8 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
                         std::cout << "\n exiting the continuation procedure, after enlarging the increment until 9.0 times original step, the continuation still reversed! "  << std::endl;
                     }
+
+
                 }
 
 
@@ -1396,7 +1408,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
               Eigen::VectorXd previousDesignVector(1); previousDesignVector.setZero();
               previousDesignVector(0) = familyHamiltonian;
               bool continuationDirectionReversed = true;
-              stateVectorInclSTM = getCollocatedAugmentedInitialState( oddNodesMatrix, numberOfInitialConditions, librationPointNr, orbitType, continuationIndex, previousDesignVector, continuationDirectionReversed,
+              stateVectorInclSTM = getCollocatedAugmentedInitialState( oddNodesMatrix, numberOfInitialConditions, librationPointNr, orbitType, continuationIndex, previousDesignVector, continuationDirectionReversed, stableCollocationProcedure,
                                                                        massParameter, numberOfPatchPoints, numberOfCollocationPoints, initialConditions,
                                                                        differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit, false);
 
@@ -1443,7 +1455,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
              Eigen::VectorXd previousDesignVector(1); previousDesignVector.setZero();
              previousDesignVector(0) = familyHamiltonian;
              bool continuationDirectionReversed = true;
-             stateVectorInclSTM = getCollocatedAugmentedInitialState( oddNodesMatrix, numberOfInitialConditions, librationPointNr, orbitType, continuationIndex, previousDesignVector, continuationDirectionReversed,
+             stateVectorInclSTM = getCollocatedAugmentedInitialState( oddNodesMatrix, numberOfInitialConditions, librationPointNr, orbitType, continuationIndex, previousDesignVector, continuationDirectionReversed, stableCollocationProcedure,
                                                                       massParameter, numberOfPatchPoints, numberOfCollocationPoints, initialConditions,
                                                                       differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit, false);
 
@@ -1452,7 +1464,6 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
           if (continueNumericalContinuation == true)
           {
               continueNumericalContinuation = checkTerminationAugmented(differentialCorrections, stateVectorInclSTM, orbitType, librationPointNr, maxEigenvalueDeviation );
-              std::cout << "continueNumericalContinuation: " << continueNumericalContinuation << std::endl;
 
           }
 
@@ -1480,7 +1491,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
             std::cout << "continueNumericalContinuation: " << continueNumericalContinuation << std::endl;
 
 
-           if ( continuationIndex != 1 && continueNumericalContinuation == false && orderOfMagnitude > minimumIncrementOrderOfMagnitude && maxThrustOrFullRevolutionReached == false )
+           if ( continuationIndex != 1 && continueNumericalContinuation == false && orderOfMagnitude > minimumIncrementOrderOfMagnitude && maxThrustOrFullRevolutionReached == false && stableCollocationProcedure == true)
                   {
                          orderOfMagnitude = orderOfMagnitude + 1;
                          continueNumericalContinuation = true;
