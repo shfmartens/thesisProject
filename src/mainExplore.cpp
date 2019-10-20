@@ -43,20 +43,20 @@ int main (){
      //================================
      //== Compute equilibria, comment out when computing low-thrust intial positions ==
      //================================
-//    double accMag = 0.1;
-//    double alpha = 90.0;
-//    for (int i = 1; i < 2 ; i++)
-//    {
-//        Eigen::Vector2d equilibriumTest = createEquilibriumLocations(i, accMag, alpha, "acceleration", massParameter);
+    double accMag = 0.001;
+    double alpha = 1.0;
+    for (int i = 1; i < 2 ; i++)
+    {
+        Eigen::Vector2d equilibriumTest = createEquilibriumLocations(i, accMag, alpha, "acceleration", massParameter);
 
-//        std::cout << "\n== Eq result =="<< std::endl
-//                  << "librationPointNr: " << i << std::endl
-//                  << "alt: " << accMag << std::endl
-//                  << "alpha: " << alpha << std::endl
-//                  << "equilibriumLocation: \n" << equilibriumTest << std::endl
-//                  << "=================" << std::endl;
+        std::cout << "\n== Eq result =="<< std::endl
+                  << "librationPointNr: " << i << std::endl
+                  << "alt: " << accMag << std::endl
+                  << "alpha: " << alpha << std::endl
+                  << "equilibriumLocation: \n" << equilibriumTest << std::endl
+                  << "=================" << std::endl;
 
-//    }
+    }
 //    double semiMajorAxis = 384400*1000;
 //    double EarthGravPar = tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER;
 //    double MoonGravPar = tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER;
@@ -97,7 +97,7 @@ int main (){
                 double ySign = 1.0;
                 double familyHamiltonian = -1.58;
                 bool startContinuationFromTextFile = false;
-                createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile );
+                //createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile );
 
 
 
