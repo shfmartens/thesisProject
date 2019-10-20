@@ -489,8 +489,8 @@ Eigen::VectorXd getLowThrustInitialStateVectorGuess( const int librationPointNr,
     initialGuessParameters = getInitialGuessParameters(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, continuationIndex, guessIteration );
 
 
-    //lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, ySign, orbitType, initialGuessParameters(0), initialGuessParameters(1), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
-    lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, ySign, orbitType, 1.0e-3, initialGuessParameters(1), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
+    lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, ySign, orbitType, initialGuessParameters(0), initialGuessParameters(1), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
+    //lowThrustInitialStateVectorGuess = floquetApproximation( librationPointNr, ySign, orbitType, 1.0e-3, initialGuessParameters(1), initialGuessParameters(2), initialGuessParameters(3), initialMass, numberOfPatchPoints );
 
 
     return lowThrustInitialStateVectorGuess;
@@ -1012,7 +1012,7 @@ bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differenti
         }
         else
         {
-            continueNumericalContinuation = checkEigenvalues( stateVectorInclSTM, maxEigenvalueDeviation, true );
+            continueNumericalContinuation = checkEigenvalues( stateVectorInclSTM, maxEigenvalueDeviation, false );
 
             if (continueNumericalContinuation == false)
             {
@@ -1138,7 +1138,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 // ============ CONTINUATION PROCEDURE ================== //
     // Set exit parameters of continuation procedure
-    int maximumNumberOfInitialConditions = 2;
+    int maximumNumberOfInitialConditions = 5000;
     int numberOfInitialConditions;
     if (continuationIndex == 1)
     {
