@@ -77,17 +77,14 @@ Eigen::VectorXd extractStatesContinuationVector(std::string referenceString, con
     std::string str;
     std::vector<double> statesContinuationVector;
 
-    std::cout << "closestHamiltonian: " << closestHamiltonian << std::endl;
-    int i = 0; // tempoarary variable for testing!
     while (std::getline(file, str)) {
-
         // Lloop over the textfile line and divide it into substrings: use isstringstream
         std::istringstream iss(str);
         int counter = 0; // set counter to analyze the Hamiltonian value
         bool storeLineInVector = false;
-
         while(iss)
         {
+
             // loop over the substrings
             std::string subs;
             double subsDouble;
@@ -102,6 +99,7 @@ Eigen::VectorXd extractStatesContinuationVector(std::string referenceString, con
                   {
                       storeLineInVector = true;
                       closestHamiltonian =  std::stod(subs);
+
 
                   }
 
@@ -134,7 +132,7 @@ Eigen::VectorXd extractStatesContinuationVector(std::string referenceString, con
             };
 
     }
-
+    std::cout << "creating output vector " << std::endl;
     Eigen::VectorXd outputVector(statesContinuationVector.size()); outputVector.setZero();
 
     for(int k = 0; k < (statesContinuationVector.size()); k++)
@@ -143,6 +141,7 @@ Eigen::VectorXd extractStatesContinuationVector(std::string referenceString, con
     }
 
     numberOfCollocationPoints = (outputVector.size()/11 - 1)/3 + 1;
+
 
     return outputVector;
 

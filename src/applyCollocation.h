@@ -36,7 +36,7 @@ void computeCollocationDefects(Eigen::MatrixXd& collocationDefectVector, Eigen::
 
 
 Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuesss, const double massParameter, int& numberOfCollocationPoints, Eigen::VectorXd& collocatedGuess, Eigen::VectorXd& collocatedNodes, Eigen::VectorXd& deviationNorms, Eigen::VectorXd& collocatedDefects, const int continuationIndex, const Eigen::VectorXd previousDesignVector, const int orbitNumber, bool& stableCollocationProcedure,
-                                                          double maxPositionDeviationFromPeriodicOrbit,  double maxVelocityDeviationFromPeriodicOrbit,  double maxPeriodDeviationFromPeriodicOrbit, const int maxNumberOfCollocationIterations = 500, const double maximumErrorTolerance = 1.0E-11  );
+                                                          double maxPositionDeviationFromPeriodicOrbit,  double maxVelocityDeviationFromPeriodicOrbit,  double maxPeriodDeviationFromPeriodicOrbit, const int maxNumberOfCollocationIterations = 500, const double maximumErrorTolerance = 1.0E-9  );
 
 
 

@@ -535,6 +535,7 @@ Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::MatrixXd& initi
     Eigen::VectorXd collocationResult = applyCollocation(initialOddPoints, massParameter, numberOfCollocationPoints, collocatedGuess, collocatedNodes, deviationNorms, collocatedDefects, continuationIndex, previousDesignVector, orbitNumber, stableCollocationProcedure,
                                                          maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
 
+
     if (stableCollocationProcedure == false )
     {
         std::cout << "collocation procedure has become unstable at orbit number " << orbitNumber << std::endl;
@@ -567,21 +568,24 @@ Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::MatrixXd& initi
 
         double distancePreviousGuess = (initialStateMoon-initialStateInput).norm();
         double distanceCollocGuess = (initialStateMoon-initialStateColloc).norm();
-
-        if(distancePreviousGuess > distanceCollocGuess)
+        if (continuationIndex == 1)
         {
-            continuationDirectionReversed = false;
-        }else
-        {
-            continuationDirectionReversed = true;
-           std::cout << "continuationDirection is reverserd, cancel saving of result and inrease stateIncrement!" << std::endl;
-           std::cout << "initialStateInput: " << initialStateInput << std::endl;
-           std::cout << "initialStateColloc: " << initialStateColloc << std::endl;
-           std::cout << "initialStateMoon: " << initialStateMoon << std::endl;
-           std::cout << "distanceCollocGuess: " << distanceCollocGuess << std::endl;
+            if(distancePreviousGuess < distanceCollocGuess )
+            {
+                continuationDirectionReversed = false;
+            }else
+            {
+                continuationDirectionReversed = true;
+               std::cout << "continuationDirection is reverserd, cancel saving of result and inrease stateIncrement!" << std::endl;
+               std::cout << "initialStateInput: " << initialStateInput << std::endl;
+               std::cout << "initialStateColloc: " << initialStateColloc << std::endl;
+               std::cout << "initialStateMoon: " << initialStateMoon << std::endl;
+               std::cout << "distanceCollocGuess: " << distanceCollocGuess << std::endl;
 
 
+            }
         }
+
 
     } else
     {
@@ -1115,30 +1119,24 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                     maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
     } else if (startContinuationFromTextFile == false)
     {
-        std::cout << "StatesContinuationVector: computed" << std::endl;
-
-//        linearApproximationResultIteration1 = getLowThrustInitialStateVectorGuess(librationPointNr, ySign, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, continuationIndex, numberOfPatchPoints, 0);
-//        stateVectorInclSTM =  getCorrectedAugmentedInitialState(
-//                    linearApproximationResultIteration1, computeHamiltonian( massParameter, linearApproximationResultIteration1.segment(0,10)), 0,
-//                   librationPointNr, orbitType, massParameter, numberOfPatchPoints, initialNumberOfCollocationPoints,false, initialConditions, differentialCorrections, statesContinuation,
-//                    maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
 
         Eigen::VectorXd statesContinuationVector = refineOrbitHamiltonian(librationPointNr, orbitType, accelerationMagnitude,accelerationAngle, accelerationAngle2,
                                                                           familyHamiltonian, massParameter, continuationIndex, numberOfCollocationPoints);
 
-        std::cout << "StatesContinuationVector: computed" << std::endl;
+
         // Compute the interior points and nodes for each segment, this is the input for the getCollocated State
         Eigen::MatrixXd oddNodesMatrix((11*(numberOfCollocationPoints-1)), 4 );
         computeOddPoints(statesContinuationVector, oddNodesMatrix, numberOfCollocationPoints, massParameter, false);
 
         Eigen::VectorXd hamiltonianVector = Eigen::VectorXd::Zero(1);
         hamiltonianVector(0) = familyHamiltonian;
-        bool continuationDirectionReversed = true;
+        bool continuationDirectionReversed = false;
         bool stableCollocationProcedure = true;
         stateVectorInclSTM = getCollocatedAugmentedInitialState(oddNodesMatrix, 0, librationPointNr, orbitType, continuationIndex, hamiltonianVector, continuationDirectionReversed, stableCollocationProcedure,
                                                                 massParameter, numberOfPatchPoints, numberOfCollocationPoints, initialConditions,
-                                                                differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit, false);
+                                                                differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit, true);
 
+        std::cout << "getCollocatedAugmentedInitialState: Computed!" << std::endl;
       }
 
 
@@ -1157,7 +1155,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
     // Generate periodic orbits until termination
     double orbitalPeriod  = 0.0, periodIncrement = 0.0;
     int orderOfMagnitude, minimumIncrementOrderOfMagnitude;
-     orderOfMagnitude = 5;
+     orderOfMagnitude = 2;
      minimumIncrementOrderOfMagnitude = 7;
 
 
@@ -1385,6 +1383,8 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
               Eigen::MatrixXd oddNodesMatrix((11*(numberOfCollocationPoints-1)), 4 );
               computeOddPoints(initialStateVectorContinuation, oddNodesMatrix, numberOfCollocationPoints, massParameter, false);
 
+              propagateAndSaveCollocationProcedure(oddNodesMatrix, Eigen::VectorXd::Zero(numberOfCollocationPoints-1), Eigen::VectorXd::Zero(4), numberOfCollocationPoints, 0, massParameter);
+
 
                //Add thrust increment to all nodes and interior Points!
                for(int i = 0; i < (numberOfCollocationPoints-1); i ++)
@@ -1396,7 +1396,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                             oddNodesMatrix(11*i+continuationIndex,j) = 0.1;
                        } else {
 
-                           oddNodesMatrix(11*i+continuationIndex,j) = oddNodesMatrix(11*i+continuationIndex,j) + incrementContinuationParameter;
+                           oddNodesMatrix(11*i+continuationIndex,j) = oddNodesMatrix(11*i+continuationIndex,j) + 5.0* incrementContinuationParameter;
 
                        }
 
@@ -1404,10 +1404,13 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
                }
 
+               propagateAndSaveCollocationProcedure(oddNodesMatrix, Eigen::VectorXd::Zero(numberOfCollocationPoints-1), Eigen::VectorXd::Zero(4), numberOfCollocationPoints, 1, massParameter);
+
+
 
               Eigen::VectorXd previousDesignVector(1); previousDesignVector.setZero();
               previousDesignVector(0) = familyHamiltonian;
-              bool continuationDirectionReversed = true;
+              bool continuationDirectionReversed = false;
               stateVectorInclSTM = getCollocatedAugmentedInitialState( oddNodesMatrix, numberOfInitialConditions, librationPointNr, orbitType, continuationIndex, previousDesignVector, continuationDirectionReversed, stableCollocationProcedure,
                                                                        massParameter, numberOfPatchPoints, numberOfCollocationPoints, initialConditions,
                                                                        differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit, false);

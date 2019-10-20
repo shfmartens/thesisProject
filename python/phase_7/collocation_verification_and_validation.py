@@ -43,7 +43,7 @@ class DisplayCollocationProcedure:
 
         # Define the marker sizes
         self.currentPatchStyle = 'o'
-        self.patchSize = 9
+        self.patchSize = 2
         self.widthBar = 0.10
 
         # label properties
@@ -129,16 +129,20 @@ class DisplayCollocationProcedure:
 
 
         for i in range(3):
+            if i == 2:
+                pp = 41
+            else:
+                pp = 26
             orbit_df = load_orbit_augmented('../../data/raw/collocation/' + str(i) + '_stateHistory.txt')
-            patch_points_df = load_patch_points('../../data/raw/collocation/' + str(i) + '_stateVectors.txt',6)
+            patch_points_df = load_patch_points('../../data/raw/collocation/' + str(i) + '_stateVectors.txt',pp)
             deviation = np.loadtxt('../../data/raw/collocation/' + str(i) + '_deviations.txt')
-            propagated_states_df = load_propagated_states('../../data/raw/collocation/' + str(i) + '_propagatedStates.txt',6-1)
+            propagated_states_df = load_propagated_states('../../data/raw/collocation/' + str(i) + '_propagatedStates.txt',pp-1)
 
             convergence_properties_list.append([i, deviation[0], deviation[1], deviation[2], deviation[3], deviation[4], deviation[5], deviation[6]])
 
             if i == 0:
-                ax1.scatter(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],marker=self.currentPatchStyle,s=0.5, label='Initial Guess')
-                #ax1.plot(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],linewidth=self.lineWidth, label='Initial Guess')
+                #ax1.scatter(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],marker=self.currentPatchStyle,s=0.5, label='Initial Guess')
+                ax1.plot(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],linewidth=self.lineWidth, label='Initial Guess')
                 ax1.scatter(patch_points_df['x'], patch_points_df['y'], color='black', marker=self.currentPatchStyle,s=self.patchSize, label='Current patch points')
 
                 for row in patch_points_df.iterrows():
@@ -149,10 +153,10 @@ class DisplayCollocationProcedure:
                         x_end = x_base + state[3] / self.magnitudeFactor
                         y_end = y_base + state[4] / self.magnitudeFactor
 
-                        test1 = ax1.annotate("", xy=(x_base, y_base), xytext=(x_end, y_end),
-                                             arrowprops=dict(arrowstyle='<-, head_width=1e-1, head_length=2e-1',
-                                                             color=self.plottingColors['lambda3'], shrinkA=0,
-                                                             shrinkB=0), label='$V_{' + 'outgoing' + '}$')
+                        # test1 = ax1.annotate("", xy=(x_base, y_base), xytext=(x_end, y_end),
+                        #                      arrowprops=dict(arrowstyle='<-, head_width=1e-1, head_length=2e-1',
+                        #                                      color=self.plottingColors['lambda3'], shrinkA=0,
+                        #                                      shrinkB=0), label='$V_{' + 'outgoing' + '}$')
 
                 for row in propagated_states_df.iterrows():
                     if row[0] > 0:
@@ -163,14 +167,14 @@ class DisplayCollocationProcedure:
                         x_end = x_base + state[3] / self.magnitudeFactor
                         y_end = y_base + state[4] / self.magnitudeFactor
 
-                        test2 = ax1.annotate("", xy=(x_base, y_base), xytext=(x_end, y_end),
-                                             arrowprops=dict(arrowstyle='<-, head_width=1e-1, head_length=2e-1',
-                                                             color=self.plottingColors['lambda6'], shrinkA=0,
-                                                             shrinkB=0), label='$V_{' + 'incoming' + '}$')
+                        # test2 = ax1.annotate("", xy=(x_base, y_base), xytext=(x_end, y_end),
+                        #                      arrowprops=dict(arrowstyle='<-, head_width=1e-1, head_length=2e-1',
+                        #                                      color=self.plottingColors['lambda6'], shrinkA=0,
+                        #                                      shrinkB=0), label='$V_{' + 'incoming' + '}$')
 
             if i == 1:
-                ax2.scatter(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],marker=self.currentPatchStyle,s=0.5, label='Initial Guess')
-                #ax2.plot(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],linewidth=self.lineWidth, label='Initial Guess')
+                #ax2.scatter(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],marker=self.currentPatchStyle,s=0.5, label='Initial Guess')
+                ax2.plot(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],linewidth=self.lineWidth, label='Initial Guess')
                 ax2.scatter(patch_points_df['x'], patch_points_df['y'], color='black', marker=self.currentPatchStyle,s=self.patchSize, label='Current patch points')
 
                 for row in patch_points_df.iterrows():
@@ -181,10 +185,10 @@ class DisplayCollocationProcedure:
                         x_end = x_base + state[3] / self.magnitudeFactor
                         y_end = y_base + state[4] / self.magnitudeFactor
 
-                        test1 = ax2.annotate("", xy=(x_base, y_base), xytext=(x_end, y_end),
-                                             arrowprops=dict(arrowstyle='<-, head_width=1e-1, head_length=2e-1',
-                                                             color=self.plottingColors['lambda3'], shrinkA=0,
-                                                             shrinkB=0), label='$V_{' + 'outgoing' + '}$')
+                        # test1 = ax2.annotate("", xy=(x_base, y_base), xytext=(x_end, y_end),
+                        #                      arrowprops=dict(arrowstyle='<-, head_width=1e-1, head_length=2e-1',
+                        #                                      color=self.plottingColors['lambda3'], shrinkA=0,
+                        #                                      shrinkB=0), label='$V_{' + 'outgoing' + '}$')
 
                 for row in propagated_states_df.iterrows():
                     if row[0] > 0:
@@ -195,14 +199,14 @@ class DisplayCollocationProcedure:
                         x_end = x_base + state[3] / self.magnitudeFactor
                         y_end = y_base + state[4] / self.magnitudeFactor
 
-                        test2 = ax2.annotate("", xy=(x_base, y_base), xytext=(x_end, y_end),
-                                             arrowprops=dict(arrowstyle='<-, head_width=1e-1, head_length=2e-1',
-                                                             color=self.plottingColors['lambda6'], shrinkA=0,
-                                                             shrinkB=0), label='$V_{' + 'incoming' + '}$')
+                        # test2 = ax2.annotate("", xy=(x_base, y_base), xytext=(x_end, y_end),
+                        #                      arrowprops=dict(arrowstyle='<-, head_width=1e-1, head_length=2e-1',
+                        #                                      color=self.plottingColors['lambda6'], shrinkA=0,
+                        #                                      shrinkB=0), label='$V_{' + 'incoming' + '}$')
 
             if i == 2:
-                ax3.scatter(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],marker=self.currentPatchStyle,s=0.5, label='Initial Guess')
-                #ax3.plot(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],linewidth=self.lineWidth, label='Initial Guess')
+                #ax3.scatter(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],marker=self.currentPatchStyle,s=0.5, label='Initial Guess')
+                ax3.plot(orbit_df['x'], orbit_df['y'], color=self.plottingColors['singleLine'],linewidth=self.lineWidth, label='Initial Guess')
                 ax3.scatter(patch_points_df['x'], patch_points_df['y'], color='black', marker=self.currentPatchStyle,s=self.patchSize, label='Current patch points')
 
                 for row in patch_points_df.iterrows():
@@ -213,10 +217,10 @@ class DisplayCollocationProcedure:
                         x_end = x_base + state[3] / self.magnitudeFactor
                         y_end = y_base + state[4] / self.magnitudeFactor
 
-                        test1 = ax3.annotate("", xy=(x_base, y_base), xytext=(x_end, y_end),
-                                             arrowprops=dict(arrowstyle='<-, head_width=1e-1, head_length=2e-1',
-                                                             color=self.plottingColors['lambda3'], shrinkA=0,
-                                                             shrinkB=0), label='$V_{' + 'outgoing' + '}$')
+                        # test1 = ax3.annotate("", xy=(x_base, y_base), xytext=(x_end, y_end),
+                        #                      arrowprops=dict(arrowstyle='<-, head_width=1e-1, head_length=2e-1',
+                        #                                      color=self.plottingColors['lambda3'], shrinkA=0,
+                        #                                      shrinkB=0), label='$V_{' + 'outgoing' + '}$')
 
                 for row in propagated_states_df.iterrows():
                     if row[0] > 0:
@@ -227,10 +231,10 @@ class DisplayCollocationProcedure:
                         x_end = x_base + state[3] / self.magnitudeFactor
                         y_end = y_base + state[4] / self.magnitudeFactor
 
-                        test2 = ax3.annotate("", xy=(x_base, y_base), xytext=(x_end, y_end),
-                                             arrowprops=dict(arrowstyle='<-, head_width=1e-1, head_length=2e-1',
-                                                             color=self.plottingColors['lambda6'], shrinkA=0,
-                                                             shrinkB=0), label='$V_{' + 'incoming' + '}$')
+                        # test2 = ax3.annotate("", xy=(x_base, y_base), xytext=(x_end, y_end),
+                        #                      arrowprops=dict(arrowstyle='<-, head_width=1e-1, head_length=2e-1',
+                        #                                      color=self.plottingColors['lambda6'], shrinkA=0,
+                        #                                      shrinkB=0), label='$V_{' + 'incoming' + '}$')
 
             if min(orbit_df['x']) < min_x:
                 min_x = min(patch_points_df['x'])

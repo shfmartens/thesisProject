@@ -309,7 +309,6 @@ void propagateAndSaveCollocationProcedure(const Eigen::MatrixXd oddPointsInput, 
 
      Eigen::VectorXd propagatedStates = propagatedStatesInclSTM.block(0,0,10*(numberOfCollocationPoints-1),1);
 
-
      tudat::input_output::writeMatrixToFile( inputStateVector, fileNameStringStateVector, 16, directoryString);
      tudat::input_output::writeDataMapToTextFile( stateHistory, fileNameStringStateHistory, directoryString );
      tudat::input_output::writeMatrixToFile( deviationNorms, fileNameStringDeviations, 16, directoryString);
@@ -1206,6 +1205,8 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
             collocatedNodes.resize(11*numberOfCollocationPoints); collocatedNodes.setZero();
 
             shiftTimeOfConvergedCollocatedGuess(collocationDesignVector, collocatedGuess, collocatedNodes, numberOfCollocationPoints, thrustAndMassParameters);
+
+            //propagateAndSaveCollocationProcedure(outputDesignVector, Eigen::VectorXd::Zero(numberOfCollocationPoints-1), thrustAndMassParameters, numberOfCollocationPoints, 2, massParameter);
 
 
         }
