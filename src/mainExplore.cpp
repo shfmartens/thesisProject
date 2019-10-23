@@ -43,20 +43,20 @@ int main (){
      //================================
      //== Compute equilibria, comment out when computing low-thrust intial positions ==
      //================================
-    double accMag = 0.1;
-    double alpha = 1.0;
-    for (int i = 1; i < 6 ; i++)
-    {
-        Eigen::Vector2d equilibriumTest = createEquilibriumLocations(i, accMag, alpha, "acceleration", massParameter);
+//    double accMag = 0.1;
+//    double alpha = 1.0;
+//    for (int i = 1; i < 6 ; i++)
+//    {
+//        Eigen::Vector2d equilibriumTest = createEquilibriumLocations(i, accMag, alpha, "acceleration", massParameter);
 
-        std::cout << "\n== Eq result =="<< std::endl
-                  << "librationPointNr: " << i << std::endl
-                  << "alt: " << accMag << std::endl
-                  << "alpha: " << alpha << std::endl
-                  << "equilibriumLocation: \n" << equilibriumTest << std::endl
-                  << "=================" << std::endl;
+//        std::cout << "\n== Eq result =="<< std::endl
+//                  << "librationPointNr: " << i << std::endl
+//                  << "alt: " << accMag << std::endl
+//                  << "alpha: " << alpha << std::endl
+//                  << "equilibriumLocation: \n" << equilibriumTest << std::endl
+//                  << "=================" << std::endl;
 
-    }
+//    }
 //    double semiMajorAxis = 384400*1000;
 //    double EarthGravPar = tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER;
 //    double MoonGravPar = tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER;
@@ -81,15 +81,15 @@ int main (){
     // == Compute initial conditions ==
     // ================================
         
-    #pragma omp parallel num_threads(1)
+    #pragma omp parallel num_threads(2)
     {
         #pragma omp for
-        for (unsigned int i=1; i<=1; i++) {
+        for (unsigned int i=1; i<=2; i++) {
             if (i ==1)
             {
                 std::cout << "Run Thread " << i << std::endl;
                 std::string orbitType = "horizontal";
-                int continuationIndex = 6; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
+                int continuationIndex = 1; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
                 double accelerationMagnitude = 0.0;
                 double accelerationAngle = 0.0;
                 double accelerationAngle2 = 0.0;
@@ -97,9 +97,7 @@ int main (){
                 double ySign = 1.0;
                 double familyHamiltonian = -1.525;
                 bool startContinuationFromTextFile = false;
-                //createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile );
-
-
+                createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile );
 
             }
             if (i ==2)

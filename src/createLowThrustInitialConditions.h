@@ -22,7 +22,7 @@ void appendResultsVectorAugmented(const double hamiltonian, const double orbital
 
 void appendDifferentialCorrectionResultsVectorAugmented(
         const double hamiltonianHalfPeriod,  const Eigen::VectorXd& differentialCorrectionResult,
-        std::vector< Eigen::VectorXd >& differentialCorrections, const Eigen::VectorXd deviationsNorms );
+        std::vector< Eigen::VectorXd >& differentialCorrections, const Eigen::VectorXd deviationsNorms, const Eigen::VectorXd stateVectorPhaseHalf );
 
 void appendContinuationStatesVectorAugmented(const int orbitNumber, const int numberOfPatchPoints, const double hamiltonianInitialCondition, const double orbitalPeriod,
                                              const Eigen::VectorXd& differentialCorrectionResult, std::vector< Eigen::VectorXd >& statesContinuation);
@@ -48,7 +48,7 @@ double getDefaultArcLengthAugmented(
         const double distanceIncrement,
         const Eigen::VectorXd& currentState,  const int continuationIndex  );
 
-bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differentialCorrections,
+bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differentialCorrections, const std::vector< Eigen::VectorXd >& statesContinuationVector,
                        const Eigen::MatrixXd& stateVectorInclSTM, const std::string orbitType, const int librationPointNr,
                        const double maxEigenvalueDeviation = 1.0e-3 );
 

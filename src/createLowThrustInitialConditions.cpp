@@ -164,10 +164,10 @@ void appendResultsVectorAugmented(const double hamiltonian, const double orbital
 
 void appendDifferentialCorrectionResultsVectorAugmented(
         const double hamiltonianFullPeriod,  const Eigen::VectorXd& differentialCorrectionResult,
-        std::vector< Eigen::VectorXd >& differentialCorrections, const Eigen::VectorXd deviationsNorms )
+        std::vector< Eigen::VectorXd >& differentialCorrections, const Eigen::VectorXd deviationsNorms, const Eigen::VectorXd stateVectorPhaseHalf )
 {
 
-    Eigen::VectorXd tempDifferentialCorrection = Eigen::VectorXd( 21 );
+    Eigen::VectorXd tempDifferentialCorrection = Eigen::VectorXd( 30 );
 
 
     tempDifferentialCorrection( 0 ) = differentialCorrectionResult( 24 );  // numberOfIterations
@@ -177,6 +177,7 @@ void appendDifferentialCorrectionResultsVectorAugmented(
     tempDifferentialCorrection( 4 ) = differentialCorrectionResult( 22 );  // currentTime
     tempDifferentialCorrection.segment(5,5) = deviationsNorms;
     tempDifferentialCorrection.segment(10,10) = differentialCorrectionResult.segment(12,10);
+    tempDifferentialCorrection.segment(20,10) = stateVectorPhaseHalf;
 
 
     differentialCorrections.push_back(tempDifferentialCorrection);
@@ -552,7 +553,11 @@ Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::MatrixXd& initi
     Eigen::MatrixXd stateVectorInclSTM = propagateOrbitAugmentedToFinalCondition(
                 getFullInitialStateAugmented( initialStateVector ), massParameter, orbitalPeriod, 1, stateHistory, 1000, 0.0 ).first;
 
-    std::cout << "\n propagation completed: \n" << stateVectorInclSTM.block(0,0,10,1) << std::endl;
+    std::map< double, Eigen::VectorXd > stateHistoryPhaseHalf;
+    Eigen::MatrixXd stateVectorInclSTMPhaseHalf = propagateOrbitAugmentedToFinalCondition(
+                getFullInitialStateAugmented( initialStateVector ), massParameter, orbitalPeriod/2, 1, stateHistoryPhaseHalf, -1, 0.0 ).first;
+    Eigen::VectorXd stateVectorPhaseHalf = stateVectorInclSTMPhaseHalf.block(0,0,10,1);
+
 
     if (initialSolutionFromTextFile == false)
     {
@@ -620,7 +625,7 @@ Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::MatrixXd& initi
         Eigen::MatrixXd propagatedStates(10*(numberOfCollocationPoints-1),11);
         std::map< double, Eigen::VectorXd > stateHistoryTemp;
 
-        appendDifferentialCorrectionResultsVectorAugmented( hamiltonianFullPeriod, collocationResult, differentialCorrections, deviationNorms );
+        appendDifferentialCorrectionResultsVectorAugmented( hamiltonianFullPeriod, collocationResult, differentialCorrections, deviationNorms, stateVectorPhaseHalf );
 
         Eigen::VectorXd collocationResultWithStates(25+11*numberOfCollocationPoints);
         collocationResultWithStates.segment(0,25) = collocationResult;
@@ -664,6 +669,11 @@ Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initia
     Eigen::MatrixXd stateVectorInclSTM = propagateOrbitAugmentedToFinalCondition(
                 getFullInitialStateAugmented( initialStateVector ), massParameter, orbitalPeriod, 1, stateHistory, 1000, 0.0 ).first;
 
+    std::map< double, Eigen::VectorXd > stateHistoryPhaseHalf;
+    Eigen::MatrixXd stateVectorInclSTMPhaseHalf = propagateOrbitAugmentedToFinalCondition(
+                getFullInitialStateAugmented( initialStateVector ), massParameter, orbitalPeriod/2, 1, stateHistoryPhaseHalf, -1, 0.0 ).first;
+    Eigen::VectorXd stateVectorPhaseHalf = stateVectorInclSTMPhaseHalf.block(0,0,10,1);
+
 //    Eigen::MatrixXd stateVectorInclSTMPhaseHalf = propagateOrbitAugmentedToFinalCondition(
 //                getFullInitialStateAugmented( initialStateVector ), massParameter, orbitalPeriod/2, 1, stateHistory, 1000, 0.0 ).first;
 
@@ -699,7 +709,7 @@ Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initia
     Eigen::VectorXd DCResultsVector = Eigen::VectorXd(27); DCResultsVector.setZero();
     DCResultsVector.segment(0,25) = differentialCorrectionResult.segment(0,25);
 
-    appendDifferentialCorrectionResultsVectorAugmented( hamiltonianFullPeriodDiffCorr, DCResultsVector, differentialCorrections, deviationNorms );
+    appendDifferentialCorrectionResultsVectorAugmented( hamiltonianFullPeriodDiffCorr, DCResultsVector, differentialCorrections, deviationNorms, stateVectorPhaseHalf );
     Eigen::VectorXd statesConvergedGuess = differentialCorrectionResult.segment(25,11*numberOfPatchPoints);
 
     // store the multiple shooting converged guesses as converged colllocated formats in the
@@ -941,7 +951,7 @@ void writeFinalResultsToFilesAugmented( const int librationPointNr, const std::s
 
 
         textFileDifferentialCorrection << std::left << std::scientific   << std::setw(25)
-                                       << differentialCorrections[i][0]  << std::setw(25) << differentialCorrections[i][1 ]  << std::setw(25)
+                                       << differentialCorrections[i][0]  << std::setw(25) << differentialCorrections[i][1]  << std::setw(25)
                                        << differentialCorrections[i][2]  << std::setw(25) << differentialCorrections[i][3]  << std::setw(25)
                                        << differentialCorrections[i][4]  << std::setw(25) << differentialCorrections[i][5]  << std::setw(25)
                                        << differentialCorrections[i][6]  << std::setw(25) << differentialCorrections[i][7]  << std::setw(25)
@@ -950,7 +960,12 @@ void writeFinalResultsToFilesAugmented( const int librationPointNr, const std::s
                                        << differentialCorrections[i][12] << std::setw(25) << differentialCorrections[i][13] << std::setw(25)
                                        << differentialCorrections[i][14] << std::setw(25) << differentialCorrections[i][15] << std::setw(25)
                                        << differentialCorrections[i][16] << std::setw(25) << differentialCorrections[i][17] << std::setw(25)
-                                       << differentialCorrections[i][18] << std::setw(25) << differentialCorrections[i][19] << std::setw(25) << std::endl;
+                                       << differentialCorrections[i][18] << std::setw(25) << differentialCorrections[i][19] << std::setw(25)
+                                       << differentialCorrections[i][20] << std::setw(25) << differentialCorrections[i][21] << std::setw(25)
+                                       << differentialCorrections[i][22] << std::setw(25) << differentialCorrections[i][23] << std::setw(25)
+                                       << differentialCorrections[i][24] << std::setw(25) << differentialCorrections[i][25] << std::setw(25)
+                                       << differentialCorrections[i][26] << std::setw(25) << differentialCorrections[i][27] << std::setw(25)
+                                       << differentialCorrections[i][28] << std::setw(25) << differentialCorrections[i][29] << std::setw(25) << std::endl;
         //std::cout << "i: " << std::endl;
         //std::cout << "size statesContinuation[i]: "  << (statesContinuation[i]).size() << std::endl;
         //std::cout << "size statesContinuation[i] - 2: "  << (statesContinuation[i]).size() - 2<< std::endl;
@@ -997,7 +1012,7 @@ double getDefaultArcLengthAugmented(
    return (distanceIncrement * scalingFactor) / ( rho_n );
 }
 
-bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differentialCorrections,
+bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differentialCorrections, const std::vector< Eigen::VectorXd >& statesContinuationVector,
                        const Eigen::MatrixXd& stateVectorInclSTM, const std::string orbitType, const int librationPointNr,
                        const double maxEigenvalueDeviation )
 {
@@ -1032,15 +1047,70 @@ bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differenti
             }
         }
 
-        // Check if final condition is within two times of the the radius of the center of the Earth
-        if (continueNumericalContinuation == true )
+
+    }
+
+    if(continueNumericalContinuation == true)
+    {
+        // compute statesContinuationDirection
+        double hamiltonianOrbit1= statesContinuationVector[0](1);
+        double hamiltonianOrbit2 = statesContinuationVector[1](1);
+
+        int directionInit;
+        if  ((hamiltonianOrbit1 - hamiltonianOrbit2) > 0)
         {
-            // compute angle relative to the positive x-axis. with equilibrium
-            // compute the closest surface position.
-            // for L1 moonPosition - spacecraft position, each element should be larger than zero
-            // for L2 moon position - spacecraftPosition, each element should be smaller than zero
+            directionInit = 1;
+
+        } else if ((hamiltonianOrbit1 - hamiltonianOrbit2) < 0)
+        {
+            directionInit = -1;
+        } else
+        {
+            continueNumericalContinuation == false;
+        }
+
+        double hamiltonianOrbitPrevious = statesContinuationVector[statesContinuationVector.size()-2](1);
+        double hamiltonianOrbitCurrent = statesContinuationVector[statesContinuationVector.size()-1](1);
+
+        int directionCurrent;
+        if  ((hamiltonianOrbitPrevious - hamiltonianOrbitCurrent) > 0)
+        {
+            directionCurrent = 1;
+
+        } else if ((hamiltonianOrbitPrevious - hamiltonianOrbitCurrent) < 0)
+        {
+            directionCurrent = -1;
+        } else
+        {
+            continueNumericalContinuation == false;
+        }
+
+        if (directionInit != directionCurrent)
+        {
+            continueNumericalContinuation == false;
+            std::cout << "\n HAMILTONIAN DIRECTION SWITCHED, KILL FAMILY CONTINUATION \n" << std::endl;
+
+                    std::cout << "hamiltonianOrbit1: " << hamiltonianOrbit1 << std::endl;
+                    std::cout << "hamiltonianOrbit2: " << hamiltonianOrbit2 << std::endl;
+                    std::cout << "directionInit: " << directionInit << std::endl;
+                    std::cout << "hamiltonianOrbitprevious: " << hamiltonianOrbitPrevious << std::endl;
+                    std::cout << "hamiltonianOrbitCurrent: " << hamiltonianOrbitCurrent << std::endl;
+                    std::cout << "directionCurrent: " << directionCurrent << std::endl;
 
         }
+
+//        std::cout << "hamiltonianOrbit1: " << hamiltonianOrbit1 << std::endl;
+//        std::cout << "hamiltonianOrbit2: " << hamiltonianOrbit2 << std::endl;
+//        std::cout << "directionInit: " << directionInit << std::endl;
+//        std::cout << "hamiltonianOrbitprevious: " << hamiltonianOrbitPrevious << std::endl;
+//        std::cout << "hamiltonianOrbitCurrent: " << hamiltonianOrbitCurrent << std::endl;
+//        std::cout << "directionCurrent: " << directionCurrent << std::endl;
+
+
+
+
+
+
     }
     return continueNumericalContinuation;
 }
@@ -1145,7 +1215,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 // ============ CONTINUATION PROCEDURE ================== //
     // Set exit parameters of continuation procedure
-    int maximumNumberOfInitialConditions = 2;
+    int maximumNumberOfInitialConditions = 2400;
     int numberOfInitialConditions;
     if (continuationIndex == 1)
     {
@@ -1278,7 +1348,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                  Eigen::VectorXd fullEquilibriumLocation = Eigen::VectorXd::Zero(6);
                  fullEquilibriumLocation.segment(0,2) = createEquilibriumLocations(librationPointNr, accelerationMagnitude, accelerationAngle, "acceleration", ySign, massParameter );
                  increment = initialStateVectorContinuation.segment(0,6) - fullEquilibriumLocation;
-                 adaptedIncrementVector = 10.0 *increment / (increment.norm());
+                 adaptedIncrementVector = 50.0 *increment / (increment.norm());
 
 
               }
@@ -1469,7 +1539,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
           if (continueNumericalContinuation == true)
           {
-              continueNumericalContinuation = checkTerminationAugmented(differentialCorrections, stateVectorInclSTM, orbitType, librationPointNr, maxEigenvalueDeviation );
+              continueNumericalContinuation = checkTerminationAugmented(differentialCorrections, statesContinuation, stateVectorInclSTM, orbitType, librationPointNr, maxEigenvalueDeviation );
 
           }
 

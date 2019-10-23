@@ -1313,7 +1313,7 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
 
             shiftTimeOfConvergedCollocatedGuess(collocationDesignVector, collocatedGuess, collocatedNodes, numberOfCollocationPoints, thrustAndMassParameters);
 
-            propagateAndSaveCollocationProcedure(outputDesignVector, Eigen::VectorXd::Zero(numberOfCollocationPoints-1), thrustAndMassParameters, numberOfCollocationPoints, 2, massParameter);
+            //propagateAndSaveCollocationProcedure(outputDesignVector, Eigen::VectorXd::Zero(numberOfCollocationPoints-1), thrustAndMassParameters, numberOfCollocationPoints, 2, massParameter);
 
 
         }
