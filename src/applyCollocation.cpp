@@ -66,6 +66,40 @@ void checkMeshTiming(const Eigen::MatrixXd collocationDesignVector, const int nu
 }
 
 
+void writeErrorDistributionDataToFile(const int numberOfCollocationPoints, const Eigen::VectorXd segmentErrorVector, const Eigen::MatrixXd collocationDesignVector, const int numberOfRefinement )
+{
+
+// save output to file, use typeOfInput as variable!
+ std::string directoryString = "../data/raw/collocation/error_distribution";
+
+ int numberOfSegments = numberOfCollocationPoints-1;
+ Eigen::VectorXd timeVector(numberOfCollocationPoints); timeVector.setZero();
+ for(int i = 0; i < numberOfSegments;i++)
+ {
+    Eigen::VectorXd localState = collocationDesignVector.block(19*i,0,26,1);
+    timeVector(i) = localState(6);
+    timeVector(i+1) = localState(25);
+
+ }
+ double timeDeviation = 0.0-timeVector(0);
+ for(int i = 0; i < numberOfCollocationPoints; i++)
+ {
+    timeVector(i) = timeVector(i) + timeDeviation;
+
+ }
+
+
+ std::string fileNameStringTime;
+ std::string fileNameStringErrors;
+
+ fileNameStringTime = (std::to_string(numberOfRefinement) + "_TimeDistribution.txt");
+ fileNameStringErrors = (std::to_string(numberOfRefinement) + "_ErrorDistribution.txt");
+
+ tudat::input_output::writeMatrixToFile( timeVector, fileNameStringTime, 16, directoryString);
+ tudat::input_output::writeMatrixToFile( segmentErrorVector, fileNameStringErrors, 16, directoryString);
+
+
+}
 void  writeTrajectoryErrorDataToFile(const int numberOfCollocationPoints, const Eigen::VectorXd fullPeriodDeviations, const Eigen::VectorXd defectVectorMS, const Eigen::VectorXd collocatedDefects, const Eigen::VectorXd integrationErrors, const int magnitudeNoiseOffset, const double amplitude )
 {
 
@@ -252,6 +286,18 @@ void propagateAndSaveCollocationProcedure(const Eigen::MatrixXd oddPointsInput, 
     // compute deviations via multiple shooting and the respective deviation norms
     computeOrbitDeviations(inputStateVector, numberOfCollocationPoints, propagatedStatesInclSTM, defectVector, stateHistory, massParameter);
 
+    std::cout << "numberOfPatchPoints " << numberOfCollocationPoints << std::endl;
+    Eigen::VectorXd hamiltonianDeviation(numberOfCollocationPoints); hamiltonianDeviation.setZero();
+
+    for(int i = 0; i<numberOfCollocationPoints; i++)
+    {
+        Eigen::VectorXd localState = inputStateVector.segment(11*i,10);
+        hamiltonianDeviation(i) = -1.525 - computeHamiltonian(massParameter, localState);
+    }
+
+    std::cout << "hamiltonianDeviation: \n" << hamiltonianDeviation << std::endl;
+    std::cout << "hamiltonianDeviation: " << hamiltonianDeviation.norm() << std::endl;
+
 
     // compute Deviation Norms
     Eigen::VectorXd positionDeviationTotal (3*(numberOfCollocationPoints-1));
@@ -290,6 +336,56 @@ void propagateAndSaveCollocationProcedure(const Eigen::MatrixXd oddPointsInput, 
     deviationNorms(4) = positionDeviationExternal.norm();
     deviationNorms(5) = velocityDeviationExternal.norm();
     deviationNorms(6) = timeDeviationTotal.norm();
+
+    Eigen::VectorXd initialStateVector = Eigen::VectorXd::Zero(10);
+    double orbitalPeriod;
+    if (typeOfInput < 2)
+    {
+        initialStateVector = inputStateVector.segment(0,10);
+        orbitalPeriod = inputStateVector(inputStateVector.rows()-1);
+    } else
+    {
+        initialStateVector.segment(0,6) = inputStateVector.segment(0,6);
+        initialStateVector.segment(6,4) = thrustAndMassParameters;
+        orbitalPeriod = inputStateVector(inputStateVector.rows()-1) - inputStateVector(10);
+    }
+//    std::cout << "inputStateVector: \n" << inputStateVector << std::endl;
+//    std::cout << "oddPoints: \n" << inputStateVector << std::endl;
+//    std::cout << "EndTime: \n" << inputStateVector(inputStateVector.rows()-1) << std::endl;
+//    std::cout << "Start: \n" << inputStateVector(10) << std::endl;
+//    std::cout << "Period: \n" << inputStateVector(inputStateVector.rows()-1) - inputStateVector(10) << std::endl;
+
+
+
+
+//    std::cout << "orbitalPeriod: " << orbitalPeriod << std::endl;
+
+    std::map< double, Eigen::VectorXd > stateHistoryTEST;
+    std::pair< Eigen::MatrixXd, double >finalTimeStatePatchPoint = propagateOrbitAugmentedToFinalCondition( getFullInitialStateAugmented( initialStateVector),
+                                                                                 massParameter, orbitalPeriod, 1, stateHistoryTEST, 1000, 0.0);
+
+    Eigen::MatrixXd stateVectorInclSTMPatchPoint    = finalTimeStatePatchPoint.first;
+    double currentTimePatchPoint         = finalTimeStatePatchPoint.second;
+    Eigen::VectorXd stateVectorOnlyPatchPoint = stateVectorInclSTMPatchPoint.block( 0, 0, 10, 1 );
+    Eigen::VectorXd deviations = stateVectorOnlyPatchPoint - initialStateVector;
+    std::cout << "deviations: \n" << deviations << std::endl;
+    std::cout << " H_{lt} RK78: \n" << computeHamiltonian(massParameter, initialStateVector) << std::endl;
+    std::cout << " Delta H_{lt} RK78: \n" << -1.525 - computeHamiltonian(massParameter, initialStateVector) << std::endl;
+
+    Eigen::MatrixXd MONODROMY = stateVectorInclSTMPatchPoint.block( 0, 1, 6, 6 );
+
+
+    Eigen::EigenSolver< Eigen::MatrixXd > eigM( MONODROMY );
+    Eigen::VectorXcd  eigenValues = eigM.eigenvalues();
+
+    std::cout << "\n == EIGSYSTEM == " << std::endl
+    //              << "Delta R: " << (deviationsVAL.segment(0,3)).norm() << std ::endl
+    //              << "Delta V: " << (deviationsVAL.segment(3,3)).norm() << std ::endl
+                  << "M eigenvalues: " << eigenValues<< std ::endl
+                  << "M eigenvalues mod: " << 1.0 - std::abs(eigenValues(2))<< std ::endl
+                  << "M eigenvalues real: " << 1.0 - std::abs(eigenValues(2).real())<< std ::endl
+                  << "M det: " <<1.0 -  MONODROMY.determinant()  << std ::endl;
+
 
 
 
@@ -940,7 +1036,7 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
 
     double maximumErrorPerSegment = 10.0*maximumErrorTolerance;
     Eigen::MatrixXd collocationGuessStart = initialCollocationGuess;
-
+    int tempCounter = 0;
     // introduce a variable which will replace the initial collocation guess in the loop
     while(maximumErrorPerSegment > maximumErrorTolerance  )
     {
@@ -993,7 +1089,16 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
             {
                 return outputVector;
             }
+            Eigen::VectorXd segmentErrors(numberOfCollocationPoints-1); segmentErrors.setZero();
+            Eigen::VectorXd eightOrderDerivatives(numberOfCollocationPoints-1); eightOrderDerivatives.setZero();
+
+            computeSegmentErrors(collocationDesignVector, thrustAndMassParameters, numberOfCollocationPoints, segmentErrors, eightOrderDerivatives);
+
             collocationDeviationNorms = computeCollocationDeviationNorms(collocationDefectVector, collocationDesignVector, numberOfCollocationPoints);
+            std::cout << "collocation Defect Vector Norm: " << collocationDefectVector.norm()  << std::endl;
+            std::cout << "max ei: " << segmentErrors.maxCoeff()  << std::endl;
+            std::cout << "max ei: " << segmentErrors.maxCoeff()-segmentErrors.minCoeff()  << std::endl;
+
 
             double positionDefectDeviations = collocationDeviationNorms(0);
             double velocityDefectDeviations= collocationDeviationNorms(1);
@@ -1146,6 +1251,8 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
                 maximumErrorPerSegment = segmentErrorDistribution.maxCoeff();
                 maxNumberOfCorrectionsEquidistribution = maxNumberOfCorrections;
                 meshRefinementCounter++;
+                writeErrorDistributionDataToFile(numberOfCollocationPoints, segmentErrorDistribution, convergedDesignVector, tempCounter );
+                tempCounter++;
             }
 
 
@@ -1206,7 +1313,7 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
 
             shiftTimeOfConvergedCollocatedGuess(collocationDesignVector, collocatedGuess, collocatedNodes, numberOfCollocationPoints, thrustAndMassParameters);
 
-            //propagateAndSaveCollocationProcedure(outputDesignVector, Eigen::VectorXd::Zero(numberOfCollocationPoints-1), thrustAndMassParameters, numberOfCollocationPoints, 2, massParameter);
+            propagateAndSaveCollocationProcedure(outputDesignVector, Eigen::VectorXd::Zero(numberOfCollocationPoints-1), thrustAndMassParameters, numberOfCollocationPoints, 2, massParameter);
 
 
         }

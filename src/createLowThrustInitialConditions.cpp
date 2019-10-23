@@ -664,6 +664,9 @@ Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initia
     Eigen::MatrixXd stateVectorInclSTM = propagateOrbitAugmentedToFinalCondition(
                 getFullInitialStateAugmented( initialStateVector ), massParameter, orbitalPeriod, 1, stateHistory, 1000, 0.0 ).first;
 
+//    Eigen::MatrixXd stateVectorInclSTMPhaseHalf = propagateOrbitAugmentedToFinalCondition(
+//                getFullInitialStateAugmented( initialStateVector ), massParameter, orbitalPeriod/2, 1, stateHistory, 1000, 0.0 ).first;
+
 //    Eigen::MatrixXd MONODROMY = stateVectorInclSTM.block( 0, 1, 6, 6 );
 //    Eigen::VectorXd stateVectorOnly = stateVectorInclSTM.block(0,0,6,1);
 //    Eigen::Vector6d deviationsVAL = initialStateVector.segment(0,6)-stateVectorOnly.segment(0,6);
@@ -1142,7 +1145,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 // ============ CONTINUATION PROCEDURE ================== //
     // Set exit parameters of continuation procedure
-    int maximumNumberOfInitialConditions = 5000;
+    int maximumNumberOfInitialConditions = 2;
     int numberOfInitialConditions;
     if (continuationIndex == 1)
     {
