@@ -1084,7 +1084,7 @@ class DisplayPeriodicSolutions:
 if __name__ == '__main__':
     orbit_types = ['horizontal']
     lagrange_points = [1]
-    acceleration_magnitudes = [0.07]
+    acceleration_magnitudes = [0.001]
     alphas = [0.0,90.0,180.0,270.0]
     betas = [0.0]
     low_dpi = True
