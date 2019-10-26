@@ -1167,6 +1167,16 @@ class DisplayPeriodicSolutions:
         plt.tight_layout()
         plt.subplots_adjust(top=0.9)
 
+        print('1300')
+        print(normIncrement[1299])
+        print('1350')
+        print(normIncrement[1349])
+        print('1400')
+        print(normIncrement[1399])
+        print('1450')
+        print(normIncrement[1449])
+        print('1500')
+        print(normIncrement[1499])
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($a_{lt} = ' + str(
@@ -1224,8 +1234,8 @@ class DisplayPeriodicSolutions:
 if __name__ == '__main__':
     orbit_types = ['horizontal']
     lagrange_points = [1]
-    acceleration_magnitudes = [0.07]
-    alphas = [90.0]
+    acceleration_magnitudes = [0.0]
+    alphas = [0.0]
     betas = [0.0]
     low_dpi = True
     varying_quantities = ['Hamiltonian']
