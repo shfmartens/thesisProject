@@ -550,13 +550,16 @@ Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::MatrixXd& initi
     // Propagate the initialStateVector for a full period and write output to file.
 
     std::map< double, Eigen::VectorXd > stateHistory;
-    Eigen::MatrixXd stateVectorInclSTM = propagateOrbitAugmentedToFinalCondition(
-                getFullInitialStateAugmented( initialStateVector ), massParameter, orbitalPeriod, 1, stateHistory, 1000, 0.0 ).first;
+    std::pair< Eigen::MatrixXd, double > stateVectorInclSTMPhaseHalfAndTime = propagateOrbitAugmentedToFinalCondition(
+                getFullInitialStateAugmented( initialStateVector ), massParameter, orbitalPeriod/2, 1, stateHistory, 1000, 0.0 );
 
-    std::map< double, Eigen::VectorXd > stateHistoryPhaseHalf;
-    Eigen::MatrixXd stateVectorInclSTMPhaseHalf = propagateOrbitAugmentedToFinalCondition(
-                getFullInitialStateAugmented( initialStateVector ), massParameter, orbitalPeriod/2, 1, stateHistoryPhaseHalf, -1, 0.0 ).first;
-    Eigen::VectorXd stateVectorPhaseHalf = stateVectorInclSTMPhaseHalf.block(0,0,10,1);
+     Eigen::MatrixXd stateVectorInclSTMPhaseHalf = stateVectorInclSTMPhaseHalfAndTime.first;
+     double timePhaseHalf = stateVectorInclSTMPhaseHalfAndTime.second;
+     Eigen::VectorXd stateVectorPhaseHalf = stateVectorInclSTMPhaseHalf.block(0,0,10,1);
+
+    Eigen::MatrixXd stateVectorInclSTM = propagateOrbitAugmentedToFinalCondition(
+                stateVectorInclSTMPhaseHalf, massParameter, orbitalPeriod, 1, stateHistory, 1000, timePhaseHalf ).first;
+
 
 
     if (initialSolutionFromTextFile == false)
@@ -664,15 +667,17 @@ Eigen::MatrixXd getCorrectedAugmentedInitialState( const Eigen::VectorXd& initia
     double hamiltonianFullPeriodDiffCorr = differentialCorrectionResult( 23 );
 
 
-    // Propagate the initialStateVector for a full period and write output to file.
     std::map< double, Eigen::VectorXd > stateHistory;
-    Eigen::MatrixXd stateVectorInclSTM = propagateOrbitAugmentedToFinalCondition(
-                getFullInitialStateAugmented( initialStateVector ), massParameter, orbitalPeriod, 1, stateHistory, 1000, 0.0 ).first;
+    std::pair< Eigen::MatrixXd, double > stateVectorInclSTMPhaseHalfAndTime = propagateOrbitAugmentedToFinalCondition(
+                getFullInitialStateAugmented( initialStateVector ), massParameter, orbitalPeriod/2, 1, stateHistory, 1000, 0.0 );
 
-    std::map< double, Eigen::VectorXd > stateHistoryPhaseHalf;
-    Eigen::MatrixXd stateVectorInclSTMPhaseHalf = propagateOrbitAugmentedToFinalCondition(
-                getFullInitialStateAugmented( initialStateVector ), massParameter, orbitalPeriod/2, 1, stateHistoryPhaseHalf, -1, 0.0 ).first;
-    Eigen::VectorXd stateVectorPhaseHalf = stateVectorInclSTMPhaseHalf.block(0,0,10,1);
+     Eigen::MatrixXd stateVectorInclSTMPhaseHalf = stateVectorInclSTMPhaseHalfAndTime.first;
+     double timePhaseHalf = stateVectorInclSTMPhaseHalfAndTime.second;
+     Eigen::VectorXd stateVectorPhaseHalf = stateVectorInclSTMPhaseHalf.block(0,0,10,1);
+
+    Eigen::MatrixXd stateVectorInclSTM = propagateOrbitAugmentedToFinalCondition(
+                stateVectorInclSTMPhaseHalf, massParameter, orbitalPeriod, 1, stateHistory, 1000, timePhaseHalf ).first;
+
 
 //    Eigen::MatrixXd stateVectorInclSTMPhaseHalf = propagateOrbitAugmentedToFinalCondition(
 //                getFullInitialStateAugmented( initialStateVector ), massParameter, orbitalPeriod/2, 1, stateHistory, 1000, 0.0 ).first;
@@ -1099,19 +1104,39 @@ bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differenti
 
         }
 
-//        std::cout << "hamiltonianOrbit1: " << hamiltonianOrbit1 << std::endl;
-//        std::cout << "hamiltonianOrbit2: " << hamiltonianOrbit2 << std::endl;
-//        std::cout << "directionInit: " << directionInit << std::endl;
-//        std::cout << "hamiltonianOrbitprevious: " << hamiltonianOrbitPrevious << std::endl;
-//        std::cout << "hamiltonianOrbitCurrent: " << hamiltonianOrbitCurrent << std::endl;
-//        std::cout << "directionCurrent: " << directionCurrent << std::endl;
+    }
+
+    if (continueNumericalContinuation == true)
+    {
+        Eigen::VectorXd previousStateInitial = differentialCorrections.at(differentialCorrections.size()-2).segment(10,10);
+        Eigen::VectorXd currentStateInitial = differentialCorrections.at(differentialCorrections.size()-1).segment(10,10);
+        Eigen::VectorXd previousStatePhaseHalf = differentialCorrections.at(differentialCorrections.size()-2).segment(20,10);
+        Eigen::VectorXd currentStatePhaseHalf = differentialCorrections.at(differentialCorrections.size()-1).segment(20,10);
+
+        Eigen::Vector3d stateIncrementInitial = currentStateInitial.segment(0,3) - previousStateInitial.segment(0,3);
+        Eigen::Vector3d stateIncrementPhaseHalf = currentStatePhaseHalf.segment(0,3) - previousStatePhaseHalf.segment(0,3);
+
+        double continuationCondition = ( stateIncrementPhaseHalf.norm()  /stateIncrementInitial.norm() );
+
+//        std::cout << "previousStateInitial " << previousStateInitial << std::endl;
+//        std::cout << "currentStateInitial " << currentStateInitial << std::endl;
+//        std::cout << "previousStatePhaseHalf " << previousStatePhaseHalf << std::endl;
+//        std::cout << "currentStatePhaseHalf " << currentStatePhaseHalf << std::endl;
+//        std::cout << "stateIncrementInitial " << stateIncrementInitial << std::endl;
+//        std::cout << "stateIncrementPhaseHalf " << stateIncrementPhaseHalf << std::endl;
+//        std::cout << "continuationCondition " << continuationCondition << std::endl;
 
 
+        if ( continuationCondition < 0.2 )
+        {
+            continueNumericalContinuation = false;
+            std::cout << "\n HALF PHASE POSITION EVOLUTION THRESHOLD NOT MET, KILL FAMILY CONTINUATION \n" << std::endl;
 
-
+        }
 
 
     }
+
     return continueNumericalContinuation;
 }
 
