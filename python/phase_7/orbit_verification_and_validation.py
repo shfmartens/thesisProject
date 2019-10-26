@@ -93,6 +93,14 @@ class DisplayPeriodicSolutions:
         self.stateDeviationAfterConvergence = []
         self.phaseDeviationAfterConvergence = []
         self.totalDeviationAfterConvergence = []
+
+        self.xPhaseHalf = []
+        self.yPhaseHalf = []
+        self.zPhaseHalf = []
+        self.xdotPhaseHalf = []
+        self.ydotPhaseHalf = []
+        self.zdotPhaseHalf = []
+
         self.numberOfCollocationPoints = []
         for row in statesContinuation_df.iterrows():
             self.orbitsId.append(row[1][0]+1)
@@ -116,6 +124,15 @@ class DisplayPeriodicSolutions:
             self.stateDeviationAfterConvergence.append(np.sqrt(row[1][5] ** 2 + row[1][6] ** 2))
             self.phaseDeviationAfterConvergence.append(np.sqrt(row[1][9]**2))
             self.totalDeviationAfterConvergence.append(np.sqrt(row[1][5] ** 2 + row[1][6] ** 2 + row[1][9] ** 2))
+
+            self.xPhaseHalf.append(row[1][20])
+            self.yPhaseHalf.append(row[1][21])
+            self.zPhaseHalf.append(row[1][22])
+            self.xdotPhaseHalf.append(row[1][23])
+            self.ydotPhaseHalf.append(row[1][24])
+            self.zdotPhaseHalf.append(row[1][25])
+
+
 
 
         # Determine which parameter is the varying parameter
@@ -1077,7 +1094,124 @@ class DisplayPeriodicSolutions:
 
         pass
 
+    def plot_increment_of_orbits(self):
+        f, arr = plt.subplots(2, 2, figsize=self.figSize)
+        size = 7
 
+        xlim = [1, len(self.orbitsId)]
+
+        arr[0, 0].plot(self.orbitsId, self.x, c=self.plottingColors['doubleLine'][0], linewidth=1, label='$x$ [-]')
+        arr[0, 0].plot(self.orbitsId, self.y, c=self.plottingColors['doubleLine'][1], linewidth=1, label='$y$ [-]')
+
+        arr[0, 0].set_xlim(xlim)
+        arr[0, 0].set_title('Coordinate evolution of initial condition')
+        arr[0, 0].set_xlabel('orbit Number [-]')
+        arr[0, 0].set_ylabel('$x$ [-], $y$ [-]')
+        arr[0, 0].legend(frameon=True, loc='upper right')
+
+        arr[0, 1].plot(self.orbitsId, self.xPhaseHalf, c=self.plottingColors['doubleLine'][0], linewidth=1, label='$x$ [-]')
+        arr[0, 1].plot(self.orbitsId, self.yPhaseHalf, c=self.plottingColors['doubleLine'][1], linewidth=1, label='$y$ [-]')
+
+        arr[0, 1].set_xlim(xlim)
+        arr[0, 1].set_title('Coordinate evolution of $\\frac{\\phi}{2}$')
+        arr[0, 1].set_xlabel('orbit Number [-]')
+        arr[0, 1].set_ylabel('$x$ [-], $y$ [-]')
+        arr[0, 1].legend(frameon=True, loc='upper right')
+
+        xIncrement = []
+        yIncrement = []
+        normIncrement = []
+        xIncrementPhaseHalf = []
+        yIncrementPhaseHalf = []
+        normIncrementPhaseHalf = []
+
+        orbitIdNew = []
+        for i in range(len(self.orbitsId)):
+            if i > 0:
+                xIncrement.append(self.x[i]-self.x[i-1])
+                yIncrement.append(self.y[i]-self.y[i-1])
+                normIncrement.append( ( self.x[i]-self.x[i-1])**2 + ( self.y[i]-self.y[i-1])**2 )
+
+                xIncrementPhaseHalf.append(self.xPhaseHalf[i] - self.xPhaseHalf[i - 1])
+                yIncrementPhaseHalf.append(self.yPhaseHalf[i] - self.yPhaseHalf[i - 1])
+                normIncrementPhaseHalf.append( ( self.xPhaseHalf[i]-self.xPhaseHalf[i-1])**2 + ( self.yPhaseHalf[i]-self.yPhaseHalf[i-1])**2 )
+                orbitIdNew.append(i)
+
+        arr[1, 0].plot(orbitIdNew, xIncrement, c=self.plottingColors['tripleLine'][0], linewidth=1,label='$\\Delta x$ [-]')
+        arr[1, 0].plot(orbitIdNew, yIncrement, c=self.plottingColors['tripleLine'][1], linewidth=1,label='$\\Delta y$ [-]')
+        arr[1, 0].plot(orbitIdNew, normIncrement, c=self.plottingColors['tripleLine'][2], linewidth=1,label='$\\Delta R$ [-]')
+
+
+        arr[1, 0].set_xlim(xlim)
+        arr[1, 0].set_title('Increment evolution of initial condition')
+        arr[1, 0].set_xlabel('orbit Number [-]')
+        arr[1, 0].set_ylabel('$\\Delta x$ [-], $\\Delta y$ [-], $\\Delta R$ [-]')
+        arr[1, 0].legend(frameon=True, loc='upper right')
+
+        arr[1, 1].plot(orbitIdNew, xIncrementPhaseHalf, c=self.plottingColors['tripleLine'][0], linewidth=1,label='$\\Delta x$ [-]')
+        arr[1, 1].plot(orbitIdNew, yIncrementPhaseHalf, c=self.plottingColors['tripleLine'][1], linewidth=1,label='$\\Delta y$ [-]')
+        arr[1, 1].plot(orbitIdNew, normIncrementPhaseHalf, c=self.plottingColors['tripleLine'][2], linewidth=1,label='$\\Delta R$ [-]')
+
+        arr[1, 1].set_xlim(xlim)
+        arr[1, 1].set_title('Increment evolution of $\\frac{\\phi}{2}$')
+        arr[1, 1].set_xlabel('orbit Number [-]')
+        arr[1, 1].set_ylabel('$\\Delta x$ [-], $\\Delta y$ [-], $\\Delta R$ [-]')
+        arr[1, 1].legend(frameon=True, loc='upper right')
+
+        plt.tight_layout()
+        plt.subplots_adjust(top=0.9)
+
+
+        if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
+            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($a_{lt} = ' + str(
+            "{:3.1f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + '- Spatial evolution analysis ',size=self.suptitleSize)
+        if self.varyingQuantity == 'Acceleration':
+            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
+                "{:3.1f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Spatial evolution analysis ', size=self.suptitleSize)
+        if self.varyingQuantity == 'Alpha':
+            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
+                "{:3.1f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.1f}".format(self.accelerationMagnitude))  + ' - Spatial evolution analysis ', size=self.suptitleSize)
+
+
+
+        if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
+            if self.lowDPI:
+                plt.savefig('../../data/figures/orbits/varying_hamiltonian/L' + str(
+                    self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
+                    "{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
+                    "{:7.6f}".format(self.alpha)) + '_spatial_analysis.png', transparent=True, dpi=self.dpi,
+                            bbox_inches='tight')
+            else:
+                plt.savefig('../../data/figures/orbits/varying_hamiltonian/L' + str(
+                    self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
+                    "{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
+                    "{:7.6f}".format(self.alpha)) + '_spatial_analysis.png', transparent=True, bbox_inches='tight')
+        if self.varyingQuantity == 'Acceleration':
+            if self.lowDPI:
+                plt.savefig('../../data/figures/orbits/varying_acceleration/L' + str(
+                    self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
+                    "{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
+                    "{:7.6f}".format(self.alpha)) + '_spatial_analysis.png', transparent=True, dpi=self.dpi,
+                            bbox_inches='tight')
+            else:
+                plt.savefig('../../data/figures/orbits/varying_acceleration/L' + str(
+                    self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
+                    "{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
+                    "{:7.6f}".format(self.alpha)) + '_spatial_analysis.png', transparent=True, bbox_inches='tight')
+        if self.varyingQuantity == 'Alpha':
+            if self.lowDPI:
+                plt.savefig('../../data/figures/orbits/varying_alpha/L' + str(
+                    self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
+                    "{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
+                    "{:7.6f}".format(self.alpha)) + '_spatial_analysis.png', transparent=True, dpi=self.dpi,
+                            bbox_inches='tight')
+            else:
+                plt.savefig('../../data/figures/orbits/varying_alpha/L' + str(
+                    self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
+                    "{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
+                    "{:7.6f}".format(self.alpha)) + '_spatial_analysis.png', transparent=True, bbox_inches='tight')
+
+        pass
 
 
 
@@ -1099,11 +1233,12 @@ if __name__ == '__main__':
                             display_periodic_solutions = DisplayPeriodicSolutions(orbit_type, lagrange_point, acceleration_magnitude, \
                                          alpha, beta, varying_quantity, low_dpi)
 
-                            display_periodic_solutions.plot_families()
-                            display_periodic_solutions.plot_periodicity_validation()
-                            display_periodic_solutions.plot_monodromy_analysis()
-                            display_periodic_solutions.plot_stability()
-                            display_periodic_solutions.plot_continuation_procedure()
+                            #display_periodic_solutions.plot_families()
+                            #display_periodic_solutions.plot_periodicity_validation()
+                            #display_periodic_solutions.plot_monodromy_analysis()
+                            #display_periodic_solutions.plot_stability()
+                            #display_periodic_solutions.plot_continuation_procedure()
+                            display_periodic_solutions.plot_increment_of_orbits()
 
 
                             del display_periodic_solutions

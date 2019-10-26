@@ -465,8 +465,9 @@ def load_states_continuation_length(file_path):
     return data
 
 def load_differential_correction(file_path):
-    data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(18)))
-    data.columns = ['iterations', 'hlt','period','posDev','velDev','velIntDev','velExtDev','timeDev','x','y','z','xdot','ydot','zdot','alt','alpha','beta','m']
+    data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(28)))
+    data.columns = ['iterations', 'hlt','period','posDev','velDev','velIntDev','velExtDev','timeDev','x','y','z','xdot','ydot','zdot','alt','alpha','beta','m' \
+        , 'xPhaseHalf', 'yPhaseHalf', 'zPhaseHalf', 'xdotPhaseHalf', 'ydotPhaseHalf', 'zdotPhaseHalf', 'altPhaseHalf', 'alphaPhaseHalf', 'betaPhaseHalf', 'mPhaseHalf']
     return data
 
 def load_patch_points(file_path, numberOfPatchPoints):
