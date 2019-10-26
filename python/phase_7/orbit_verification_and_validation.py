@@ -1140,7 +1140,7 @@ class DisplayPeriodicSolutions:
         #arr[1, 0].plot(orbitIdNew, xIncrement, c=self.plottingColors['tripleLine'][0], linewidth=1,label='$\\Delta x$ [-]')
         #arr[1, 0].plot(orbitIdNew, yIncrement, c=self.plottingColors['tripleLine'][1], linewidth=1,label='$\\Delta y$ [-]')
         arr[1, 0].semilogy(orbitIdNew, normIncrement, c=self.plottingColors['tripleLine'][2], linewidth=1,label='$\\Delta R$ [-]')
-        arr[1,0].set_ylim([1.0e-02,1.0e-8])
+        arr[1,1].set_ylim([1.0e-5,1.0e-3])
 
         arr[1, 0].set_xlim(xlim)
         arr[1, 0].set_title('Increment evolution of initial condition')
@@ -1155,7 +1155,7 @@ class DisplayPeriodicSolutions:
         arr[1, 1].semilogy(orbitIdNew, normIncrementPhaseHalf, c=self.plottingColors['tripleLine'][2], linewidth=1,label='$\\Delta R$ [-]')
 
         arr[1, 1].set_xlim(xlim)
-        arr[1,1].set_ylim([1.0e-02,1.0e-8])
+        arr[1,1].set_ylim([1.0e-5,1.0e-3])
 
         arr[1, 1].set_title('Increment evolution of $\\frac{\\phi}{2}$')
         arr[1, 1].set_xlabel('orbit Number [-]')
