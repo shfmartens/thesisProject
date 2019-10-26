@@ -1178,6 +1178,8 @@ class DisplayPeriodicSolutions:
         print('1500')
         print(normIncrement[1499])
 
+        print('1232')
+        print(normIncrementPhaseHalf[1232])
         print('1300')
         print(normIncrementPhaseHalf[1299])
         print('1350')
@@ -1188,6 +1190,8 @@ class DisplayPeriodicSolutions:
         print(normIncrementPhaseHalf[1449])
         print('1500')
         print(normIncrementPhaseHalf[1499])
+        print('2000')
+        print(normIncrementPhaseHalf[2000])
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($a_{lt} = ' + str(
