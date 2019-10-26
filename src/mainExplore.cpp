@@ -81,10 +81,10 @@ int main (){
     // == Compute initial conditions ==
     // ================================
         
-    #pragma omp parallel num_threads(2)
+    #pragma omp parallel num_threads(1)
     {
         #pragma omp for
-        for (unsigned int i=1; i<=2; i++) {
+        for (unsigned int i=1; i<=1; i++) {
             if (i ==1)
             {
                 std::cout << "Run Thread " << i << std::endl;
