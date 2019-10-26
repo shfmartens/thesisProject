@@ -1134,32 +1134,34 @@ class DisplayPeriodicSolutions:
 
                 xIncrementPhaseHalf.append(self.xPhaseHalf[i] - self.xPhaseHalf[i - 1])
                 yIncrementPhaseHalf.append(self.yPhaseHalf[i] - self.yPhaseHalf[i - 1])
-                normIncrementPhaseHalf.append( ( np.sqrt(self.xPhaseHalf[i]-self.xPhaseHalf[i-1])**2 + ( self.yPhaseHalf[i]-self.yPhaseHalf[i-1])**2) )
+                normIncrementPhaseHalf.append( np.sqrt(( self.xPhaseHalf[i]-self.xPhaseHalf[i-1])**2 + ( self.yPhaseHalf[i]-self.yPhaseHalf[i-1])**2) )
                 orbitIdNew.append(i)
 
-        print(normIncrement)
-        print(normIncrementPhaseHalf)
-
-
-        arr[1, 0].plot(orbitIdNew, xIncrement, c=self.plottingColors['tripleLine'][0], linewidth=1,label='$\\Delta x$ [-]')
-        arr[1, 0].plot(orbitIdNew, yIncrement, c=self.plottingColors['tripleLine'][1], linewidth=1,label='$\\Delta y$ [-]')
-        arr[1, 0].plot(orbitIdNew, normIncrement, c=self.plottingColors['tripleLine'][2], linewidth=1,label='$\\Delta R$ [-]')
-
+        #arr[1, 0].plot(orbitIdNew, xIncrement, c=self.plottingColors['tripleLine'][0], linewidth=1,label='$\\Delta x$ [-]')
+        #arr[1, 0].plot(orbitIdNew, yIncrement, c=self.plottingColors['tripleLine'][1], linewidth=1,label='$\\Delta y$ [-]')
+        arr[1, 0].semilogy(orbitIdNew, normIncrement, c=self.plottingColors['tripleLine'][2], linewidth=1,label='$\\Delta R$ [-]')
+        arr[1,0].set_ylim([1.0e-02,1.0e-8])
 
         arr[1, 0].set_xlim(xlim)
         arr[1, 0].set_title('Increment evolution of initial condition')
         arr[1, 0].set_xlabel('orbit Number [-]')
         arr[1, 0].set_ylabel('$\\Delta x$ [-], $\\Delta y$ [-], $\\Delta R$ [-]')
+        arr[1, 0].set_ylabel('$\\Delta x$ [-]')
+
         arr[1, 0].legend(frameon=True, loc='upper right')
 
-        arr[1, 1].plot(orbitIdNew, xIncrementPhaseHalf, c=self.plottingColors['tripleLine'][0], linewidth=1,label='$\\Delta x$ [-]')
-        arr[1, 1].plot(orbitIdNew, yIncrementPhaseHalf, c=self.plottingColors['tripleLine'][1], linewidth=1,label='$\\Delta y$ [-]')
-        arr[1, 1].plot(orbitIdNew, normIncrementPhaseHalf, c=self.plottingColors['tripleLine'][2], linewidth=1,label='$\\Delta R$ [-]')
+        #arr[1, 1].plot(orbitIdNew, xIncrementPhaseHalf, c=self.plottingColors['tripleLine'][0], linewidth=1,label='$\\Delta x$ [-]')
+        #arr[1, 1].plot(orbitIdNew, yIncrementPhaseHalf, c=self.plottingColors['tripleLine'][1], linewidth=1,label='$\\Delta y$ [-]')
+        arr[1, 1].semilogy(orbitIdNew, normIncrementPhaseHalf, c=self.plottingColors['tripleLine'][2], linewidth=1,label='$\\Delta R$ [-]')
 
         arr[1, 1].set_xlim(xlim)
+        arr[1,1].set_ylim([1.0e-02,1.0e-8])
+
         arr[1, 1].set_title('Increment evolution of $\\frac{\\phi}{2}$')
         arr[1, 1].set_xlabel('orbit Number [-]')
         arr[1, 1].set_ylabel('$\\Delta x$ [-], $\\Delta y$ [-], $\\Delta R$ [-]')
+        arr[1, 1].set_ylabel('$\\Delta R$ [-]')
+
         arr[1, 1].legend(frameon=True, loc='upper right')
 
         plt.tight_layout()
