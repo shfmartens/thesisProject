@@ -1130,12 +1130,16 @@ class DisplayPeriodicSolutions:
             if i > 0:
                 xIncrement.append(self.x[i]-self.x[i-1])
                 yIncrement.append(self.y[i]-self.y[i-1])
-                normIncrement.append( ( self.x[i]-self.x[i-1])**2 + ( self.y[i]-self.y[i-1])**2 )
+                normIncrement.append(  np.sqrt( (self.x[i]-self.x[i-1])**2 + ( self.y[i]-self.y[i-1])**2 ))
 
                 xIncrementPhaseHalf.append(self.xPhaseHalf[i] - self.xPhaseHalf[i - 1])
                 yIncrementPhaseHalf.append(self.yPhaseHalf[i] - self.yPhaseHalf[i - 1])
-                normIncrementPhaseHalf.append( ( self.xPhaseHalf[i]-self.xPhaseHalf[i-1])**2 + ( self.yPhaseHalf[i]-self.yPhaseHalf[i-1])**2 )
+                normIncrementPhaseHalf.append( ( np.sqrt(self.xPhaseHalf[i]-self.xPhaseHalf[i-1])**2 + ( self.yPhaseHalf[i]-self.yPhaseHalf[i-1])**2) )
                 orbitIdNew.append(i)
+
+        print(normIncrement)
+        print(normIncrementPhaseHalf)
+
 
         arr[1, 0].plot(orbitIdNew, xIncrement, c=self.plottingColors['tripleLine'][0], linewidth=1,label='$\\Delta x$ [-]')
         arr[1, 0].plot(orbitIdNew, yIncrement, c=self.plottingColors['tripleLine'][1], linewidth=1,label='$\\Delta y$ [-]')
@@ -1218,8 +1222,8 @@ class DisplayPeriodicSolutions:
 if __name__ == '__main__':
     orbit_types = ['horizontal']
     lagrange_points = [1]
-    acceleration_magnitudes = [0.07]
-    alphas = [90.0]
+    acceleration_magnitudes = [0.0]
+    alphas = [0.0]
     betas = [0.0]
     low_dpi = True
     varying_quantities = ['Hamiltonian']
