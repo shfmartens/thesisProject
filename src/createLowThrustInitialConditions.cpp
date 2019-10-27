@@ -1095,8 +1095,9 @@ bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differenti
 
         if (directionInit != directionCurrent)
         {
-            continueNumericalContinuation == false;
+            continueNumericalContinuation = false;
             std::cout << "\n HAMILTONIAN DIRECTION SWITCHED, KILL FAMILY CONTINUATION \n" << std::endl;
+            std::cout << " continueNumericalContinuation: " << continueNumericalContinuation << std::endl;
 
                     std::cout << "hamiltonianOrbit1: " << hamiltonianOrbit1 << std::endl;
                     std::cout << "hamiltonianOrbit2: " << hamiltonianOrbit2 << std::endl;
