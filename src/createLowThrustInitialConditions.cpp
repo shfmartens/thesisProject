@@ -1062,32 +1062,35 @@ bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differenti
         double hamiltonianOrbit2 = statesContinuationVector[1](1);
 
         int directionInit;
-        if  ((hamiltonianOrbit1 - hamiltonianOrbit2) > 0)
+        if  ((hamiltonianOrbit1 - hamiltonianOrbit2) > 0.0)
         {
             directionInit = 1;
 
-        } else if ((hamiltonianOrbit1 - hamiltonianOrbit2) < 0)
+        } else if ( (hamiltonianOrbit1 - hamiltonianOrbit2) <= 0.0)
         {
             directionInit = -1;
         } else
         {
-            continueNumericalContinuation == false;
+            directionInit = 10;
+            continueNumericalContinuation = false;
         }
 
         double hamiltonianOrbitPrevious = statesContinuationVector[statesContinuationVector.size()-2](1);
         double hamiltonianOrbitCurrent = statesContinuationVector[statesContinuationVector.size()-1](1);
 
         int directionCurrent;
-        if  ((hamiltonianOrbitPrevious - hamiltonianOrbitCurrent) > 0)
+        if  ((hamiltonianOrbitPrevious - hamiltonianOrbitCurrent) > 0.0)
         {
             directionCurrent = 1;
 
-        } else if ((hamiltonianOrbitPrevious - hamiltonianOrbitCurrent) < 0)
+        } else if ((hamiltonianOrbitPrevious - hamiltonianOrbitCurrent) < 0.0)
         {
             directionCurrent = -1;
         } else
         {
-            continueNumericalContinuation == false;
+            directionCurrent = 8;
+            continueNumericalContinuation = false;
+
         }
 
         if (directionInit != directionCurrent)
