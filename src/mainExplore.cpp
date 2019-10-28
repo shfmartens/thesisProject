@@ -64,6 +64,8 @@ int main (){
                       << "equilibriumLocation: \n" << equilibriumTest << std::endl
                       << "=================" << std::endl;
 
+
+
         }
     }
 
@@ -91,7 +93,7 @@ int main (){
     // == Compute initial conditions ==
     // ================================
         
-    #pragma omp parallel num_threads(13)
+    #pragma omp parallel num_threads(1)
     {
         #pragma omp for
         for (unsigned int i=1; i<=1; i++) {
