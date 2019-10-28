@@ -1131,7 +1131,7 @@ bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differenti
 //        std::cout << "continuationCondition " << continuationCondition << std::endl;
 
 
-        if ( continuationCondition < 0.2 )
+        if ( continuationCondition < 0.1 )
         {
             continueNumericalContinuation = false;
             std::cout << "\n HALF PHASE POSITION EVOLUTION THRESHOLD NOT MET, KILL FAMILY CONTINUATION \n" << std::endl;

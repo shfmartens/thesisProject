@@ -81,10 +81,10 @@ int main (){
     // == Compute initial conditions ==
     // ================================
         
-    #pragma omp parallel num_threads(2)
+    #pragma omp parallel num_threads(13)
     {
         #pragma omp for
-        for (unsigned int i=1; i<=2; i++) {
+        for (unsigned int i=1; i<=13; i++) {
             if (i ==1)
             {
                 std::cout << "Run Thread " << i << std::endl;
@@ -105,8 +105,8 @@ int main (){
                 std::cout << "Run Thread " << i << std::endl;
                 std::string orbitType = "horizontal";
                 int continuationIndex = 1; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
-                double accelerationMagnitude = 0.07;
-                double accelerationAngle = 90.0;
+                double accelerationMagnitude = 0.01;
+                double accelerationAngle = 0.0;
                 double accelerationAngle2 = 0.0;
                 double initialMass = 1.0;
                 double ySign = 1.0;
@@ -120,7 +120,7 @@ int main (){
                 std::cout << "Run Thread " << i << std::endl;
                 std::string orbitType = "horizontal";
                 int continuationIndex = 1; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
-                double accelerationMagnitude = 0.001;
+                double accelerationMagnitude = 0.01;
                 double accelerationAngle = 90.0;
                 double accelerationAngle2 = 0.0;
                 double initialMass = 1.0;
@@ -135,7 +135,7 @@ int main (){
                 std::cout << "Run Thread " << i << std::endl;
                 std::string orbitType = "horizontal";
                 int continuationIndex = 1; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
-                double accelerationMagnitude = 0.001;
+                double accelerationMagnitude = 0.01;
                 double accelerationAngle = 180.0;
                 double accelerationAngle2 = 0.0;
                 double initialMass = 1.0;
@@ -150,7 +150,7 @@ int main (){
                 std::cout << "Run Thread " << i << std::endl;
                 std::string orbitType = "horizontal";
                 int continuationIndex = 1; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
-                double accelerationMagnitude = 0.001;
+                double accelerationMagnitude = 0.01;
                 double accelerationAngle = 270.0;
                 double accelerationAngle2 = 0.0;
                 double initialMass = 1.0;
@@ -165,7 +165,7 @@ int main (){
                     std::cout << "Run Thread " << i << std::endl;
                     std::string orbitType = "horizontal";
                     int continuationIndex = 1; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
-                    double accelerationMagnitude = 0.01;
+                    double accelerationMagnitude = 0.05;
                     double accelerationAngle = 0.0;
                     double accelerationAngle2 = 0.0;
                     double initialMass = 1.0;
@@ -180,7 +180,7 @@ int main (){
                     std::cout << "Run Thread " << i << std::endl;
                     std::string orbitType = "horizontal";
                     int continuationIndex = 1; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
-                    double accelerationMagnitude = 0.01;
+                    double accelerationMagnitude = 0.05;
                     double accelerationAngle = 90.0;
                     double accelerationAngle2 = 0.0;
                     double initialMass = 1.0;
@@ -196,7 +196,7 @@ int main (){
                     std::cout << "Run Thread " << i << std::endl;
                     std::string orbitType = "horizontal";
                     int continuationIndex = 1; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
-                    double accelerationMagnitude = 0.01;
+                    double accelerationMagnitude = 0.05;
                     double accelerationAngle = 180.0;
                     double accelerationAngle2 = 0.0;
                     double initialMass = 1.0;
@@ -211,7 +211,7 @@ int main (){
                     std::cout << "Run Thread " << i << std::endl;
                     std::string orbitType = "horizontal";
                     int continuationIndex = 1; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
-                    double accelerationMagnitude = 0.01;
+                    double accelerationMagnitude = 0.05;
                     double accelerationAngle = 270.0;
                     double accelerationAngle2 = 0.0;
                     double initialMass = 1.0;
@@ -226,7 +226,7 @@ int main (){
                     std::cout << "Run Thread " << i << std::endl;
                     std::string orbitType = "horizontal";
                     int continuationIndex = 1; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
-                    double accelerationMagnitude = 0.07;
+                    double accelerationMagnitude = 0.1;
                     double accelerationAngle = 0.0;
                     double accelerationAngle2 = 0.0;
                     double initialMass = 1.0;
@@ -241,7 +241,7 @@ int main (){
                     std::cout << "Run Thread " << i << std::endl;
                     std::string orbitType = "horizontal";
                     int continuationIndex = 1; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
-                    double accelerationMagnitude = 0.07;
+                    double accelerationMagnitude = 0.1;
                     double accelerationAngle = 90.0;
                     double accelerationAngle2 = 0.0;
                     double initialMass = 1.0;
@@ -256,7 +256,7 @@ int main (){
                         std::cout << "Run Thread " << i << std::endl;
                         std::string orbitType = "horizontal";
                         int continuationIndex = 1; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
-                        double accelerationMagnitude = 0.07;
+                        double accelerationMagnitude = 0.1;
                         double accelerationAngle = 180.0;
                         double accelerationAngle2 = 0.0;
                         double initialMass = 1.0;
@@ -271,7 +271,7 @@ int main (){
                         std::cout << "Run Thread " << i << std::endl;
                         std::string orbitType = "horizontal";
                         int continuationIndex = 1; //1: Continuate for H, 8: acceleration, 9: alpha, 10: beta
-                        double accelerationMagnitude = 0.07;
+                        double accelerationMagnitude = 0.1;
                         double accelerationAngle = 270.0;
                         double accelerationAngle2 = 0.0;
                         double initialMass = 1.0;
