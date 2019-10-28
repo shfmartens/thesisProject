@@ -122,7 +122,7 @@ def load_differential_corrections(file_path):
 def load_lagrange_points_location():
     location_lagrange_points = {'L1': [0.8369151483688, 0, 0],
                                 'L2': [1.1556821477825, 0, 0],
-                                'L3': [-1.003037581609, 0, 0],
+                                'L3': [-1.005037581609, 0, 0],
                                 'L4': [0.4878494189827, 0.8660254037844, 0],
                                 'L5': [0.4878494189827, -0.8660254037844, 0]}
 

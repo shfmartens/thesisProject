@@ -408,7 +408,7 @@ if __name__ == '__main__':
         display_dynamical_behaviour = DisplayDynamicalBehaviour(motion_of_interest, low_dpi)
 
         display_dynamical_behaviour.plot_global_dynamics ()
-        display_dynamical_behaviour.plot_global_dynamics_zoom()
+        #display_dynamical_behaviour.plot_global_dynamics_zoom()
 
 
     del display_dynamical_behaviour

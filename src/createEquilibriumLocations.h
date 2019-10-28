@@ -26,6 +26,6 @@ void equilibriaValidation(Eigen::Vector2d equilibriumLocation, double accelerati
 Eigen::Vector2d computeSeedSolution(const int librationPointNr, const double thrustAcceleration, const double seedAngle, const double maxDeviationFromSolution, bool& seedExistence );
 
 Eigen::Vector2d createEquilibriumLocations (const int librationPointNr, const double thrustAcceleration, const double accelerationAngle, const std::string parameterSpecification, const double ySign, const double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter(
-            tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER,tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER), const double maxDeviationFromSolution = 1.0E-13, const int maxIterations = 1000000, const int saveFrequency = 10, const double stepSize = 0.01, const double relaxationParameter = 0.2);
+            tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER,tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER), const double maxDeviationFromSolution = 1.0E-13, const int maxIterations = 1000000, const int saveFrequency = 1, const double stepSize = 0.0001, const double relaxationParameter = 0.2);
 
 #endif  // TUDATBUNDLE_CREATEEQUILIBRIUMLOCATIONS_H

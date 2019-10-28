@@ -43,20 +43,30 @@ int main (){
      //================================
      //== Compute equilibria, comment out when computing low-thrust intial positions ==
      //================================
-//    double accMag = 0.1;
-//    double alpha = 1.0;
-//    for (int i = 1; i < 6 ; i++)
-//    {
-//        Eigen::Vector2d equilibriumTest = createEquilibriumLocations(i, accMag, alpha, "acceleration", massParameter);
+    Eigen::Vector3d tempVector; tempVector.setZero();
+    tempVector(0) = 0.0105;
+        tempVector(1) = 0.0106;
+        tempVector(2) = 0.0107;
+    for(int k = 0; k < 3; k++)
+    {
+        double alpha = 0.0;
+        //double accMag = 0.0107;
+        double accMag = tempVector(k);
+        for (int i = 3; i < 4 ; i++)
+        {
 
-//        std::cout << "\n== Eq result =="<< std::endl
-//                  << "librationPointNr: " << i << std::endl
-//                  << "alt: " << accMag << std::endl
-//                  << "alpha: " << alpha << std::endl
-//                  << "equilibriumLocation: \n" << equilibriumTest << std::endl
-//                  << "=================" << std::endl;
+            Eigen::Vector2d equilibriumTest = createEquilibriumLocations(i, accMag, alpha, "acceleration", massParameter);
 
-//    }
+            std::cout << "\n== Eq result =="<< std::endl
+                      << "librationPointNr: " << i << std::endl
+                      << "alt: " << accMag << std::endl
+                      << "alpha: " << alpha << std::endl
+                      << "equilibriumLocation: \n" << equilibriumTest << std::endl
+                      << "=================" << std::endl;
+
+        }
+    }
+
 //    double semiMajorAxis = 384400*1000;
 //    double EarthGravPar = tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER;
 //    double MoonGravPar = tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER;
@@ -84,7 +94,7 @@ int main (){
     #pragma omp parallel num_threads(13)
     {
         #pragma omp for
-        for (unsigned int i=1; i<=13; i++) {
+        for (unsigned int i=1; i<=1; i++) {
             if (i ==1)
             {
                 std::cout << "Run Thread " << i << std::endl;
@@ -97,7 +107,7 @@ int main (){
                 double ySign = 1.0;
                 double familyHamiltonian = -1.525;
                 bool startContinuationFromTextFile = false;
-                createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile );
+                //createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile );
 
             }
             if (i ==2)

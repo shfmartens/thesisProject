@@ -283,6 +283,7 @@ def compute_stability_type(x_loc,y_loc,desiredType):
 
     list = []
     for q in range(len(x_loc)):
+        print(q)
         for s in range(len(y_loc)):
 
             # Compute terms of the state transition matrix
@@ -318,8 +319,7 @@ def compute_stability_type(x_loc,y_loc,desiredType):
                     [Uxx,Uxy,0,2],\
                     [Uyx,Uyy,-2,0]]
 
-            print(SPM)
-
+            #
             # SPMTRANSPOSE = [[0, 0, Uxx, Uyx], \
             #                 [0, 0, Uxy, Uyy], \
             #                 [1, 0, 0, -2], \
@@ -354,7 +354,7 @@ def compute_stability_type(x_loc,y_loc,desiredType):
                 list.append(data)
 
     df = pd.DataFrame(list, columns=['x','y','type'])
-    #np.savetxt('../../data/raw/equilibria/stability_' + str(desiredType) + '.txt', df.values, fmt='%13.12f')
+    np.savetxt('../../data/raw/equilibria/stability_' + str(desiredType) + '_L3.txt', df.values, fmt='%13.12f')
 
     return df
 

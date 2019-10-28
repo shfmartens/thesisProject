@@ -72,21 +72,21 @@ void writeResultsToFile (const int librationPointNr, const double parameterOfInt
 
     }
 
-    remove(("../data/data/raw/equilibria/L" + std::to_string(librationPointNr) + "_" + parameterSpecification + "_" + std::to_string(parameterOfInterest) + "_" + std::to_string(seedAngle) + "_" + direction + "_equilibria_stability.txt").c_str());
-    std::ofstream textFileInitialConditionsStability;
-    textFileInitialConditionsStability.open(("../data/raw/equilibria/L" + std::to_string(librationPointNr) + "_" + parameterSpecification + "_" + std::to_string(parameterOfInterest) + "_" + std::to_string(seedAngle) + "_" + direction + "_equilibria_stability.txt"));
+//    remove(("../data/data/raw/equilibria/L" + std::to_string(librationPointNr) + "_" + parameterSpecification + "_" + std::to_string(parameterOfInterest) + "_" + std::to_string(seedAngle) + "_" + direction + "_equilibria_stability.txt").c_str());
+//    std::ofstream textFileInitialConditionsStability;
+//    textFileInitialConditionsStability.open(("../data/raw/equilibria/L" + std::to_string(librationPointNr) + "_" + parameterSpecification + "_" + std::to_string(parameterOfInterest) + "_" + std::to_string(seedAngle) + "_" + direction + "_equilibria_stability.txt"));
 
-    textFileInitialConditionsStability.precision(std::numeric_limits<double>::digits10);
+//    textFileInitialConditionsStability.precision(std::numeric_limits<double>::digits10);
 
-        for(auto ic = stabilityCatalog.cbegin(); ic != stabilityCatalog.cend(); ++ic) {
-        textFileInitialConditionsStability << std::left << std::scientific                                          << std::setw(25)
-                                           << ic->first  << std::setw(25) << ic->second(0)  << std::setw(25) << ic->second(1) << std::setw(25) << ic->second(2) << std::setw(25) << ic->second(3) << std::setw(25) << ic->second(4) << std::setw(25) << ic->second(5) << std::setw(25) << ic->second(6) << std::setw(25)
-                                                                          << ic->second(7)  << std::setw(25) << ic->second(8) << std::setw(25) << ic->second(9) << std::setw(25) << ic->second(10) << std::setw(25) << ic->second(11) << std::setw(25) << ic->second(12) << std::setw(25)
-                                                                          << ic->second(13)  << std::setw(25) << ic->second(14) << std::setw(25) << ic->second(15) << std::setw(25) << ic->second(16) << std::setw(25) << ic->second(17) << std::setw(25) << ic->second(18) << std::setw(25)
-                                                                          << ic->second(19)  << std::setw(25) << ic->second(20) << std::setw(25) << ic->second(21) << std::setw(25) << ic->second(22) << std::setw(25) << ic->second(23) << std::setw(25) << ic->second(24) << std::setw(25)
-                                                                          << ic->second(25)  << std::setw(25) << ic->second(26) << std::setw(25) << ic->second(27) << std::setw(25) << ic->second(28) << std::setw(25) << ic->second(29) << std::setw(25) << ic->second(30) << std::setw(25)
-                                                                          << ic->second(31)  << std::setw(25) << ic->second(32) << std::setw(25) << ic->second(33) << std::setw(25) << ic->second(34) << std::setw(25) << ic->second(35) << std::endl;
-    }
+//        for(auto ic = stabilityCatalog.cbegin(); ic != stabilityCatalog.cend(); ++ic) {
+//        textFileInitialConditionsStability << std::left << std::scientific                                          << std::setw(25)
+//                                           << ic->first  << std::setw(25) << ic->second(0)  << std::setw(25) << ic->second(1) << std::setw(25) << ic->second(2) << std::setw(25) << ic->second(3) << std::setw(25) << ic->second(4) << std::setw(25) << ic->second(5) << std::setw(25) << ic->second(6) << std::setw(25)
+//                                                                          << ic->second(7)  << std::setw(25) << ic->second(8) << std::setw(25) << ic->second(9) << std::setw(25) << ic->second(10) << std::setw(25) << ic->second(11) << std::setw(25) << ic->second(12) << std::setw(25)
+//                                                                          << ic->second(13)  << std::setw(25) << ic->second(14) << std::setw(25) << ic->second(15) << std::setw(25) << ic->second(16) << std::setw(25) << ic->second(17) << std::setw(25) << ic->second(18) << std::setw(25)
+//                                                                          << ic->second(19)  << std::setw(25) << ic->second(20) << std::setw(25) << ic->second(21) << std::setw(25) << ic->second(22) << std::setw(25) << ic->second(23) << std::setw(25) << ic->second(24) << std::setw(25)
+//                                                                          << ic->second(25)  << std::setw(25) << ic->second(26) << std::setw(25) << ic->second(27) << std::setw(25) << ic->second(28) << std::setw(25) << ic->second(29) << std::setw(25) << ic->second(30) << std::setw(25)
+//                                                                          << ic->second(31)  << std::setw(25) << ic->second(32) << std::setw(25) << ic->second(33) << std::setw(25) << ic->second(34) << std::setw(25) << ic->second(35) << std::endl;
+//    }
 
     remove(("../data/data/raw/equilibria/L" + std::to_string(librationPointNr) + "_" + parameterSpecification + "_" + std::to_string(parameterOfInterest) + "_" + std::to_string(seedAngle) + "_" + direction + "_equilibria_deviation.txt").c_str());
     std::ofstream textFileInitialConditionsDeviation;
