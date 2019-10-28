@@ -1250,7 +1250,7 @@ if __name__ == '__main__':
     alphas = [0.0]
     betas = [0.0]
     low_dpi = True
-    varying_quantities = ['xcor']
+    varying_quantities = ['Hamiltonian']
 
     for orbit_type in orbit_types:
         for lagrange_point in lagrange_points:
