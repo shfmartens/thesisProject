@@ -1353,6 +1353,7 @@ if __name__ == '__main__':
     display_equilibria_validation.plot_equilibria_acceleration_total()
 
     plt.close('all')
+    
 
 
     del display_equilibria_validation
