@@ -435,6 +435,7 @@ class DisplayEquilibriaValidation:
                             #ax2.plot(equilibria_df.index,equilibria_df['y'])
 
         ax.text(-0.963,0.278,'0.003', fontsize=8,rotation=10,rotation_mode='anchor') # for L3
+        ax.text(-0.962, 0.276, '0.0105', fontsize=8, rotation=10, rotation_mode='anchor')  # for L3
 
         #ax.text(-0.95,0.3,'0.003', fontsize=8,rotation=70,rotation_mode='anchor')
         # ax.text(0.575,0.795,'0.003', fontsize=8,rotation=320,rotation_mode='anchor')
@@ -449,7 +450,9 @@ class DisplayEquilibriaValidation:
         ax.text(0.87,-0.2,'0.25', fontsize=8,rotation=0,rotation_mode='anchor')
         ax.text(-1.12,-0.0,'0.25', fontsize=8,rotation=90,rotation_mode='anchor')
 
-        fig.suptitle('Artificial equilibria contours at various acceleration magnitudes')
+        #fig.suptitle('Artificial equilibria contours at various acceleration magnitudes')
+        fig.suptitle('$L_3$ contour at various acceleration magnitudes')
+
 
         fig.tight_layout()
         fig.subplots_adjust(top=0.93,right=0.95)
@@ -1344,7 +1347,7 @@ if __name__ == '__main__':
     ### Contours
 
     lagrange_point_nrs = [3]
-    acceleration_magnitudes = [0.003, 0.0105]
+    acceleration_magnitudes = [0.003, 0.0105,0.0107]
     seeds = [0.0,180.0]
     continuations = ['backward','forward']
     alphas = [0.0]
