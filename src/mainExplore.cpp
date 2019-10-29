@@ -46,9 +46,9 @@ int main (){
     Eigen::Vector6d tempVector; tempVector.setZero();
     tempVector(0) = 0.0;
         tempVector(1) = 60.0;
-        tempVector(2) = 120.0;
+        tempVector(2) = 90.0;
         tempVector(3) = 180.0;
-        tempVector(4) = 240.0;
+        tempVector(4) = 270.0;
         tempVector(5) = 300.0;
     for(int k = 0; k < 6; k++)
     {

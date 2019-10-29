@@ -166,6 +166,8 @@ class initialGuessConstruction:
             cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis", len(lambdaModList))),
             norm=plt.Normalize(vmin=0.0, vmax=self.visualizationThreshold * self.visualizationMultiplier))
 
+
+
         ax0.scatter(eigenvalues_df['x'], eigenvalues_df['y'], c=lambdaModList, cmap="viridis", s=0.1)
         ax1.scatter(eigenvalues_df['x'], eigenvalues_df['y'], c=dynamicList, cmap="viridis", s=0.1)
         ax2.scatter(eigenvalues_df['x'], eigenvalues_df['y'], c=lambdaRealList, cmap="viridis", s=0.1)

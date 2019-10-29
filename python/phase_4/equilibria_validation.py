@@ -1340,6 +1340,173 @@ class DisplayEquilibriaValidation:
 
         pass
 
+    def plot_L3_phenomenon(self):
+        fig = plt.figure(figsize=self.figSize)
+        ax0 = fig.add_subplot(2, 2, 1)
+        ax1 = fig.add_subplot(2, 2, 2)
+        ax2 = fig.add_subplot(2, 2, 3)
+        ax3 = fig.add_subplot(2, 2, 4)
+
+        fig.suptitle('Eigenvalue behaviour')
+        ax0.set_title('$a_{lt} = 0.003$')
+        ax1.set_title('$a_{lt} = 0.0105$')
+        ax2.set_title('$a_{lt} = 0.0106$')
+        ax3.set_title('$a_{lt} = 0.0107$')
+
+        ax0.set_xlim([-1.05, -0.95])
+        ax0.set_ylim([-0.5, 0.5])
+        ax1.set_xlim([-1.05, -0.95])
+        ax1.set_ylim([-0.5, 0.5])
+        ax2.set_xlim([-1.05, -0.95])
+        ax2.set_ylim([-0.5, 0.5])
+        ax3.set_xlim([-1.05, -0.95])
+        ax3.set_ylim([-0.5, 0.5])
+
+        type1 = load_stability_data('../../data/raw/equilibria/stability_1_L3.txt')
+        type2 = load_stability_data('../../data/raw/equilibria/stability_2_L3.txt')
+        type3 = load_stability_data('../../data/raw/equilibria/stability_3_L3.txt')
+        # type4 = load_stability_data('../../data/raw/equilibria/stability_4_L3.txt')
+
+        ax0.scatter(type1['x'], type1['y'], color=self.plottingColors['SXC'], s=0.09, label='SxC')
+        ax0.scatter(type2['x'], type2['y'], color=self.plottingColors['CXC'], s=0.09, label='CxC')
+        ax0.scatter(type3['x'], type3['y'], color=self.plottingColors['MXM'], s=0.09, label='MxM')
+
+        ax1.scatter(type1['x'], type1['y'], color=self.plottingColors['SXC'], s=0.09, label='SxC')
+        ax1.scatter(type2['x'], type2['y'], color=self.plottingColors['CXC'], s=0.09, label='CxC')
+        ax1.scatter(type3['x'], type3['y'], color=self.plottingColors['MXM'], s=0.09, label='MxM')
+
+        ax2.scatter(type1['x'], type1['y'], color=self.plottingColors['SXC'], s=0.09, label='SxC')
+        ax2.scatter(type2['x'], type2['y'], color=self.plottingColors['CXC'], s=0.09, label='CxC')
+        ax2.scatter(type3['x'], type3['y'], color=self.plottingColors['MXM'], s=0.09, label='MxM')
+
+        ax3.scatter(type1['x'], type1['y'], color=self.plottingColors['SXC'], s=0.09, label='SxC')
+        ax3.scatter(type2['x'], type2['y'], color=self.plottingColors['CXC'], s=0.09, label='CxC')
+        ax3.scatter(type3['x'], type3['y'], color=self.plottingColors['MXM'], s=0.09, label='MxM')
+        # ax.scatter(type4['x'], type4['y'], color=self.plottingColors['SXS'], s=0.09, label='SxS')
+
+        lagrange_points_df = load_lagrange_points_location()
+        lagrange_point_nrs = []
+        for equilibrium in self.lagrangePointNrs:
+            if equilibrium == 1:
+                lagrange_point_nrs.append('L1')
+            if equilibrium == 2:
+                lagrange_point_nrs.append('L2')
+            if equilibrium == 3:
+                lagrange_point_nrs.append('L3')
+            if equilibrium == 4:
+                lagrange_point_nrs.append('L4')
+            if equilibrium == 5:
+                lagrange_point_nrs.append('L5')
+
+        lagrange_point_nrs = ['L1', 'L2', 'L3', 'L4', 'L5']
+        for lagrange_point_nr in lagrange_point_nrs:
+            ax0.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                       color='black', marker='x')
+            ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                        color='black', marker='x')
+            ax2.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                        color='black', marker='x')
+            ax3.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                        color='black', marker='x')
+
+        ax0.legend(frameon=True, loc='lower left', markerscale=13)
+        ax1.legend(frameon=True, loc='lower left', markerscale=13)
+        ax2.legend(frameon=True, loc='lower left', markerscale=13)
+        ax3.legend(frameon=True, loc='lower left', markerscale=13)
+
+
+        for accMag in self.accelerationMagnitude:
+            for seed in self.seeds:
+                for continuation in self.continuations:
+                    for lagrangePointNr in self.lagrangePointNrs:
+                        equilibria_df = load_equilibria_acceleration('../../data/raw/equilibria/L' + str(lagrangePointNr) \
+                                                             + '_acceleration_'  \
+                                                             + str("{:7.6f}".format(accMag)) + '_' \
+                                                             + str("{:7.6f}".format(seed)) + '_' + continuation +'_equilibria.txt')
+
+
+
+                        if len(equilibria_df['alpha']) > 1:
+                            alpha = equilibria_df['alpha']
+
+
+                            if accMag < 0.004:
+                                ax0.scatter(equilibria_df['x'], equilibria_df['y'], c=alpha, cmap="viridis", s=0.04)
+
+        sm = plt.cm.ScalarMappable(
+            cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis", 100000 )),
+            norm=plt.Normalize(vmin=0.0, vmax=2*np.pi))
+
+        ax0.set_xlabel('$x$ [-]')
+        ax0.set_ylabel('$y$ [-]')
+
+        ax1.set_xlabel('$x$ [-]')
+        ax1.set_ylabel('$y$ [-]')
+
+        ax2.set_xlabel('$x$ [-]')
+        ax2.set_ylabel('$y$ [-]')
+
+        ax3.set_xlabel('$x$ [-]')
+        ax3.set_ylabel('$y$ [-]')
+
+        for accMag in self.accelerationMagnitude:
+            for seed in self.seeds:
+                for continuation in self.continuations:
+                    for lagrangePointNr in self.lagrangePointNrs:
+                        equilibria_df = load_equilibria_acceleration('../../data/raw/equilibria/L' + str(lagrangePointNr) \
+                                                             + '_acceleration_'  \
+                                                             + str("{:7.6f}".format(accMag)) + '_' \
+                                                             + str("{:7.6f}".format(seed)) + '_' + continuation +'_equilibria.txt')
+
+                        if accMag < 0.004:
+                            ax0.scatter(equilibria_df['x'], equilibria_df['y'], c=alpha, cmap="viridis",  s=0.1)
+
+                        if accMag > 0.004 and accMag < 0.01055:
+                            ax1.scatter(equilibria_df['x'], equilibria_df['y'], c=alpha, cmap="viridis",  s=0.1)
+
+                        if accMag > 0.01055 and accMag < 0.01065:
+                            ax2.scatter(equilibria_df['x'], equilibria_df['y'], c=alpha, cmap="viridis",  s=0.1)
+
+                        if accMag > 0.01065 and accMag < 0.01075:
+                            ax3.scatter(equilibria_df['x'], equilibria_df['y'], c=alpha, cmap="viridis",  s=0.1)
+
+
+
+        suptitle = fig.suptitle('Switching phenomenon of equilibria contour at $L_3$')
+
+        # fig.tight_layout()
+        # fig.subplots_adjust(top=0.90, right=0.98)
+
+        # Create a colourbar right from the plots with equal height as two subplots
+        upperRightPosition = ax1.get_position()
+        lowerRightPosition = ax3.get_position()
+        upperRightPoints = upperRightPosition.get_points()
+        lowerRightPoints = lowerRightPosition.get_points()
+
+        cb_x0 = upperRightPoints[1][0] + 0.015
+        cb_y0 = lowerRightPoints[0][1]
+
+
+        width_colourbar = (upperRightPoints[1][0] - upperRightPoints[0][0]) / 25
+        height_colourbar = upperRightPoints[1][1] - lowerRightPoints[0][1]
+        axes_colourbar = [cb_x0, cb_y0, width_colourbar, height_colourbar]
+
+        sm.set_array([])
+
+        cax = plt.axes(axes_colourbar)
+        cbar0 = plt.colorbar(sm, cax=cax, label='$\\alpha$ [-]', ticks=self.cbarTicksAcc)
+        cbar0.set_ticklabels(self.cbarTicksAccLabels)
+
+        fig.subplots_adjust(hspace=0.4)
+        # fig.tight_layout()
+        # fig.subplots_adjust(top=0.90)
+
+        if self.lowDPI:
+            fig.savefig('../../data/figures/equilibria/L3_phenomenon.png', transparent=True, dpi=self.dpi)
+        else:
+            fig.savefig('../../data/figures/equilibria/L3_phenomenon.pdf', transparent=True)
+
+
 
 if __name__ == '__main__':
 
@@ -1347,17 +1514,17 @@ if __name__ == '__main__':
     ### Contours
 
     lagrange_point_nrs = [3]
-    acceleration_magnitudes = [0.003, 0.0105,0.0107]
+    acceleration_magnitudes = [0.003, 0.0105, 0.0106, 0.0107]
     seeds = [0.0,180.0]
     continuations = ['backward','forward']
     alphas = [0.0]
     low_dpi = True
 
     display_equilibria_validation = DisplayEquilibriaValidation(lagrange_point_nrs, acceleration_magnitudes, alphas,
-                                                                seeds, continuations, low_dpi=low_dpi)
-    #display_equilibria_validation.plot_global_stability()
-    display_equilibria_validation.plot_equilibria_acceleration_total()
-
+                                                                 seeds, continuations, low_dpi=low_dpi)
+    # #display_equilibria_validation.plot_global_stability()
+    display_equilibria_validation.plot_L3_phenomenon()
+    #
     plt.close('all')
 
 
@@ -1444,10 +1611,10 @@ if __name__ == '__main__':
     #                                                             seeds, continuations, low_dpi=low_dpi)
     # display_equilibria_validation.plot_equilibria_alpha_total()
     # display_equilibria_validation.plot_equilibria_alpha_total_zoom()
-    #
-    # plt.close('all')
-    #
-    # del display_equilibria_validation
+
+    #plt.close('all')
+
+    #del display_equilibria_validation
 
 
 
