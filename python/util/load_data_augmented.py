@@ -258,9 +258,12 @@ def compute_eigenvalue_contour(x_loc,y_loc,desiredType, desiredMode, threshold):
                         ,minSaddleEigenVector[0], minSaddleEigenVector[1], minSaddleEigenVector[2],minSaddleEigenVector[3]]
 
                 if desiredMode == 2:
-                    if maxCenterEigenValue > threshold:
-                        maxCenterEigenValue = 1.2*threshold
+                    # if maxCenterEigenValue > threshold:
+                    #     maxCenterEigenValue = 1.2*threshold
+
+                    stabIndex = 0.5 * (np.abs(maxCenterEigenValue) + 1.0 / np.abs(maxCenterEigenValue))
                     data = [x_loc[q], y_loc[s], np.real(maxCenterEigenValue), np.imag(maxCenterEigenValue), \
+                            np.real(minCenterEigenValue), np.imag(minCenterEigenValue), stabIndex
                             np.real(maxCenterEigenVector[0]), np.imag(maxCenterEigenVector[0]), \
                             np.real(maxCenterEigenVector[1]), np.imag(maxCenterEigenVector[1]), \
                             np.real(maxCenterEigenVector[2]), np.imag(maxCenterEigenVector[2]), \
@@ -271,7 +274,7 @@ def compute_eigenvalue_contour(x_loc,y_loc,desiredType, desiredMode, threshold):
         df = pd.DataFrame(list, columns=['x','y','maxLambda','minLambda','stabIndex','maxV1','maxV2','maxV3','maxV4','minV1','minV2','minV3','minV4'])
 
     if desiredMode == 2:
-        df = pd.DataFrame(list, columns=['x','y','maxLambdaReal','maxLambdaImag','maxV1Real','maxV1Imag','maxV2Real',\
+        df = pd.DataFrame(list, columns=['x','y','maxLambdaReal','maxLambdaImag','minLambdaReal','minLambdaImag','stabIndex','maxV1Real','maxV1Imag','maxV2Real',\
                                          'maxV2Imag','maxV3Real','maxV3Imag','maxV4Real','maxV4Imag'])
     if desiredType == 1:
         desiredTypeString = 'SxC'
@@ -282,7 +285,7 @@ def compute_eigenvalue_contour(x_loc,y_loc,desiredType, desiredMode, threshold):
     if desiredMode == 2:
         desiredModeString = 'Center'
 
-    np.savetxt('../../data/raw/equilibria/eigenvalue' + desiredTypeString + '_' + desiredModeString + '_incCxC_ZOOM.txt', df.values, fmt='%13.12f')
+    np.savetxt('../../data/raw/equilibria/eigenvalue' + desiredTypeString + '_' + desiredModeString + '_incCxC.txt', df.values, fmt='%13.12f')
 
     return df
 
