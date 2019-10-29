@@ -107,7 +107,7 @@ class DisplayDynamicalBehaviour:
         ax.contourf(xM, yM, zM, colors='black')
         ax.contourf(xE, yE, zE, colors='black')
 
-        
+
 
         lagrange_points_df = load_lagrange_points_location()
         lagrange_point_nrs = ['L1', 'L2', 'L3', 'L4', 'L5']
