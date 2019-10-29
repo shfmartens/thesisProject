@@ -263,7 +263,7 @@ def compute_eigenvalue_contour(x_loc,y_loc,desiredType, desiredMode, threshold):
 
                     stabIndex = 0.5 * (np.abs(maxCenterEigenValue) + 1.0 / np.abs(maxCenterEigenValue))
                     data = [x_loc[q], y_loc[s], np.real(maxCenterEigenValue), np.imag(maxCenterEigenValue), \
-                            np.real(minCenterEigenValue), np.imag(minCenterEigenValue), stabIndex
+                            np.real(minCenterEigenValue), np.imag(minCenterEigenValue), stabIndex,
                             np.real(maxCenterEigenVector[0]), np.imag(maxCenterEigenVector[0]), \
                             np.real(maxCenterEigenVector[1]), np.imag(maxCenterEigenVector[1]), \
                             np.real(maxCenterEigenVector[2]), np.imag(maxCenterEigenVector[2]), \
