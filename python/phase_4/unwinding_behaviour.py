@@ -32,7 +32,7 @@ class DisplayDynamicalBehaviour:
 
         self.motionOfInterest = motion_of_interest
         self.lowDPI = low_dpi
-        self.arrayLength = 1000
+        self.arrayLength = 2000
         self.threshold = 6
 
         self.figSize = (7 * (1 + np.sqrt(5)) / 2, 7)
@@ -65,9 +65,9 @@ class DisplayDynamicalBehaviour:
         X = np.linspace(-self.scaleDistanceX / 2, self.scaleDistanceX / 2, self.arrayLength)
         Y = np.linspace(-self.scaleDistanceY / 2, self.scaleDistanceY / 2, self.arrayLength)
 
-        type2 = load_stability_data('../../data/raw/equilibria/stability_2.txt')
-        type3 = load_stability_data('../../data/raw/equilibria/stability_3.txt')
-        type4 = load_stability_data('../../data/raw/equilibria/stability_4.txt')
+        type2 = load_stability_data('../../data/raw/equilibria/stability_2_2000.txt')
+        type3 = load_stability_data('../../data/raw/equilibria/stability_3_2000.txt')
+        type4 = load_stability_data('../../data/raw/equilibria/stability_4_2000.txt')
 
         ax.scatter(type2['x'], type2['y'], color=self.plottingColors['CXC'], s=0.04, label='CxC')
         ax.scatter(type3['x'], type3['y'], color=self.plottingColors['MXM'], s=0.04, label='MxM')
@@ -81,10 +81,13 @@ class DisplayDynamicalBehaviour:
         if self.motionOfInterest == 'center':
             eigenValue_df = compute_eigenvalue_contour(X, Y, 1, 2, self.threshold)
 
-
         lambdaColumn = eigenValue_df['maxLambda']
-
+        lambdaColumn2 = eigenValue_df['minLambda']
+        stabIndex     = eigenValue_df['stabIndex']
         print(lambdaColumn)
+        print('test')
+        print(stabIndex)
+
 
         # Create colorbar next to of plots
         sm = plt.cm.ScalarMappable(
@@ -231,9 +234,9 @@ class DisplayDynamicalBehaviour:
         X = np.linspace(-self.scaleDistanceX / 2, self.scaleDistanceX / 2, self.arrayLength)
         Y = np.linspace(-self.scaleDistanceY / 2, self.scaleDistanceY / 2, self.arrayLength)
 
-        type2 = load_stability_data('../../data/raw/equilibria/stability_2.txt')
-        type3 = load_stability_data('../../data/raw/equilibria/stability_3.txt')
-        type4 = load_stability_data('../../data/raw/equilibria/stability_4.txt')
+        type2 = load_stability_data('../../data/raw/equilibria/stability_2_2000.txt')
+        type3 = load_stability_data('../../data/raw/equilibria/stability_3_2000.txt')
+        type4 = load_stability_data('../../data/raw/equilibria/stability_4_2000.txt')
 
         ax.scatter(type2['x'], type2['y'], color=self.plottingColors['CXC'], s=0.04, label='CxC')
         ax.scatter(type3['x'], type3['y'], color=self.plottingColors['MXM'], s=0.04, label='MxM')
@@ -242,8 +245,8 @@ class DisplayDynamicalBehaviour:
         ax.legend(frameon=True, loc='lower right', markerscale=15)
 
         if self.motionOfInterest == 'saddle':
-            eigenValue_df = load_eigenvalue_data('../../data/raw/equilibria/eigenvalueSxC_Saddle.txt')
-            #eigenValue_df = compute_eigenvalue_contour(X, Y, 1, 1, self.threshold)
+            #eigenValue_df = load_eigenvalue_data('../../data/raw/equilibria/eigenvalueSxC_Saddle.txt')
+            eigenValue_df = compute_eigenvalue_contour(X, Y, 1, 1, self.threshold)
         if self.motionOfInterest == 'center':
             eigenValue_df = compute_eigenvalue_contour(X, Y, 1, 2, self.threshold)
 
@@ -336,8 +339,8 @@ class DisplayDynamicalBehaviour:
         ax.legend(frameon=True, loc='lower right', markerscale=15)
 
         if self.motionOfInterest == 'saddle':
-            eigenValue_df = load_eigenvalue_data('../../data/raw/equilibria/eigenvalueSxC_Saddle.txt')
-            #eigenValue_df = compute_eigenvalue_contour(X, Y, 1, 1, self.threshold)
+            #eigenValue_df = load_eigenvalue_data('../../data/raw/equilibria/eigenvalueSxC_Saddle.txt')
+            eigenValue_df = compute_eigenvalue_contour(X, Y, 1, 1, self.threshold)
         if self.motionOfInterest == 'center':
             eigenValue_df = compute_eigenvalue_contour(X, Y, 1, 2, self.threshold)
 
@@ -407,8 +410,10 @@ if __name__ == '__main__':
     for motion_of_interest in motions_of_interest:
         display_dynamical_behaviour = DisplayDynamicalBehaviour(motion_of_interest, low_dpi)
 
-        display_dynamical_behaviour.plot_global_dynamics ()
-        #display_dynamical_behaviour.plot_global_dynamics_zoom()
+        display_dynamical_behaviour.plot_global_eigenvalues()
+        # display_dynamical_behaviour.plot_global_eigenvalues_zoom()
+        # display_dynamical_behaviour.plot_global_dynamics()
+        # display_dynamical_behaviour.plot_global_dynamics_zoom()
 
 
     del display_dynamical_behaviour

@@ -200,11 +200,12 @@ def compute_eigenvalue_contour(x_loc,y_loc,desiredType, desiredMode, threshold):
             numberOfCenters = 0
             numberOfMixed = 0
 
-            maxSaddleEigenValue = -1000
-            maxCenterEigenValue = -1000
+            maxSaddleEigenValue = -1000000000
+            maxCenterEigenValue = -1000000000
+            minSaddleEigenValue = 1000000000
+            minCenterEigenValue = 1000000000
             maxSaddleEigenVector = [0,0,0,0]
             maxCenterEigenVector = [0,0,0,0]
-
 
             eigenValueDeviation = 1.0e-3
             for i in range(len(eigenValues)):
@@ -214,6 +215,9 @@ def compute_eigenvalue_contour(x_loc,y_loc,desiredType, desiredMode, threshold):
                         if np.real(eigenValues[i]) > maxSaddleEigenValue:
                             maxSaddleEigenValue = np.real(eigenValues[i])
                             maxSaddleEigenVector = np.real(eigenVectors[:,i])
+                        if np.real(eigenValues[i]) < minSaddleEigenValue:
+                            minSaddleEigenValue = np.real(eigenValues[i])
+                            minSaddleEigenVector = np.real(eigenVectors[:,i])
 
 
                 if ( ( np.abs(np.real(eigenValues[i])) < eigenValueDeviation )and  ( np.abs(np.imag(eigenValues[i])) > eigenValueDeviation ) ):
@@ -223,6 +227,9 @@ def compute_eigenvalue_contour(x_loc,y_loc,desiredType, desiredMode, threshold):
                         if np.imag(eigenValues[i]) > maxCenterEigenValue:
                             maxCenterEigenValue = eigenValues[i]
                             maxCenterEigenVector = eigenVectors[:,i]
+                        if np.imag(eigenValues[i]) < minCenterEigenValue:
+                            minCenterEigenValue = eigenValues[i]
+                            minCenterEigenVector = eigenVectors[:,i]
 
 
                 if ( ( np.abs(np.real(eigenValues[i])) > eigenValueDeviation ) and ( np.abs(np.imag(eigenValues[i])) > eigenValueDeviation ) ):
@@ -239,12 +246,15 @@ def compute_eigenvalue_contour(x_loc,y_loc,desiredType, desiredMode, threshold):
             elif numberOfSaddle == 4:
                 type = 4
 
+
             if type == desiredType:
                 if desiredMode == 1:
-
                     if maxSaddleEigenValue > threshold:
                         maxSaddleEigenValue = 1.2*threshold
-                    data = [x_loc[q], y_loc[s], maxSaddleEigenValue, maxSaddleEigenVector[0],maxSaddleEigenVector[1],maxSaddleEigenVector[2],maxSaddleEigenVector[3]]
+
+                    stabIndex = 0.5* (np.abs(maxSaddleEigenValue) + 1.0/np.abs(maxSaddleEigenValue) )
+                    data = [x_loc[q], y_loc[s], maxSaddleEigenValue, minSaddleEigenValue, stabIndex, maxSaddleEigenVector[0],maxSaddleEigenVector[1],maxSaddleEigenVector[2],maxSaddleEigenVector[3] \
+                        ,minSaddleEigenVector[0], minSaddleEigenVector[1], minSaddleEigenVector[2],minSaddleEigenVector[3]]
 
                 if desiredMode == 2:
                     if maxCenterEigenValue > threshold:
@@ -255,9 +265,9 @@ def compute_eigenvalue_contour(x_loc,y_loc,desiredType, desiredMode, threshold):
                             np.real(maxCenterEigenVector[2]), np.imag(maxCenterEigenVector[2]), \
                             np.real(maxCenterEigenVector[3]), np.imag(maxCenterEigenVector[3]) ]
 
-                    list.append(data)
+                list.append(data)
     if desiredMode == 1:
-        df = pd.DataFrame(list, columns=['x','y','maxLambda','maxV1','maxV2','maxV3','maxV4'])
+        df = pd.DataFrame(list, columns=['x','y','maxLambda','minLambda','stabIndex','maxV1','maxV2','maxV3','maxV4','minV1','minV2','minV3','minV4'])
 
     if desiredMode == 2:
         df = pd.DataFrame(list, columns=['x','y','maxLambdaReal','maxLambdaImag','maxV1Real','maxV1Imag','maxV2Real',\
@@ -271,7 +281,7 @@ def compute_eigenvalue_contour(x_loc,y_loc,desiredType, desiredMode, threshold):
     if desiredMode == 2:
         desiredModeString = 'Center'
 
-    #np.savetxt('../../data/raw/equilibria/eigenvalue' + desiredTypeString + '_' + desiredModeString + '.txt', df.values, fmt='%13.12f')
+    np.savetxt('../../data/raw/equilibria/eigenvalue' + desiredTypeString + '_' + desiredModeString + '.txt', df.values, fmt='%13.12f')
 
     return df
 
