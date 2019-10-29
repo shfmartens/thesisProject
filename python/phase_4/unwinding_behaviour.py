@@ -485,8 +485,8 @@ class DisplayDynamicalBehaviour:
         ###### EIGENVALUE LOAD DATA FRAMES ######
         eigenvalue_df_saddle = load_eigenvalue_data('../../data/raw/equilibria/eigenvalueSxC_Saddle_incSxS.txt',1)
         eigenvalue_df_saddle_zoom = load_eigenvalue_data('../../data/raw/equilibria/eigenvalueSxC_Saddle_incSxS_ZOOM.txt',1)
-        eigenvalue_df_center = load_eigenvalue_data('../../data/raw/equilibria/eigenvalueSxC_Saddle_incCxC.txt', 2)
-        eigenvalue_df_center_zoom = load_eigenvalue_data('../../data/raw/equilibria/eigenvalueSxC_Saddle_incCxC_ZOOM.txt', 2)
+        eigenvalue_df_center = load_eigenvalue_data('../../data/raw/equilibria/eigenvalueSxC_Center_incCxC.txt', 2)
+        eigenvalue_df_center_zoom = load_eigenvalue_data('../../data/raw/equilibria/eigenvalueSxC_Center_incCxC_ZOOM.txt', 2)
 
         plotting_list_saddle = []
         for row in eigenvalue_df_saddle.iterrows():
