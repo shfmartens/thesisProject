@@ -518,9 +518,9 @@ class DisplayDynamicalBehaviour:
         for row in eigenvalue_df_center.iterrows():
             x = row[1][0]
             y = row[1][1]
-            maxLambda = row[1][2]
-            minLambda = row[1][3]
-            stabilityIndex = row[1][4]
+            maxLambda = row[1][3]
+            minLambda = row[1][5]
+            stabilityIndex = row[1][6]
 
             if stabilityIndex < self.threshold:
                 plotting_list_center.append([x, y, maxLambda, minLambda, stabilityIndex])
@@ -532,9 +532,9 @@ class DisplayDynamicalBehaviour:
         for row in eigenvalue_df_center_zoom.iterrows():
             x = row[1][0]
             y = row[1][1]
-            maxLambda = row[1][2]
-            minLambda = row[1][3]
-            stabilityIndex = row[1][4]
+            maxLambda = row[1][3]
+            minLambda = row[1][5]
+            stabilityIndex = row[1][6]
 
             if stabilityIndex < self.threshold:
                 plotting_list_center_zoom.append([x, y, maxLambda, minLambda, stabilityIndex])

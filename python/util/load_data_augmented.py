@@ -382,8 +382,8 @@ def load_eigenvalue_data(file_path, mode):
         data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(13)))
         data.columns = ['x','y','maxLambda','minLambda','stabIndex','maxV1','maxV2','maxV3','maxV4','minV1','minV2','minV3','minV4']
     if mode == 2:
-        data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(13)))
-        data.columns = ['x','y','maxLambdaReal','maxLambdaImag','maxV1Real','maxV1Imag','maxV2Real','maxV2Imag',\
+        data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(15)))
+        data.columns = ['x','y','maxLambdaReal','maxLambdaImag','minLambdaReal','minLambdaImag','stabIndex','maxV1Real','maxV1Imag','maxV2Real','maxV2Imag',\
                                                                 'maxV3Real','maxV3Imag','maxV4Real','maxV4Imag']
 
     return data
