@@ -62,8 +62,11 @@ class DisplayDynamicalBehaviour:
         ax.set_xlim([-self.scaleDistanceX / 2, self.scaleDistanceX / 2])
         ax.set_ylim([-self.scaleDistanceY / 2, self.scaleDistanceY / 2])
 
-        X = np.linspace(-self.scaleDistanceX / 2, self.scaleDistanceX / 2, self.arrayLength)
-        Y = np.linspace(-self.scaleDistanceY / 2, self.scaleDistanceY / 2, self.arrayLength)
+        # X = np.linspace(-self.scaleDistanceX / 2, self.scaleDistanceX / 2, self.arrayLength)
+        # Y = np.linspace(-self.scaleDistanceY / 2, self.scaleDistanceY / 2, self.arrayLength)
+
+        X = np.linspace(1 - self.scaleDistanceX / 12.5, 1 + self.scaleDistanceX / 12.5, self.arrayLength)
+        Y = np.linspace(-self.scaleDistanceY / 12.5, self.scaleDistanceY / 12.5, self.arrayLength)
 
         type2 = load_stability_data('../../data/raw/equilibria/stability_2_2000.txt')
         type3 = load_stability_data('../../data/raw/equilibria/stability_3_2000.txt')
