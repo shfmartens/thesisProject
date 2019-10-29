@@ -354,7 +354,7 @@ def compute_stability_type(x_loc,y_loc,desiredType):
                 list.append(data)
 
     df = pd.DataFrame(list, columns=['x','y','type'])
-    np.savetxt('../../data/raw/equilibria/stability_' + str(desiredType) + '_L3.txt', df.values, fmt='%13.12f')
+    np.savetxt('../../data/raw/equilibria/stability_' + str(desiredType) + '_ZOOM_2000.txt', df.values, fmt='%13.12f')
 
     return df
 

@@ -72,8 +72,9 @@ class DisplayEquilibriaValidation:
         X = np.linspace(-self.scaleDistanceX / 2, self.scaleDistanceX / 2, 1000)
         Y = np.linspace(-self.scaleDistanceY / 2, self.scaleDistanceY / 2, 1000)
 
-        X = np.linspace(-1.05, -0.95, 1000)
-        Y = np.linspace(-0.5, 0.5, 1000)
+        X = np.linspace(1.0 - self.scaleDistanceX / 12.5, 1.0 + self.scaleDistanceX / 12.5, 2000)
+        Y = np.linspace(-self.scaleDistanceY / 12.5, self.scaleDistanceY / 12.5, 2000)
+
         type1 = compute_stability_type(X, Y, 1)
         type2 = compute_stability_type(X, Y, 2)
         type3 = compute_stability_type(X, Y, 3)
@@ -1349,8 +1350,8 @@ if __name__ == '__main__':
 
     display_equilibria_validation = DisplayEquilibriaValidation(lagrange_point_nrs, acceleration_magnitudes, alphas,
                                                                 seeds, continuations, low_dpi=low_dpi)
-    #display_equilibria_validation.plot_global_stability()
-    display_equilibria_validation.plot_equilibria_acceleration_total()
+    display_equilibria_validation.plot_global_stability()
+    #display_equilibria_validation.plot_equilibria_acceleration_total()
 
     plt.close('all')
 
