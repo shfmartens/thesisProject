@@ -77,8 +77,8 @@ class DisplayDynamicalBehaviour:
 
 
         if self.motionOfInterest == 'saddle':
-            eigenValue_df = load_eigenvalue_data('../../data/raw/equilibria/eigenvalueSxC_Saddle.txt', 1)
-            #eigenValue_df = compute_eigenvalue_contour(X, Y, 1, 1, self.threshold)
+            #eigenValue_df = load_eigenvalue_data('../../data/raw/equilibria/eigenvalueSxC_Saddle.txt', 1)
+            eigenValue_df = compute_eigenvalue_contour(X, Y, 1, 1, self.threshold)
         if self.motionOfInterest == 'center':
             eigenValue_df = compute_eigenvalue_contour(X, Y, 1, 2, self.threshold)
 
@@ -86,12 +86,28 @@ class DisplayDynamicalBehaviour:
         lambdaColumn2 = eigenValue_df['minLambda']
         stabIndex     = eigenValue_df['stabIndex']
 
+        plotting_list = []
+        print('start filtering threshold data')
+        for row in eigenValue_df.iterrows():
+           x = row[1][0]
+           y = row[1][1]
+           maxLambda = row[1][2]
+           minLambda = row[1][3]
+           stabilityIndex = row[1][4]
+
+           if stabilityIndex < self.threshold:
+               plotting_list.append([x, y, maxLambda, minLambda, stabilityIndex])
+        print(' filtering threshold complete data')
+
+
+        plotting_df = pd.DataFrame(plotting_list, columns=['x','y','maxSaddle','minSaddle','stabilityIndex'])
+
         # Create colorbar next to of plots
         sm = plt.cm.ScalarMappable(
-            cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis", len(lambdaColumn))),
-            norm=plt.Normalize(vmin=0, vmax=max(lambdaColumn)))
+            cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis", len(plotting_df['maxSaddle']))),
+            norm=plt.Normalize(vmin=0, vmax=max(plotting_df['maxSaddle'])))
 
-        ax.scatter(eigenValue_df['x'], eigenValue_df['y'], c=lambdaColumn, cmap="viridis", s=0.1)
+        ax.scatter(plotting_df['x'], plotting_df['y'], c=plotting_df['maxSaddle'], cmap="viridis", s=0.1)
 
         bodies_df = load_bodies_location()
         u = np.linspace(0, 2 * np.pi, 100)
