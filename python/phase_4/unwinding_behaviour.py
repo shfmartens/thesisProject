@@ -409,7 +409,7 @@ class DisplayDynamicalBehaviour:
         ax.set_title('Overview of the ' + str(self.motionOfInterest) + ' eigenvalue behaviour')
 
         fig.tight_layout()
-        fig.subplots_adjust(right=0.9)
+        fig.subplots_adjust(right=0.95)
 
         if self.lowDPI:
             fig.savefig('../../data/figures/equilibria/globalDynamics_' + str(self.motionOfInterest) + '_zoom_.png',transparent=True, dpi=self.dpi)
@@ -417,6 +417,173 @@ class DisplayDynamicalBehaviour:
             fig.savefig('../../data/figures/equilibria/globalDynamics_' + str(self.motionOfInterest) + '_zoom_.pdf',transparent=True)
 
         pass
+
+    def plot_eigenvalue_spm_behaviour(self):
+        fig = plt.figure(figsize=self.figSize)
+        ax0 = fig.add_subplot(2, 2, 1)
+        ax1 = fig.add_subplot(2, 2, 2)
+        ax2 = fig.add_subplot(2, 2, 3)
+        ax3 = fig.add_subplot(2, 2, 4)
+
+        fig.suptitle('Eigenvalue behaviour')
+        ax0.set_title('$\\lambda_{saddle}$')
+        ax1.set_title('$\\lambda_{saddle}$ zoom')
+        ax2.set_title('$\\lambda_{center}$')
+        ax3.set_title('$\\lambda_{center}$ zoom')
+
+        ax0.set_xlabel('$x$ [-]')
+        ax0.set_ylabel('$y$ [-]')
+
+        ax0.set_xlim([-self.scaleDistanceX / 2.2, self.scaleDistanceX / 2.2])
+        ax0.set_ylim([-self.scaleDistanceY / 2.2, self.scaleDistanceY / 2.2])
+
+        ax1.set_xlabel('$x$ [-]')
+        ax1.set_ylabel('$y$ [-]')
+
+        ax1.set_xlim([1 - self.scaleDistanceX / 12.5, 1 + self.scaleDistanceX / 12.5])
+        ax1.set_ylim([-self.scaleDistanceY / 12.5, self.scaleDistanceY / 12.5])
+
+        ax2.set_xlabel('$x$ [-]')
+        ax2.set_ylabel('$y$ [-]')
+
+        ax2.set_xlim([-self.scaleDistanceX / 2.2, self.scaleDistanceX / 2.2])
+        ax2.set_ylim([-self.scaleDistanceY / 2.2, self.scaleDistanceY / 2.2])
+
+        ax3.set_xlabel('$x$ [-]')
+        ax3.set_ylabel('$y$ [-]')
+
+        ax3.set_xlim([1 - self.scaleDistanceX / 12.5, 1 + self.scaleDistanceX / 12.5])
+        ax3.set_ylim([-self.scaleDistanceY / 12.5, self.scaleDistanceY / 12.5])
+
+
+
+        type2ZOOM = load_stability_data('../../data/raw/equilibria/stability_2_ZOOM_2000.txt')
+        type3ZOOM = load_stability_data('../../data/raw/equilibria/stability_3_ZOOM_2000.txt')
+        type4ZOOM = load_stability_data('../../data/raw/equilibria/stability_4_ZOOM_2000.txt')
+
+        type2 = load_stability_data('../../data/raw/equilibria/stability_2_2000.txt')
+        type3 = load_stability_data('../../data/raw/equilibria/stability_3_2000.txt')
+        type4 = load_stability_data('../../data/raw/equilibria/stability_4_2000.txt')
+
+        ax0.scatter(type2['x'], type2['y'], color=self.plottingColors['CXC'], s=0.04, label='CxC')
+        ax0.scatter(type3['x'], type3['y'], color=self.plottingColors['MXM'], s=0.04, label='MxM')
+        ax0.legend(frameon=True, loc='lower right', markerscale=15)
+
+
+        ax1.scatter(type2ZOOM['x'], type2ZOOM['y'], color=self.plottingColors['CXC'], s=0.04, label='CxC')
+        ax1.scatter(type3ZOOM['x'], type3ZOOM['y'], color=self.plottingColors['MXM'], s=0.04, label='MxM')
+
+        ax2.scatter(type3['x'], type3['y'], color=self.plottingColors['MXM'], s=0.04, label='MxM')
+        ax2.scatter(type4['x'], type4['y'], color=self.plottingColors['SXS'], s=0.04, label='SxS')
+        ax2.legend(frameon=True, loc='lower right', markerscale=15)
+
+
+        ax3.scatter(type3ZOOM['x'], type3ZOOM['y'], color=self.plottingColors['MXM'], s=0.04, label='MxM')
+        ax3.scatter(type4ZOOM['x'], type4ZOOM['y'], color=self.plottingColors['SXS'], s=0.04, label='SxS')
+
+
+        ###### EIGENVALUE LOAD DATA FRAMES ######
+        eigenvalue_df_saddle = load_eigenvalue_data('../../data/raw/equilibria/eigenvalueSxC_Saddle_incSxS.txt',1)
+        eigenvalue_df_saddle_zoom = load_eigenvalue_data('../../data/raw/equilibria/eigenvalueSxC_Saddle_incSxS_ZOOM.txt',1)
+        # eigenvalue_df_center =
+        # eigenvalue_df_center_zoom =
+
+        plotting_list = []
+        for row in eigenvalue_df_saddle.iterrows():
+            x = row[1][0]
+            y = row[1][1]
+            maxLambda = row[1][2]
+            minLambda = row[1][3]
+            stabilityIndex = row[1][4]
+
+            if stabilityIndex < self.threshold:
+                plotting_list.append([x, y, maxLambda, minLambda, stabilityIndex])
+
+        plotting_df = pd.DataFrame(plotting_list, columns=['x', 'y', 'maxSaddle', 'minSaddle', 'stabilityIndex'])
+
+        sm = plt.cm.ScalarMappable(
+            cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis", len(eigenvalue_df_saddle['maxLambda']))),
+            norm=plt.Normalize(vmin=0.0, vmax=self.threshold))
+
+        ax0.scatter(plotting_df['x'], plotting_df['y'], c=plotting_df['maxSaddle'], cmap="viridis", s=0.1)
+        #ax1.scatter(eigenvalue_df_saddle_zoom['x'], eigenvalue_df_saddle_zoom['y'], c=eigenvalue_df_saddle_zoom['maxLambda'], cmap="viridis", s=0.1)
+
+        ## Add the moon and earth bodies
+        bodies_df = load_bodies_location()
+        u = np.linspace(0, 2 * np.pi, 100)
+        v = np.linspace(0, np.pi, 100)
+        xM = bodies_df['Moon']['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df['Moon']['x']
+        yM = bodies_df['Moon']['r'] * np.outer(np.sin(u), np.sin(v))
+        zM = bodies_df['Moon']['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
+
+        xE = bodies_df['Earth']['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df['Earth']['x']
+        yE = bodies_df['Earth']['r'] * np.outer(np.sin(u), np.sin(v))
+        zE = bodies_df['Earth']['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
+
+        ax0.contourf(xM, yM, zM, colors='black')
+        ax0.contourf(xE, yE, zE, colors='black')
+
+        ax1.contourf(xM, yM, zM, colors='black')
+        ax1.contourf(xE, yE, zE, colors='black')
+
+        ax2.contourf(xM, yM, zM, colors='black')
+        ax2.contourf(xE, yE, zE, colors='black')
+
+        ax3.contourf(xM, yM, zM, colors='black')
+        ax3.contourf(xE, yE, zE, colors='black')
+
+        ## Add Natural collinear points
+        lagrange_points_df = load_lagrange_points_location()
+        lagrange_point_nrs = ['L1', 'L2']
+        for lagrange_point_nr in lagrange_point_nrs:
+            ax0.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                        color='black', marker='x')
+            ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                        color='black', marker='x')
+            ax2.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                        color='black', marker='x')
+            ax3.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                        color='black', marker='x')
+
+        ## Set aspect ratio equal to 1
+        ax0.set_aspect(1.0)
+        ax1.set_aspect(1.0)
+        ax2.set_aspect(1.0)
+        ax3.set_aspect(1.0)
+
+        fig.tight_layout()
+        fig.subplots_adjust(top=0.90, right=0.98)
+
+        # Create a colourbar right from the plots with equal height as two subplots
+        upperRightPosition = ax1.get_position()
+        lowerRightPosition = ax3.get_position()
+        upperRightPoints = upperRightPosition.get_points()
+        lowerRightPoints = lowerRightPosition.get_points()
+
+        cb_x0 = upperRightPoints[1][0] - 0.015
+        cb_y0 = lowerRightPoints[0][1]
+
+        width_colourbar = (upperRightPoints[1][0] - upperRightPoints[0][0]) / 25
+        height_colourbar = upperRightPoints[1][1] - lowerRightPoints[0][1]
+        axes_colourbar = [cb_x0, cb_y0, width_colourbar, height_colourbar]
+
+        sm.set_array([])
+
+        cax = plt.axes(axes_colourbar)
+        cbar0 = plt.colorbar(sm, cax=cax, label='$\\lambda$ [-]')
+
+
+        fig.tight_layout()
+        fig.subplots_adjust(top=0.90)
+
+        if self.lowDPI:
+            fig.savefig('../../data/figures/equilibria/final_plot_eigenvalue_behaviour.png',transparent=True, dpi=self.dpi)
+        else:
+            fig.savefig('../../data/figures/equilibria/final_plot_eigenvalue_behaviour_' + str(self.motionOfInterest) + '_zoom_.pdf',transparent=True)
+
+        pass
+
+
 
 if __name__ == '__main__':
     motions_of_interest = ['center']
@@ -426,10 +593,11 @@ if __name__ == '__main__':
     for motion_of_interest in motions_of_interest:
         display_dynamical_behaviour = DisplayDynamicalBehaviour(motion_of_interest, low_dpi)
 
-        display_dynamical_behaviour.plot_global_eigenvalues()
+        #display_dynamical_behaviour.plot_global_eigenvalues()
         # display_dynamical_behaviour.plot_global_eigenvalues_zoom()
         # display_dynamical_behaviour.plot_global_dynamics()
         # display_dynamical_behaviour.plot_global_dynamics_zoom()
+        display_dynamical_behaviour.plot_eigenvalue_spm_behaviour()
 
 
     del display_dynamical_behaviour

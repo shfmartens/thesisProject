@@ -434,9 +434,11 @@ class DisplayEquilibriaValidation:
                             #ax2.plot(equilibria_df.index,equilibria_df['x'])
                             #ax2.plot(equilibria_df.index,equilibria_df['y'])
 
-        ax.text(-0.95,0.3,'0.003', fontsize=8,rotation=70,rotation_mode='anchor')
-        ax.text(0.575,0.795,'0.003', fontsize=8,rotation=320,rotation_mode='anchor')
-        ax.text(0.59,-0.82,'0.003', fontsize=8,rotation=40,rotation_mode='anchor')
+        ax.text(-0.963,0.278,'0.003', fontsize=8,rotation=10,rotation_mode='anchor') # for L3
+
+        #ax.text(-0.95,0.3,'0.003', fontsize=8,rotation=70,rotation_mode='anchor')
+        # ax.text(0.575,0.795,'0.003', fontsize=8,rotation=320,rotation_mode='anchor')
+        # ax.text(0.59,-0.82,'0.003', fontsize=8,rotation=40,rotation_mode='anchor')
 
         ax.text(0.91, 0.285, '0.1', fontsize=8, rotation=0, rotation_mode='anchor')
         ax.text(0.91, -0.305, '0.1', fontsize=8, rotation=0, rotation_mode='anchor')
@@ -484,10 +486,10 @@ class DisplayEquilibriaValidation:
         ax.set_xlim([1.0-self.scaleDistanceX / 12.5, 1.0+self.scaleDistanceX / 12.5])
         ax.set_ylim([-self.scaleDistanceY / 12.5, self.scaleDistanceY / 12.5])
 
-        type1 = load_stability_data('../../data/raw/equilibria/stability_1_zoom.txt')
-        type2 = load_stability_data('../../data/raw/equilibria/stability_2_zoom.txt')
-        type3 = load_stability_data('../../data/raw/equilibria/stability_3_zoom.txt')
-        type4 = load_stability_data('../../data/raw/equilibria/stability_4_zoom.txt')
+        type1 = load_stability_data('../../data/raw/equilibria/stability_1_ZOOM_2000.txt')
+        type2 = load_stability_data('../../data/raw/equilibria/stability_2_ZOOM_2000.txt')
+        type3 = load_stability_data('../../data/raw/equilibria/stability_3_ZOOM_2000.txt')
+        type4 = load_stability_data('../../data/raw/equilibria/stability_4_ZOOM_2000.txt')
 
         ax.scatter(type1['x'], type1['y'], color=self.plottingColors['SXC'], s=0.04, label='SxC')
         ax.scatter(type2['x'], type2['y'], color=self.plottingColors['CXC'], s=0.04, label='CxC')
@@ -835,10 +837,10 @@ class DisplayEquilibriaValidation:
         ax.set_xlim([1.0-self.scaleDistanceX / 12.5, 1.0+self.scaleDistanceX / 12.5])
         ax.set_ylim([-self.scaleDistanceY / 12.5, self.scaleDistanceY / 12.5])
 
-        type1 = load_stability_data('../../data/raw/equilibria/stability_1_zoom.txt')
-        type2 = load_stability_data('../../data/raw/equilibria/stability_2_zoom.txt')
-        type3 = load_stability_data('../../data/raw/equilibria/stability_3_zoom.txt')
-        type4 = load_stability_data('../../data/raw/equilibria/stability_4_zoom.txt')
+        type1 = load_stability_data('../../data/raw/equilibria/stability_1_ZOOM_2000.txt')
+        type2 = load_stability_data('../../data/raw/equilibria/stability_2_ZOOM_2000.txt')
+        type3 = load_stability_data('../../data/raw/equilibria/stability_3_ZOOM_2000.txt')
+        type4 = load_stability_data('../../data/raw/equilibria/stability_4_ZOOM_2000.txt')
 
         ax.scatter(type1['x'], type1['y'], color=self.plottingColors['SXC'], s=0.04, label='SxC')
         ax.scatter(type2['x'], type2['y'], color=self.plottingColors['CXC'], s=0.04, label='CxC')
@@ -1342,7 +1344,7 @@ if __name__ == '__main__':
     ### Contours
 
     lagrange_point_nrs = [3]
-    acceleration_magnitudes = [0.003, 0.0107]
+    acceleration_magnitudes = [0.003, 0.0105]
     seeds = [0.0,180.0]
     continuations = ['backward','forward']
     alphas = [0.0]
@@ -1350,8 +1352,8 @@ if __name__ == '__main__':
 
     display_equilibria_validation = DisplayEquilibriaValidation(lagrange_point_nrs, acceleration_magnitudes, alphas,
                                                                 seeds, continuations, low_dpi=low_dpi)
-    display_equilibria_validation.plot_global_stability()
-    #display_equilibria_validation.plot_equilibria_acceleration_total()
+    #display_equilibria_validation.plot_global_stability()
+    display_equilibria_validation.plot_equilibria_acceleration_total()
 
     plt.close('all')
 
@@ -1423,18 +1425,18 @@ if __name__ == '__main__':
     # seeds = [0.0]
     # continuations = ['forward']
     # alphas = [0, 60, 120, 180, 240, 300]
+
+
+
+    # for alpha in alphas:
+    #     print(alpha)
+    #     display_equilibria_validation = DisplayEquilibriaValidation(lagrange_point_nrs, acceleration_magnitudes,alpha, seeds, continuations, low_dpi=low_dpi)
+    #     display_equilibria_validation.plot_equilibria_alpha()
     #
+    #     plt.close('all')
     #
-    #
-    # # for alpha in alphas:
-    # #     print(alpha)
-    # #     display_equilibria_validation = DisplayEquilibriaValidation(lagrange_point_nrs, acceleration_magnitudes,alpha, seeds, continuations, low_dpi=low_dpi)
-    # #     display_equilibria_validation.plot_equilibria_alpha()
-    # #
-    # #     plt.close('all')
-    # #
-    # #     del display_equilibria_validation
-    #
+    #     del display_equilibria_validation
+
     # display_equilibria_validation = DisplayEquilibriaValidation(lagrange_point_nrs, acceleration_magnitudes, alphas,
     #                                                             seeds, continuations, low_dpi=low_dpi)
     # display_equilibria_validation.plot_equilibria_alpha_total()
