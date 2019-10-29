@@ -1442,7 +1442,7 @@ class DisplayEquilibriaValidation:
                                                              + str("{:7.6f}".format(accMag)) + '_' \
                                                              + str("{:7.6f}".format(seed)) + '_' + continuation +'_equilibria.txt')
 
-                        
+
                         if len(equilibria_df['alpha']) > 1:
                             alpha = equilibria_df['alpha']
 
@@ -1509,13 +1509,8 @@ if __name__ == '__main__':
     low_dpi = True
 
     display_equilibria_validation = DisplayEquilibriaValidation(lagrange_point_nrs, acceleration_magnitudes, alphas,
-                                                                 seeds, continuations, low_dpi=low_dpi)
-    # #display_equilibria_validation.plot_global_stability()
+                                                                  seeds, continuations, low_dpi=low_dpi)
     display_equilibria_validation.plot_L3_phenomenon()
-    #
-    plt.close('all')
-
-
 
     del display_equilibria_validation
 
@@ -1582,10 +1577,10 @@ if __name__ == '__main__':
     # lagrange_point_nrs = [1, 2, 3, 4, 5]
     # seeds = [0.0]
     # continuations = ['forward']
-    # alphas = [0, 60, 120, 180, 240, 300]
-
-
-
+    # alphas = [0, 60, 90, 120, 180, 240, 270, 300]
+    #
+    #
+    #
     # for alpha in alphas:
     #     print(alpha)
     #     display_equilibria_validation = DisplayEquilibriaValidation(lagrange_point_nrs, acceleration_magnitudes,alpha, seeds, continuations, low_dpi=low_dpi)
@@ -1594,7 +1589,10 @@ if __name__ == '__main__':
     #     plt.close('all')
     #
     #     del display_equilibria_validation
-
+    #
+    # alphas = [0, 60, 120, 180, 240, 300]
+    #
+    #
     # display_equilibria_validation = DisplayEquilibriaValidation(lagrange_point_nrs, acceleration_magnitudes, alphas,
     #                                                             seeds, continuations, low_dpi=low_dpi)
     # display_equilibria_validation.plot_equilibria_alpha_total()
