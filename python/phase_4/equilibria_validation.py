@@ -48,8 +48,8 @@ class DisplayEquilibriaValidation:
         self.cbarTicksAcc = ([0, 0.5* np.pi ,np.pi, 1.5*np.pi, 2 * np.pi])
         self.cbarTicksAccLabels = (['0', '$\\frac{1}{2}\pi$','$\pi$','$\\frac{3}{2}\pi$', '$2\pi$'])
 
-        self.cbarTicksAngle = ([0.0, 0.1])
-        self.cbarTicksAngleLabels = (['0', '0.1'])
+        self.cbarTicksAngle = ([0.0, 0.05, 0.1])
+        self.cbarTicksAngleLabels = (['0', '0.05', '0.1'])
 
         n_colors = 4
         n_colors_l = 10
@@ -718,8 +718,8 @@ class DisplayEquilibriaValidation:
         ax.set_ylabel('$y$ [-]')
         ax.grid(True, which='both', ls=':')
 
-        ax.set_xlim([-self.scaleDistanceX / 2, self.scaleDistanceX / 2])
-        ax.set_ylim([-self.scaleDistanceY / 2, self.scaleDistanceY / 2])
+        ax.set_xlim([-self.scaleDistanceX / 2.2, self.scaleDistanceX / 2.2])
+        ax.set_ylim([-self.scaleDistanceY / 2.2, self.scaleDistanceY / 2.2])
 
         type1 = load_stability_data('../../data/raw/equilibria/stability_1_2000.txt')
         type2 = load_stability_data('../../data/raw/equilibria/stability_2_2000.txt')
@@ -786,27 +786,27 @@ class DisplayEquilibriaValidation:
 
                     ax.scatter(equilibria_df['x'], equilibria_df['y'], c=acc, cmap="viridis", s=0.1)
 
-        ax.text(-1.1, -0.02, '0$^{\\circ}$', fontsize=8, rotation=0, rotation_mode='anchor')
-        ax.text(0.25, 0.9, '0$^{\\circ}$', fontsize=8, rotation=0, rotation_mode='anchor')
-        ax.text(0.25, -0.94, '0$^{\\circ}$', fontsize=8, rotation=0, rotation_mode='anchor')
+        ax.text(-1.1, -0.01, '0$^{\\circ}$', fontsize=8, rotation=0, rotation_mode='anchor')
+        ax.text(-0.012, 0.95, '0$^{\\circ}$', fontsize=8, rotation=0, rotation_mode='anchor')
+        ax.text(-0.012, -0.98, '0$^{\\circ}$', fontsize=8, rotation=0, rotation_mode='anchor')
 
-        ax.text(-0.1, 0.9, '90$^{\\circ}$', fontsize=8, rotation=0, rotation_mode='anchor')
+        ax.text(-0.12, 0.92, '90$^{\\circ}$', fontsize=8, rotation=0, rotation_mode='anchor')
         ax.text(0.905, 0.295, '90$^{\\circ}$', fontsize=8, rotation=0, rotation_mode='anchor')
-        ax.text(0.0, -1.08, '90$^{\\circ}$', fontsize=8, rotation=0, rotation_mode='anchor')
+        ax.text(0.025, -1.07, '90$^{\\circ}$', fontsize=8, rotation=0, rotation_mode='anchor')
 
-        ax.text(-0.95, -0.02, '180$^{\\circ}$', fontsize=8, rotation=0, rotation_mode='anchor')
+        ax.text(-0.95, -0.01, '180$^{\\circ}$', fontsize=8, rotation=0, rotation_mode='anchor')
         ax.text(0.905, 0.42, '180$^{\\circ}$', fontsize=8, rotation=0, rotation_mode='anchor')
         ax.text(0.905, -0.45, '180$^{\\circ}$', fontsize=8, rotation=0, rotation_mode='anchor')
 
-        ax.text(-0.1,-0.94 , '270$^{\\circ}$', fontsize=8, rotation=0, rotation_mode='anchor')
+        ax.text(-0.12,-0.94 , '270$^{\\circ}$', fontsize=8, rotation=0, rotation_mode='anchor')
         ax.text(0.905, -0.315, '270$^{\\circ}$', fontsize=8, rotation=0, rotation_mode='anchor')
-        ax.text(0.0, 1.05, '270$^{\\circ}$', fontsize=8, rotation=0, rotation_mode='anchor')
+        ax.text(0.06, 1.04, '270$^{\\circ}$', fontsize=8, rotation=0, rotation_mode='anchor')
 
 
 
 
         #fig.suptitle('Artificial equilibria at $L_{' + str(", ".join( repr(e) for e in self.lagrangePointNrs )) + '}$ at different angles')
-        fig.suptitle('')
+        fig.suptitle('Artificial equilibria contours at various acceleration orientations')
 
         fig.tight_layout()
         fig.subplots_adjust(top=0.93,right=0.95)
@@ -903,7 +903,7 @@ class DisplayEquilibriaValidation:
                         norm=plt.Normalize(vmin=0.0, vmax=0.1))
 
 
-                    ax.scatter(equilibria_df['x'], equilibria_df['y'], c=acc, cmap="viridis", s=0.1)
+                    ax.scatter(equilibria_df['x'], equilibria_df['y'], c=acc, cmap="viridis", s=1)
 
         ax.text(0.815, -0.002, '0$^{\\circ}$', fontsize=8, rotation=0, rotation_mode='anchor')
         ax.text(1.135, -0.002, '0$^{\\circ}$', fontsize=8, rotation=0, rotation_mode='anchor')
@@ -1508,11 +1508,11 @@ if __name__ == '__main__':
     alphas = [0.0]
     low_dpi = True
 
-    display_equilibria_validation = DisplayEquilibriaValidation(lagrange_point_nrs, acceleration_magnitudes, alphas,
-                                                                  seeds, continuations, low_dpi=low_dpi)
-    display_equilibria_validation.plot_L3_phenomenon()
-
-    del display_equilibria_validation
+    # display_equilibria_validation = DisplayEquilibriaValidation(lagrange_point_nrs, acceleration_magnitudes, alphas,
+    #                                                               seeds, continuations, low_dpi=low_dpi)
+    # display_equilibria_validation.plot_L3_phenomenon()
+    #
+    # del display_equilibria_validation
 
 
     # lagrange_point_nrs = [1,2]
@@ -1574,9 +1574,9 @@ if __name__ == '__main__':
 
 
 
-    # lagrange_point_nrs = [1, 2, 3, 4, 5]
-    # seeds = [0.0]
-    # continuations = ['forward']
+    lagrange_point_nrs = [1, 2, 3, 4, 5]
+    seeds = [0.0]
+    continuations = ['forward']
     # alphas = [0, 60, 90, 120, 180, 240, 270, 300]
     #
     #
@@ -1590,13 +1590,13 @@ if __name__ == '__main__':
     #
     #     del display_equilibria_validation
     #
-    # alphas = [0, 60, 120, 180, 240, 300]
-    #
-    #
-    # display_equilibria_validation = DisplayEquilibriaValidation(lagrange_point_nrs, acceleration_magnitudes, alphas,
-    #                                                             seeds, continuations, low_dpi=low_dpi)
-    # display_equilibria_validation.plot_equilibria_alpha_total()
-    # display_equilibria_validation.plot_equilibria_alpha_total_zoom()
+    alphas = [0, 90, 180, 270]
+
+
+    display_equilibria_validation = DisplayEquilibriaValidation(lagrange_point_nrs, acceleration_magnitudes, alphas,
+                                                                seeds, continuations, low_dpi=low_dpi)
+    display_equilibria_validation.plot_equilibria_alpha_total()
+    #display_equilibria_validation.plot_equilibria_alpha_total_zoom()
 
     #plt.close('all')
 
