@@ -1415,23 +1415,7 @@ class DisplayEquilibriaValidation:
         ax3.legend(frameon=True, loc='lower left', markerscale=13)
 
 
-        for accMag in self.accelerationMagnitude:
-            for seed in self.seeds:
-                for continuation in self.continuations:
-                    for lagrangePointNr in self.lagrangePointNrs:
-                        equilibria_df = load_equilibria_acceleration('../../data/raw/equilibria/L' + str(lagrangePointNr) \
-                                                             + '_acceleration_'  \
-                                                             + str("{:7.6f}".format(accMag)) + '_' \
-                                                             + str("{:7.6f}".format(seed)) + '_' + continuation +'_equilibria.txt')
 
-
-
-                        if len(equilibria_df['alpha']) > 1:
-                            alpha = equilibria_df['alpha']
-
-
-                            if accMag < 0.004:
-                                ax0.scatter(equilibria_df['x'], equilibria_df['y'], c=alpha, cmap="viridis", s=0.04)
 
         sm = plt.cm.ScalarMappable(
             cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis", 100000 )),
@@ -1457,6 +1441,10 @@ class DisplayEquilibriaValidation:
                                                              + '_acceleration_'  \
                                                              + str("{:7.6f}".format(accMag)) + '_' \
                                                              + str("{:7.6f}".format(seed)) + '_' + continuation +'_equilibria.txt')
+
+                        
+                        if len(equilibria_df['alpha']) > 1:
+                            alpha = equilibria_df['alpha']
 
                         if accMag < 0.004:
                             ax0.scatter(equilibria_df['x'], equilibria_df['y'], c=alpha, cmap="viridis",  s=0.1)
