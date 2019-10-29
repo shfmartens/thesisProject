@@ -77,7 +77,7 @@ class DisplayDynamicalBehaviour:
 
 
         if self.motionOfInterest == 'saddle':
-            eigenValue_df = load_eigenvalue_data('../../data/raw/equilibria/eigenvalueSxC_Saddle.txt')
+            eigenValue_df = load_eigenvalue_data('../../data/raw/equilibria/eigenvalueSxC_Saddle.txt',1)
             eigenValue_df = compute_eigenvalue_contour(X, Y, 1, 1, self.threshold)
         if self.motionOfInterest == 'center':
             eigenValue_df = compute_eigenvalue_contour(X, Y, 1, 2, self.threshold)

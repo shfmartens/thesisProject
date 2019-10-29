@@ -377,7 +377,7 @@ def load_stability_data(file_path):
 def load_eigenvalue_data(file_path, mode):
     if mode == 1:
         data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(8)))
-        data.columns = ['x','y','maxLambda','maxV1','maxV2','maxV3','maxV4']
+        data.columns = ['x','y','maxLambda','minLambda','stabIndex','maxV1','maxV2','maxV3','maxV4','minV1','minV2','minV3','minV4']
     if mode == 2:
         data = pd.read_table(file_path, delim_whitespace=True, header=None).filter(list(range(13)))
         data.columns = ['x','y','maxLambdaReal','maxLambdaImag','maxV1Real','maxV1Imag','maxV2Real','maxV2Imag',\
