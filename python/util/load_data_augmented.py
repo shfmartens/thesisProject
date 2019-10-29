@@ -249,8 +249,8 @@ def compute_eigenvalue_contour(x_loc,y_loc,desiredType, desiredMode, threshold):
 
             if type == desiredType:
                 if desiredMode == 1:
-                    if maxSaddleEigenValue > threshold:
-                        maxSaddleEigenValue = 1.2*threshold
+                    #if maxSaddleEigenValue > threshold:
+                        # maxSaddleEigenValue = 1.2*threshold
 
                     stabIndex = 0.5* (np.abs(maxSaddleEigenValue) + 1.0/np.abs(maxSaddleEigenValue) )
                     data = [x_loc[q], y_loc[s], maxSaddleEigenValue, minSaddleEigenValue, stabIndex, maxSaddleEigenVector[0],maxSaddleEigenVector[1],maxSaddleEigenVector[2],maxSaddleEigenVector[3] \
