@@ -84,10 +84,6 @@ class DisplayDynamicalBehaviour:
         lambdaColumn = eigenValue_df['maxLambda']
         lambdaColumn2 = eigenValue_df['minLambda']
         stabIndex     = eigenValue_df['stabIndex']
-        print(lambdaColumn)
-        print('test')
-        print(stabIndex)
-
 
         # Create colorbar next to of plots
         sm = plt.cm.ScalarMappable(

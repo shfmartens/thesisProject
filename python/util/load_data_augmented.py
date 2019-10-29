@@ -154,6 +154,7 @@ def compute_eigenvalue_contour(x_loc,y_loc,desiredType, desiredMode, threshold):
 
     list = []
     for q in range(len(x_loc)):
+        print(q)
         for s in range(len(y_loc)):
 
             # Compute terms of the state transition matrix
