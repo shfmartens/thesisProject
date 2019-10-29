@@ -1341,7 +1341,7 @@ if __name__ == '__main__':
     ### Contours
 
     lagrange_point_nrs = [3]
-    acceleration_magnitudes = [0.003, 0.0105]
+    acceleration_magnitudes = [0.003, 0.0106]
     seeds = [0.0,180.0]
     continuations = ['backward','forward']
     alphas = [0.0]
@@ -1353,7 +1353,7 @@ if __name__ == '__main__':
     display_equilibria_validation.plot_equilibria_acceleration_total()
 
     plt.close('all')
-    
+
 
 
     del display_equilibria_validation
