@@ -282,7 +282,7 @@ def compute_eigenvalue_contour(x_loc,y_loc,desiredType, desiredMode, threshold):
     if desiredMode == 2:
         desiredModeString = 'Center'
 
-    #np.savetxt('../../data/raw/equilibria/eigenvalue' + desiredTypeString + '_' + desiredModeString + '.txt', df.values, fmt='%13.12f')
+    np.savetxt('../../data/raw/equilibria/eigenvalue' + desiredTypeString + '_' + desiredModeString + '_incSxS.txt', df.values, fmt='%13.12f')
 
     return df
 
