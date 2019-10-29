@@ -248,7 +248,7 @@ def compute_eigenvalue_contour(x_loc,y_loc,desiredType, desiredMode, threshold):
                 type = 4
 
 
-            if type == desiredType or type == 4:
+            if type == desiredType or type == 1:
                 if desiredMode == 1:
                     #if maxSaddleEigenValue > threshold:
                         # maxSaddleEigenValue = 1.2*threshold
@@ -282,7 +282,7 @@ def compute_eigenvalue_contour(x_loc,y_loc,desiredType, desiredMode, threshold):
     if desiredMode == 2:
         desiredModeString = 'Center'
 
-    np.savetxt('../../data/raw/equilibria/eigenvalue' + desiredTypeString + '_' + desiredModeString + '_incSxS_ZOOM.txt', df.values, fmt='%13.12f')
+    np.savetxt('../../data/raw/equilibria/eigenvalue' + desiredTypeString + '_' + desiredModeString + '_incCxC_ZOOM.txt', df.values, fmt='%13.12f')
 
     return df
 

@@ -421,7 +421,7 @@ class DisplayDynamicalBehaviour:
         pass
 
 if __name__ == '__main__':
-    motions_of_interest = ['saddle']
+    motions_of_interest = ['center']
 
     low_dpi = True
 
