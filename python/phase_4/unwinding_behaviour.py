@@ -625,6 +625,9 @@ class DisplayDynamicalBehaviour:
 
 
 
+
+
+
 if __name__ == '__main__':
     motions_of_interest = ['center']
 

@@ -43,26 +43,24 @@ int main (){
      //================================
      //== Compute equilibria, comment out when computing low-thrust intial positions ==
      //================================
-    Eigen::Vector6d tempVector; tempVector.setZero();
-    tempVector(0) = 0.0;
-        tempVector(1) = 60.0;
-        tempVector(2) = 90.0;
-        tempVector(3) = 180.0;
-        tempVector(4) = 270.0;
-        tempVector(5) = 300.0;
-    for(int k = 0; k < 6; k++)
+    Eigen::Vector3d tempVector; tempVector.setZero();
+    tempVector(0) = 0.01;
+        tempVector(1) = 0.04;
+        tempVector(2) = 0.07;
+
+    for(int k = 0; k < 1; k++)
     {
         double alpha = 0.0;
         double accMag = 0.0107;
-        for (int i = 2; i < 3 ; i++)
+        for (int i = 1; i < 6 ; i++)
         {
 
-            Eigen::Vector2d equilibriumTest = createEquilibriumLocations(i, 0.0, tempVector(k), "angle", massParameter);
+            Eigen::Vector2d equilibriumTest = createEquilibriumLocations(i, 0.1, 0.0, "acceleration", massParameter);
 
             std::cout << "\n== Eq result =="<< std::endl
                       << "librationPointNr: " << i << std::endl
-                      << "alt: " << accMag << std::endl
-                      << "alpha: " << alpha << std::endl
+                      << "alt: " << tempVector(k) << std::endl
+                      << "alpha: " << 0.0 << std::endl
                       << "equilibriumLocation: \n" << equilibriumTest << std::endl
                       << "=================" << std::endl;
 

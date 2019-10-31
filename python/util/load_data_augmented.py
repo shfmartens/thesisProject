@@ -146,6 +146,102 @@ def load_equilibria_acceleration_deviation(file_path):
     data.columns = ['alpha', 'dx', 'dy', 'dz', 'dxdot', 'dydot', 'dzdot']
     return data
 
+def compute_hamiltonian_from_list(xList,yList,accelerationMagnitude,alphaList):
+    EARTH_GRAVITATIONAL_PARAMETER = 3.986004418E14
+    SUN_GRAVITATIONAL_PARAMETER = 1.32712440018e20
+    MOON_GRAVITATIONAL_PARAMETER = SUN_GRAVITATIONAL_PARAMETER / (328900.56 * (1.0 + 81.30059))
+    massParameter = MOON_GRAVITATIONAL_PARAMETER / (MOON_GRAVITATIONAL_PARAMETER + EARTH_GRAVITATIONAL_PARAMETER)
+
+    hamiltonianList = []
+    for i in range(len(xList)):
+        xpos = xList[i]
+        ypos = yList[i]
+        alpha = alphaList[i]
+        alt = accelerationMagnitude
+
+        r1 = np.sqrt((massParameter + xpos) ** 2 + (ypos ** 2))
+        r2 = np.sqrt(((xpos - 1 + massParameter) ** 2) + (ypos ** 2))
+
+        primaryTerm = (1 - massParameter) / r1
+        secondaryTerm = massParameter / r2
+
+        jacobi_Integral = xpos ** 2 + ypos ** 2 + 2*primaryTerm + 2*secondaryTerm
+
+        inner_product = xpos * alt*np.cos(alpha) + ypos * alt*np.cos(alpha)
+
+        hamiltonian = -0.5*jacobi_Integral - inner_product
+        hamiltonianList.append(hamiltonian)
+
+    return hamiltonianList
+
+
+
+def compute_stability_type_from_list(xList,yList):
+    EARTH_GRAVITATIONAL_PARAMETER = 3.986004418E14
+    SUN_GRAVITATIONAL_PARAMETER = 1.32712440018e20
+    MOON_GRAVITATIONAL_PARAMETER = SUN_GRAVITATIONAL_PARAMETER / (328900.56 * (1.0 + 81.30059))
+    massParameter = MOON_GRAVITATIONAL_PARAMETER / (MOON_GRAVITATIONAL_PARAMETER + EARTH_GRAVITATIONAL_PARAMETER)
+
+    maxSaddleList = []
+    for i in range(len(xList)):
+        xpos = xList[i]
+        ypos = yList[i]
+
+
+        r1 = np.sqrt((massParameter + xpos) ** 2 + (ypos ** 2))
+        r2 = np.sqrt(((xpos - 1 + massParameter) ** 2) + (ypos ** 2))
+
+        r1Cubed = r1 ** 3
+        r2Cubed = r2 ** 3
+
+        primaryTerm = (1 - massParameter) / r1Cubed
+        secondaryTerm = massParameter / r2Cubed
+
+        r1Fifth = r1Cubed * r1 * r1
+        r2Fifth = r2Cubed * r2 * r2
+
+        primaryTermDer = 3.0 * (1 - massParameter) / r1Fifth
+        secondaryTermDer = 3.0 * massParameter / r2Fifth
+
+        # Compute the 4x4 matrix elements
+        Uxx = 1.0 - primaryTerm - secondaryTerm + primaryTermDer * ((xpos + massParameter) ** 2) \
+          + secondaryTermDer * ((xpos - 1 + massParameter) ** 2)
+        Uyy = 1.0 - primaryTerm - secondaryTerm + primaryTermDer * ((ypos) ** 2) \
+          + secondaryTermDer * ((ypos) ** 2)
+        Uxy = primaryTermDer * (xpos + massParameter) * ypos \
+          + secondaryTermDer * (xpos - 1 + massParameter) * ypos
+        Uyx = Uxy
+
+        SPM = [[0, 0, 1, 0], \
+           [0, 0, 0, 1], \
+           [Uxx, Uxy, 0, 2], \
+           [Uyx, Uyy, -2, 0]]
+
+        eigenValues, eigenVectors = np.linalg.eig(SPM)
+
+        numberOfSaddle = 0
+        numberOfCenters = 0
+        numberOfMixed = 0
+
+        maxSaddleEigenValue = -1000000000
+        maxCenterEigenValue = -1000000000
+        minSaddleEigenValue = 1000000000
+        minCenterEigenValue = 1000000000
+        maxSaddleEigenVector = [0, 0, 0, 0]
+        maxCenterEigenVector = [0, 0, 0, 0]
+
+        eigenValueDeviation = 1.0e-3
+        for i in range(len(eigenValues)):
+            if ((np.abs(np.real(eigenValues[i])) > eigenValueDeviation) and (np.abs(np.imag(eigenValues[i])) < eigenValueDeviation)):
+                    if np.real(eigenValues[i]) > maxSaddleEigenValue:
+                        maxSaddleEigenValue = np.real(eigenValues[i])
+                        maxSaddleEigenVector = np.real(eigenVectors[:, i])
+
+        maxSaddleList.append(maxSaddleEigenValue)
+
+    return maxSaddleList
+
+
 def compute_eigenvalue_contour(x_loc,y_loc,desiredType, desiredMode, threshold):
     EARTH_GRAVITATIONAL_PARAMETER = 3.986004418E14
     SUN_GRAVITATIONAL_PARAMETER = 1.32712440018e20
