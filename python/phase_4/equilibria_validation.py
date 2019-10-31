@@ -1282,7 +1282,7 @@ class DisplayEquilibriaValidation:
                          "{:7.6f}".format(self.accelerationMagnitude)) + '_' + '0.000000_backward_equilibria_deviation.txt')
              if lagrangePointNr == 2:
                  labelString = '$E_' + str(lagrangePointNr) + '$'
-                 equilibria_df = load_equilibria_acceleration_deviation('../../data/raw/equilibria/equilibria_val/L' + str(lagrangePointNr) \
+                 equilibria_df = load_equilibria_acceleration_deviation('../../data/raw/equilibria/L' + str(lagrangePointNr) \
                                                 + '_acceleration_' \
                                                 + str(
                 "{:7.6f}".format(self.accelerationMagnitude)) + '_' + '0.000000_backward_equilibria_deviation.txt')
@@ -1317,13 +1317,13 @@ class DisplayEquilibriaValidation:
                              if dfCounter == 0:
                                  print('dfcounter check')
                                  total_df = load_equilibria_acceleration_deviation(
-                                            '../../data/raw/equilibria/equilibria_val/L' + str(customLagrangeNr) \
+                                            '../../data/raw/equilibria/L' + str(customLagrangeNr) \
                                             + '_acceleration_' \
                                             + str(
                                             "{:7.6f}".format(self.accelerationMagnitude)) + '_' + '0.000000_backward_equilibria_deviation.txt')
                              if dfCounter > 0:
                                  equilibria_df = load_equilibria_acceleration_deviation(
-                                     '../../data/raw/equilibria/equilibria_val/L' + str(customLagrangeNr) \
+                                     '../../data/raw/equilibria/L' + str(customLagrangeNr) \
                                      + '_acceleration_' \
                                      + str(
                                          "{:7.6f}".format(
