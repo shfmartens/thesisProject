@@ -1278,7 +1278,7 @@ class DisplayEquilibriaValidation:
              if lagrangePointNr == 1:
                  labelString = '$E_' + str(lagrangePointNr) + '$'
                  equilibria_df = load_equilibria_acceleration_deviation(
-                     '../../data/raw/equilibria/equilibria_val/L' + str(lagrangePointNr) + '_acceleration_' + str(
+                     '../../data/raw/equilibria/L' + str(lagrangePointNr) + '_acceleration_' + str(
                          "{:7.6f}".format(self.accelerationMagnitude)) + '_' + '0.000000_backward_equilibria_deviation.txt')
              if lagrangePointNr == 2:
                  labelString = '$E_' + str(lagrangePointNr) + '$'
