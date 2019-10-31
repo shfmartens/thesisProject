@@ -1906,13 +1906,13 @@ if __name__ == '__main__':
     acceleration_magnitudes = [0.1]
 
     for acceleration_magnitude in acceleration_magnitudes:
-        display_equilibria_validation = DisplayEquilibriaValidation(lagrange_point_nrs, acceleration_magnitude,alphas, seeds, continuations, low_dpi=low_dpi)
-        display_equilibria_validation.plot_equilibria_validation_propagation()
-    #     display_equilibria_validation.plot_equilibria_acceleration()
-    #
-        plt.close('all')
+         display_equilibria_validation = DisplayEquilibriaValidation(lagrange_point_nrs, acceleration_magnitude,alphas, seeds, continuations, low_dpi=low_dpi)
+         display_equilibria_validation.plot_equilibria_validation_propagation()
+         #display_equilibria_validation.plot_equilibria_acceleration()
 
-        del display_equilibria_validation
+         plt.close('all')
+    #
+         del display_equilibria_validation
 
 
     #
