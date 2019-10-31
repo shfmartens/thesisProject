@@ -1390,7 +1390,7 @@ class DisplayEquilibriaValidation:
 
         # Major ticks
         ticksLocators = [0, 0.5 * np.pi, np.pi, 1.5 * np.pi, 2.0 * np.pi]
-        labels = ('0', '$\\frac{1}{2}\\pi$', '\\pi', '$\\frac{3}{2}\\pi$', '2\\pi')
+        labels = ('0', '$\\frac{1}{2}\\pi$', '$\\pi$', '$\\frac{3}{2}\\pi$', '$2\\pi$')
         ax1.set_xticks(ticksLocators, minor=False)
         ax1.set_xticklabels(labels, fontdict=None, minor=False)
         ax1.semilogy(np.linspace(0,2*np.pi,num=100), 1e-12 * np.ones(100), color='black', linewidth=1, linestyle='--')
