@@ -93,6 +93,7 @@ int main (){
     // == Compute initial conditions ==
     // ================================
         
+
     #pragma omp parallel num_threads(2)
     {
         #pragma omp for
