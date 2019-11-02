@@ -39,8 +39,13 @@ class DisplayEquilibriaValidation:
 
         self.figSize = (7 * (1 + np.sqrt(5)) / 2, 7)
         self.figSizeWide = (7 * (1 + np.sqrt(5)) / 2, 3.5)
+        self.figSizePaperWide = (7 * (1 + np.sqrt(5)) / 2, 3.5)
+
 
         self.figRatio = self.figSize[0]/self.figSize[1]
+
+        self.figSizePaperWide = (6.5, 6.5 * (1/self.figRatio) )
+        print(6.5 * (1/self.figRatio))
         self.dpi = 150
         self.spacingPlotFactor = 1.05
         self.scaleDistanceY = 2.5
@@ -456,12 +461,12 @@ class DisplayEquilibriaValidation:
                             #ax2.plot(equilibria_df.index,equilibria_df['x'])
                             #ax2.plot(equilibria_df.index,equilibria_df['y'])
 
-        ax.text(-0.963,0.278,'0.003', fontsize=8,rotation=10,rotation_mode='anchor') # for L3
-        ax.text(-0.962, 0.276, '0.0105', fontsize=8, rotation=10, rotation_mode='anchor')  # for L3
+        #ax.text(-0.963,0.278,'0.003', fontsize=8,rotation=10,rotation_mode='anchor') # for L3
+        #ax.text(-0.962, 0.276, '0.0105', fontsize=8, rotation=10, rotation_mode='anchor')  # for L3
 
-        #ax.text(-0.95,0.3,'0.003', fontsize=8,rotation=70,rotation_mode='anchor')
-        # ax.text(0.575,0.795,'0.003', fontsize=8,rotation=320,rotation_mode='anchor')
-        # ax.text(0.59,-0.82,'0.003', fontsize=8,rotation=40,rotation_mode='anchor')
+        ax.text(-0.95,0.3,'0.003', fontsize=8,rotation=70,rotation_mode='anchor')
+        ax.text(0.575,0.795,'0.003', fontsize=8,rotation=320,rotation_mode='anchor')
+        ax.text(0.59,-0.82,'0.003', fontsize=8,rotation=40,rotation_mode='anchor')
 
         ax.text(0.91, 0.285, '0.1', fontsize=8, rotation=0, rotation_mode='anchor')
         ax.text(0.91, -0.305, '0.1', fontsize=8, rotation=0, rotation_mode='anchor')
@@ -1854,6 +1859,9 @@ class DisplayEquilibriaValidation:
         ax0.scatter(type3['x'], type3['y'], color=self.plottingColors['MXM'], s=0.09, label='MxM')
         ax0.scatter(type4['x'], type4['y'], color=self.plottingColors['SXS'], s=0.09, label='SxS')
 
+        ax0.legend(frameon=True, loc='lower left', markerscale=9)
+
+
 
         ax1.set_xlim([1.0 - self.scaleDistanceX / 12.5, 1.0 + self.scaleDistanceX / 12.5])
         ax1.set_ylim([-self.scaleDistanceY / 12.5, self.scaleDistanceY / 12.5])
@@ -1934,6 +1942,17 @@ class DisplayEquilibriaValidation:
 
                             ax0.scatter(equilibria_df['x'], equilibria_df['y'], c=alpha, cmap="viridis", s=0.1)
 
+        # ax0.text(-0.95, 0.3, '0.003', fontsize=8, rotation=70, rotation_mode='anchor')
+        # ax0.text(0.575, 0.795, '0.003', fontsize=8, rotation=320, rotation_mode='anchor')
+        # ax0.text(0.59, -0.82, '0.003', fontsize=8, rotation=40, rotation_mode='anchor')
+        #
+        # ax0.text(0.91, 0.285, '0.1', fontsize=8, rotation=0, rotation_mode='anchor')
+        # ax0.text(0.91, -0.305, '0.1', fontsize=8, rotation=0, rotation_mode='anchor')
+        #
+        # ax0.text(0.87, 0.17, '0.25', fontsize=8, rotation=0, rotation_mode='anchor')
+        # ax0.text(0.87, -0.2, '0.25', fontsize=8, rotation=0, rotation_mode='anchor')
+        # ax0.text(-1.12, -0.0, '0.25', fontsize=8, rotation=90, rotation_mode='anchor')
+
 
         customAccArrayZoom = [0.003, 0.1, 0.25]
         customSeedsZoom = [0.0]
@@ -1958,12 +1977,12 @@ class DisplayEquilibriaValidation:
 
                             ax1.scatter(equilibria_df['x'], equilibria_df['y'], c=alpha, cmap="viridis", s=0.1)
 
-        ax1.text(0.82, 0.035, '0.1', fontsize=7, rotation=0, rotation_mode='anchor')
+        ax1.text(0.825, 0.03, '0.1', fontsize=7, rotation=0, rotation_mode='anchor')
         #ax1.text(0.83, 0.039, '0.15', fontsize=8, rotation=0, rotation_mode='anchor')
         #ax1.text(0.833, 0.055, '0.2', fontsize=8, rotation=0, rotation_mode='anchor')
         ax1.text(0.832, 0.073, '0.25', fontsize=7, rotation=0, rotation_mode='anchor')
 
-        ax1.text(1.143, 0.005, '0.03', fontsize=5, rotation=0, rotation_mode='anchor')
+        ax1.text(1.146, 0.009, '3$\\epsilon$-2', fontsize=4, rotation=0, rotation_mode='anchor')
         ax1.text(1.143, 0.051, '0.1', fontsize=7, rotation=0, rotation_mode='anchor')
         #ax1.text(1.14, 0.075, '0.15', fontsize=8, rotation=0, rotation_mode='anchor')
         #ax1.text(1.13, 0.11, '0.2', fontsize=8, rotation=0, rotation_mode='anchor')
@@ -1998,7 +2017,7 @@ if __name__ == '__main__':
     seeds = [0.0]
     continuations = ['forward']
     alphas = [0.0]
-    low_dpi = True
+    low_dpi = False
 
     display_equilibria_validation = DisplayEquilibriaValidation(lagrange_point_nrs, acceleration_magnitudes, alphas,
                                                                     seeds, continuations, low_dpi=low_dpi)
