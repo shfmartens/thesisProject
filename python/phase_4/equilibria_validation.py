@@ -39,17 +39,17 @@ class DisplayEquilibriaValidation:
 
         self.figSize = (7 * (1 + np.sqrt(5)) / 2, 7)
         self.figSizeWide = (7 * (1 + np.sqrt(5)) / 2, 3.5)
-        self.figSizePaperWide = (7 * (1 + np.sqrt(5)) / 2, 3.5)
+        self.figSizePaperWide = (7 * (1 + np.sqrt(5)) / 2, 4.5)
 
 
         self.figRatio = self.figSize[0]/self.figSize[1]
+        self.figRatioPaper = self.figSizePaperWide[0]/self.figSizePaperWide[1]
 
-        self.figSizePaperWide = (6.5, 6.5 * (1/self.figRatio) )
-        print(6.5 * (1/self.figRatio))
         self.dpi = 150
         self.spacingPlotFactor = 1.05
         self.scaleDistanceY = 2.5
         self.scaleDistanceX = self.scaleDistanceY * self.figRatio
+        self.scaleDistanceXPaper = self.scaleDistanceY * self.figRatioPaper
 
         self.cbarTicksAcc = ([0, 0.5* np.pi ,np.pi, 1.5*np.pi, 2 * np.pi])
         self.cbarTicksAccLabels = (['0', '$\\frac{1}{2}\pi$','$\pi$','$\\frac{3}{2}\pi$', '$2\pi$'])
@@ -1890,7 +1890,7 @@ class DisplayEquilibriaValidation:
             if equilibrium == 5:
                 lagrange_point_nrs.append('L5')
 
-        lagrange_point_nrs = ['L1', 'L2']
+        lagrange_point_nrs = ['L1', 'L2','L3','L4','L5']
         for lagrange_point_nr in lagrange_point_nrs:
             ax0.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
                         color='black', marker='x')
@@ -1940,18 +1940,18 @@ class DisplayEquilibriaValidation:
                                 cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis", len(alpha))),
                                 norm=plt.Normalize(vmin=0.0, vmax=2 * np.pi))
 
-                            ax0.scatter(equilibria_df['x'], equilibria_df['y'], c=alpha, cmap="viridis", s=0.1)
+                            ax0.scatter(equilibria_df['x'], equilibria_df['y'], c=alpha, cmap="viridis", s=0.01)
 
-        # ax0.text(-0.95, 0.3, '0.003', fontsize=8, rotation=70, rotation_mode='anchor')
-        # ax0.text(0.575, 0.795, '0.003', fontsize=8, rotation=320, rotation_mode='anchor')
-        # ax0.text(0.59, -0.82, '0.003', fontsize=8, rotation=40, rotation_mode='anchor')
-        #
-        # ax0.text(0.91, 0.285, '0.1', fontsize=8, rotation=0, rotation_mode='anchor')
+        ax0.text(-0.941, 0.3, '3e-2', fontsize=5, rotation=72, rotation_mode='anchor')
+        ax0.text(0.575, 0.794, '3e-2', fontsize=5, rotation=320, rotation_mode='anchor')
+        ax0.text(0.59, -0.821, '3e-2', fontsize=5, rotation=40, rotation_mode='anchor')
+
+        ax0.text(0.91, 0.26, '0.1', fontsize=7, rotation=0, rotation_mode='anchor')
         # ax0.text(0.91, -0.305, '0.1', fontsize=8, rotation=0, rotation_mode='anchor')
         #
-        # ax0.text(0.87, 0.17, '0.25', fontsize=8, rotation=0, rotation_mode='anchor')
-        # ax0.text(0.87, -0.2, '0.25', fontsize=8, rotation=0, rotation_mode='anchor')
-        # ax0.text(-1.12, -0.0, '0.25', fontsize=8, rotation=90, rotation_mode='anchor')
+        #ax0.text(0.87, 0.17, '0.25', fontsize=7, rotation=0, rotation_mode='anchor')
+        #ax0.text(0.87, -0.2, '0.25', fontsize=7, rotation=0, rotation_mode='anchor')
+        ax0.text(-1.12, -0.06, '0.25', fontsize=7, rotation=90, rotation_mode='anchor')
 
 
         customAccArrayZoom = [0.003, 0.1, 0.25]
@@ -1975,17 +1975,16 @@ class DisplayEquilibriaValidation:
                                 cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis", len(alpha))),
                                 norm=plt.Normalize(vmin=0.0, vmax=2 * np.pi))
 
-                            ax1.scatter(equilibria_df['x'], equilibria_df['y'], c=alpha, cmap="viridis", s=0.1)
+                            ax1.scatter(equilibria_df['x'], equilibria_df['y'], c=alpha, cmap="viridis", s=0.01)
 
-        ax1.text(0.825, 0.03, '0.1', fontsize=7, rotation=0, rotation_mode='anchor')
-        #ax1.text(0.83, 0.039, '0.15', fontsize=8, rotation=0, rotation_mode='anchor')
+        #ax1.text(0.825, 0.03, '0.1', fontsize=7, rotation=0, rotation_mode='anchor')
+        #ax1.text(0.83, 0.009, '3e-2', fontsize=5, rotation=0, rotation_mode='anchor')
+        #ax1.text(0.83, 0.039, '0.1', fontsize=7, rotation=0, rotation_mode='anchor')
         #ax1.text(0.833, 0.055, '0.2', fontsize=8, rotation=0, rotation_mode='anchor')
-        ax1.text(0.832, 0.073, '0.25', fontsize=7, rotation=0, rotation_mode='anchor')
+        #ax1.text(0.832, 0.073, '0.25', fontsize=7, rotation=0, rotation_mode='anchor')
 
-        ax1.text(1.146, 0.009, '3$\\epsilon$-2', fontsize=4, rotation=0, rotation_mode='anchor')
+        ax1.text(1.146, 0.009, '3e-2', fontsize=4, rotation=0, rotation_mode='anchor')
         ax1.text(1.143, 0.051, '0.1', fontsize=7, rotation=0, rotation_mode='anchor')
-        #ax1.text(1.14, 0.075, '0.15', fontsize=8, rotation=0, rotation_mode='anchor')
-        #ax1.text(1.13, 0.11, '0.2', fontsize=8, rotation=0, rotation_mode='anchor')
         ax1.text(1.105, 0.164, '0.25', fontsize=7, rotation=0, rotation_mode='anchor')
 
         sm.set_array([])
@@ -2002,7 +2001,7 @@ class DisplayEquilibriaValidation:
             fig.savefig('../../data/figures/equilibria/spatial_evolution_delta_alpha.png', transparent=True,dpi=self.dpi)
 
         else:
-            fig.savefig('../../data/figures/equilibria/spatial_evolution_delta_alpha.pdf', transparent=True)
+            fig.savefig('../../data/figures/equilibria/spatial_evolution_delta_alpha.png', transparent=True,dpi=300)
         pass
 
 
