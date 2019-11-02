@@ -43,31 +43,31 @@ int main (){
      //================================
      //== Compute equilibria, comment out when computing low-thrust intial positions ==
      //================================
-    Eigen::Vector3d tempVector; tempVector.setZero();
-    tempVector(0) = 0.01;
-        tempVector(1) = 0.04;
-        tempVector(2) = 0.07;
+//    Eigen::Vector3d tempVector; tempVector.setZero();
+//    tempVector(0) = 0.01;
+//        tempVector(1) = 0.04;
+//        tempVector(2) = 0.07;
 
-    for(int k = 0; k < 1; k++)
-    {
-        double alpha = 0.0;
-        double accMag = 0.0107;
-        for (int i = 1; i < 6 ; i++)
-        {
+//    for(int k = 0; k < 1; k++)
+//    {
+//        double alpha = 0.0;
+//        double accMag = 0.0107;
+//        for (int i = 1; i < 6 ; i++)
+//        {
 
-            Eigen::Vector2d equilibriumTest = createEquilibriumLocations(i, 0.1, 0.0, "acceleration", massParameter);
+//            Eigen::Vector2d equilibriumTest = createEquilibriumLocations(i, 0.1, 0.0, "acceleration", massParameter);
 
-            std::cout << "\n== Eq result =="<< std::endl
-                      << "librationPointNr: " << i << std::endl
-                      << "alt: " << tempVector(k) << std::endl
-                      << "alpha: " << 0.0 << std::endl
-                      << "equilibriumLocation: \n" << equilibriumTest << std::endl
-                      << "=================" << std::endl;
+//            std::cout << "\n== Eq result =="<< std::endl
+//                      << "librationPointNr: " << i << std::endl
+//                      << "alt: " << tempVector(k) << std::endl
+//                      << "alpha: " << 0.0 << std::endl
+//                      << "equilibriumLocation: \n" << equilibriumTest << std::endl
+//                      << "=================" << std::endl;
 
 
 
-        }
-    }
+//        }
+//    }
 
 //    double semiMajorAxis = 384400*1000;
 //    double EarthGravPar = tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER;
@@ -93,17 +93,17 @@ int main (){
     // == Compute initial conditions ==
     // ================================
         
-    #pragma omp parallel num_threads(1)
+    #pragma omp parallel num_threads(2)
     {
         #pragma omp for
-        for (unsigned int i=1; i<=1; i++) {
+        for (unsigned int i=1; i<=2; i++) {
             if (i ==1)
             {
                 std::cout << "Run Thread " << i << std::endl;
                 std::string orbitType = "horizontal";
                 int continuationIndex = 1; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
-                double accelerationMagnitude = 0.0;
-                double accelerationAngle = 0.0;
+                double accelerationMagnitude = 0.01;
+                double accelerationAngle = 90.0;
                 double accelerationAngle2 = 0.0;
                 double initialMass = 1.0;
                 double ySign = 1.0;
@@ -118,7 +118,7 @@ int main (){
                 std::string orbitType = "horizontal";
                 int continuationIndex = 1; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
                 double accelerationMagnitude = 0.01;
-                double accelerationAngle = 0.0;
+                double accelerationAngle = 270.0;
                 double accelerationAngle2 = 0.0;
                 double initialMass = 1.0;
                 double ySign = 1.0;
