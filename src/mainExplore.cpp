@@ -110,7 +110,7 @@ int main (){
                 double ySign = 1.0;
                 double familyHamiltonian = -1.525;
                 bool startContinuationFromTextFile = false;
-                //createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile );
+                createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile );
 
             }
             if (i ==2)
