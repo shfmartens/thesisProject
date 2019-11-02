@@ -1958,13 +1958,13 @@ class DisplayEquilibriaValidation:
 
                             ax1.scatter(equilibria_df['x'], equilibria_df['y'], c=alpha, cmap="viridis", s=0.1)
 
-        ax1.text(0.81, 0.025, '0.1', fontsize=7, rotation=0, rotation_mode='anchor')
+        ax1.text(0.82, 0.035, '0.1', fontsize=7, rotation=0, rotation_mode='anchor')
         #ax1.text(0.83, 0.039, '0.15', fontsize=8, rotation=0, rotation_mode='anchor')
         #ax1.text(0.833, 0.055, '0.2', fontsize=8, rotation=0, rotation_mode='anchor')
-        ax1.text(0.835, 0.071, '0.25', fontsize=7, rotation=0, rotation_mode='anchor')
+        ax1.text(0.832, 0.073, '0.25', fontsize=7, rotation=0, rotation_mode='anchor')
 
-        ax1.text(1.143, 0.005, '0.03', fontsize=7, rotation=0, rotation_mode='anchor')
-        ax1.text(1.143, 0.049, '0.1', fontsize=7, rotation=0, rotation_mode='anchor')
+        ax1.text(1.143, 0.005, '0.03', fontsize=5, rotation=0, rotation_mode='anchor')
+        ax1.text(1.143, 0.051, '0.1', fontsize=7, rotation=0, rotation_mode='anchor')
         #ax1.text(1.14, 0.075, '0.15', fontsize=8, rotation=0, rotation_mode='anchor')
         #ax1.text(1.13, 0.11, '0.2', fontsize=8, rotation=0, rotation_mode='anchor')
         ax1.text(1.105, 0.164, '0.25', fontsize=7, rotation=0, rotation_mode='anchor')
