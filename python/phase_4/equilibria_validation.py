@@ -1828,6 +1828,163 @@ class DisplayEquilibriaValidation:
 
         pass
 
+    def plot_contours_zoom_and_wide(self):
+        fig = plt.figure(figsize=self.figSizeWide)
+        ax0 = fig.add_subplot(1, 2, 1)
+        ax1 = fig.add_subplot(1, 2, 2)
+
+        ax0.set_xlabel('$x$ [-]')
+        ax0.set_ylabel('$y$ [-]')
+        ax0.grid(True, which='both', ls=':')
+
+        ax1.set_xlabel('$x$ [-]')
+        ax1.set_ylabel('$y$ [-]')
+        ax1.grid(True, which='both', ls=':')
+
+        ax0.set_xlim([-self.scaleDistanceX / 2.2, self.scaleDistanceX / 2.2])
+        ax0.set_ylim([-self.scaleDistanceY / 2.2, self.scaleDistanceY / 2.2])
+
+        type1 = load_stability_data('../../data/raw/equilibria/stability_1_2000.txt')
+        type2 = load_stability_data('../../data/raw/equilibria/stability_2_2000.txt')
+        type3 = load_stability_data('../../data/raw/equilibria/stability_3_2000.txt')
+        type4 = load_stability_data('../../data/raw/equilibria/stability_4_2000.txt')
+
+        ax0.scatter(type1['x'], type1['y'], color=self.plottingColors['SXC'], s=0.09, label='SxC')
+        ax0.scatter(type2['x'], type2['y'], color=self.plottingColors['CXC'], s=0.09, label='CxC')
+        ax0.scatter(type3['x'], type3['y'], color=self.plottingColors['MXM'], s=0.09, label='MxM')
+        ax0.scatter(type4['x'], type4['y'], color=self.plottingColors['SXS'], s=0.09, label='SxS')
+
+
+        ax1.set_xlim([1.0 - self.scaleDistanceX / 12.5, 1.0 + self.scaleDistanceX / 12.5])
+        ax1.set_ylim([-self.scaleDistanceY / 12.5, self.scaleDistanceY / 12.5])
+
+        type1ZOOM = load_stability_data('../../data/raw/equilibria/stability_1_ZOOM_2000.txt')
+        type2ZOOM = load_stability_data('../../data/raw/equilibria/stability_2_ZOOM_2000.txt')
+        type3ZOOM = load_stability_data('../../data/raw/equilibria/stability_3_ZOOM_2000.txt')
+        type4ZOOM = load_stability_data('../../data/raw/equilibria/stability_4_ZOOM_2000.txt')
+
+        ax1.scatter(type1ZOOM['x'], type1ZOOM['y'], color=self.plottingColors['SXC'], s=0.09, label='SxC')
+        ax1.scatter(type2ZOOM['x'], type2ZOOM['y'], color=self.plottingColors['CXC'], s=0.09, label='CxC')
+        ax1.scatter(type3ZOOM['x'], type3ZOOM['y'], color=self.plottingColors['MXM'], s=0.09, label='MxM')
+        ax1.scatter(type4ZOOM['x'], type4ZOOM['y'], color=self.plottingColors['SXS'], s=0.09, label='SxS')
+
+        lagrange_points_df = load_lagrange_points_location()
+        lagrange_point_nrs = []
+        for equilibrium in self.lagrangePointNrs:
+            if equilibrium == 1:
+                lagrange_point_nrs.append('L1')
+            if equilibrium == 2:
+                lagrange_point_nrs.append('L2')
+            if equilibrium == 3:
+                lagrange_point_nrs.append('L3')
+            if equilibrium == 4:
+                lagrange_point_nrs.append('L4')
+            if equilibrium == 5:
+                lagrange_point_nrs.append('L5')
+
+        lagrange_point_nrs = ['L1', 'L2']
+        for lagrange_point_nr in lagrange_point_nrs:
+            ax0.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                        color='black', marker='x')
+            ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                        color='black', marker='x')
+
+        bodies_df = load_bodies_location()
+        u = np.linspace(0, 2 * np.pi, 100)
+        v = np.linspace(0, np.pi, 100)
+        xM = bodies_df['Moon']['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df['Moon']['x']
+        yM = bodies_df['Moon']['r'] * np.outer(np.sin(u), np.sin(v))
+        zM = bodies_df['Moon']['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
+
+        xE = bodies_df['Earth']['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df['Earth']['x']
+        yE = bodies_df['Earth']['r'] * np.outer(np.sin(u), np.sin(v))
+        zE = bodies_df['Earth']['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
+
+        ax0.contourf(xM, yM, zM, colors='black')
+        ax0.contourf(xE, yE, zE, colors='black')
+
+        ax1.contourf(xM, yM, zM, colors='black')
+        ax1.contourf(xE, yE, zE, colors='black')
+
+        ax0.set_aspect(1.0)
+        ax1.set_aspect(1.0)
+
+        continuations = ['forward']
+
+        customAccArray = [0.003, 0.1, 0.25]
+        customSeedsZoom = [0.0, 180.0]
+        customContinuationZoom = ['backward','forward']
+        for accMag in customAccArray:
+            for seed in customSeedsZoom:
+                for continuation in customContinuationZoom:
+                    for lagrangePointNr in self.lagrangePointNrs:
+                        equilibria_df = load_equilibria_acceleration(
+                            '../../data/raw/equilibria/L' + str(lagrangePointNr) \
+                            + '_acceleration_' \
+                            + str("{:7.6f}".format(accMag)) + '_' \
+                            + str("{:7.6f}".format(seed)) + '_' + continuation + '_equilibria.txt')
+
+                        if len(equilibria_df['alpha']) > 1:
+                            alpha = equilibria_df['alpha']
+
+                            # Create colorbar next to of plots
+                            sm = plt.cm.ScalarMappable(
+                                cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis", len(alpha))),
+                                norm=plt.Normalize(vmin=0.0, vmax=2 * np.pi))
+
+                            ax0.scatter(equilibria_df['x'], equilibria_df['y'], c=alpha, cmap="viridis", s=0.1)
+
+
+        customAccArrayZoom = [0.003, 0.1, 0.25]
+        customSeedsZoom = [0.0]
+        customContinuationZoom = ['forward']
+        for accMag in customAccArrayZoom:
+            for seed in customSeedsZoom:
+                for continuation in customContinuationZoom:
+                    for lagrangePointNr in self.lagrangePointNrs:
+                        equilibria_df = load_equilibria_acceleration(
+                            '../../data/raw/equilibria/L' + str(lagrangePointNr) \
+                            + '_acceleration_' \
+                            + str("{:7.6f}".format(accMag)) + '_' \
+                            + str("{:7.6f}".format(seed)) + '_' + continuation + '_equilibria.txt')
+
+                        if len(equilibria_df['alpha']) > 1:
+                            alpha = equilibria_df['alpha']
+
+                            # Create colorbar next to of plots
+                            sm = plt.cm.ScalarMappable(
+                                cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis", len(alpha))),
+                                norm=plt.Normalize(vmin=0.0, vmax=2 * np.pi))
+
+                            ax1.scatter(equilibria_df['x'], equilibria_df['y'], c=alpha, cmap="viridis", s=0.1)
+
+        ax1.text(0.81, 0.025, '0.1', fontsize=7, rotation=0, rotation_mode='anchor')
+        #ax1.text(0.83, 0.039, '0.15', fontsize=8, rotation=0, rotation_mode='anchor')
+        #ax1.text(0.833, 0.055, '0.2', fontsize=8, rotation=0, rotation_mode='anchor')
+        ax1.text(0.835, 0.071, '0.25', fontsize=7, rotation=0, rotation_mode='anchor')
+
+        ax1.text(1.143, 0.005, '0.03', fontsize=7, rotation=0, rotation_mode='anchor')
+        ax1.text(1.143, 0.049, '0.1', fontsize=7, rotation=0, rotation_mode='anchor')
+        #ax1.text(1.14, 0.075, '0.15', fontsize=8, rotation=0, rotation_mode='anchor')
+        #ax1.text(1.13, 0.11, '0.2', fontsize=8, rotation=0, rotation_mode='anchor')
+        ax1.text(1.105, 0.164, '0.25', fontsize=7, rotation=0, rotation_mode='anchor')
+
+        sm.set_array([])
+
+        divider = make_axes_locatable(ax1)
+        cax = divider.append_axes("right", size="2%", pad=0.2)
+
+        cbar = plt.colorbar(sm, cax=cax, label='$\\alpha$ [-]', ticks=self.cbarTicksAcc)
+        cbar.set_ticklabels(self.cbarTicksAccLabels)
+
+        fig.tight_layout()
+
+        if self.lowDPI:
+            fig.savefig('../../data/figures/equilibria/spatial_evolution_delta_alpha.png', transparent=True,dpi=self.dpi)
+
+        else:
+            fig.savefig('../../data/figures/equilibria/spatial_evolution_delta_alpha.pdf', transparent=True)
+        pass
 
 
 
@@ -1843,18 +2000,17 @@ if __name__ == '__main__':
     alphas = [0.0]
     low_dpi = True
 
-    # display_equilibria_validation = DisplayEquilibriaValidation(lagrange_point_nrs, acceleration_magnitudes, alphas,
-    #                                                                seeds, continuations, low_dpi=low_dpi)
-    #
+    display_equilibria_validation = DisplayEquilibriaValidation(lagrange_point_nrs, acceleration_magnitudes, alphas,
+                                                                    seeds, continuations, low_dpi=low_dpi)
+
+    display_equilibria_validation.plot_contours_zoom_and_wide()
     # display_equilibria_validation.plot_equilibria_validation()
     # #
     # # # #display_equilibria_validation.plot_eigenvalue_acceleration_effect()
     # # # #display_equilibria_validation.plot_eigenvalue_Hamiltonian_effect()
     # # #
     # #  # display_equilibria_validation.plot_L3_phenomenon()
-    # del display_equilibria_validation
-
-
+    del display_equilibria_validation
 
 
     # lagrange_point_nrs = [1,2]
@@ -1902,17 +2058,17 @@ if __name__ == '__main__':
 
 
     #del display_equilibria_validation
-    lagrange_point_nrs = [1,2,3,4,5]
-    acceleration_magnitudes = [0.1]
-
-    for acceleration_magnitude in acceleration_magnitudes:
-         display_equilibria_validation = DisplayEquilibriaValidation(lagrange_point_nrs, acceleration_magnitude,alphas, seeds, continuations, low_dpi=low_dpi)
-         display_equilibria_validation.plot_equilibria_validation_propagation()
-         #display_equilibria_validation.plot_equilibria_acceleration()
-
-         plt.close('all')
+    # lagrange_point_nrs = [1,2,3,4,5]
+    # acceleration_magnitudes = [0.1]
     #
-         del display_equilibria_validation
+    # for acceleration_magnitude in acceleration_magnitudes:
+    #      display_equilibria_validation = DisplayEquilibriaValidation(lagrange_point_nrs, acceleration_magnitude,alphas, seeds, continuations, low_dpi=low_dpi)
+    #      display_equilibria_validation.plot_equilibria_validation_propagation()
+    #      #display_equilibria_validation.plot_equilibria_acceleration()
+    #
+    #      plt.close('all')
+    # #
+    #      del display_equilibria_validation
 
 
     #

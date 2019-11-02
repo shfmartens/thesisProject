@@ -52,21 +52,21 @@ int main (){
 //    {
 //        double alpha = 0.0;
 //        double accMag = 0.0107;
-//        for (int i = 1; i < 6 ; i++)
-//        {
+        for (int i = 1; i < 6 ; i++)
+        {
 
-//            Eigen::Vector2d equilibriumTest = createEquilibriumLocations(i, 0.1, 0.0, "acceleration", massParameter);
+           Eigen::Vector2d equilibriumTest = createEquilibriumLocations(i, 0.1, 0.0, "acceleration", massParameter);
 
-//            std::cout << "\n== Eq result =="<< std::endl
-//                      << "librationPointNr: " << i << std::endl
-//                      << "alt: " << tempVector(k) << std::endl
-//                      << "alpha: " << 0.0 << std::endl
-//                      << "equilibriumLocation: \n" << equilibriumTest << std::endl
-//                      << "=================" << std::endl;
+            std::cout << "\n== Eq result =="<< std::endl
+                      << "librationPointNr: " << i << std::endl
+                      << "alt: " << "0.1" << std::endl
+                      << "alpha: " << 0.0 << std::endl
+                      << "equilibriumLocation: \n" << equilibriumTest << std::endl
+                      << "=================" << std::endl;
 
 
 
-//        }
+        }
 //    }
 
 //    double semiMajorAxis = 384400*1000;
@@ -94,10 +94,10 @@ int main (){
     // ================================
         
 
-    #pragma omp parallel num_threads(2)
+    #pragma omp parallel num_threads(1)
     {
         #pragma omp for
-        for (unsigned int i=1; i<=2; i++) {
+        for (unsigned int i=1; i<=1; i++) {
             if (i ==1)
             {
                 std::cout << "Run Thread " << i << std::endl;
@@ -110,7 +110,7 @@ int main (){
                 double ySign = 1.0;
                 double familyHamiltonian = -1.525;
                 bool startContinuationFromTextFile = false;
-                createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile );
+                //createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile );
 
             }
             if (i ==2)
