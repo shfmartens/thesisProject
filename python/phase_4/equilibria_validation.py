@@ -2370,7 +2370,7 @@ class DisplayEquilibriaValidation:
         ax1.set_xlim([0,2*np.pi])
 
         ticksLocators = [0, 0.5 * np.pi, np.pi, 1.5 * np.pi, 2.0 * np.pi]
-        labels = ('0', '$\\frac{1}{2}\\pi$', '$\\pi$', '$\\frac{3}{2}\\pi$', '$2\\pi$')
+        labels = ('0', '$\\frac{1}{2}\\pi$', '$0$', '$\\frac{3}{2}\\pi$', '$2\\pi$')
         ax0.set_xticks(ticksLocators, minor=False)
         ax0.set_xticklabels(labels, fontdict=None, minor=False)
         ax1.set_xticks(ticksLocators, minor=False)
@@ -2465,13 +2465,13 @@ class DisplayEquilibriaValidation:
                             if lagrangePointNr == 5:
                                 ax0.scatter(hamiltonianDF['alpha'],hamiltonianDF['hamiltonian'],color=self.plottingColors['fifthLine'][4],linewidth=self.lineWidth, label='$E_{5}$', s=0.4)
 
-                        if lagrangePointNr > 2 and accMag > 0.01:
+                        if lagrangePointNr == 3 and accMag > 0.01 and seed == 180.0 and continuation == "forward":
 
                             print(lagrangePointNr)
                             print(seed)
                             print(continuation)
                             print(counter)
-
+                            counter = 11
                             if counter < 12:
                                 equilibria_df = load_equilibria_acceleration(
                                     '../../data/raw/equilibria/L' + str(lagrangePointNr) \
@@ -2494,10 +2494,11 @@ class DisplayEquilibriaValidation:
 
         ticksLocators = [0, 0.5 * np.pi, np.pi, 1.5 * np.pi, 2.0 * np.pi]
         labels = ('0', '$\\frac{1}{2}\\pi$', '$\\pi$', '$\\frac{3}{2}\\pi$', '$2\\pi$')
-        ax0.set_xticks(ticksLocators, minor=False)
-        ax0.set_xticklabels(labels, fontdict=None, minor=False)
         ticksLocators1 = [-np.pi, -0.5 * np.pi, 0, 0.5 * np.pi, np.pi]
-        labels1 = ('$-\\pi$', '$-\\frac{1}{2}\\pi$', '$\\pi$', '$\\frac{1}{2}\\pi$', '$\\pi$')
+        labels1 = ('$-\\pi$', '$-\\frac{1}{2}\\pi$', '$0$', '$\\frac{1}{2}\\pi$', '$\\pi$')
+        ax0.set_xticks(ticksLocators1, minor=False)
+        ax0.set_xticklabels(labels1, fontdict=None, minor=False)
+
         ax1.set_xticks(ticksLocators1, minor=False)
         ax1.set_xticklabels(labels1, fontdict=None, minor=False)
 
@@ -2536,7 +2537,7 @@ if __name__ == '__main__':
     #display_equilibria_validation.plot_contours_zoom_and_wide_angle()
     #display_equilibria_validation.plot_contours_zoom_and_wide_acc()
 
-    # display_equilibria_validation.plot_equilibria_validation()
+    #display_equilibria_validation.plot_equilibria_validation()
     # #
     display_equilibria_validation.plot_hamiltonian_paper()
     # # # #display_equilibria_validation.plot_eigenvalue_Hamiltonian_effect()

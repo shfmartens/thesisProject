@@ -174,7 +174,10 @@ def compute_hamiltonian_from_list(xList,yList,accelerationMagnitude,alphaList):
         if np.abs(hamiltonian) < 4:
             if alpha > np.pi:
                 alphaStore = alpha - 2*np.pi
-            hamiltonianList.append([alphaStore,hamiltonian])
+                hamiltonianList.append([alphaStore,hamiltonian])
+            else:
+                hamiltonianList.append([alpha,hamiltonian])
+
 
     return hamiltonianList
 

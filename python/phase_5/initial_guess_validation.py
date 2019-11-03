@@ -1791,7 +1791,7 @@ if __name__ == '__main__':
     angles = [0.0]
     amplitudes = [1.0E-5]
     correction_times = [50.0]
-    low_dpi = True
+    low_dpi = False
 
     for lagrange_point_nr in lagrange_point_nrs:
      for alt_value in alt_values:
