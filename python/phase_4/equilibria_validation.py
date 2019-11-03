@@ -57,18 +57,21 @@ class DisplayEquilibriaValidation:
         self.cbarTicksAngle = ([0.0, 0.05, 0.1])
         self.cbarTicksAngleLabels = (['0', '0.05', '0.1'])
 
-        n_colors = 4
+        n_colors = 3
+        n_colors_f = 5
+
         n_colors_l = 10
+        n_colors_lambda = 6
         self.plottingColors = {'SXC': sns.color_palette("Greys", n_colors_l)[0],
                                'CXC': sns.color_palette("Greys", n_colors_l)[2],
                                'MXM': sns.color_palette("Greys", n_colors_l)[4],
                                'SXS': sns.color_palette("Greys", n_colors_l)[9],
-                               'lambda1': sns.color_palette("viridis", n_colors_l)[0],
-                               'lambda2': sns.color_palette("viridis", n_colors_l)[2],
-                               'lambda3': sns.color_palette("viridis", n_colors_l)[4],
-                               'lambda4': sns.color_palette("viridis", n_colors_l)[5],
-                               'lambda5': sns.color_palette("viridis", n_colors_l)[3],
-                               'lambda6': sns.color_palette("viridis", n_colors_l)[1],
+                               'lambda1': sns.color_palette("viridis", n_colors_lambda)[0],
+                               'lambda2': sns.color_palette("viridis", n_colors_lambda)[2],
+                               'lambda3': sns.color_palette("viridis", n_colors_lambda)[4],
+                               'lambda4': sns.color_palette("viridis", n_colors_lambda)[5],
+                               'lambda5': sns.color_palette("viridis", n_colors_lambda)[3],
+                               'lambda6': sns.color_palette("viridis", n_colors_lambda)[1],
                                # 'lambda1': blues[40],
                                # 'lambda2': greens[50],
                                # 'lambda3': blues[90],
@@ -84,6 +87,11 @@ class DisplayEquilibriaValidation:
                                'tripleLine': [sns.color_palette("viridis", n_colors)[n_colors - 1],
                                               sns.color_palette("viridis", n_colors)[int((n_colors - 1) / 2)],
                                               sns.color_palette("viridis", n_colors)[0]],
+                               'fifthLine': [sns.color_palette("viridis", n_colors_f)[0],
+                                             sns.color_palette("viridis", n_colors_f)[1],
+                                             sns.color_palette("viridis", n_colors_f)[2],
+                                             sns.color_palette("viridis", n_colors_f)[3],
+                                              sns.color_palette("viridis", n_colors_f)[4]],
                                'limit': 'black'}
         self.lineWidth = 1
 
@@ -175,9 +183,9 @@ class DisplayEquilibriaValidation:
         Y = np.linspace(-self.scaleDistanceY / 2, self.scaleDistanceY / 2, 100)
 
         type1 = compute_eigenvalue_contour(X, Y, 1, 2)
-        type2= load_stability_data('../../data/raw/equilibria/stability_2.txt')
-        type3 = load_stability_data('../../data/raw/equilibria/stability_3.txt')
-        type4 = load_stability_data('../../data/raw/equilibria/stability_4.txt')
+        type2= load_stability_data('../../data/raw/equilibria/stability_2_2000.txt')
+        type3 = load_stability_data('../../data/raw/equilibria/stability_3_2000.txt')
+        type4 = load_stability_data('../../data/raw/equilibria/stability_4_2000.txt')
 
 
 
@@ -1581,77 +1589,112 @@ class DisplayEquilibriaValidation:
         pass
 
     def plot_eigenvalue_acceleration_effect(self):
-        fig = plt.figure(figsize=self.figSize)
-        ax0 = fig.add_subplot(2, 2, 1)
-        ax1 = fig.add_subplot(2, 2, 2)
-        ax2 = fig.add_subplot(2, 2, 3)
-        ax3 = fig.add_subplot(2, 2, 4)
+        fig = plt.figure(figsize=self.figSizeWide)
+        ax0 = fig.add_subplot(1, 2, 1)
+        ax1 = fig.add_subplot(1, 2, 2)
+        #ax2 = fig.add_subplot(2, 2, 3)
+        #ax3 = fig.add_subplot(2, 2, 4)
 
-        fig.suptitle('Eigenvalue behaviour as a function of $a_{lt}$')
-        ax0.set_title('$a_{lt} = 0.01$')
-        ax1.set_title('$a_{lt} = 0.04$')
-        ax2.set_title('$a_{lt} = 0.07$')
-        ax3.set_title('$a_{lt} = 0.1$')
+        #fig.suptitle('Eigenvalue behaviour as a function of $a_{lt}$')
+        ax0.set_title('$a_{lt} = 0.003$')
+        ax1.set_title('$a_{lt} = 0.1$')
+        #ax2.set_title('$a_{lt} = 0.07$')
+        #ax3.set_title('$a_{lt} = 0.1$')
 
         ax0.set_xlabel('$\\alpha$ [-]')
-        ax0.set_ylabel('$\\lambda_{saddle}$ [-]')
+        ax0.set_ylabel('$|| \\lambda ||$ [-]')
 
         ax1.set_xlabel('$\\alpha$ [-]')
-        ax1.set_ylabel('$\\lambda_{saddle}$ [-]')
+        ax1.set_ylabel('$|| \\lambda ||$ [-]')
 
-        ax2.set_xlabel('$\\alpha$ [-]')
-        ax2.set_ylabel('$\\lambda_{saddle}$ [-]')
+        #ax2.set_xlabel('$\\alpha$ [-]')
+        #ax2.set_ylabel('$\\lambda_{saddle}$ [-]')
 
-        ax3.set_xlabel('$\\alpha$ [-]')
-        ax3.set_ylabel('$\\lambda_{saddle}$ [-]')
+        #ax3.set_xlabel('$\\alpha$ [-]')
+        #ax3.set_ylabel('$\\lambda_{saddle}$ [-]')
 
-        min_y = 10
-        max_y = -10
+        min_y = 1000
+        max_y = -1000
 
-        for accMag in self.accelerationMagnitude:
-            for seed in self.seeds:
-                for continuation in self.continuations:
-                    for lagrangePointNr in self.lagrangePointNrs:
-                        equilibria_df = load_equilibria_acceleration(
-                            '../../data/raw/equilibria/L' + str(lagrangePointNr) \
-                            + '_acceleration_' \
-                            + str("{:7.6f}".format(accMag)) + '_' \
-                            + str("{:7.6f}".format(seed)) + '_' + continuation + '_equilibria.txt')
+        accMagCustom = [0.003,0.1]
+        libPointCustom = [1,2,3,4,5]
+        customContinuations = ['forward','backward']
+        customSeeds = [0.0,180.0]
+        counter = 0
+        for accMag in accMagCustom:
+            for seed in customSeeds:
+                for continuation in customContinuations:
+                    for lagrangePointNr in libPointCustom:
+
+                        if lagrangePointNr < 3 and seed == 0.0 and continuation == 'forward':
+                            equilibria_df = load_equilibria_acceleration(
+                                '../../data/raw/equilibria/L' + str(lagrangePointNr) \
+                                + '_acceleration_' \
+                                + str("{:7.6f}".format(accMag)) + '_' \
+                                + str("{:7.6f}".format(seed)) + '_' + continuation + '_equilibria.txt')
+                            rightFrame = 1
+                        else:
+                            rightFrame = 0
+                        if lagrangePointNr > 2:
+                            equilibria_df = load_equilibria_acceleration(
+                                '../../data/raw/equilibria/L' + str(lagrangePointNr) \
+                                + '_acceleration_' \
+                                + str("{:7.6f}".format(accMag)) + '_' \
+                                + str("{:7.6f}".format(seed)) + '_' + continuation + '_equilibria.txt')
 
                         if accMag < 0.03:
                             lambdaList = compute_stability_type_from_list(equilibria_df['x'],equilibria_df['y'])
 
 
-                            if lagrangePointNr == 1:
-                                ax0.plot(equilibria_df['alpha'],lambdaList,color=self.plottingColors['lambda6'],linewidth=self.lineWidth, label='$E_{1}$')
-                            if lagrangePointNr == 2:
-                                ax0.plot(equilibria_df['alpha'],lambdaList,color=self.plottingColors['lambda3'],linewidth=self.lineWidth, label='$E_{2}$')
+
+                            if lagrangePointNr == 1 and rightFrame == 1:
+                                #ax0.plot(equilibria_df['alpha'],lambdaList,color=self.plottingColors['lambda6'],linewidth=self.lineWidth, label='$E_{1}$')
+                                ax0.scatter(equilibria_df['alpha'],lambdaList,color=self.plottingColors['lambda6'],linewidth=self.lineWidth, label='$E_{1}$',s=0.1)
+
+                            if lagrangePointNr == 2 and rightFrame == 1:
+                                #ax0.plot(equilibria_df['alpha'],lambdaList,color=self.plottingColors['lambda3'],linewidth=self.lineWidth, label='$E_{2}$')
+                                ax0.scatter(equilibria_df['alpha'],lambdaList,color=self.plottingColors['lambda3'],linewidth=self.lineWidth, label='$E_{2}$',s=0.1)
 
 
 
-                        if accMag > 0.03 and accMag < 0.05:
-                            lambdaList = compute_stability_type_from_list(equilibria_df['x'],equilibria_df['y'])
-
-                            if lagrangePointNr == 1:
-                                ax1.plot(equilibria_df['alpha'],lambdaList,color=self.plottingColors['lambda6'],linewidth=self.lineWidth, label='$E_{1}$')
-                            if lagrangePointNr == 2:
-                                ax1.plot(equilibria_df['alpha'],lambdaList,color=self.plottingColors['lambda3'],linewidth=self.lineWidth, label='$E_{2}$')
-
-                        if accMag > 0.05 and accMag < 0.08:
-                            lambdaList = compute_stability_type_from_list(equilibria_df['x'], equilibria_df['y'])
-
-                            if lagrangePointNr == 1:
-                                ax2.plot(equilibria_df['alpha'],lambdaList,color=self.plottingColors['lambda6'],linewidth=self.lineWidth, label='$E_{1}$')
-                            if lagrangePointNr == 2:
-                                ax2.plot(equilibria_df['alpha'],lambdaList,color=self.plottingColors['lambda3'],linewidth=self.lineWidth, label='$E_{2}$')
+                        # if accMag > 0.03 and accMag < 0.05:
+                        #     lambdaList = compute_stability_type_from_list(equilibria_df['x'],equilibria_df['y'])
+                        #
+                        #     if lagrangePointNr == 1:
+                        #         ax1.plot(equilibria_df['alpha'],lambdaList,color=self.plottingColors['lambda6'],linewidth=self.lineWidth, label='$E_{1}$')
+                        #     if lagrangePointNr == 2:
+                        #         ax1.plot(equilibria_df['alpha'],lambdaList,color=self.plottingColors['lambda3'],linewidth=self.lineWidth, label='$E_{2}$')
+                        #
+                        # if accMag > 0.05 and accMag < 0.08:
+                        #     lambdaList = compute_stability_type_from_list(equilibria_df['x'], equilibria_df['y'])
+                        #
+                        #     if lagrangePointNr == 1:
+                        #         ax2.plot(equilibria_df['alpha'],lambdaList,color=self.plottingColors['lambda6'],linewidth=self.lineWidth, label='$E_{1}$')
+                        #     if lagrangePointNr == 2:
+                        #         ax2.plot(equilibria_df['alpha'],lambdaList,color=self.plottingColors['lambda3'],linewidth=self.lineWidth, label='$E_{2}$')
 
                         if accMag > 0.08 and accMag < 0.11:
-                            lambdaList = compute_stability_type_from_list(equilibria_df['x'], equilibria_df['y'])
 
-                            if lagrangePointNr == 1:
-                                ax3.plot(equilibria_df['alpha'],lambdaList,color=self.plottingColors['lambda6'],linewidth=self.lineWidth, label='$E_{1}$')
-                            if lagrangePointNr == 2:
-                                ax3.plot(equilibria_df['alpha'],lambdaList,color=self.plottingColors['lambda3'],linewidth=self.lineWidth, label='$E_{2}$')
+                            if lagrangePointNr == 1 and rightFrame == 1:
+                                lambdaList = compute_stability_type_from_list(equilibria_df['x'], equilibria_df['y'])
+                                #ax1.plot(equilibria_df['alpha'],lambdaList,color=self.plottingColors['lambda6'],linewidth=self.lineWidth, label='$E_{1}$')
+                                ax1.scatter(equilibria_df['alpha'],lambdaList,color=self.plottingColors['lambda6'],linewidth=self.lineWidth, label='$E_{1}$',s=0.1)
+
+                            if lagrangePointNr == 2and rightFrame == 1:
+                                lambdaList = compute_stability_type_from_list(equilibria_df['x'], equilibria_df['y'])
+                                #ax1.plot(equilibria_df['alpha'],lambdaList,color=self.plottingColors['lambda3'],linewidth=self.lineWidth, label='$E_{2}$')
+                                ax1.scatter(equilibria_df['alpha'],lambdaList,color=self.plottingColors['lambda3'],linewidth=self.lineWidth, label='$E_{2}$',s=0.1)
+
+                            if lagrangePointNr > 2:
+                                if counter == 0:
+                                    lambdaList = compute_stability_type_from_list(equilibria_df['x'],equilibria_df['y'])
+
+                                else:
+                                    lambdaListPartial = compute_stability_type_from_list(equilibria_df['x'],equilibria_df['y'])
+                                    lambdaList.append(lambdaListPartial)
+
+                                counter = counter + 1
+                                print(counter)
 
                         if  min(lambdaList) < min_y:
                             min_y = min(lambdaList)
@@ -1663,8 +1706,8 @@ class DisplayEquilibriaValidation:
         offsetFactor = 0.01*scalingDistance
         ax0.set_ylim([min_y-offsetFactor,max_y+offsetFactor])
         ax1.set_ylim([min_y-offsetFactor,max_y+offsetFactor])
-        ax2.set_ylim([min_y-offsetFactor,max_y+offsetFactor])
-        ax3.set_ylim([min_y-offsetFactor,max_y+offsetFactor])
+        # ax2.set_ylim([min_y-offsetFactor,max_y+offsetFactor])
+        # ax3.set_ylim([min_y-offsetFactor,max_y+offsetFactor])
 
         ax0.set_xticklabels(self.cbarTicksAcc)
         self.cbarTicksAccLabels = (['0', '$\\frac{1}{2}\pi$', '$\pi$', '$\\frac{3}{2}\pi$', '$2\pi$'])
@@ -1676,32 +1719,31 @@ class DisplayEquilibriaValidation:
         ax0.set_xticklabels(labels, fontdict=None, minor=False)
         ax1.set_xticks(ticksLocators, minor=False)
         ax1.set_xticklabels(labels, fontdict=None, minor=False)
-        ax2.set_xticks(ticksLocators, minor=False)
-        ax2.set_xticklabels(labels, fontdict=None, minor=False)
-        ax3.set_xticks(ticksLocators, minor=False)
-        ax3.set_xticklabels(labels, fontdict=None, minor=False)
+        # ax2.set_xticks(ticksLocators, minor=False)
+        # ax2.set_xticklabels(labels, fontdict=None, minor=False)
+        # ax3.set_xticks(ticksLocators, minor=False)
+        # ax3.set_xticklabels(labels, fontdict=None, minor=False)
 
 
         ax0.set_xlim([0, 2.0 * np.pi])
         ax1.set_xlim([0, 2.0 * np.pi])
-        ax2.set_xlim([0, 2.0 * np.pi])
-        ax3.set_xlim([0, 2.0 * np.pi])
+        # ax2.set_xlim([0, 2.0 * np.pi])
+        # ax3.set_xlim([0, 2.0 * np.pi])
 
         ax1.set
 
-        lgd0 = ax0.legend(frameon=True, loc='upper right')
+        #lgd0 = ax0.legend(frameon=True, loc='upper right')
         lgd1 = ax1.legend(frameon=True, loc='upper right')
-        lgd2 = ax2.legend(frameon=True, loc='upper right')
-        lgd3 = ax3.legend(frameon=True, loc='upper right')
+        # lgd2 = ax2.legend(frameon=True, loc='upper right')
+        # lgd3 = ax3.legend(frameon=True, loc='upper right')
 
         fig.tight_layout()
-        fig.subplots_adjust(top=0.90)
 
         if self.lowDPI:
             fig.savefig('../../data/figures/equilibria/final_acceleration_effect_eigenvalues.png', transparent=True,
                         dpi=self.dpi)
         else:
-            fig.savefig('../../data/figures/equilibria/final_plot_eigenvalue_behaviour_zoom_.pdf', transparent=True)
+            fig.savefig('../../data/figures/equilibria/final_acceleration_effect_eigenvalues.png', transparent=True, dpi=300)
 
         pass
 
@@ -1833,7 +1875,7 @@ class DisplayEquilibriaValidation:
 
         pass
 
-    def plot_contours_zoom_and_wide(self):
+    def plot_contours_zoom_and_wide_angle(self):
         fig = plt.figure(figsize=self.figSizeWide)
         ax0 = fig.add_subplot(1, 2, 1)
         ax1 = fig.add_subplot(1, 2, 2)
@@ -1932,6 +1974,12 @@ class DisplayEquilibriaValidation:
                             + str("{:7.6f}".format(accMag)) + '_' \
                             + str("{:7.6f}".format(seed)) + '_' + continuation + '_equilibria.txt')
 
+                        stringTemp = '../../data/raw/equilibria/L' + str(lagrangePointNr) \
+                            + '_acceleration_' \
+                            + str("{:7.6f}".format(accMag)) + '_' \
+                            + str("{:7.6f}".format(seed)) + '_' + continuation + '_equilibria.txt'
+                        print(stringTemp)
+
                         if len(equilibria_df['alpha']) > 1:
                             alpha = equilibria_df['alpha']
 
@@ -2004,6 +2052,469 @@ class DisplayEquilibriaValidation:
             fig.savefig('../../data/figures/equilibria/spatial_evolution_delta_alpha.png', transparent=True,dpi=300)
         pass
 
+    def plot_contours_zoom_and_wide_acc(self):
+        fig = plt.figure(figsize=self.figSizeWide)
+        ax0 = fig.add_subplot(1, 2, 1)
+        ax1 = fig.add_subplot(1, 2, 2)
+
+        ax0.set_xlabel('$x$ [-]')
+        ax0.set_ylabel('$y$ [-]')
+        ax0.grid(True, which='both', ls=':')
+
+        ax1.set_xlabel('$x$ [-]')
+        ax1.set_ylabel('$y$ [-]')
+        ax1.grid(True, which='both', ls=':')
+
+        ax0.set_xlim([-self.scaleDistanceX / 2.2, self.scaleDistanceX / 2.2])
+        ax0.set_ylim([-self.scaleDistanceY / 2.2, self.scaleDistanceY / 2.2])
+
+        type1 = load_stability_data('../../data/raw/equilibria/stability_1_2000.txt')
+        type2 = load_stability_data('../../data/raw/equilibria/stability_2_2000.txt')
+        type3 = load_stability_data('../../data/raw/equilibria/stability_3_2000.txt')
+        type4 = load_stability_data('../../data/raw/equilibria/stability_4_2000.txt')
+
+        ax0.scatter(type1['x'], type1['y'], color=self.plottingColors['SXC'], s=0.09, label='SxC')
+        ax0.scatter(type2['x'], type2['y'], color=self.plottingColors['CXC'], s=0.09, label='CxC')
+        ax0.scatter(type3['x'], type3['y'], color=self.plottingColors['MXM'], s=0.09, label='MxM')
+        ax0.scatter(type4['x'], type4['y'], color=self.plottingColors['SXS'], s=0.09, label='SxS')
+
+        ax0.legend(frameon=True, loc='lower left', markerscale=9)
+
+        ax1.set_xlim([1.0 - self.scaleDistanceX / 12.5, 1.0 + self.scaleDistanceX / 12.5])
+        ax1.set_ylim([-self.scaleDistanceY / 12.5, self.scaleDistanceY / 12.5])
+
+        type1ZOOM = load_stability_data('../../data/raw/equilibria/stability_1_ZOOM_2000.txt')
+        type2ZOOM = load_stability_data('../../data/raw/equilibria/stability_2_ZOOM_2000.txt')
+        type3ZOOM = load_stability_data('../../data/raw/equilibria/stability_3_ZOOM_2000.txt')
+        type4ZOOM = load_stability_data('../../data/raw/equilibria/stability_4_ZOOM_2000.txt')
+
+        ax1.scatter(type1ZOOM['x'], type1ZOOM['y'], color=self.plottingColors['SXC'], s=0.09, label='SxC')
+        ax1.scatter(type2ZOOM['x'], type2ZOOM['y'], color=self.plottingColors['CXC'], s=0.09, label='CxC')
+        ax1.scatter(type3ZOOM['x'], type3ZOOM['y'], color=self.plottingColors['MXM'], s=0.09, label='MxM')
+        ax1.scatter(type4ZOOM['x'], type4ZOOM['y'], color=self.plottingColors['SXS'], s=0.09, label='SxS')
+
+        lagrange_points_df = load_lagrange_points_location()
+        lagrange_point_nrs = []
+        for equilibrium in self.lagrangePointNrs:
+            if equilibrium == 1:
+                lagrange_point_nrs.append('L1')
+            if equilibrium == 2:
+                lagrange_point_nrs.append('L2')
+            if equilibrium == 3:
+                lagrange_point_nrs.append('L3')
+            if equilibrium == 4:
+                lagrange_point_nrs.append('L4')
+            if equilibrium == 5:
+                lagrange_point_nrs.append('L5')
+
+        lagrange_point_nrs = ['L1', 'L2', 'L3', 'L4', 'L5']
+        for lagrange_point_nr in lagrange_point_nrs:
+            ax0.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                        color='black', marker='x')
+            ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                        color='black', marker='x')
+
+        bodies_df = load_bodies_location()
+        u = np.linspace(0, 2 * np.pi, 100)
+        v = np.linspace(0, np.pi, 100)
+        xM = bodies_df['Moon']['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df['Moon']['x']
+        yM = bodies_df['Moon']['r'] * np.outer(np.sin(u), np.sin(v))
+        zM = bodies_df['Moon']['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
+
+        xE = bodies_df['Earth']['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df['Earth']['x']
+        yE = bodies_df['Earth']['r'] * np.outer(np.sin(u), np.sin(v))
+        zE = bodies_df['Earth']['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
+
+        ax0.contourf(xM, yM, zM, colors='black')
+        ax0.contourf(xE, yE, zE, colors='black')
+
+        ax1.contourf(xM, yM, zM, colors='black')
+        ax1.contourf(xE, yE, zE, colors='black')
+
+        angleArray = [0,90,180,270]
+        angleArray2 = [0,90,180,270]
+
+        for angle in angleArray2:
+            for lagrangePointNr in self.lagrangePointNrs:
+                equilibria_df = load_equilibria_alpha('../../data/raw/equilibria/L' + str(lagrangePointNr) \
+                                                         + '_angle_'  \
+                                                         + str("{:7.6f}".format(angle)) + '_' + '0.000000_forward_equilibria.txt')
+
+                tempString = '../../data/raw/equilibria/L' + str(lagrangePointNr) \
+                                                         + '_angle_'  \
+                                                         + str("{:7.6f}".format(angle)) + '_' + '0.000000_forward_equilibria.txt'
+                print(tempString)
+                acc = equilibria_df['acc']
+
+                if len(equilibria_df['acc']) > 1:
+                    acc = equilibria_df['acc']
+
+                    # Create colorbar next to of plots
+                    sm = plt.cm.ScalarMappable(
+                        cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis", len(acc))),
+                        norm=plt.Normalize(vmin=0.0, vmax=0.1))
+
+
+                    ax0.scatter(equilibria_df['x'], equilibria_df['y'], c=acc, cmap="viridis", s=0.1)
+
+
+        ax0.text(-1.12, -0.03, '0', fontsize=8, rotation=0, rotation_mode='anchor')
+        ax0.text(-0.0121, 0.91, '0', fontsize=8, rotation=0, rotation_mode='anchor')
+        ax0.text(-0.0121, -0.97, '0', fontsize=8, rotation=0, rotation_mode='anchor')
+        #
+        ax0.text(-0.17, 0.82, '$\\frac{1}{2}\\pi$', fontsize=8, rotation=0, rotation_mode='anchor')
+        ax0.text(0.86, 0.227, '$\\frac{1}{2}\\pi$', fontsize=8, rotation=0, rotation_mode='anchor')
+        ax0.text(-0.0121, -1.127, '$\\frac{1}{2}\\pi$', fontsize=8, rotation=0, rotation_mode='anchor')
+        #
+        ax0.text(-0.95, -0.015, '$\\pi$', fontsize=8, rotation=0, rotation_mode='anchor')
+        ax0.text(0.92, 0.41 , '$\\pi$', fontsize=8, rotation=0, rotation_mode='anchor')
+        ax0.text(0.92, -0.45, '$\\pi$', fontsize=8, rotation=0, rotation_mode='anchor')
+        #
+        ax0.text(-0.17,-0.93 , '$\\frac{3}{2}\\pi$', fontsize=8, rotation=0, rotation_mode='anchor')
+        ax0.text(0.905, -0.315, '$\\frac{3}{2}\\pi$', fontsize=8, rotation=0, rotation_mode='anchor')
+        ax0.text(0.0, 1.01, '$\\frac{3}{2}\\pi$', fontsize=8, rotation=0, rotation_mode='anchor')
+
+        angleArrayZoom = [0,90,180,270]
+        angleArrayZoom2 = [0,90,180,270]
+
+
+        for angle in angleArrayZoom2:
+            for lagrangePointNr in self.lagrangePointNrs:
+                equilibria_df = load_equilibria_alpha('../../data/raw/equilibria/L' + str(lagrangePointNr) \
+                                                         + '_angle_'  \
+                                                         + str("{:7.6f}".format(angle)) + '_' + '0.000000_forward_equilibria.txt')
+
+                acc = equilibria_df['acc']
+
+                if len(equilibria_df['acc']) > 1:
+                    acc = equilibria_df['acc']
+
+                    # Create colorbar next to of plots
+                    sm = plt.cm.ScalarMappable(
+                        cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis", len(acc))),
+                        norm=plt.Normalize(vmin=0.0, vmax=0.1))
+
+
+                    ax1.scatter(equilibria_df['x'], equilibria_df['y'], c=acc, cmap="viridis", s=1)
+
+        ax1.text(0.808, -0.005, '0', fontsize=8, rotation=0, rotation_mode='anchor')
+        ax1.text(1.128, -0.005, '0', fontsize=8, rotation=0, rotation_mode='anchor')
+        #
+        # ax1.text(0.823, 0.025, '60$^{\\circ}$', fontsize=8, rotation=0, rotation_mode='anchor')
+        # ax1.text(1.135, 0.033, '60$^{\\circ}$', fontsize=8, rotation=0, rotation_mode='anchor')
+        #
+        ax1.text(0.826, 0.028, '$\\frac{1}{2}\\pi$', fontsize=8, rotation=0, rotation_mode='anchor')
+        ax1.text(1.13, 0.046, '$\\frac{1}{2}\\pi$', fontsize=8, rotation=0, rotation_mode='anchor')
+        #
+        ax1.text(0.853, -0.005, '$\\pi$', fontsize=8, rotation=0, rotation_mode='anchor')
+        ax1.text(1.178, -0.005, '$\\pi$', fontsize=8, rotation=0, rotation_mode='anchor')
+        #
+        ax1.text(0.823, -0.044, '$\\frac{3}{2}\\pi$', fontsize=8, rotation=0, rotation_mode='anchor')
+        ax1.text(1.132, -0.068, '$\\frac{3}{2}\\pi$', fontsize=8, rotation=0, rotation_mode='anchor')
+        #
+        # ax1.text(0.823, -0.029, '300$^{\\circ}$', fontsize=8, rotation=0, rotation_mode='anchor')
+        # ax1.text(1.135, -0.041, '300$^{\\circ}$', fontsize=8, rotation=0, rotation_mode='anchor')
+
+
+
+        ax0.set_aspect(1.0)
+        ax1.set_aspect(1.0)
+
+        sm.set_array([])
+
+        divider = make_axes_locatable(ax1)
+        cax = divider.append_axes("right", size="2%", pad=0.2)
+
+        cbar = plt.colorbar(sm, cax=cax, label='$a_{lt}$ [-]', ticks=self.cbarTicksAngle)
+        cbar.set_ticklabels(self.cbarTicksAngleLabels)
+
+        fig.tight_layout()
+
+        if self.lowDPI:
+            fig.savefig('../../data/figures/equilibria/spatial_evolution_delta_acc.png', transparent=True,
+                        dpi=self.dpi)
+
+        else:
+            fig.savefig('../../data/figures/equilibria/spatial_evolution_delta_acc.png', transparent=True, dpi=300)
+        pass
+
+    def plot_eigenvalue_acceleration_paper(self):
+
+        fig = plt.figure(figsize=self.figSizeWide)
+        ax0 = fig.add_subplot(1, 2, 1)
+        ax1 = fig.add_subplot(1, 2, 2)
+
+        ax0.set_title('$a_{lt} = 0.003$')
+        ax1.set_title('$a_{lt} = 0.1$')
+
+        ax0.set_xlabel('$\\alpha$ [-]')
+        ax0.set_ylabel('$|| \\lambda ||$ [-]')
+
+        ax1.set_xlabel('$\\alpha$ [-]')
+        ax1.set_ylabel('$|| \\lambda ||$ [-]')
+
+        min_y = 1000
+        max_y = -1000
+
+        accMagCustom = [0.003, 0.1]
+        libPointCustom = [1, 2, 3, 4, 5]
+        customContinuations = ['forward', 'backward']
+        customSeeds = [0.0, 180.0]
+        counter = 0
+
+        E3_DF = pd.DataFrame(columns=['alpha','lambda'])
+        for accMag in accMagCustom:
+            for lagrangePointNr in libPointCustom:
+                for continuation in customContinuations:
+                    for seed in customSeeds:
+
+                        if lagrangePointNr < 3 and seed < 90.0 and continuation == 'forward':
+                            # E1 and E2 contours
+
+                            equilibria_df = load_equilibria_acceleration(
+                                '../../data/raw/equilibria/L' + str(lagrangePointNr) \
+                                + '_acceleration_' \
+                                + str("{:7.6f}".format(accMag)) + '_' \
+                                + str("{:7.6f}".format(seed)) + '_' + continuation + '_equilibria.txt')
+
+                            lambdaList = compute_stability_type_from_list(equilibria_df['alpha'],equilibria_df['x'],equilibria_df['y'])
+
+                            lambdaDF = pd.DataFrame(lambdaList,columns=['alpha', 'lambda'])
+
+                            if lagrangePointNr == 1 and accMag < 0.01:
+                               ax0.scatter(lambdaDF['alpha'],lambdaDF['lambda'],color=self.plottingColors['tripleLine'][0],linewidth=self.lineWidth, label='$E_{1}$',s=0.4)
+                            elif lagrangePointNr == 2 and accMag < 0.01:
+                                ax0.scatter(lambdaDF['alpha'],lambdaDF['lambda'],color=self.plottingColors['tripleLine'][1],linewidth=self.lineWidth, label='$E_{2}$',s=0.4)
+                            elif lagrangePointNr == 1 and accMag > 0.01:
+                                ax1.scatter(lambdaDF['alpha'],lambdaDF['lambda'],color=self.plottingColors['tripleLine'][0],linewidth=self.lineWidth, label='$E_{1}$',s=0.4)
+                            elif lagrangePointNr == 2 and accMag > 0.01:
+                                ax1.scatter(lambdaDF['alpha'],lambdaDF['lambda'],color=self.plottingColors['tripleLine'][1],linewidth=self.lineWidth, label='$E_{2}$',s=0.4)
+
+                        if lagrangePointNr > 2 and accMag < 0.01 and seed < 90.0 and continuation == 'forward':
+                            # E3, E4, E5 contours at low acc magnitude
+                            equilibria_df = load_equilibria_acceleration(
+                                '../../data/raw/equilibria/L' + str(lagrangePointNr) \
+                                + '_acceleration_' \
+                                + str("{:7.6f}".format(accMag)) + '_' \
+                                + str("{:7.6f}".format(seed)) + '_' + continuation + '_equilibria.txt')
+
+                            lambdaList = compute_stability_type_from_list(equilibria_df['alpha'],equilibria_df['x'], equilibria_df['y'])
+
+                            lambdaDF = pd.DataFrame(lambdaList,columns=['alpha', 'lambda'])
+
+
+                            if lagrangePointNr == 3 and len(lambdaDF['alpha']) > 0:
+                                ax0.scatter(lambdaDF['alpha'],lambdaDF['lambda'], color=self.plottingColors['tripleLine'][2],linewidth=self.lineWidth, label='$E_{3}$',s=0.4)
+                            if lagrangePointNr == 4 and len(lambdaDF['alpha']) > 0:
+                                ax0.scatter(lambdaDF['alpha'],lambdaDF['lambda'],color=self.plottingColors['lambda2'], linewidth=self.lineWidth,label='$E_{4}$',s=0.4)
+                            if lagrangePointNr == 5 and len(lambdaDF['alpha']) > 0:
+                                ax0.scatter(lambdaDF['alpha'],lambdaDF['lambda'],color=self.plottingColors['lambda4'], linewidth=self.lineWidth,label='$E_{5}$',s=0.4)
+
+
+                        if lagrangePointNr > 2 and accMag > 0.01:
+
+                            print(lagrangePointNr)
+                            print(seed)
+                            print(continuation)
+                            print(counter)
+
+
+
+                            if counter == 0:
+                                equilibria_df = load_equilibria_acceleration(
+                                    '../../data/raw/equilibria/L' + str(lagrangePointNr) \
+                                    + '_acceleration_' \
+                                    + str("{:7.6f}".format(accMag)) + '_' \
+                                    + str("{:7.6f}".format(seed)) + '_' + continuation + '_equilibria.txt')
+
+                                lambdaList = compute_stability_type_from_list(equilibria_df['alpha'],equilibria_df['x'], equilibria_df['y'])
+
+                                lambdaDF_PARTIAL = pd.DataFrame(lambdaList, columns=['alpha', 'lambda'])
+
+                                E3_DF = E3_DF.append(lambdaDF_PARTIAL, ignore_index=True)
+
+                            else:
+                                equilibria_df = load_equilibria_acceleration(
+                                    '../../data/raw/equilibria/L' + str(lagrangePointNr) \
+                                    + '_acceleration_' \
+                                    + str("{:7.6f}".format(accMag)) + '_' \
+                                    + str("{:7.6f}".format(seed)) + '_' + continuation + '_equilibria.txt')
+
+                                lambdaList = compute_stability_type_from_list(equilibria_df['alpha'],
+                                                                              equilibria_df['x'], equilibria_df['y'])
+
+                                print(len(lambdaList))
+
+                                lambdaDF_PARTIAL = pd.DataFrame(lambdaList, columns=['alpha', 'lambda'])
+
+                                E3_DF = E3_DF.append(lambdaDF_PARTIAL, ignore_index=True)
+
+                            counter = counter + 1
+
+                            if counter == 12:
+                                print('all loops finished, check total length')
+                                print(len(E3_DF['alpha']))
+                                print(max(E3_DF['lambda']))
+
+
+                                E3_DF.sort_values(by=['alpha'])
+                                print(E3_DF['alpha'])
+
+                                ax1.scatter(E3_DF['alpha'],E3_DF['lambda'], color=self.plottingColors['tripleLine'][2],linewidth=self.lineWidth, label='$E_{3}$',s=0.4)
+
+
+
+        lgd = ax0.legend(frameon=True, loc='center left',bbox_to_anchor=(2.15, 0.5),markerscale=15)
+
+        ax0.set_xlim([0,2*np.pi])
+        ax1.set_xlim([0,2*np.pi])
+
+        ticksLocators = [0, 0.5 * np.pi, np.pi, 1.5 * np.pi, 2.0 * np.pi]
+        labels = ('0', '$\\frac{1}{2}\\pi$', '$\\pi$', '$\\frac{3}{2}\\pi$', '$2\\pi$')
+        ax0.set_xticks(ticksLocators, minor=False)
+        ax0.set_xticklabels(labels, fontdict=None, minor=False)
+        ax1.set_xticks(ticksLocators, minor=False)
+        ax1.set_xticklabels(labels, fontdict=None, minor=False)
+
+        fig.tight_layout()
+        plt.subplots_adjust(right=0.92)
+
+
+        if self.lowDPI:
+            fig.savefig('../../data/figures/equilibria/final_acceleration_effect_eigenvalues.png', transparent=True,dpi=self.dpi)
+        else:
+            fig.savefig('../../data/figures/equilibria/final_acceleration_effect_eigenvalues.png', transparent=True,dpi=300)
+
+        pass
+
+    def plot_hamiltonian_paper(self):
+
+        fig = plt.figure(figsize=self.figSizeWide)
+        ax0 = fig.add_subplot(1, 2, 1)
+        ax1 = fig.add_subplot(1, 2, 2)
+
+        ax0.set_title('$a_{lt} = 0.003$')
+        ax1.set_title('$a_{lt} = 0.1$')
+
+        ax0.set_xlabel('$\\alpha$ [-]')
+        ax0.set_ylabel('$H_{lt}$ [-]')
+
+        ax1.set_xlabel('$\\alpha$ [-]')
+        ax1.set_ylabel('$H_{lt}$ [-]')
+
+        ax1.set_xlim([-np.pi,np.pi])
+
+        min_y = 1000
+        max_y = -1000
+
+        accMagCustom = [0.003, 0.1]
+        libPointCustom = [1, 2, 3, 4, 5]
+        customContinuations = ['forward', 'backward']
+        customSeeds = [0.0, 180.0]
+        counter = 0
+
+        E3_DF = pd.DataFrame(columns=['alpha','hamiltonian'])
+
+        counter = 0
+        for accMag in accMagCustom:
+            for lagrangePointNr in libPointCustom:
+                for continuation in customContinuations:
+                    for seed in customSeeds:
+
+
+                        if lagrangePointNr < 3 and seed < 90.0 and continuation == 'forward':
+
+                            equilibria_df = load_equilibria_acceleration(
+                                '../../data/raw/equilibria/L' + str(lagrangePointNr) \
+                                + '_acceleration_' \
+                                + str("{:7.6f}".format(accMag)) + '_' \
+                                + str("{:7.6f}".format(seed)) + '_' + continuation + '_equilibria.txt')
+
+                            hamiltonianList = compute_hamiltonian_from_list(equilibria_df['x'], equilibria_df['y'],accMag, equilibria_df['alpha'])
+                            hamiltonianDF = pd.DataFrame(hamiltonianList, columns=['alpha', 'hamiltonian'])
+
+                            if lagrangePointNr == 1 and accMag < 0.01:
+                                ax0.scatter(hamiltonianDF['alpha'],hamiltonianDF['hamiltonian'],color=self.plottingColors['fifthLine'][0],
+                                         linewidth=self.lineWidth, label='$E_{1}$',s=0.4)
+                            if lagrangePointNr == 2 and accMag < 0.01:
+                                ax0.scatter(hamiltonianDF['alpha'],hamiltonianDF['hamiltonian'],
+                                            color=self.plottingColors['fifthLine'][1],linewidth=self.lineWidth, label='$E_{2}$', s=0.4)
+                            if lagrangePointNr == 1 and accMag > 0.01:
+                                ax1.scatter(hamiltonianDF['alpha'],hamiltonianDF['hamiltonian'],
+                                            color=self.plottingColors['fifthLine'][0],linewidth=self.lineWidth, label='$E_{1}$', s=0.4)
+                            if lagrangePointNr == 2 and accMag > 0.01:
+                                ax1.scatter(hamiltonianDF['alpha'],hamiltonianDF['hamiltonian'],
+                                            color=self.plottingColors['fifthLine'][1],linewidth=self.lineWidth, label='$E_{2}$', s=0.4)
+
+                        if lagrangePointNr > 2 and accMag < 0.01 and seed < 90.0 and continuation == 'forward':
+                            # E3, E4, E5 contours at low acc magnitude
+                            equilibria_df = load_equilibria_acceleration(
+                                '../../data/raw/equilibria/L' + str(lagrangePointNr) \
+                                + '_acceleration_' \
+                                + str("{:7.6f}".format(accMag)) + '_' \
+                                + str("{:7.6f}".format(seed)) + '_' + continuation + '_equilibria.txt')
+
+                            hamiltonianList = compute_hamiltonian_from_list(equilibria_df['x'], equilibria_df['y'],accMag, equilibria_df['alpha'])
+                            hamiltonianDF = pd.DataFrame(hamiltonianList, columns=['alpha', 'hamiltonian'])
+
+
+                            if lagrangePointNr == 3:
+                                ax0.scatter(hamiltonianDF['alpha'],hamiltonianDF['hamiltonian'],color=self.plottingColors['fifthLine'][2],linewidth=self.lineWidth, label='$E_{3}$', s=0.4)
+                            if lagrangePointNr == 4:
+                                ax0.scatter(hamiltonianDF['alpha'],hamiltonianDF['hamiltonian'],color=self.plottingColors['fifthLine'][3],linewidth=self.lineWidth, label='$E_{4}$', s=0.4)
+                            if lagrangePointNr == 5:
+                                ax0.scatter(hamiltonianDF['alpha'],hamiltonianDF['hamiltonian'],color=self.plottingColors['fifthLine'][4],linewidth=self.lineWidth, label='$E_{5}$', s=0.4)
+
+                        if lagrangePointNr > 2 and accMag > 0.01:
+
+                            print(lagrangePointNr)
+                            print(seed)
+                            print(continuation)
+                            print(counter)
+
+                            if counter < 12:
+                                equilibria_df = load_equilibria_acceleration(
+                                    '../../data/raw/equilibria/L' + str(lagrangePointNr) \
+                                    + '_acceleration_' \
+                                    + str("{:7.6f}".format(accMag)) + '_' \
+                                    + str("{:7.6f}".format(seed)) + '_' + continuation + '_equilibria.txt')
+
+                                hamiltonianList = compute_hamiltonian_from_list(equilibria_df['x'], equilibria_df['y'],accMag, equilibria_df['alpha'])
+                                hamiltonianDF = pd.DataFrame(hamiltonianList, columns=['alpha', 'hamiltonian'])
+
+                                E3_DF = E3_DF.append(hamiltonianDF,ignore_index=True)
+
+                            counter = counter + 1
+
+                            if counter == 12:
+
+                                ax1.scatter(E3_DF['alpha'], E3_DF['hamiltonian'], color=self.plottingColors['fifthLine'][2],linewidth=self.lineWidth, label='$E_{3}$', s=0.4)
+
+        lgd = ax0.legend(frameon=True, loc='center left',bbox_to_anchor=(2.2, 0.5),markerscale=15)
+
+        ticksLocators = [0, 0.5 * np.pi, np.pi, 1.5 * np.pi, 2.0 * np.pi]
+        labels = ('0', '$\\frac{1}{2}\\pi$', '$\\pi$', '$\\frac{3}{2}\\pi$', '$2\\pi$')
+        ax0.set_xticks(ticksLocators, minor=False)
+        ax0.set_xticklabels(labels, fontdict=None, minor=False)
+        ticksLocators1 = [-np.pi, -0.5 * np.pi, 0, 0.5 * np.pi, np.pi]
+        labels1 = ('$-\\pi$', '$-\\frac{1}{2}\\pi$', '$\\pi$', '$\\frac{1}{2}\\pi$', '$\\pi$')
+        ax1.set_xticks(ticksLocators1, minor=False)
+        ax1.set_xticklabels(labels1, fontdict=None, minor=False)
+
+        fig.tight_layout()
+        plt.subplots_adjust(right=0.92)
+
+
+        if self.lowDPI:
+            fig.savefig('../../data/figures/equilibria/final_energy_curves.png', transparent=True,
+                        dpi=self.dpi)
+        else:
+            fig.savefig('../../data/figures/equilibria/final_energy_curves.png', transparent=True,
+                        dpi=300)
+
+        pass
+
+
 
 
 if __name__ == '__main__':
@@ -2021,10 +2532,13 @@ if __name__ == '__main__':
     display_equilibria_validation = DisplayEquilibriaValidation(lagrange_point_nrs, acceleration_magnitudes, alphas,
                                                                     seeds, continuations, low_dpi=low_dpi)
 
-    display_equilibria_validation.plot_contours_zoom_and_wide()
+    #display_equilibria_validation.plot_eigenvalue_acceleration_paper()
+    #display_equilibria_validation.plot_contours_zoom_and_wide_angle()
+    #display_equilibria_validation.plot_contours_zoom_and_wide_acc()
+
     # display_equilibria_validation.plot_equilibria_validation()
     # #
-    # # # #display_equilibria_validation.plot_eigenvalue_acceleration_effect()
+    display_equilibria_validation.plot_hamiltonian_paper()
     # # # #display_equilibria_validation.plot_eigenvalue_Hamiltonian_effect()
     # # #
     # #  # display_equilibria_validation.plot_L3_phenomenon()

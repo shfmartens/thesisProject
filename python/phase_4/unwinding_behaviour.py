@@ -33,9 +33,11 @@ class DisplayDynamicalBehaviour:
         self.motionOfInterest = motion_of_interest
         self.lowDPI = low_dpi
         self.arrayLength = 2000
-        self.threshold = 6
+        self.threshold = 10
 
         self.figSize = (7 * (1 + np.sqrt(5)) / 2, 7)
+        self.figSizeWide = (7 * (1 + np.sqrt(5)) / 2, 3.5)
+
         self.figRatio = self.figSize[0] / self.figSize[1]
         self.dpi = 150
         self.spacingPlotFactor = 1.05
@@ -419,17 +421,17 @@ class DisplayDynamicalBehaviour:
         pass
 
     def plot_eigenvalue_spm_behaviour(self):
-        fig = plt.figure(figsize=self.figSize)
-        ax0 = fig.add_subplot(2, 2, 1)
-        ax1 = fig.add_subplot(2, 2, 2)
-        ax2 = fig.add_subplot(2, 2, 3)
-        ax3 = fig.add_subplot(2, 2, 4)
+        fig = plt.figure(figsize=self.figSizeWide)
+        ax0 = fig.add_subplot(1, 2, 1)
+        ax1 = fig.add_subplot(1, 2, 2)
+        #ax2 = fig.add_subplot(2, 2, 3)
+        #ax3 = fig.add_subplot(2, 2, 4)
 
-        fig.suptitle('Eigenvalue behaviour')
-        ax0.set_title('$\\lambda_{saddle}$')
-        ax1.set_title('$\\lambda_{saddle}$ zoom')
-        ax2.set_title('$\\lambda_{center}$')
-        ax3.set_title('$\\lambda_{center}$ zoom')
+        #fig.suptitle('Eigenvalue behaviour')
+        #ax0.set_title('$\\lambda_{saddle}$')
+        #ax1.set_title('$\\lambda_{saddle}$ zoom')
+        #ax2.set_title('$\\lambda_{center}$')
+        #ax3.set_title('$\\lambda_{center}$ zoom')
 
         ax0.set_xlabel('$x$ [-]')
         ax0.set_ylabel('$y$ [-]')
@@ -443,51 +445,55 @@ class DisplayDynamicalBehaviour:
         ax1.set_xlim([1 - self.scaleDistanceX / 12.5, 1 + self.scaleDistanceX / 12.5])
         ax1.set_ylim([-self.scaleDistanceY / 12.5, self.scaleDistanceY / 12.5])
 
-        ax2.set_xlabel('$x$ [-]')
-        ax2.set_ylabel('$y$ [-]')
+        # ax2.set_xlabel('$x$ [-]')
+        # ax2.set_ylabel('$y$ [-]')
+        #
+        # ax2.set_xlim([-self.scaleDistanceX / 2.2, self.scaleDistanceX / 2.2])
+        # ax2.set_ylim([-self.scaleDistanceY / 2.2, self.scaleDistanceY / 2.2])
+        #
+        # ax3.set_xlabel('$x$ [-]')
+        # ax3.set_ylabel('$y$ [-]')
+        #
+        # ax3.set_xlim([1 - self.scaleDistanceX / 12.5, 1 + self.scaleDistanceX / 12.5])
+        # ax3.set_ylim([-self.scaleDistanceY / 12.5, self.scaleDistanceY / 12.5])
 
-        ax2.set_xlim([-self.scaleDistanceX / 2.2, self.scaleDistanceX / 2.2])
-        ax2.set_ylim([-self.scaleDistanceY / 2.2, self.scaleDistanceY / 2.2])
-
-        ax3.set_xlabel('$x$ [-]')
-        ax3.set_ylabel('$y$ [-]')
-
-        ax3.set_xlim([1 - self.scaleDistanceX / 12.5, 1 + self.scaleDistanceX / 12.5])
-        ax3.set_ylim([-self.scaleDistanceY / 12.5, self.scaleDistanceY / 12.5])
-
+        type1ZOOM = load_stability_data('../../data/raw/equilibria/stability_1_ZOOM_2000.txt')
         type2ZOOM = load_stability_data('../../data/raw/equilibria/stability_2_ZOOM_2000.txt')
         type3ZOOM = load_stability_data('../../data/raw/equilibria/stability_3_ZOOM_2000.txt')
         type4ZOOM = load_stability_data('../../data/raw/equilibria/stability_4_ZOOM_2000.txt')
 
+        type1 = load_stability_data('../../data/raw/equilibria/stability_1_2000.txt')
         type2 = load_stability_data('../../data/raw/equilibria/stability_2_2000.txt')
         type3 = load_stability_data('../../data/raw/equilibria/stability_3_2000.txt')
         type4 = load_stability_data('../../data/raw/equilibria/stability_4_2000.txt')
 
 
-
         ax0.scatter(type2['x'], type2['y'], color=self.plottingColors['CXC'], s=0.04, label='CxC')
         ax0.scatter(type3['x'], type3['y'], color=self.plottingColors['MXM'], s=0.04, label='MxM')
-        ax0.legend(frameon=True, loc='lower right', markerscale=15)
+        ax0.legend(frameon=True, loc='lower left', markerscale=15)
+        ax0.scatter(type1['x'], type1['y'], color=self.plottingColors['SXC'], s=0.04, label='CxC')
 
 
+        ax1.scatter(type1ZOOM['x'], type1ZOOM['y'], color=self.plottingColors['SXC'], s=0.04, label='CxC')
         ax1.scatter(type2ZOOM['x'], type2ZOOM['y'], color=self.plottingColors['CXC'], s=0.04, label='CxC')
         ax1.scatter(type3ZOOM['x'], type3ZOOM['y'], color=self.plottingColors['MXM'], s=0.04, label='MxM')
 
-        ax2.scatter(type3['x'], type3['y'], color=self.plottingColors['MXM'], s=0.04, label='MxM')
-        ax2.scatter(type4['x'], type4['y'], color=self.plottingColors['SXS'], s=0.04, label='SxS')
-        ax2.legend(frameon=True, loc='lower right', markerscale=15)
-
-
-        ax3.scatter(type3ZOOM['x'], type3ZOOM['y'], color=self.plottingColors['MXM'], s=0.04, label='MxM')
-        ax3.scatter(type4ZOOM['x'], type4ZOOM['y'], color=self.plottingColors['SXS'], s=0.04, label='SxS')
+        # ax2.scatter(type3['x'], type3['y'], color=self.plottingColors['MXM'], s=0.04, label='MxM')
+        # ax2.scatter(type4['x'], type4['y'], color=self.plottingColors['SXS'], s=0.04, label='SxS')
+        # ax2.legend(frameon=True, loc='lower right', markerscale=15)
+        #
+        #
+        # ax3.scatter(type3ZOOM['x'], type3ZOOM['y'], color=self.plottingColors['MXM'], s=0.04, label='MxM')
+        # ax3.scatter(type4ZOOM['x'], type4ZOOM['y'], color=self.plottingColors['SXS'], s=0.04, label='SxS')
 
 
         ###### EIGENVALUE LOAD DATA FRAMES ######
         eigenvalue_df_saddle = load_eigenvalue_data('../../data/raw/equilibria/eigenvalueSxC_Saddle_incSxS.txt',1)
         eigenvalue_df_saddle_zoom = load_eigenvalue_data('../../data/raw/equilibria/eigenvalueSxC_Saddle_incSxS_ZOOM.txt',1)
-        eigenvalue_df_center = load_eigenvalue_data('../../data/raw/equilibria/eigenvalueSxC_Center_incCxC.txt', 2)
-        eigenvalue_df_center_zoom = load_eigenvalue_data('../../data/raw/equilibria/eigenvalueSxC_Center_incCxC_ZOOM.txt', 2)
+        #eigenvalue_df_center = load_eigenvalue_data('../../data/raw/equilibria/eigenvalueSxC_Center_incCxC.txt', 2)
+        #eigenvalue_df_center_zoom = load_eigenvalue_data('../../data/raw/equilibria/eigenvalueSxC_Center_incCxC_ZOOM.txt', 2)
 
+        print('appending saddle_list')
         plotting_list_saddle = []
         for row in eigenvalue_df_saddle.iterrows():
             x = row[1][0]
@@ -501,6 +507,7 @@ class DisplayDynamicalBehaviour:
 
         plotting_df_saddle = pd.DataFrame(plotting_list_saddle, columns=['x', 'y', 'maxSaddle', 'minSaddle', 'stabilityIndex'])
 
+        print('appending saddle_list_zoom')
         plotting_list_saddle_zoom = []
         for row in eigenvalue_df_saddle_zoom.iterrows():
             x = row[1][0]
@@ -514,42 +521,45 @@ class DisplayDynamicalBehaviour:
 
         plotting_df_saddle_zoom = pd.DataFrame(plotting_list_saddle_zoom, columns=['x', 'y', 'maxSaddle', 'minSaddle', 'stabilityIndex'])
 
-        plotting_list_center = []
-        for row in eigenvalue_df_center.iterrows():
-            x = row[1][0]
-            y = row[1][1]
-            maxLambda = row[1][3]
-            minLambda = row[1][5]
-            stabilityIndex = row[1][6]
+        # plotting_list_center = []
+        # for row in eigenvalue_df_center.iterrows():
+        #     x = row[1][0]
+        #     y = row[1][1]
+        #     maxLambda = row[1][3]
+        #     minLambda = row[1][5]
+        #     stabilityIndex = row[1][6]
+        #
+        #     if stabilityIndex < self.threshold:
+        #         plotting_list_center.append([x, y, maxLambda, minLambda, stabilityIndex])
+        #
+        # plotting_df_center = pd.DataFrame(plotting_list_center,
+        #                                   columns=['x', 'y', 'maxSaddle', 'minSaddle', 'stabilityIndex'])
+        #
+        # plotting_list_center_zoom = []
+        # for row in eigenvalue_df_center_zoom.iterrows():
+        #     x = row[1][0]
+        #     y = row[1][1]
+        #     maxLambda = row[1][3]
+        #     minLambda = row[1][5]
+        #     stabilityIndex = row[1][6]
+        #
+        #     if stabilityIndex < self.threshold:
+        #         plotting_list_center_zoom.append([x, y, maxLambda, minLambda, stabilityIndex])
 
-            if stabilityIndex < self.threshold:
-                plotting_list_center.append([x, y, maxLambda, minLambda, stabilityIndex])
-
-        plotting_df_center = pd.DataFrame(plotting_list_center,
-                                          columns=['x', 'y', 'maxSaddle', 'minSaddle', 'stabilityIndex'])
-
-        plotting_list_center_zoom = []
-        for row in eigenvalue_df_center_zoom.iterrows():
-            x = row[1][0]
-            y = row[1][1]
-            maxLambda = row[1][3]
-            minLambda = row[1][5]
-            stabilityIndex = row[1][6]
-
-            if stabilityIndex < self.threshold:
-                plotting_list_center_zoom.append([x, y, maxLambda, minLambda, stabilityIndex])
-
-        plotting_df_center_zoom = pd.DataFrame(plotting_list_center_zoom,
-                                               columns=['x', 'y', 'maxSaddle', 'minSaddle', 'stabilityIndex'])
+        # plotting_df_center_zoom = pd.DataFrame(plotting_list_center_zoom,
+        #                                        columns=['x', 'y', 'maxSaddle', 'minSaddle', 'stabilityIndex'])
 
         sm = plt.cm.ScalarMappable(
             cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis", len(eigenvalue_df_saddle['maxLambda']))),
             norm=plt.Normalize(vmin=0.0, vmax=self.threshold))
 
+        print('start_plotting')
+
+
         ax0.scatter(plotting_df_saddle['x'], plotting_df_saddle['y'], c=plotting_df_saddle['maxSaddle'], cmap="viridis", s=0.1)
         ax1.scatter(plotting_df_saddle_zoom['x'], plotting_df_saddle_zoom['y'], c=plotting_df_saddle_zoom['maxSaddle'], cmap="viridis",s=0.1)
-        ax2.scatter(plotting_df_center['x'], plotting_df_center['y'], c=plotting_df_center['maxSaddle'], cmap="viridis",s=0.1)
-        ax3.scatter(plotting_df_center_zoom['x'], plotting_df_center_zoom['y'], c=plotting_df_center_zoom['maxSaddle'], cmap="viridis",s=0.1)
+        # ax2.scatter(plotting_df_center['x'], plotting_df_center['y'], c=plotting_df_center['maxSaddle'], cmap="viridis",s=0.1)
+        # ax3.scatter(plotting_df_center_zoom['x'], plotting_df_center_zoom['y'], c=plotting_df_center_zoom['maxSaddle'], cmap="viridis",s=0.1)
 
         ## Add the moon and earth bodies
         bodies_df = load_bodies_location()
@@ -569,57 +579,61 @@ class DisplayDynamicalBehaviour:
         ax1.contourf(xM, yM, zM, colors='black')
         ax1.contourf(xE, yE, zE, colors='black')
 
-        ax2.contourf(xM, yM, zM, colors='black')
-        ax2.contourf(xE, yE, zE, colors='black')
-
-        ax3.contourf(xM, yM, zM, colors='black')
-        ax3.contourf(xE, yE, zE, colors='black')
+        # ax2.contourf(xM, yM, zM, colors='black')
+        # ax2.contourf(xE, yE, zE, colors='black')
+        #
+        # ax3.contourf(xM, yM, zM, colors='black')
+        # ax3.contourf(xE, yE, zE, colors='black')
 
         ## Add Natural collinear points
         lagrange_points_df = load_lagrange_points_location()
-        lagrange_point_nrs = ['L1', 'L2']
+        lagrange_point_nrs = ['L1', 'L2','L3','L4','L5']
         for lagrange_point_nr in lagrange_point_nrs:
             ax0.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
                         color='black', marker='x')
             ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
                         color='black', marker='x')
-            ax2.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
-                        color='black', marker='x')
-            ax3.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
-                        color='black', marker='x')
+            # ax2.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+            #             color='black', marker='x')
+            # ax3.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+            #             color='black', marker='x')
 
         ## Set aspect ratio equal to 1
         ax0.set_aspect(1.0)
         ax1.set_aspect(1.0)
-        ax2.set_aspect(1.0)
-        ax3.set_aspect(1.0)
+        # ax2.set_aspect(1.0)
+        # ax3.set_aspect(1.0)
 
 
         # Create a colourbar right from the plots with equal height as two subplots
-        upperRightPosition = ax1.get_position()
-        lowerRightPosition = ax3.get_position()
-        upperRightPoints = upperRightPosition.get_points()
-        lowerRightPoints = lowerRightPosition.get_points()
+        # upperRightPosition = ax1.get_position()
+        # lowerRightPosition = ax3.get_position()
+        # upperRightPoints = upperRightPosition.get_points()
+        # lowerRightPoints = lowerRightPosition.get_points()
+        #
+        # cb_x0 = upperRightPoints[1][0] + 0.02
+        # cb_y0 = lowerRightPoints[0][1]
+        #
+        # width_colourbar = (upperRightPoints[1][0] - upperRightPoints[0][0]) / 25
+        # height_colourbar = upperRightPoints[1][1] - lowerRightPoints[0][1]
+        # axes_colourbar = [cb_x0, cb_y0, width_colourbar, height_colourbar]
+        #cax = plt.axes(axes_colourbar)
 
-        cb_x0 = upperRightPoints[1][0] + 0.02
-        cb_y0 = lowerRightPoints[0][1]
-
-        width_colourbar = (upperRightPoints[1][0] - upperRightPoints[0][0]) / 25
-        height_colourbar = upperRightPoints[1][1] - lowerRightPoints[0][1]
-        axes_colourbar = [cb_x0, cb_y0, width_colourbar, height_colourbar]
 
         sm.set_array([])
 
-        cax = plt.axes(axes_colourbar)
-        cbar0 = plt.colorbar(sm, cax=cax, label='$\\lambda$ [-]')
+        divider = make_axes_locatable(ax1)
+        cax = divider.append_axes("right", size="2%", pad=0.2)
 
-        fig.subplots_adjust(hspace=0.4)
+        cbar0 = plt.colorbar(sm, cax=cax, label='$|| \\lambda ||$ [-]')
 
+        #fig.subplots_adjust(hspace=0.4)
+        fig.tight_layout()
 
         if self.lowDPI:
             fig.savefig('../../data/figures/equilibria/final_plot_eigenvalue_behaviour.png',transparent=True, dpi=self.dpi)
         else:
-            fig.savefig('../../data/figures/equilibria/final_plot_eigenvalue_behaviour_' + str(self.motionOfInterest) + '_zoom_.pdf',transparent=True)
+            fig.savefig('../../data/figures/equilibria/final_plot_eigenvalue_behaviour.png',transparent=True, dpi=300)
 
         pass
 
@@ -631,7 +645,7 @@ class DisplayDynamicalBehaviour:
 if __name__ == '__main__':
     motions_of_interest = ['center']
 
-    low_dpi = True
+    low_dpi = False
 
     for motion_of_interest in motions_of_interest:
         display_dynamical_behaviour = DisplayDynamicalBehaviour(motion_of_interest, low_dpi)

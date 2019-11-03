@@ -52,14 +52,14 @@ int main (){
 //    {
 //        double alpha = 0.0;
 //        double accMag = 0.0107;
-        for (int i = 3; i < 6 ; i++)
+        for (int i = 1; i < 6 ; i++)
         {
 
-           Eigen::Vector2d equilibriumTest = createEquilibriumLocations(i, 0.1, 0.0, "acceleration", massParameter);
+           Eigen::Vector2d equilibriumTest = createEquilibriumLocations(i, 0.07, 0.0, "acceleration", massParameter);
 
             std::cout << "\n== Eq result =="<< std::endl
                       << "librationPointNr: " << i << std::endl
-                      << "alt: " << "0.1" << std::endl
+                      << "alt: " << "0.003" << std::endl
                       << "alpha: " << 0.0 << std::endl
                       << "equilibriumLocation: \n" << equilibriumTest << std::endl
                       << "=================" << std::endl;

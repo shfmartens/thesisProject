@@ -170,13 +170,17 @@ def compute_hamiltonian_from_list(xList,yList,accelerationMagnitude,alphaList):
         inner_product = xpos * alt*np.cos(alpha) + ypos * alt*np.cos(alpha)
 
         hamiltonian = -0.5*jacobi_Integral - inner_product
-        hamiltonianList.append(hamiltonian)
+
+        if np.abs(hamiltonian) < 4:
+            if alpha > np.pi:
+                alphaStore = alpha - 2*np.pi
+            hamiltonianList.append([alphaStore,hamiltonian])
 
     return hamiltonianList
 
 
 
-def compute_stability_type_from_list(xList,yList):
+def compute_stability_type_from_list(alphaList,xList,yList):
     EARTH_GRAVITATIONAL_PARAMETER = 3.986004418E14
     SUN_GRAVITATIONAL_PARAMETER = 1.32712440018e20
     MOON_GRAVITATIONAL_PARAMETER = SUN_GRAVITATIONAL_PARAMETER / (328900.56 * (1.0 + 81.30059))
@@ -186,7 +190,7 @@ def compute_stability_type_from_list(xList,yList):
     for i in range(len(xList)):
         xpos = xList[i]
         ypos = yList[i]
-
+        alpha = alphaList[i]
 
         r1 = np.sqrt((massParameter + xpos) ** 2 + (ypos ** 2))
         r2 = np.sqrt(((xpos - 1 + massParameter) ** 2) + (ypos ** 2))
@@ -230,14 +234,49 @@ def compute_stability_type_from_list(xList,yList):
         maxSaddleEigenVector = [0, 0, 0, 0]
         maxCenterEigenVector = [0, 0, 0, 0]
 
+        desiredType = 1
+        desiredMode = 1
         eigenValueDeviation = 1.0e-3
         for i in range(len(eigenValues)):
-            if ((np.abs(np.real(eigenValues[i])) > eigenValueDeviation) and (np.abs(np.imag(eigenValues[i])) < eigenValueDeviation)):
+            if ((np.abs(np.real(eigenValues[i])) > eigenValueDeviation) and (
+                    np.abs(np.imag(eigenValues[i])) < eigenValueDeviation)):
+                numberOfSaddle = numberOfSaddle + 1
+                if desiredType == 1 and desiredMode == 1:
                     if np.real(eigenValues[i]) > maxSaddleEigenValue:
                         maxSaddleEigenValue = np.real(eigenValues[i])
                         maxSaddleEigenVector = np.real(eigenVectors[:, i])
+                    if np.real(eigenValues[i]) < minSaddleEigenValue:
+                        minSaddleEigenValue = np.real(eigenValues[i])
+                        minSaddleEigenVector = np.real(eigenVectors[:, i])
 
-        maxSaddleList.append(maxSaddleEigenValue)
+            if ((np.abs(np.real(eigenValues[i])) < eigenValueDeviation) and (
+                    np.abs(np.imag(eigenValues[i])) > eigenValueDeviation)):
+                numberOfCenters = numberOfCenters + 1
+                if desiredType < 3 and desiredMode == 2:
+
+                    if np.imag(eigenValues[i]) > maxCenterEigenValue:
+                        maxCenterEigenValue = eigenValues[i]
+                        maxCenterEigenVector = eigenVectors[:, i]
+                    if np.imag(eigenValues[i]) < minCenterEigenValue:
+                        minCenterEigenValue = eigenValues[i]
+                        minCenterEigenVector = eigenVectors[:, i]
+
+            if ((np.abs(np.real(eigenValues[i])) > eigenValueDeviation) and (
+                    np.abs(np.imag(eigenValues[i])) > eigenValueDeviation)):
+                numberOfMixed = numberOfMixed + 1
+
+        if numberOfSaddle == 2 and numberOfCenters == 2:
+            type = 1
+
+        elif numberOfCenters == 4:
+            type = 2
+        elif numberOfMixed == 4:
+            type = 3
+        elif numberOfSaddle == 4:
+            type = 4
+
+        if type == 1 and maxSaddleEigenValue < 1000:
+            maxSaddleList.append([alpha, maxSaddleEigenValue])
 
     return maxSaddleList
 
