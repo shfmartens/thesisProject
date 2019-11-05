@@ -464,13 +464,13 @@ class DisplayPeriodicSolutions:
 
         if self.varyingQuantity == 'Hamiltonian':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($a_{lt} = ' + str(
-            "{:3.1f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Overview',size=self.suptitleSize)
+            "{:3.3f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Overview',size=self.suptitleSize)
         if self.varyingQuantity == 'Acceleration':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
-                "{:3.1f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Overview', size=self.suptitleSize)
+                "{:3.3f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Overview', size=self.suptitleSize)
         if self.varyingQuantity == 'Alpha':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
-                "{:3.1f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.1f}".format(self.accelerationMagnitude))  + ' - Overview', size=self.suptitleSize)
+                "{:3.3f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.1f}".format(self.accelerationMagnitude))  + ' - Overview', size=self.suptitleSize)
 
 
 
@@ -603,6 +603,10 @@ class DisplayPeriodicSolutions:
         arr[0, 1].set_title('Position deviation at full period')
         arr[0, 1].semilogy(self.continuationParameter, self.deviation_x, linewidth=linewidth, c=self.plottingColors['tripleLine'][0],label='$|{x}(T) - {x}(0)|$')
         arr[0, 1].semilogy(self.continuationParameter, self.deviation_y, linewidth=linewidth, c=self.plottingColors['tripleLine'][1],label='$|{y}(T) - {y}(0)|$')
+        arr[0, 1].semilogy(self.continuationParameter, 1e-9 * np.ones(len(self.continuationParameter)), color=self.plottingColors['limit'], linewidth=0.5, linestyle='--')
+        arr[0, 1].semilogy(self.continuationParameter, 1e-8 * np.ones(len(self.continuationParameter)), color=self.plottingColors['limit'], linewidth=0.5, linestyle='--')
+
+
         arr[0, 1].legend(frameon=True, loc='lower right')
         arr[0, 1].set_xlim(xlim)
         arr[0, 1].set_ylim(ylim)
@@ -624,6 +628,8 @@ class DisplayPeriodicSolutions:
         arr[1, 1].legend(frameon=True, loc='lower right')
         arr[1, 1].set_xlim(xlim)
         arr[1, 1].set_ylim(ylim)
+        arr[1, 1].semilogy(self.continuationParameter, 1e-9 * np.ones(len(self.continuationParameter)),color=self.plottingColors['limit'], linewidth=0.5, linestyle='--')
+        arr[1, 1].semilogy(self.continuationParameter, 1e-8 * np.ones(len(self.continuationParameter)),color=self.plottingColors['limit'], linewidth=0.5, linestyle='--')
 
         arr[1, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
         arr[1, 0].xaxis.set_ticks(xticks)
@@ -680,13 +686,13 @@ class DisplayPeriodicSolutions:
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($a_{lt} = ' + str(
-            "{:3.1f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Periodicity constraints verification',size=self.suptitleSize)
+            "{:3.3f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Periodicity constraints verification',size=self.suptitleSize)
         if self.varyingQuantity == 'Acceleration':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
-                "{:3.1f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Periodicity constraints verification', size=self.suptitleSize)
+                "{:3.3f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Periodicity constraints verification', size=self.suptitleSize)
         if self.varyingQuantity == 'Alpha':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
-                "{:3.1f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.1f}".format(self.accelerationMagnitude))  + ' - Periodicity constraints verification', size=self.suptitleSize)
+                "{:3.3f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.1f}".format(self.accelerationMagnitude))  + ' - Periodicity constraints verification', size=self.suptitleSize)
 
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
@@ -794,13 +800,13 @@ class DisplayPeriodicSolutions:
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($a_{lt} = ' + str(
-            "{:3.1f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + '- Monodromy matrix eigensystem validation',size=self.suptitleSize)
+            "{:3.3f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + '- Monodromy matrix eigensystem validation',size=self.suptitleSize)
         if self.varyingQuantity == 'Acceleration':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
-                "{:3.1f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Monodromy matrix eigensystem validation', size=self.suptitleSize)
+                "{:3.3f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Monodromy matrix eigensystem validation', size=self.suptitleSize)
         if self.varyingQuantity == 'Alpha':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
-                "{:3.1f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.1f}".format(self.accelerationMagnitude))  + ' - Monodromy matrix eigensystem validation', size=self.suptitleSize)
+                "{:3.3f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.1f}".format(self.accelerationMagnitude))  + ' - Monodromy matrix eigensystem validation', size=self.suptitleSize)
 
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
@@ -940,13 +946,13 @@ class DisplayPeriodicSolutions:
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($a_{lt} = ' + str(
-            "{:3.1f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + '- Eigenvalues $\lambda_i$ \& stability indices $v_i$',size=self.suptitleSize)
+            "{:3.3f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + '- Eigenvalues $\lambda_i$ \& stability indices $v_i$',size=self.suptitleSize)
         if self.varyingQuantity == 'Acceleration':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
-                "{:3.1f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Eigenvalues $\lambda_i$ \& stability indices $v_i$', size=self.suptitleSize)
+                "{:3.3f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Eigenvalues $\lambda_i$ \& stability indices $v_i$', size=self.suptitleSize)
         if self.varyingQuantity == 'Alpha':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
-                "{:3.1f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.1f}".format(self.accelerationMagnitude))  + ' - Eigenvalues $\lambda_i$ \& stability indices $v_i$', size=self.suptitleSize)
+                "{:3.3f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.1f}".format(self.accelerationMagnitude))  + ' - Eigenvalues $\lambda_i$ \& stability indices $v_i$', size=self.suptitleSize)
 
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
@@ -1056,7 +1062,7 @@ class DisplayPeriodicSolutions:
                 "{:3.3f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Numerical continuation validation', size=self.suptitleSize)
         if self.varyingQuantity == 'Alpha':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
-                "{:3.1f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.3f}".format(self.accelerationMagnitude))  + ' - Numerical continuation validation', size=self.suptitleSize)
+                "{:3.3f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.3f}".format(self.accelerationMagnitude))  + ' - Numerical continuation validation', size=self.suptitleSize)
 
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
@@ -1150,6 +1156,8 @@ class DisplayPeriodicSolutions:
         #arr[1, 1].plot(orbitIdNew, xIncrementPhaseHalf, c=self.plottingColors['tripleLine'][0], linewidth=1,label='$\\Delta x$ [-]')
         #arr[1, 1].plot(orbitIdNew, yIncrementPhaseHalf, c=self.plottingColors['tripleLine'][1], linewidth=1,label='$\\Delta y$ [-]')
         arr[1, 1].semilogy(orbitIdNew, normIncrementPhaseHalf, c=self.plottingColors['tripleLine'][2], linewidth=1,label='$\\Delta R$ [-]')
+        arr[1, 1].semilogy(self.continuationParameter, 1e-5 * np.ones(len(self.continuationParameter)),
+                           color=self.plottingColors['limit'], linewidth=0.5, linestyle='--')
 
         arr[1, 1].set_xlim(xlim)
         arr[1,1].set_ylim([1.0e-5,1.0e-3])
@@ -1192,13 +1200,13 @@ class DisplayPeriodicSolutions:
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($a_{lt} = ' + str(
-            "{:3.1f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + '- Spatial evolution analysis ',size=self.suptitleSize)
+            "{:3.3f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + '- Spatial evolution analysis ',size=self.suptitleSize)
         if self.varyingQuantity == 'Acceleration':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
-                "{:3.1f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Spatial evolution analysis ', size=self.suptitleSize)
+                "{:3.3f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Spatial evolution analysis ', size=self.suptitleSize)
         if self.varyingQuantity == 'Alpha':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
-                "{:3.1f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.1f}".format(self.accelerationMagnitude))  + ' - Spatial evolution analysis ', size=self.suptitleSize)
+                "{:3.3f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.1f}".format(self.accelerationMagnitude))  + ' - Spatial evolution analysis ', size=self.suptitleSize)
 
 
 
