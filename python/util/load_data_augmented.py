@@ -181,6 +181,82 @@ def compute_hamiltonian_from_list(xList,yList,accelerationMagnitude,alphaList):
 
     return hamiltonianList
 
+def compute_hamiltonian_from_list_second_version(xList,yList,accelerationMagnitude, alphaList):
+    EARTH_GRAVITATIONAL_PARAMETER = 3.986004418E14
+    SUN_GRAVITATIONAL_PARAMETER = 1.32712440018e20
+    MOON_GRAVITATIONAL_PARAMETER = SUN_GRAVITATIONAL_PARAMETER / (328900.56 * (1.0 + 81.30059))
+    massParameter = MOON_GRAVITATIONAL_PARAMETER / (MOON_GRAVITATIONAL_PARAMETER + EARTH_GRAVITATIONAL_PARAMETER)
+
+    hamiltonianList = []
+    for i in range(len(xList)):
+        xpos = xList[i]
+        ypos = yList[i]
+        alpha = alphaList[i]
+        alt = accelerationMagnitude
+
+        xpos = xList[i]
+        ypos = yList[i]
+        alpha = alphaList[i]
+        alt = accelerationMagnitude
+
+        r1 = np.sqrt((massParameter + xpos) ** 2 + (ypos ** 2))
+        r2 = np.sqrt(((xpos - 1 + massParameter) ** 2) + (ypos ** 2))
+
+        primaryTerm = (1 - massParameter) / r1
+        secondaryTerm = massParameter / r2
+
+        jacobi_Integral = xpos ** 2 + ypos ** 2 + 2*primaryTerm + 2*secondaryTerm
+
+        inner_product = xpos * alt * np.cos(alpha) + ypos * alt * np.sin(alpha)
+
+        hamiltonian = -0.5 * jacobi_Integral - inner_product
+
+        if np.abs(hamiltonian) < 4:
+            if alpha > 2* np.pi:
+                alpha = alpha -2*np.pi
+            if alpha < 0* np.pi:
+                alpha = alpha +2*np.pi
+            hamiltonianList.append([alpha, hamiltonian])
+
+    return hamiltonianList
+
+
+
+def compute_potential_from_list(xList,yList,accMag,alphaList):
+    EARTH_GRAVITATIONAL_PARAMETER = 3.986004418E14
+    SUN_GRAVITATIONAL_PARAMETER = 1.32712440018e20
+    MOON_GRAVITATIONAL_PARAMETER = SUN_GRAVITATIONAL_PARAMETER / (328900.56 * (1.0 + 81.30059))
+    massParameter = MOON_GRAVITATIONAL_PARAMETER / (MOON_GRAVITATIONAL_PARAMETER + EARTH_GRAVITATIONAL_PARAMETER)
+
+    potentialList = []
+    for i in range(len(xList)):
+        xpos = xList[i]
+        ypos = yList[i]
+        alpha = alphaList[i]
+        acc = accMag
+
+        r_1 = np.sqrt((massParameter + xpos) ** 2 + ypos ** 2)
+        r_2 = np.sqrt((1 - massParameter - xpos) ** 2 + ypos ** 2)
+
+        r1Cubed = r_1 ** 3
+        r2Cubed = r_2 ** 3
+
+        primaryTerm = (1 - massParameter) / r1Cubed
+        secondaryTerm = massParameter / r2Cubed
+
+        omegaX = xpos * (1 - primaryTerm - secondaryTerm) + massParameter * (
+                    -primaryTerm - secondaryTerm) + secondaryTerm + acc * np.cos(alpha)
+        omegaY = ypos * (1 - primaryTerm - secondaryTerm) + acc * np.sin(alpha)
+
+        deviationNorm = np.sqrt(omegaX ** 2 + omegaY ** 2)
+
+
+        deviationNorm = np.sqrt(omegaX ** 2 + omegaY ** 2)
+
+        potentialList.append([alpha, deviationNorm])
+
+
+    return potentialList
 
 
 def compute_stability_type_from_list(alphaList,xList,yList):

@@ -24,7 +24,7 @@ sys.path.append('../util')
 from load_data import load_lagrange_points_location, load_bodies_location
 from load_data_augmented import load_equilibria_acceleration, load_equilibria_alpha, compute_stability_type, load_stability_data, \
 cr3bplt_velocity, load_lagrange_points_location_augmented, potential_deviation, compute_eigenvalue_contour, load_equilibria_acceleration_deviation, \
-compute_stability_type_from_list, compute_hamiltonian_from_list
+compute_stability_type_from_list, compute_hamiltonian_from_list, compute_potential_from_list, compute_hamiltonian_from_list_second_version
 
 
 class DisplayEquilibriaValidation:
@@ -276,10 +276,10 @@ class DisplayEquilibriaValidation:
         ax.set_xlim([-self.scaleDistanceX/2, self.scaleDistanceX/2])
         ax.set_ylim([-self.scaleDistanceY/2, self.scaleDistanceY/2])
 
-        type1 = load_stability_data('../../data/raw/equilibria/stability_1.txt')
-        type2 = load_stability_data('../../data/raw/equilibria/stability_2.txt')
-        type3 = load_stability_data('../../data/raw/equilibria/stability_3.txt')
-        type4 = load_stability_data('../../data/raw/equilibria/stability_4.txt')
+        type1 = load_stability_data('../../data/raw/equilibria/stability_1_2000.txt')
+        type2 = load_stability_data('../../data/raw/equilibria/stability_2_2000.txt')
+        type3 = load_stability_data('../../data/raw/equilibria/stability_3_2000.txt')
+        type4 = load_stability_data('../../data/raw/equilibria/stability_4_2000.txt')
 
         ax.scatter(type1['x'], type1['y'], color=self.plottingColors['SXC'], s=0.04, label='SxC')
         ax.scatter(type2['x'], type2['y'], color=self.plottingColors['CXC'], s=0.04, label='CxC')
@@ -2370,7 +2370,7 @@ class DisplayEquilibriaValidation:
         ax1.set_xlim([0,2*np.pi])
 
         ticksLocators = [0, 0.5 * np.pi, np.pi, 1.5 * np.pi, 2.0 * np.pi]
-        labels = ('0', '$\\frac{1}{2}\\pi$', '$0$', '$\\frac{3}{2}\\pi$', '$2\\pi$')
+        labels = ('0', '$\\frac{1}{2}\\pi$', '$\\pi$', '$\\frac{3}{2}\\pi$', '$2\\pi$')
         ax0.set_xticks(ticksLocators, minor=False)
         ax0.set_xticklabels(labels, fontdict=None, minor=False)
         ax1.set_xticks(ticksLocators, minor=False)
@@ -2402,7 +2402,12 @@ class DisplayEquilibriaValidation:
         ax1.set_xlabel('$\\alpha$ [-]')
         ax1.set_ylabel('$H_{lt}$ [-]')
 
-        ax1.set_xlim([-np.pi,np.pi])
+        ax1.set_xlim([0,2*np.pi])
+        ax0.set_xlim([0,2*np.pi])
+
+        #ax1.set_xlim([-np.pi, np.pi])
+        #ax0.set_xlim([-np.pi, np.pi])
+
 
         min_y = 1000
         max_y = -1000
@@ -2430,7 +2435,7 @@ class DisplayEquilibriaValidation:
                                 + str("{:7.6f}".format(accMag)) + '_' \
                                 + str("{:7.6f}".format(seed)) + '_' + continuation + '_equilibria.txt')
 
-                            hamiltonianList = compute_hamiltonian_from_list(equilibria_df['x'], equilibria_df['y'],accMag, equilibria_df['alpha'])
+                            hamiltonianList = compute_hamiltonian_from_list_second_version(equilibria_df['x'], equilibria_df['y'],accMag, equilibria_df['alpha'])
                             hamiltonianDF = pd.DataFrame(hamiltonianList, columns=['alpha', 'hamiltonian'])
 
                             if lagrangePointNr == 1 and accMag < 0.01:
@@ -2454,7 +2459,7 @@ class DisplayEquilibriaValidation:
                                 + str("{:7.6f}".format(accMag)) + '_' \
                                 + str("{:7.6f}".format(seed)) + '_' + continuation + '_equilibria.txt')
 
-                            hamiltonianList = compute_hamiltonian_from_list(equilibria_df['x'], equilibria_df['y'],accMag, equilibria_df['alpha'])
+                            hamiltonianList = compute_hamiltonian_from_list_second_version(equilibria_df['x'], equilibria_df['y'],accMag, equilibria_df['alpha'])
                             hamiltonianDF = pd.DataFrame(hamiltonianList, columns=['alpha', 'hamiltonian'])
 
 
@@ -2465,7 +2470,7 @@ class DisplayEquilibriaValidation:
                             if lagrangePointNr == 5:
                                 ax0.scatter(hamiltonianDF['alpha'],hamiltonianDF['hamiltonian'],color=self.plottingColors['fifthLine'][4],linewidth=self.lineWidth, label='$E_{5}$', s=0.4)
 
-                        if lagrangePointNr == 3 and accMag > 0.01 and seed == 180.0 and continuation == "forward":
+                        if lagrangePointNr > 2 and accMag > 0.01:
 
                             print(lagrangePointNr)
                             print(seed)
@@ -2479,7 +2484,7 @@ class DisplayEquilibriaValidation:
                                     + str("{:7.6f}".format(accMag)) + '_' \
                                     + str("{:7.6f}".format(seed)) + '_' + continuation + '_equilibria.txt')
 
-                                hamiltonianList = compute_hamiltonian_from_list(equilibria_df['x'], equilibria_df['y'],accMag, equilibria_df['alpha'])
+                                hamiltonianList = compute_hamiltonian_from_list_second_version(equilibria_df['x'], equilibria_df['y'],accMag, equilibria_df['alpha'])
                                 hamiltonianDF = pd.DataFrame(hamiltonianList, columns=['alpha', 'hamiltonian'])
 
                                 E3_DF = E3_DF.append(hamiltonianDF,ignore_index=True)
@@ -2496,11 +2501,14 @@ class DisplayEquilibriaValidation:
         labels = ('0', '$\\frac{1}{2}\\pi$', '$\\pi$', '$\\frac{3}{2}\\pi$', '$2\\pi$')
         ticksLocators1 = [-np.pi, -0.5 * np.pi, 0, 0.5 * np.pi, np.pi]
         labels1 = ('$-\\pi$', '$-\\frac{1}{2}\\pi$', '$0$', '$\\frac{1}{2}\\pi$', '$\\pi$')
-        ax0.set_xticks(ticksLocators1, minor=False)
-        ax0.set_xticklabels(labels1, fontdict=None, minor=False)
+        ax0.set_xticks(ticksLocators, minor=False)
+        ax0.set_xticklabels(labels, fontdict=None, minor=False)
 
-        ax1.set_xticks(ticksLocators1, minor=False)
-        ax1.set_xticklabels(labels1, fontdict=None, minor=False)
+        ax1.set_xticks(ticksLocators, minor=False)
+        ax1.set_xticklabels(labels, fontdict=None, minor=False)
+
+        ax1.set_xlim([0, 2 * np.pi])
+        ax0.set_xlim([0, 2 * np.pi])
 
         fig.tight_layout()
         plt.subplots_adjust(right=0.92)
@@ -2515,6 +2523,60 @@ class DisplayEquilibriaValidation:
 
         pass
 
+    def plot_verification_potential_of_files(self):
+        fig = plt.figure(figsize=self.figSize)
+
+        ax = fig.gca()
+        ax.set_xlim([-np.pi,np.pi])
+
+        ax.set_xlabel('$\\alpha$ [-]')
+        ax.set_ylabel('$H_{lt}$ [-]')
+        ax.grid(True, which='both', ls=':')
+
+        accMag = 0.1
+        libPointCustom = [3,4,5]
+        customContinuations = ['backward','forward']
+        customSeeds = [0.0,180.0]
+
+        for lagrangePointNr in libPointCustom:
+            for continuation in customContinuations:
+                for seed in customSeeds:
+
+                    equilibria_df = load_equilibria_acceleration(
+                    '../../data/raw/equilibria/L' + str(lagrangePointNr) \
+                    + '_acceleration_' \
+                    + str("{:7.6f}".format(accMag)) + '_' \
+                    + str("{:7.6f}".format(seed)) + '_' + continuation + '_equilibria.txt')
+
+                    # PotentialList = compute_potential_from_list(equilibria_df['x'],equilibria_df['y'],accMag,equilibria_df['alpha'])
+                    # potentialDF = pd.DataFrame(PotentialList, columns=['alpha', 'potential'])
+
+                    hamiltonianList2 = compute_hamiltonian_from_list_second_version(equilibria_df['x'],equilibria_df['y'],accMag,equilibria_df['alpha'])
+                    hamiltonianDF2 = pd.DataFrame(hamiltonianList2, columns=['alpha', 'hamiltonian'])
+
+                    # hamiltonianList1 = compute_hamiltonian_from_list(equilibria_df['x'],equilibria_df['y'], accMag,equilibria_df['alpha'])
+                    # hamiltonianDF1 = pd.DataFrame(hamiltonianList1, columns=['alpha', 'hamiltonian'])
+
+                    ax.scatter(hamiltonianDF2['alpha'],hamiltonianDF2['hamiltonian'],color='red',s=0.1,label='checkSecond')
+                    #ax.scatter(hamiltonianDF1['alpha'],hamiltonianDF1['hamiltonian'],color='blue',s=0.1,label='Sunday')
+
+        ax.legend(frameon=True, loc='upper right', bbox_to_anchor=(1.12, 1.00), markerscale=15)
+
+        fig.savefig('../../data/figures/equilibria/hamiltonian_check.png', transparent=True,dpi=self.dpi)
+
+        pass
+
+
+
+
+
+
+
+        pass
+
+
+
+
 
 
 
@@ -2523,27 +2585,32 @@ if __name__ == '__main__':
 
     ### Contours
 
-    lagrange_point_nrs = [1,2,3,4,5]
-    acceleration_magnitudes = [0.003, 0.00873, 0.07, 0.1]
-    seeds = [0.0]
+    lagrange_point_nrs = [5]
+    acceleration_magnitudes = [0.1]
+    seeds = [180.0]
     continuations = ['forward']
     alphas = [0.0]
     low_dpi = False
 
+
     display_equilibria_validation = DisplayEquilibriaValidation(lagrange_point_nrs, acceleration_magnitudes, alphas,
                                                                     seeds, continuations, low_dpi=low_dpi)
+
+
 
     #display_equilibria_validation.plot_eigenvalue_acceleration_paper()
     #display_equilibria_validation.plot_contours_zoom_and_wide_angle()
     #display_equilibria_validation.plot_contours_zoom_and_wide_acc()
-
     #display_equilibria_validation.plot_equilibria_validation()
     # #
-    display_equilibria_validation.plot_hamiltonian_paper()
+
+    display_equilibria_validation.plot_eigenvalue_acceleration_paper()
+
+    del display_equilibria_validation
+
     # # # #display_equilibria_validation.plot_eigenvalue_Hamiltonian_effect()
     # # #
     # #  # display_equilibria_validation.plot_L3_phenomenon()
-    del display_equilibria_validation
 
 
     # lagrange_point_nrs = [1,2]
