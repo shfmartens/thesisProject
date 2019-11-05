@@ -1250,7 +1250,7 @@ if __name__ == '__main__':
     alphas = [90.0,270.0]
     betas = [0.0]
     low_dpi = True
-    varying_quantities = ['xcor']
+    varying_quantities = ['Hamiltonian']
 
 
 
