@@ -1018,7 +1018,7 @@ double getDefaultArcLengthAugmented(
 }
 
 bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differentialCorrections, const std::vector< Eigen::VectorXd >& statesContinuationVector,
-                       const Eigen::MatrixXd& stateVectorInclSTM, const std::string orbitType, const int librationPointNr,
+                       const Eigen::MatrixXd& stateVectorInclSTM, const std::string orbitType, const int librationPointNr, const int orbitNumber,
                        const double maxEigenvalueDeviation )
 {
     // Check termination conditions
@@ -1055,60 +1055,60 @@ bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differenti
 
     }
 
-    if(continueNumericalContinuation == true)
-    {
-        // compute statesContinuationDirection
-        double hamiltonianOrbit1= statesContinuationVector[0](1);
-        double hamiltonianOrbit2 = statesContinuationVector[1](1);
+//    if(continueNumericalContinuation == true)
+//    {
+//        // compute statesContinuationDirection
+//        double hamiltonianOrbit1= statesContinuationVector[0](1);
+//        double hamiltonianOrbit2 = statesContinuationVector[1](1);
 
-        int directionInit;
-        if  ((hamiltonianOrbit1 - hamiltonianOrbit2) > 0.0)
-        {
-            directionInit = 1;
+//        int directionInit;
+//        if  ((hamiltonianOrbit1 - hamiltonianOrbit2) > 0.0)
+//        {
+//            directionInit = 1;
 
-        } else if ( (hamiltonianOrbit1 - hamiltonianOrbit2) <= 0.0)
-        {
-            directionInit = -1;
-        } else
-        {
-            directionInit = 10;
-            continueNumericalContinuation = false;
-        }
+//        } else if ( (hamiltonianOrbit1 - hamiltonianOrbit2) <= 0.0)
+//        {
+//            directionInit = -1;
+//        } else
+//        {
+//            directionInit = 10;
+//            continueNumericalContinuation = false;
+//        }
 
-        double hamiltonianOrbitPrevious = statesContinuationVector[statesContinuationVector.size()-2](1);
-        double hamiltonianOrbitCurrent = statesContinuationVector[statesContinuationVector.size()-1](1);
+//        double hamiltonianOrbitPrevious = statesContinuationVector[statesContinuationVector.size()-2](1);
+//        double hamiltonianOrbitCurrent = statesContinuationVector[statesContinuationVector.size()-1](1);
 
-        int directionCurrent;
-        if  ((hamiltonianOrbitPrevious - hamiltonianOrbitCurrent) > 0.0)
-        {
-            directionCurrent = 1;
+//        int directionCurrent;
+//        if  ((hamiltonianOrbitPrevious - hamiltonianOrbitCurrent) > 0.0)
+//        {
+//            directionCurrent = 1;
 
-        } else if ((hamiltonianOrbitPrevious - hamiltonianOrbitCurrent) < 0.0)
-        {
-            directionCurrent = -1;
-        } else
-        {
-            directionCurrent = 8;
-            continueNumericalContinuation = false;
+//        } else if ((hamiltonianOrbitPrevious - hamiltonianOrbitCurrent) < 0.0)
+//        {
+//            directionCurrent = -1;
+//        } else
+//        {
+//            directionCurrent = 8;
+//            continueNumericalContinuation = false;
 
-        }
+//        }
 
-        if (directionInit != directionCurrent)
-        {
-            continueNumericalContinuation = false;
-            std::cout << "\n HAMILTONIAN DIRECTION SWITCHED, KILL FAMILY CONTINUATION \n" << std::endl;
-            std::cout << " continueNumericalContinuation: " << continueNumericalContinuation << std::endl;
+//        if (directionInit != directionCurrent)
+//        {
+//            continueNumericalContinuation = false;
+//            std::cout << "\n HAMILTONIAN DIRECTION SWITCHED, KILL FAMILY CONTINUATION \n" << std::endl;
+//            std::cout << " continueNumericalContinuation: " << continueNumericalContinuation << std::endl;
 
-                    std::cout << "hamiltonianOrbit1: " << hamiltonianOrbit1 << std::endl;
-                    std::cout << "hamiltonianOrbit2: " << hamiltonianOrbit2 << std::endl;
-                    std::cout << "directionInit: " << directionInit << std::endl;
-                    std::cout << "hamiltonianOrbitprevious: " << hamiltonianOrbitPrevious << std::endl;
-                    std::cout << "hamiltonianOrbitCurrent: " << hamiltonianOrbitCurrent << std::endl;
-                    std::cout << "directionCurrent: " << directionCurrent << std::endl;
+//                    std::cout << "hamiltonianOrbit1: " << hamiltonianOrbit1 << std::endl;
+//                    std::cout << "hamiltonianOrbit2: " << hamiltonianOrbit2 << std::endl;
+//                    std::cout << "directionInit: " << directionInit << std::endl;
+//                    std::cout << "hamiltonianOrbitprevious: " << hamiltonianOrbitPrevious << std::endl;
+//                    std::cout << "hamiltonianOrbitCurrent: " << hamiltonianOrbitCurrent << std::endl;
+//                    std::cout << "directionCurrent: " << directionCurrent << std::endl;
 
-        }
+//        }
 
-    }
+//    }
 
     if (continueNumericalContinuation == true)
     {
@@ -1136,6 +1136,37 @@ bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differenti
             continueNumericalContinuation = false;
             std::cout << "\n HALF PHASE POSITION EVOLUTION THRESHOLD NOT MET, KILL FAMILY CONTINUATION \n" << std::endl;
 
+        }
+
+
+    }
+
+    if (continueNumericalContinuation == true and orbitNumber > 900 )
+    {
+
+        Eigen::VectorXd finalState(10); finalState.setZero();
+        Eigen::VectorXd initialState(10); initialState.setZero();
+
+        finalState = stateVectorInclSTM.block(0,0,10,1);
+        initialState = statesContinuationVector[statesContinuationVector.size()-1].segment(3,10);
+
+        Eigen::Vector6d stateDiscrepancy = initialState.segment(0,6) - finalState.segment(0,6);
+        Eigen::Vector6d stateDiscrepancyAbsolute = stateDiscrepancy.cwiseAbs();
+
+        std::cout << " STATE DISCREPANCY CONDITION" << std::endl
+                  << "stateDiscrepancy: \n " << stateDiscrepancy << std::endl
+                  << "stateDiscrepancyAbsolute: \n " << stateDiscrepancyAbsolute << std::endl;
+
+
+        for(int i = 0; i < 6; i++)
+        {
+            double discrepancyElement = stateDiscrepancyAbsolute(i);
+            if(discrepancyElement > 1.0e-9)
+            {
+                continueNumericalContinuation = false;
+                std::cout << "PERIODICITY DISCREPANCY OF ELEMENT AT ORBITNUMBER > 900  IS LARGER THAN 1.0E-9, KILL FAMILY CONTINUATION" << std::endl;
+
+            }
         }
 
 
@@ -1244,7 +1275,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 // ============ CONTINUATION PROCEDURE ================== //
     // Set exit parameters of continuation procedure
-    int maximumNumberOfInitialConditions = 2200;
+    int maximumNumberOfInitialConditions = 5000;
     int numberOfInitialConditions;
     if (continuationIndex == 1)
     {
@@ -1568,7 +1599,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
           if (continueNumericalContinuation == true)
           {
-              continueNumericalContinuation = checkTerminationAugmented(differentialCorrections, statesContinuation, stateVectorInclSTM, orbitType, librationPointNr, maxEigenvalueDeviation );
+              continueNumericalContinuation = checkTerminationAugmented(differentialCorrections, statesContinuation, stateVectorInclSTM, orbitType, librationPointNr, numberOfInitialConditions, maxEigenvalueDeviation );
 
           }
 
