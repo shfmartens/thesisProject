@@ -482,12 +482,16 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionCon
 {
     // compute theta of initial state w.r.t. secondary body (L1, L2) or primary body (L3,4,5)
     double currentAngleOfOrbit;
-    if (librationPointNr < 3)
+    if (librationPointNr == 1)
     {
         currentAngleOfOrbit = atan2( fullInitialState(1,0), ( fullInitialState(0,0) - (1.0 - massParameter) ) ) * 180.0 / tudat::mathematical_constants::PI;
         if (currentAngleOfOrbit < 0.0 ) {
             currentAngleOfOrbit = currentAngleOfOrbit + 360.0;
         }
+    } else if (librationPointNr == 2)
+    {
+        currentAngleOfOrbit = atan2( fullInitialState(1,0), ( fullInitialState(0,0) - (1.0 - massParameter) ) ) * 180.0 / tudat::mathematical_constants::PI;
+
     } else
     {
         currentAngleOfOrbit = atan2( fullInitialState(1,0), fullInitialState(0,0) - ( - massParameter) ) * 180.0 / tudat::mathematical_constants::PI;
@@ -498,7 +502,7 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionCon
 
     // Determine final angle in [0,360 domain]
     double targetAngle = finalAngle;
-    if (targetAngle < 0.0 ) {
+    if (librationPointNr == 1 and targetAngle < 0.0 ) {
         targetAngle = targetAngle + 360.0;
     }
 
@@ -543,7 +547,7 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionCon
             currentAngleOfOrbit = fmod(std::atan2( stateVectorOnly(1,0), stateVectorOnly(0,0) - ( - massParameter) ) * 180.0 / tudat::mathematical_constants::PI, 360.0);
 
         }
-        if (currentAngleOfOrbit < 0.0 ) {
+        if (currentAngleOfOrbit < 0.0 and librationPointNr == 1 ) {
             currentAngleOfOrbit = currentAngleOfOrbit + 360.0;
         }
 
@@ -589,7 +593,7 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFullRevolutionCon
                 currentAngleOfOrbit = fmod(std::atan2( stateVectorOnly(1,0), stateVectorOnly(0,0) - ( - massParameter) ) * 180.0 / tudat::mathematical_constants::PI, 360.0);
 
             }
-            if (currentAngleOfOrbit < 0.0 ) {
+            if (currentAngleOfOrbit < 0.0 and librationPointNr == 1 ) {
                 currentAngleOfOrbit = currentAngleOfOrbit + 360.0;
             }
 

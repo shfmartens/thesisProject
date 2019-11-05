@@ -94,10 +94,10 @@ int main (){
     // ================================
         
 
-    #pragma omp parallel num_threads(13)
+    #pragma omp parallel num_threads(1)
     {
         #pragma omp for
-        for (unsigned int i=1; i<=13; i++) {
+        for (unsigned int i=1; i<=1; i++) {
             if (i ==1)
             {
                 std::cout << "Run Thread " << i << std::endl;
@@ -110,7 +110,7 @@ int main (){
                 double ySign = 1.0;
                 double familyHamiltonian = -1.525;
                 bool startContinuationFromTextFile = false;
-                createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile );
+                createLowThrustInitialConditions(2, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile );
 
             }
             if (i ==2)
