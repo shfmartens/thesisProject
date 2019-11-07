@@ -30,15 +30,20 @@ from load_data_augmented import load_orbit_augmented, load_lagrange_points_locat
     load_states_continuation, load_initial_conditions_augmented_incl_M, load_states_continuation_length, compute_phase
 
 class DisplayPeriodicSolutions:
-    def __init__(self,orbit_type, lagrange_point_nr,  acceleration_magnitude, alpha, beta, varying_quantity, low_dpi):
+    def __init__(self,orbit_type, lagrange_point_nr,  acceleration_magnitude, alpha, Hamiltonian, varying_quantity, low_dpi, \
+                 plot_as_x_coordinate, plot_as_family_number):
 
         self.orbitType = orbit_type
         self.lagrangePointNr = lagrange_point_nr
         self.accelerationMagnitude = acceleration_magnitude
         self.alpha = alpha
-        self.beta = beta
+        self.Hamiltonian = Hamiltonian
+        self.beta = 0.0
         self.varyingQuantity = varying_quantity
         self.lowDPI = low_dpi
+        self.plotXCoordinate = plot_as_x_coordinate
+        self.plotFamilyNumbers = plot_as_family_number
+
 
         print('=======================')
         print('L' + str(self.lagrangePointNr) + '_' + self.orbitType + ' (acc = ' + str(self.accelerationMagnitude) \
@@ -55,25 +60,52 @@ class DisplayPeriodicSolutions:
         self.alpha_filepath = '../../data/raw/orbits/augmented/varying_alpha/'
 
         # define filenames of states_continuation and differential correction
+        if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
+            quantity1 = self.accelerationMagnitude
+            quantity2 = self.alpha
+            quantity3 = self.beta
+
+        if self.varyingQuantity == 'Acceleration':
+            quantity1 = self.alpha
+            quantity2 = self.beta
+            quantity3 = self.Hamiltonian
+
+        if self.varyingQuantity == 'Alpha':
+            quantity1 = self.accelerationMagnitude
+            quantity2 = self.beta
+            quantity3 = self.Hamiltonian
+
+
         self.continuation_fileName = str('L' + str(self.lagrangePointNr) + '_' + str(self.orbitType) \
-            + '_' + str("{:12.11f}".format(self.accelerationMagnitude)) + '_' + \
-            str("{:12.11f}".format(self.alpha)) + '_' + \
-            str("{:12.11f}".format(self.beta)) + '_states_continuation.txt')
+                + '_' + str("{:12.11f}".format(quantity1)) + '_' + \
+                str("{:12.11f}".format(quantity2)) + '_' + \
+                str("{:12.11f}".format(quantity3)) + '_states_continuation.txt')
 
         self.correction_fileName = str('L' + str(self.lagrangePointNr) + '_' + str(self.orbitType) \
-                                         + '_' + str("{:12.11f}".format(self.accelerationMagnitude)) + '_' + \
-                                         str("{:12.11f}".format(self.alpha)) + '_' + \
-                                         str("{:12.11f}".format(self.beta)) + '_differential_correction.txt')
+                                         + '_' + str("{:12.11f}".format(quantity1)) + '_' + \
+                                         str("{:12.11f}".format(quantity2)) + '_' + \
+                                         str("{:12.11f}".format(quantity3)) + '_differential_correction.txt')
 
         self.monodromy_fileName = str('L' + str(self.lagrangePointNr) + '_' + str(self.orbitType) \
-                                       + '_' + str("{:12.11f}".format(self.accelerationMagnitude)) + '_' + \
-                                       str("{:12.11f}".format(self.alpha)) + '_' + \
-                                       str("{:12.11f}".format(self.beta)) + '_initial_conditions.txt')
+                                       + '_' + str("{:12.11f}".format(quantity1)) + '_' + \
+                                       str("{:12.11f}".format(quantity2)) + '_' + \
+                                       str("{:12.11f}".format(quantity3)) + '_initial_conditions.txt')
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
             statesContinuation_df = load_states_continuation(self.hamiltonian_filepath + self.continuation_fileName)
             differentialCorrections_df = load_differential_correction(self.hamiltonian_filepath + self.correction_fileName)
             initial_conditions_incl_m_df = load_initial_conditions_augmented_incl_M(self.hamiltonian_filepath + self.monodromy_fileName)
+
+        if self.varyingQuantity == 'Acceleration':
+            statesContinuation_df = load_states_continuation(self.acceleration_filepath + self.continuation_fileName)
+            differentialCorrections_df = load_differential_correction(self.acceleration_filepath + self.correction_fileName)
+            initial_conditions_incl_m_df = load_initial_conditions_augmented_incl_M(self.acceleration_filepath + self.monodromy_fileName)
+
+        if self.varyingQuantity == 'Alpha':
+            statesContinuation_df = load_states_continuation(self.acceleration_filepath + self.continuation_fileName)
+            differentialCorrections_df = load_differential_correction(self.acceleration_filepath + self.correction_fileName)
+            initial_conditions_incl_m_df = load_initial_conditions_augmented_incl_M(self.acceleration_filepath + self.monodromy_fileName)
+
         # Generate the lists with hamiltonians, periods and number of iterations and deviations after convergence
         self.Hlt = []
         self.alphaContinuation = []
@@ -136,14 +168,21 @@ class DisplayPeriodicSolutions:
 
 
         # Determine which parameter is the varying parameter
-        if self.varyingQuantity == 'xcor':
+        if self.plotXCoordinate == False and self.plotFamilyNumbers == False:
+            if self.varyingQuantity == 'Hamiltonian':
+                self.continuationParameter = self.Hlt
+            if self.varyingQuantity == 'Acceleration':
+                self.continuationParameter = self.accelerationContinuation
+            if self.varyingQuantity == 'Alpha':
+                self.continuationParameter = self.alphaContinuation
+        elif self.plotXCoordinate == True and self.plotFamilyNumbers == True:
+            print('BOTH X COORDINATE AND FAMILY NUMBERS HAVE BEEN SELECTED AS CONTINUATION PARAMETERS, TAKE ORBITID AS CONTINUATION PARAMETER')
             self.continuationParameter = self.x
-        if self.varyingQuantity == 'Hamiltonian':
-            self.continuationParameter = self.Hlt
-        if self.varyingQuantity == 'Acceleration':
-            self.continuationParameter = self.accelerationContinuation
-        if self.varyingQuantity == 'Alpha':
-            self.continuationParameter = self.alphaContinuation
+        elif self.plotXCoordinate == True and self.plotFamilyNumbers == False:
+             self.continuationParameter = self.x
+        else:
+            self.continuationParameter = self.orbitsId
+
 
         # Determine heatmap for level of the continuation parameter
         self.numberOfPlotColorIndices = len(self.continuationParameter)
@@ -408,7 +447,7 @@ class DisplayPeriodicSolutions:
         #  =========== Plot layout settings ===============
 
         # plot specific spacing properties
-        self.orbitSpacingFactor = 50
+        self.orbitSpacingFactor = 2
 
         # scale properties
         self.spacingFactor = 1.05
@@ -460,6 +499,9 @@ class DisplayPeriodicSolutions:
         ax.set_ylabel('y [-]')
         ax.grid(True, which='both', ls=':')
 
+        # Add bodies
+
+        # Add libration point orbits
 
 
         if self.varyingQuantity == 'Hamiltonian':
@@ -1253,12 +1295,15 @@ class DisplayPeriodicSolutions:
 
 if __name__ == '__main__':
     orbit_types = ['horizontal']
-    lagrange_points = [2]
-    acceleration_magnitudes = [0.0]
-    alphas = [0.0]
-    betas = [0.0]
+    lagrange_points = [1]
+    acceleration_magnitudes = [0.05,0.1]
+    alphas = [0.0,90.0,180.0,270.0]
+    Hamiltonians = [-1.525]
     low_dpi = True
     varying_quantities = ['Hamiltonian']
+    plot_as_x_coordinate  = False
+    plot_as_family_number = False
+
 
 
 
@@ -1267,10 +1312,10 @@ if __name__ == '__main__':
         for lagrange_point in lagrange_points:
             for acceleration_magnitude in acceleration_magnitudes:
                 for alpha in alphas:
-                    for beta in betas:
+                    for Hamiltonian in Hamiltonians:
                         for varying_quantity in varying_quantities:
                             display_periodic_solutions = DisplayPeriodicSolutions(orbit_type, lagrange_point, acceleration_magnitude, \
-                                         alpha, beta, varying_quantity, low_dpi)
+                                         alpha, Hamiltonian, varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
 
                             display_periodic_solutions.plot_families()
                             display_periodic_solutions.plot_periodicity_validation()
