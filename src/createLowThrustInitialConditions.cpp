@@ -226,7 +226,7 @@ Eigen::VectorXd getEarthMoonInitialGuessParameters ( const int librationPointNr,
                 }
                 else if (librationPointNr == 2)
                 {
-                    initialGuessParameters(0) = 1.0e-5;
+                    initialGuessParameters(0) = 1.0e-4;
                 }
                 else if (librationPointNr == 3)
                 {
@@ -275,7 +275,7 @@ Eigen::VectorXd getEarthMoonInitialGuessParameters ( const int librationPointNr,
                 }
                 else if (librationPointNr == 2)
                 {
-                    initialGuessParameters(0) = 1.0e-4;
+                    initialGuessParameters(0) = 1.0e-3;
                 }
                 else if (librationPointNr == 3)
                 {
@@ -1275,7 +1275,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 // ============ CONTINUATION PROCEDURE ================== //
     // Set exit parameters of continuation procedure
-    int maximumNumberOfInitialConditions = 50;
+    int maximumNumberOfInitialConditions = 5000;
     int numberOfInitialConditions;
     if (continuationIndex == 1)
     {
