@@ -1072,7 +1072,7 @@ if __name__ == '__main__':
 
     if  graphical_projection == True:
         lagrange_point_nr = 1
-        acceleration_magnitude = 0.05
+        acceleration_magnitude = 0.1
         alpha = 0.0
         beta = 0.0
         hamiltonian = 0.0
@@ -1107,7 +1107,7 @@ if __name__ == '__main__':
 
     if bifurcation_analysis == True:
         lagrange_point_nr = 1
-        acceleration_magnitude = 0.05
+        acceleration_magnitude = 0.1
         alpha = 0.0
         beta = 0.0
         hamiltonian = 0.0
@@ -1139,7 +1139,7 @@ if __name__ == '__main__':
 
     if stability_analysis == True:
         lagrange_point_nr = 1
-        acceleration_magnitude = 0.05
+        acceleration_magnitude = 0.1
         alpha = 0.0
         beta = 0.0
         hamiltonian = 0.0
@@ -1171,7 +1171,7 @@ if __name__ == '__main__':
 
     if hamiltonian_domain_analysis == True:
         lagrange_point_nr = 1
-        acceleration_magnitude = 0.05
+        acceleration_magnitude = 0.1
         alpha = 0.0
         beta = 0.0
         hamiltonian = 0.0
