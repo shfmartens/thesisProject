@@ -383,7 +383,7 @@ class PeriodicSolutionsCharacterization:
         ax4.set_xlabel(self.continuationLabel)
         ax4.set_ylabel('Phase [$^{\\circ}$]')
         ax4.set_xlim(xlim3)
-        ax2.set_ylim([-180.0,180.0])
+        ax4.set_ylim([-180.0,180.0])
 
 
 
@@ -1054,6 +1054,7 @@ if __name__ == '__main__':
         low_dpi = True
         plot_as_x_coordinate = False
         plot_as_family_number = False
+        
 
         orbitL1 = DisplayPeriodicSolutions('horizontal', 1, acceleration_magnitude, alpha, hamiltonian, varying_quantity,low_dpi,plot_as_x_coordinate,plot_as_family_number)
         orbitL2 = DisplayPeriodicSolutions('horizontal', 2, acceleration_magnitude, alpha, hamiltonian,  varying_quantity,low_dpi,plot_as_x_coordinate,plot_as_family_number)
