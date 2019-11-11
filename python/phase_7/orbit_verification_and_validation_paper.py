@@ -848,8 +848,8 @@ class PeriodicSolutionsCharacterization:
         arr[0].set_xlabel(self.continuationLabel)
         arr[1].set_xlabel(self.continuationLabel)
         arr[0].set_ylabel('Stability Index')
-        arr[0].set_title('v_{1}')
-        arr[1].set_title('v_{2}')
+        arr[0].set_title('$v_{1}$')
+        arr[1].set_title('$v_{2}$')
 
 
 
