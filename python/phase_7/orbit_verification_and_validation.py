@@ -447,7 +447,7 @@ class DisplayPeriodicSolutions:
         #  =========== Plot layout settings ===============
 
         # plot specific spacing properties
-        self.orbitSpacingFactor = 2
+        self.orbitSpacingFactor = 50
 
         # scale properties
         self.spacingFactor = 1.05
