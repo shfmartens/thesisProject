@@ -1072,7 +1072,7 @@ if __name__ == '__main__':
 
     if  graphical_projection == True:
         lagrange_point_nr = 1
-        acceleration_magnitude = 0.1
+        acceleration_magnitude = 0.05
         alpha = 0.0
         beta = 0.0
         hamiltonian = 0.0
@@ -1107,13 +1107,13 @@ if __name__ == '__main__':
 
     if bifurcation_analysis == True:
         lagrange_point_nr = 1
-        acceleration_magnitude = 0.1
+        acceleration_magnitude = 0.05
         alpha = 0.0
         beta = 0.0
         hamiltonian = 0.0
         varying_quantity = 'Hamiltonian'
         low_dpi = True
-        plot_as_x_coordinate = False
+        plot_as_x_coordinate = True
         plot_as_family_number = False
 
         orbit1 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0, hamiltonian,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
@@ -1139,13 +1139,13 @@ if __name__ == '__main__':
 
     if stability_analysis == True:
         lagrange_point_nr = 1
-        acceleration_magnitude = 0.1
+        acceleration_magnitude = 0.05
         alpha = 0.0
         beta = 0.0
         hamiltonian = 0.0
         varying_quantity = 'Hamiltonian'
         low_dpi = True
-        plot_as_x_coordinate = False
+        plot_as_x_coordinate = True
         plot_as_family_number = False
 
         orbit1 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0, hamiltonian,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
@@ -1171,7 +1171,7 @@ if __name__ == '__main__':
 
     if hamiltonian_domain_analysis == True:
         lagrange_point_nr = 1
-        acceleration_magnitude = 0.1
+        acceleration_magnitude = 0.05
         alpha = 0.0
         beta = 0.0
         hamiltonian = 0.0
