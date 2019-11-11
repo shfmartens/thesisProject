@@ -1002,8 +1002,8 @@ if __name__ == '__main__':
         hamiltonian = 0.0
         varying_quantity = 'Hamiltonian'
         low_dpi = True
-        plot_as_x_coordinate = True
-        plot_as_family_number = False
+        plot_as_x_coordinate = False
+        plot_as_family_number = True
 
         orbitL1 = DisplayPeriodicSolutions('horizontal',1,acceleration_magnitude,alpha,beta,varying_quantity,low_dpi, plot_as_x_coordinate, plot_as_family_number )
         orbitL2 = DisplayPeriodicSolutions('horizontal',2,acceleration_magnitude,alpha,beta,varying_quantity,low_dpi, plot_as_x_coordinate, plot_as_family_number )
@@ -1027,8 +1027,8 @@ if __name__ == '__main__':
         hamiltonian = 0.0
         varying_quantity = 'Hamiltonian'
         low_dpi = True
-        plot_as_x_coordinate = True
-        plot_as_family_number = False
+        plot_as_x_coordinate = False
+        plot_as_family_number = True
 
         orbitL1 = DisplayPeriodicSolutions('horizontal', 1, acceleration_magnitude, alpha, beta, varying_quantity,low_dpi,plot_as_x_coordinate,plot_as_family_number)
         orbitL2 = DisplayPeriodicSolutions('horizontal', 2, acceleration_magnitude, alpha, beta, varying_quantity,low_dpi,plot_as_x_coordinate,plot_as_family_number)
@@ -1052,8 +1052,8 @@ if __name__ == '__main__':
         hamiltonian = 0.0
         varying_quantity = 'Hamiltonian'
         low_dpi = True
-        plot_as_x_coordinate = True
-        plot_as_family_number = False
+        plot_as_x_coordinate = False
+        plot_as_family_number = True
 
 
         orbitL1 = DisplayPeriodicSolutions('horizontal', 1, acceleration_magnitude, alpha, hamiltonian, varying_quantity,low_dpi,plot_as_x_coordinate,plot_as_family_number)
