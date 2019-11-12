@@ -104,7 +104,7 @@ int main (){
                 std::string orbitType = "horizontal";
                 int continuationIndex = 1; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
                 double accelerationMagnitude = 0.05;
-                double accelerationAngle = 60.0;
+                double accelerationAngle = 120.0;
                 double accelerationAngle2 = 0.00;
                 double initialMass = 1.0;
                 double ySign = 1.0;
