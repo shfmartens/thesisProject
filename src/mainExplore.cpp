@@ -105,7 +105,7 @@ int main (){
                 int continuationIndex = 1; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
                 double accelerationMagnitude = 0.05;
                 double accelerationAngle = 0.0;
-                double accelerationAngle2 = 0.0;
+                double accelerationAngle2 = 0.00;
                 double initialMass = 1.0;
                 double ySign = 1.0;
                 double familyHamiltonian = -1.525;
