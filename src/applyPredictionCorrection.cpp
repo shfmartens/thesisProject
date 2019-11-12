@@ -37,7 +37,7 @@ void shiftConvergedTrajectoryGuess(int librationPointNr, Eigen::VectorXd current
     {
         targetAngle = atan2( inputTrajectoryGuess(1), inputTrajectoryGuess(0) - ( - massParameter) ) * 180.0/tudat::mathematical_constants::PI;;
     }
-    if (targetAngle < 0)
+    if (targetAngle < 0 and librationPointNr == 1)
     {
         targetAngle = targetAngle + 360.0;
     }
@@ -53,7 +53,7 @@ void shiftConvergedTrajectoryGuess(int librationPointNr, Eigen::VectorXd current
         {
             startingAngle = atan2( currentTrajectoryGuess(1), currentTrajectoryGuess(0) - ( - massParameter) ) * 180.0/tudat::mathematical_constants::PI;;
         }
-        if (startingAngle < 0)
+        if (startingAngle < 0 and librationPointNr == 1)
         {
             startingAngle = startingAngle + 360.0;
         }
