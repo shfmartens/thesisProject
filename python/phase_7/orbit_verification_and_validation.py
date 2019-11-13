@@ -859,7 +859,7 @@ class DisplayPeriodicSolutions:
                 plt.savefig('../../data/figures/orbits/varying_hamiltonian/L' + str(
                 self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
                 "{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
-                "{:7.6f}".format(self.alpha)) + '_monodromy_analysis.png', transparent=True√ bbox_inches='tight')
+                "{:7.6f}".format(self.alpha)) + '_monodromy_analysis.png', transparent=True, dpi=300, bbox_inches='tight')
         if self.varyingQuantity == 'Acceleration':
             if self.lowDPI:
                 plt.savefig('../../data/figures/orbits/varying_acceleration/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
