@@ -769,7 +769,7 @@ class DisplayPeriodicSolutions:
         pass
 
     def plot_monodromy_analysis(self):
-        f, arr = plt.subplots(2, 2, figsize=self.figSize)
+        f, arr = plt.subplots(1, 2, figsize=self.figSize)
         size = 7
 
         xlim = [min(self.continuationParameter), max(self.continuationParameter)]
@@ -783,72 +783,72 @@ class DisplayPeriodicSolutions:
         l5 = [abs(entry) for entry in self.lambda5]
         l6 = [abs(entry) for entry in self.lambda6]
 
-        arr[0, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
-        arr[0, 0].xaxis.set_ticks(xticks)
-        print(len(self.continuationParameter))
-
-        arr[0, 0].semilogy(self.continuationParameter, l1, c=self.plottingColors['lambda1'])
-        arr[0, 0].semilogy(self.continuationParameter, l2, c=self.plottingColors['lambda2'])
-        arr[0, 0].semilogy(self.continuationParameter, l3, c=self.plottingColors['lambda3'])
-        arr[0, 0].semilogy(self.continuationParameter, l4, c=self.plottingColors['lambda4'])
-        arr[0, 0].semilogy(self.continuationParameter, l5, c=self.plottingColors['lambda5'])
-        arr[0, 0].semilogy(self.continuationParameter, l6, c=self.plottingColors['lambda6'])
-        arr[0, 0].set_xlim(xlim)
-        arr[0, 0].set_ylim([1e-4, 1e4])
-        arr[0, 0].set_title('$|\lambda_1| \geq |\lambda_2| \geq |\lambda_3| = 1 = |1/\lambda_3| \geq |1/\lambda_2| \geq |1/\lambda_1|$')
-        arr[0, 0].set_ylabel('Eigenvalues module [-]')
+        # arr[0, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
+        # arr[0, 0].xaxis.set_ticks(xticks)
+        # print(len(self.continuationParameter))
+        #
+        # arr[0, 0].semilogy(self.continuationParameter, l1, c=self.plottingColors['lambda1'])
+        # arr[0, 0].semilogy(self.continuationParameter, l2, c=self.plottingColors['lambda2'])
+        # arr[0, 0].semilogy(self.continuationParameter, l3, c=self.plottingColors['lambda3'])
+        # arr[0, 0].semilogy(self.continuationParameter, l4, c=self.plottingColors['lambda4'])
+        # arr[0, 0].semilogy(self.continuationParameter, l5, c=self.plottingColors['lambda5'])
+        # arr[0, 0].semilogy(self.continuationParameter, l6, c=self.plottingColors['lambda6'])
+        # arr[0, 0].set_xlim(xlim)
+        # arr[0, 0].set_ylim([1e-4, 1e4])
+        # arr[0, 0].set_title('$|\lambda_1| \geq |\lambda_2| \geq |\lambda_3| = 1 = |1/\lambda_3| \geq |1/\lambda_2| \geq |1/\lambda_1|$')
+        # arr[0, 0].set_ylabel('Eigenvalues module [-]')
 
         d = [abs(entry - 1) for entry in self.D]
-        arr[0, 1].semilogy(self.continuationParameter, d, c=self.plottingColors['singleLine'], linewidth=1)
+        arr[0, 0].semilogy(self.continuationParameter, d, c=self.plottingColors['singleLine'], linewidth=1)
+        arr[0, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
+        arr[0, 0].xaxis.set_ticks(xticks)
+        arr[0, 0].set_xlim(xlim)
+        arr[0, 0].set_ylim([1e-14, 1e-6])
+        arr[0, 0].set_ylabel('$| 1 - Det(\mathbf{M}) |$ [-]')
+        arr[0, 0].set_title('Error in determinant ')
+        arr[0, 0].semilogy(self.continuationParameter, 1.0e-3 * np.ones(len(self.continuationParameter)), color=self.plottingColors['limit'], linewidth=1, linestyle='--')
+
+
+        # arr[1, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
+        # arr[1, 0].xaxis.set_ticks(xticks)
+        # arr[1, 0].scatter(self.continuationParameter, self.orderOfLinearInstability, s=size, c=self.plottingColors['singleLine'])
+        # arr[1, 0].set_ylabel('Order of linear instability [-]')
+        # arr[1, 0].set_xlim(xlim)
+        # arr[1, 0].set_ylim([0, 3])
+
         arr[0, 1].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
         arr[0, 1].xaxis.set_ticks(xticks)
         arr[0, 1].set_xlim(xlim)
-        arr[0, 1].set_ylim([1e-14, 1e-6])
-        arr[0, 1].set_ylabel('$| 1 - Det(\mathbf{M}) |$ [-]')
-        arr[0, 1].set_title('Error in determinant ')
-        arr[0, 1].semilogy(self.continuationParameter, 1.0e-3 * np.ones(len(self.continuationParameter)), color=self.plottingColors['limit'], linewidth=1, linestyle='--')
-
-
-        arr[1, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
-        arr[1, 0].xaxis.set_ticks(xticks)
-        arr[1, 0].scatter(self.continuationParameter, self.orderOfLinearInstability, s=size, c=self.plottingColors['singleLine'])
-        arr[1, 0].set_ylabel('Order of linear instability [-]')
-        arr[1, 0].set_xlim(xlim)
-        arr[1, 0].set_ylim([0, 3])
-
-        arr[1, 1].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
-        arr[1, 1].xaxis.set_ticks(xticks)
-        arr[1, 1].set_xlim(xlim)
         l3zoom = [abs(entry - 1) for entry in l3]
         l4zoom = [abs(entry - 1) for entry in l4]
-        arr[1, 1].semilogy(self.continuationParameter, l3zoom, c=self.plottingColors['doubleLine'][0], linewidth=1)
-        arr[1, 1].semilogy(self.continuationParameter, l4zoom, c=self.plottingColors['doubleLine'][1], linewidth=1, linestyle=':')
-        arr[1, 1].semilogy(self.continuationParameter, 1.0e-3 * np.ones(len(self.continuationParameter)), color=self.plottingColors['limit'], linewidth=1, linestyle='--')
+        arr[0, 1].semilogy(self.continuationParameter, l3zoom, c=self.plottingColors['doubleLine'][0], linewidth=1)
+        arr[0, 1].semilogy(self.continuationParameter, l4zoom, c=self.plottingColors['doubleLine'][1], linewidth=1, linestyle=':')
+        arr[0, 1].semilogy(self.continuationParameter, 1.0e-3 * np.ones(len(self.continuationParameter)), color=self.plottingColors['limit'], linewidth=1, linestyle='--')
 
         if self.varyingQuantity == 'Hamiltonian':
-            arr[1, 0].set_xlabel('$H_{lt}$ [-]')
-            arr[1, 1].set_xlabel('$H_{lt}$ [-]')
+            arr[0, 0].set_xlabel('$H_{lt}$ [-]')
+            arr[0, 1].set_xlabel('$H_{lt}$ [-]')
         if self.varyingQuantity == 'xcor':
-            arr[1, 0].set_xlabel('x [-]')
-            arr[1, 1].set_xlabel('x [-]')
+            arr[0, 0].set_xlabel('x [-]')
+            arr[0, 1].set_xlabel('x [-]')
 
 
 
         # arr[1, 1].set_ylim([0, 1.5e-3])
-        arr[1, 1].set_ylabel(' $||\lambda_3|-1|$ [-]')
-        arr[1, 1].set_title('Error in eigenvalue pair denoting periodicity')
+        arr[0, 1].set_ylabel(' $||\lambda_3|-1|$ [-]')
+        arr[0, 1].set_title('Error in eigenvalue pair denoting periodicity')
 
-        arr[1, 0].set_title('Order of linear instability')
+        #arr[1, 0].set_title('Order of linear instability')
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($a_{lt} = ' + str(
-            "{:3.3f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + '- Monodromy matrix eigensystem validation',size=self.suptitleSize)
+            "{:3.2f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + '- Monodromy matrix eigensystem validation',size=self.suptitleSize)
         if self.varyingQuantity == 'Acceleration':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
-                "{:3.3f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Monodromy matrix eigensystem validation', size=self.suptitleSize)
+                "{:3.2f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Monodromy matrix eigensystem validation', size=self.suptitleSize)
         if self.varyingQuantity == 'Alpha':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
-                "{:3.3f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.1f}".format(self.accelerationMagnitude))  + ' - Monodromy matrix eigensystem validation', size=self.suptitleSize)
+                "{:3.2f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.1f}".format(self.accelerationMagnitude))  + ' - Monodromy matrix eigensystem validation', size=self.suptitleSize)
 
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
@@ -859,7 +859,7 @@ class DisplayPeriodicSolutions:
                 plt.savefig('../../data/figures/orbits/varying_hamiltonian/L' + str(
                 self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
                 "{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
-                "{:7.6f}".format(self.alpha)) + '_monodromy_analysis.png', transparent=True, bbox_inches='tight')
+                "{:7.6f}".format(self.alpha)) + '_monodromy_analysis.png', transparent=True√ bbox_inches='tight')
         if self.varyingQuantity == 'Acceleration':
             if self.lowDPI:
                 plt.savefig('../../data/figures/orbits/varying_acceleration/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
@@ -867,8 +867,8 @@ class DisplayPeriodicSolutions:
             else:
                 plt.savefig('../../data/figures/orbits/varying_acceleration/L' + str(
                 self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
-                "{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
-                "{:7.6f}".format(self.alpha)) + '_monodromy_analysis.png', transparent=True, bbox_inches='tight')
+                "{:3.2f}".format(self.accelerationMagnitude)) + '_' + str(
+                "{:7.6f}".format(self.alpha)) + '_monodromy_analysis.png', transparent=True,dpi=300, bbox_inches='tight')
         if self.varyingQuantity == 'Alpha':
             if self.lowDPI:
                 plt.savefig('../../data/figures/orbits/varying_alpha/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
@@ -876,8 +876,8 @@ class DisplayPeriodicSolutions:
             else:
                 plt.savefig('../../data/figures/orbits/varying_alpha/L' + str(
                 self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
-                "{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
-                "{:7.6f}".format(self.alpha)) + '_monodromy_analysis.png', transparent=True, bbox_inches='tight')
+                "{:3.2f}".format(self.accelerationMagnitude)) + '_' + str(
+                "{:7.6f}".format(self.alpha)) + '_monodromy_analysis.png', transparent=True,dpi=300, bbox_inches='tight')
 
         pass
 
@@ -1295,11 +1295,11 @@ class DisplayPeriodicSolutions:
 
 if __name__ == '__main__':
     orbit_types = ['horizontal']
-    lagrange_points = [1,2]
+    lagrange_points = [1]
     acceleration_magnitudes = [0.0]
     alphas = [0.0]
     Hamiltonians = [-1.525]
-    low_dpi = True
+    low_dpi = False
     varying_quantities = ['Hamiltonian']
     plot_as_x_coordinate  = False
     plot_as_family_number = False
@@ -1314,12 +1314,12 @@ if __name__ == '__main__':
                             display_periodic_solutions = DisplayPeriodicSolutions(orbit_type, lagrange_point, acceleration_magnitude, \
                                          alpha, Hamiltonian, varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
 
-                            display_periodic_solutions.plot_families()
+                            #display_periodic_solutions.plot_families()
                             display_periodic_solutions.plot_periodicity_validation()
                             display_periodic_solutions.plot_monodromy_analysis()
-                            display_periodic_solutions.plot_stability()
-                            display_periodic_solutions.plot_continuation_procedure()
-                            display_periodic_solutions.plot_increment_of_orbits()
+                            #display_periodic_solutions.plot_stability()
+                            #display_periodic_solutions.plot_continuation_procedure()
+                            #display_periodic_solutions.plot_increment_of_orbits()
 
 
                             del display_periodic_solutions
