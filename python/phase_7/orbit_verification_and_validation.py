@@ -697,12 +697,11 @@ class DisplayPeriodicSolutions:
         ax2.set_ylim([0,70])
         ax2.set_xlim(xlim)
         ax2.grid(b=None)
-        arr[2, 1].legend(lns1,lns2,frameon=True, loc='upper left')
 
         # added these three lines
-        lns = lns1 + lns2 
+        lns = lns1 + lns2
         labs = [l.get_label() for l in lns]
-        arr[2,1].legend(lns, labs, loc=0)
+        arr[2,1].legend(lns, labs, frameon=True, loc='upper left')
 
         arr[0, 0].set_ylabel('$||F||$ [-]')
         arr[0, 1].set_ylabel('$\Delta \mathbf{R}$ [-]')
