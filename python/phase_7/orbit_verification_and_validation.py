@@ -1051,33 +1051,33 @@ class DisplayPeriodicSolutions:
         arr[0,0].set_title('$H_{lt}$ evolution')
         arr[0,0].set_xlabel('orbit Number [-]')
         arr[0,1].set_ylabel('$H_{lt}$ [-]')
-        arr[0,0].legend(frameon=True, loc='upper right')
+        arr[0,0].legend(frameon=True, loc='upper left')
 
 
 
 
         arr[0,1].plot(self.orbitsId,self.alphaContinuation,c=self.plottingColors['singleLine'], linewidth=1,label='$\\alpha$ [-]')
         arr[0,1].set_xlim(xlim)
-        arr[0,1].set_ylim([0, 2*np.pi])
+        arr[0,1].set_ylim([-0.1, 2*np.pi])
         arr[0,1].set_title('$\\alpha$ evolution')
         arr[0,1].set_xlabel('orbit Number [-]')
         arr[0,1].set_ylabel('$\\alpha$ [-]')
-        arr[0,1].legend(frameon=True, loc='upper right')
+        arr[0,1].legend(frameon=True, loc='upper left')
 
 
 
         arr[1,0].plot(self.orbitsId,self.accelerationContinuation,c=self.plottingColors['singleLine'], linewidth=1,label='$a_{lt}$ [-]')
         arr[1,0].set_xlim(xlim)
-        arr[1,0].set_ylim([0, 0.1])
+        arr[1,0].set_ylim([-0.01, 0.1])
         arr[1,0].set_title('$a_{lt}$ evolution')
         arr[1,0].set_xlabel('orbit Number [-]')
         arr[1,0].set_ylabel('$a_{lt}$ [-]')
-        arr[1,0].legend(frameon=True, loc='upper right')
+        arr[1,0].legend(frameon=True, loc='upper left')
 
 
 
-        arr[1,1].plot(self.orbitsId,self.x,c=self.plottingColors['tripleLine'][0], linewidth=1,label='$x$ [-]')
-        arr[1,1].plot(self.orbitsId,self.y,c=self.plottingColors['tripleLine'][1], linewidth=1,label='$y$ [-]')
+        lns0 = arr[1,1].plot(self.orbitsId,self.x,c=self.plottingColors['tripleLine'][0], linewidth=1,label='$x$ [-]')
+        lns1 = arr[1,1].plot(self.orbitsId,self.y,c=self.plottingColors['tripleLine'][1], linewidth=1,label='$y$ [-]')
         #arr[1,1].plot(self.orbitsId,self.phase,c=self.plottingColors['tripleLine'][2], linewidth=1)
         arr[1,1].set_xlim(xlim)
         arr[1,1].set_ylim([-1,1])
@@ -1088,14 +1088,17 @@ class DisplayPeriodicSolutions:
 
         ax2 = arr[1, 1].twinx()
         ax2.tick_params(axis='phase [-]', labelcolor=self.plottingColors['tripleLine'][2])
-        ax2.plot(self.orbitsId, self.phase, linewidth=1,color=self.plottingColors['tripleLine'][2],label='$\\phi$ [-]')
+        lns2 = ax2.plot(self.orbitsId, self.phase, linewidth=1,color=self.plottingColors['tripleLine'][2],label='$\\phi$ [-]')
         ax2.set_ylim([0, 2*np.pi])
         ax2.set_xlim(xlim)
         ax2.grid(b=None)
-        arr[1,1].legend(frameon=True, loc='upper right')
-        ax2.legend(frameon=True, loc='lower right')
+        #arr[1,1].legend(frameon=True, loc='lower right')
+        #ax2.legend(frameon=True, loc='lower right')
 
-
+        # added these three lines
+        lns = lns0 + lns1 + lns2
+        labs = [l.get_label() for l in lns]
+        arr[1, 1].legend(lns, labs, frameon=True, loc='lower left')
 
 
         for i in range(2):
