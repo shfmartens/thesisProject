@@ -858,7 +858,7 @@ class DisplayPeriodicSolutions:
                 "{:3.2f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.1f}".format(self.accelerationMagnitude))  + ' - Monodromy matrix eigensystem validation', size=self.suptitleSize)
 
         plt.tight_layout()
-        plt.subplots_adjust(top=0.83)
+        plt.subplots_adjust(top=0.82)
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
             if self.lowDPI:
