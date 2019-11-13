@@ -1080,7 +1080,7 @@ class DisplayPeriodicSolutions:
         lns1 = arr[1,1].plot(self.orbitsId,self.y,c=self.plottingColors['tripleLine'][1], linewidth=1,label='$y$ [-]')
         #arr[1,1].plot(self.orbitsId,self.phase,c=self.plottingColors['tripleLine'][2], linewidth=1)
         arr[1,1].set_xlim(xlim)
-        arr[1,1].set_ylim([-1,1])
+        arr[1,1].set_ylim([-1.5,1.5])
         arr[1,1].set_title('Spatial and phase evolution')
         arr[1,1].set_xlabel('orbit Number [-]')
         arr[1,1].set_ylabel('$x$ [-], $y$ [-]')
@@ -1089,7 +1089,7 @@ class DisplayPeriodicSolutions:
         ax2 = arr[1, 1].twinx()
         ax2.tick_params(axis='phase [-]', labelcolor=self.plottingColors['tripleLine'][2])
         lns2 = ax2.plot(self.orbitsId, self.phase, linewidth=1,color=self.plottingColors['tripleLine'][2],label='$\\phi$ [-]')
-        ax2.set_ylim([0, 2*np.pi])
+        ax2.set_ylim([-np.pi, np.pi])
         ax2.set_xlim(xlim)
         ax2.grid(b=None)
         #arr[1,1].legend(frameon=True, loc='lower right')
@@ -1100,6 +1100,10 @@ class DisplayPeriodicSolutions:
         labs = [l.get_label() for l in lns]
         arr[1, 1].legend(lns, labs, frameon=True, loc='lower left')
 
+        ticksLocators = [-np.pi, -0.5 * np.pi, 0, 0.5*np.pi, np.pi]
+        labels = ('$-\\pi$', '-$\\frac{\\pi}{2}$', '$0$', '-$\\frac{\\pi}{2}$', '$\\pi$')
+        ax2.set_xticks(ticksLocators, minor=False)
+        ax2.set_xticklabels(labels, fontdict=None, minor=False)
 
         for i in range(2):
             for j in range(2):
