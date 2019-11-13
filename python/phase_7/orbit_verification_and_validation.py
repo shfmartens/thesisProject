@@ -1333,10 +1333,10 @@ if __name__ == '__main__':
                             display_periodic_solutions = DisplayPeriodicSolutions(orbit_type, lagrange_point, acceleration_magnitude, \
                                          alpha, Hamiltonian, varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
 
-                            # display_periodic_solutions.plot_families()
-                            #display_periodic_solutions.plot_periodicity_validation()
-                            #display_periodic_solutions.plot_monodromy_analysis()
-                            # display_periodic_solutions.plot_stability()
+                            #display_periodic_solutions.plot_families()
+                            display_periodic_solutions.plot_periodicity_validation()
+                            display_periodic_solutions.plot_monodromy_analysis()
+                            #display_periodic_solutions.plot_stability()
                             display_periodic_solutions.plot_continuation_procedure()
                             # display_periodic_solutions.plot_increment_of_orbits()
 
