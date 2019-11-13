@@ -1066,6 +1066,10 @@ class DisplayPeriodicSolutions:
         arr[0,1].set_xlabel('orbit Number [-]')
         arr[0,1].set_ylabel('$\\alpha$ [-]')
         arr[0,1].legend(frameon=True, loc='upper left')
+        ticksLocators1 = [0.0, 0.5 * np.pi, np.pi, 1.5 * np.pi, 2 * np.pi]
+        labels1 = ('$0$', '$ \\frac{1}{2}\\pi $', '$0$', '$ \\frac{3}{2}\\pi $', '$2 \\pi $')
+        arr[0, 1].set_yticks(ticksLocators1, minor=False)
+        arr[0, 1].set_yticklabels(labels1, fontdict=None, minor=False)
 
 
 
@@ -1088,6 +1092,7 @@ class DisplayPeriodicSolutions:
         arr[1,1].set_xlabel('orbit Number [-]')
         arr[1,1].set_ylabel('$x$ [-], $y$ [-]')
 
+
         print(max(self.phase))
         print(min(self.phase))
 
@@ -1104,7 +1109,7 @@ class DisplayPeriodicSolutions:
         # added these three lines
         lns = lns0 + lns1 + lns2
         labs = [l.get_label() for l in lns]
-        arr[1, 1].legend(lns, labs, frameon=True, loc='lower left')
+        arr[1, 1].legend(lns, labs, frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), markerscale=15)
 
         ticksLocators = [0.0, 0.5 * np.pi, np.pi, 1.5*np.pi, 2*np.pi]
         labels = ('$0$', '$ \\frac{1}{2}\\pi $', '$0$', '$ \\frac{3}{2}\\pi $', '$2 \\pi $')
