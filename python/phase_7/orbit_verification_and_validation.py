@@ -467,6 +467,9 @@ class DisplayPeriodicSolutions:
         self.figSizeWide = (7 * (1 + np.sqrt(5)) / 2, 3.5)
         self.figureRatioWide = (7 * (1 + np.sqrt(5)) / 2) / 3.5
 
+        self.figSizeThird = (7 * (1 + np.sqrt(5)) / 2, 7.0/3.0)
+
+
         # Colour schemes
         n_colors = 3
         n_colors_l = 6
@@ -728,13 +731,13 @@ class DisplayPeriodicSolutions:
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($a_{lt} = ' + str(
-            "{:3.3f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Periodicity constraints verification',size=self.suptitleSize)
+            "{:3.2f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Periodicity constraints verification',size=self.suptitleSize)
         if self.varyingQuantity == 'Acceleration':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
-                "{:3.3f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Periodicity constraints verification', size=self.suptitleSize)
+                "{:3.2f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Periodicity constraints verification', size=self.suptitleSize)
         if self.varyingQuantity == 'Alpha':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
-                "{:3.3f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.1f}".format(self.accelerationMagnitude))  + ' - Periodicity constraints verification', size=self.suptitleSize)
+                "{:3.2f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.1f}".format(self.accelerationMagnitude))  + ' - Periodicity constraints verification', size=self.suptitleSize)
 
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
@@ -745,7 +748,7 @@ class DisplayPeriodicSolutions:
                 plt.savefig('../../data/figures/orbits/varying_hamiltonian/L' + str(
                 self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
                 "{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
-                "{:7.6f}".format(self.alpha)) + '_periodicity_constraints.png', transparent=True, bbox_inches='tight')
+                "{:7.6f}".format(self.alpha)) + '_periodicity_constraints.png', transparent=True, dpi=300, bbox_inches='tight')
         if self.varyingQuantity == 'Acceleration':
             if self.lowDPI:
                 plt.savefig('../../data/figures/orbits/varying_acceleration/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
@@ -754,7 +757,7 @@ class DisplayPeriodicSolutions:
                 plt.savefig('../../data/figures/orbits/varying_acceleration/L' + str(
                 self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
                 "{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
-                "{:7.6f}".format(self.alpha)) + '_periodicity_constraints.png', transparent=True, bbox_inches='tight')
+                "{:7.6f}".format(self.alpha)) + '_periodicity_constraints.png', transparent=True, dpi=300, bbox_inches='tight')
         if self.varyingQuantity == 'Alpha':
             if self.lowDPI:
                 plt.savefig('../../data/figures/orbits/varying_alpha/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
@@ -763,13 +766,13 @@ class DisplayPeriodicSolutions:
                 plt.savefig('../../data/figures/orbits/varying_alpha/L' + str(
                 self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
                 "{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
-                "{:7.6f}".format(self.alpha)) + '_periodicity_constraints.png', transparent=True, bbox_inches='tight')
+                "{:7.6f}".format(self.alpha)) + '_periodicity_constraints.png', transparent=True, dpi=300, bbox_inches='tight')
 
         plt.close()
         pass
 
     def plot_monodromy_analysis(self):
-        f, arr = plt.subplots(1, 2, figsize=self.figSizeWide)
+        f, arr = plt.subplots(1, 2, figsize=self.figSizeThird)
         size = 7
 
         xlim = [min(self.continuationParameter), max(self.continuationParameter)]
@@ -1298,7 +1301,7 @@ class DisplayPeriodicSolutions:
 
 if __name__ == '__main__':
     orbit_types = ['horizontal']
-    lagrange_points = [1]
+    lagrange_points = [1,2]
     acceleration_magnitudes = [0.0]
     alphas = [0.0]
     Hamiltonians = [-1.525]
