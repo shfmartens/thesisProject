@@ -633,10 +633,11 @@ def compute_phase(x,y, librationPointNr):
         y_argument = y
         phase = math.atan2(y_argument,x_argument)
 
-        if phase < 0:
-            outputVariable = phase + 2*np.pi
-        else:
-            outputVariable = phase
+        if librationPointNr == 1:
+            if phase < 0:
+                outputVariable = phase + 2*np.pi
+            else:
+                outputVariable = phase
 
     return outputVariable
 
