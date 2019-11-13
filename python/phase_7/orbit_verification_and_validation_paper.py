@@ -392,7 +392,7 @@ class PeriodicSolutionsCharacterization:
         ax1.set_xlim(xlim3)
         #ax1.set_title('$ \\lambda_{1} $, $1/\\lambda_{1}$ ')
 
-        ax2.set_ylabel('Phase [$^{\\circ}$]')
+        ax4.set_ylabel('Phase [rad]')
         ax2.grid(True, which='both', ls=':')
         ax2.set_xlim(xlim3)
         ax2.set_ylim([-180.0,180.0])
@@ -405,13 +405,13 @@ class PeriodicSolutionsCharacterization:
 
 
         ax4.set_xlabel(self.continuationLabel)
-        ax4.set_ylabel('Phase [$^{\\circ}$]')
+        ax4.set_ylabel('Phase [rad]')
         ax4.set_xlim(xlim3)
         ax4.set_ylim([-180.0,180.0])
         yticks = [-180,90,0,90,180]
         yticksLabels = ('-$\\pi$','-$\\frac{\\pi}{2}$',0,'-$\\frac{\\pi}{2}$','$\\pi$')
 
-        yticksLocators = [-180,90,0,90,180]
+        yticksLocators = [-180,-90,0,90,180]
         ylabels = ('-$\\pi$','-$\\frac{\\pi}{2}$',0,'-$\\frac{\\pi}{2}$','$\\pi$')
         ax2.set_yticks(yticksLocators, minor=False)
         ax4.set_yticks(yticksLocators, minor=False)
@@ -425,7 +425,7 @@ class PeriodicSolutionsCharacterization:
         ax4.set_xlim(xlim3)
 
 
-        lgd = ax1.legend(frameon=True, loc='center left',bbox_to_anchor=(2.2, -0.2),markerscale=10)
+        lgd = ax1.legend(frameon=True, loc='center left',bbox_to_anchor=(2.17, -0.2),markerscale=10)
 
         fig.tight_layout()
         plt.subplots_adjust(right=0.92)
