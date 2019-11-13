@@ -467,7 +467,7 @@ class DisplayPeriodicSolutions:
         self.figSizeWide = (7 * (1 + np.sqrt(5)) / 2, 3.5)
         self.figureRatioWide = (7 * (1 + np.sqrt(5)) / 2) / 3.5
 
-        self.figSizeThird = (7 * (1 + np.sqrt(5)) / 2, 7.0/3.0)
+        self.figSizeThird = (7 * (1 + np.sqrt(5)) / 2, 3.5*2/3)
 
 
         # Colour schemes
@@ -627,7 +627,7 @@ class DisplayPeriodicSolutions:
         pass
 
     def plot_periodicity_validation(self):
-        f, arr = plt.subplots(3, 2, figsize=self.figSize)
+        f, arr = plt.subplots(3, 2, figsize=self.figSizeThird)
         linewidth = 1
         ylim = [1e-16, 1e-8]
         ylim2 = [1e-19, 1e-1]
@@ -1334,10 +1334,10 @@ if __name__ == '__main__':
                                          alpha, Hamiltonian, varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
 
                             #display_periodic_solutions.plot_families()
-                            display_periodic_solutions.plot_periodicity_validation()
+                            #display_periodic_solutions.plot_periodicity_validation()
                             display_periodic_solutions.plot_monodromy_analysis()
                             #display_periodic_solutions.plot_stability()
-                            display_periodic_solutions.plot_continuation_procedure()
+                            #display_periodic_solutions.plot_continuation_procedure()
                             # display_periodic_solutions.plot_increment_of_orbits()
 
 
