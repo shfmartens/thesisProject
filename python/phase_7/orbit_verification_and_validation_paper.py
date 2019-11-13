@@ -416,8 +416,8 @@ class PeriodicSolutionsCharacterization:
         ax2.set_yticklabels(ylabels, fontdict=None, minor=False)
         ax4.set_yticklabels(ylabels, fontdict=None, minor=False)
 
-        ax1.set_ylim([1e-3,1e5])
-        ax1.set_ylim([1e-3, 1e5])
+        ax1.set_ylim([1e-4,1e4])
+        ax1.set_ylim([1e-4,1e4])
 
 
 
