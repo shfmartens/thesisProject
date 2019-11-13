@@ -467,7 +467,7 @@ class DisplayPeriodicSolutions:
         self.figSizeWide = (7 * (1 + np.sqrt(5)) / 2, 3.5)
         self.figureRatioWide = (7 * (1 + np.sqrt(5)) / 2) / 3.5
 
-        self.figSizeThird = (7 * (1 + np.sqrt(5)) / 2, 3.5*2/3)
+        self.figSizeThird = (7 * (1 + np.sqrt(5)) / 2, 3.5*0.8)
 
 
         # Colour schemes
