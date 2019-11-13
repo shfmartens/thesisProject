@@ -249,7 +249,7 @@ class PeriodicSolutionsCharacterization:
 
         # axColorbar = fig.add_axes([0.951, 0.07, 0.02, 0.93])
         axColorbar = fig.add_axes([0.935, colourbar_base + 0.026, 0.018, colourbar_height + 0.030])
-        
+
 
         axColorbar.get_xaxis().set_visible(False)
         axColorbar.get_yaxis().set_visible(False)
@@ -1025,7 +1025,7 @@ if __name__ == '__main__':
         beta = 0.0
         hamiltonian = 0.0
         varying_quantity = 'Hamiltonian'
-        low_dpi = True
+        low_dpi = False
         plot_as_x_coordinate = False
         plot_as_family_number = False
 
