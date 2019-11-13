@@ -416,7 +416,7 @@ class PeriodicSolutionsCharacterization:
         ax2.set_yticklabels(ylabels, fontdict=None, minor=False)
         ax4.set_yticklabels(ylabels, fontdict=None, minor=False)
 
-        ax1.set_ylim([10^-2.,10^3])
+        ax1.set_ylim([10^-2,10^3])
         ax3.set_ylim([10^-2,10^3])
 
 
