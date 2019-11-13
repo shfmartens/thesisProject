@@ -415,8 +415,8 @@ class PeriodicSolutionsCharacterization:
         ylabels = ('-$\\pi$','-$\\frac{\\pi}{2}$',0,'-$\\frac{\\pi}{2}$','$\\pi$')
         ax2.set_yticks(yticksLocators, minor=False)
         ax4.set_yticks(yticksLocators, minor=False)
-        ax2.set_xticklabels(ylabels, fontdict=None, minor=False)
-        ax4.set_xticklabels(ylabels, fontdict=None, minor=False)
+        ax2.set_yticklabels(ylabels, fontdict=None, minor=False)
+        ax4.set_yticklabels(ylabels, fontdict=None, minor=False)
 
 
 
@@ -425,7 +425,7 @@ class PeriodicSolutionsCharacterization:
         ax4.set_xlim(xlim3)
 
 
-        lgd = ax1.legend(frameon=True, loc='center left',bbox_to_anchor=(2.355, -0.2),markerscale=10)
+        lgd = ax1.legend(frameon=True, loc='center left',bbox_to_anchor=(2.2, -0.2),markerscale=10)
 
         fig.tight_layout()
         plt.subplots_adjust(right=0.92)
