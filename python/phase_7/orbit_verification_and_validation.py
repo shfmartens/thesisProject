@@ -469,7 +469,7 @@ class DisplayPeriodicSolutions:
 
         self.figSizeThird = (7 * (1 + np.sqrt(5)) / 2, 3.5*0.75)
 
-        self.figSizeCont = (7 * (1 + np.sqrt(5)) / 2, 7.0*0.73)
+        self.figSizeCont = (7 * (1 + np.sqrt(5)) / 2, 7.0*0.70)
 
 
 
