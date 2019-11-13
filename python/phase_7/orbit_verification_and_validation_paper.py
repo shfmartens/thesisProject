@@ -1024,8 +1024,8 @@ class PeriodicSolutionsCharacterization:
 if __name__ == '__main__':
 
     ballistic_planar_projection = False
-    ballistic_bifurcation_analysis = True
-    ballistic_stability_analysis = False
+    ballistic_bifurcation_analysis = False
+    ballistic_stability_analysis = True
     graphical_projection = False
     bifurcation_analysis = False
     stability_analysis = False
