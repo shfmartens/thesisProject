@@ -474,12 +474,14 @@ class PeriodicSolutionsCharacterization:
         ax1.set_xlabel(self.continuationLabel)
         ax1.grid(True, which='both', ls=':')
         ax1.set_xlim(xlim)
-
+        #ax1.set_ylim([])
 
 
         ax2.set_xlabel(self.continuationLabel)
         ax2.grid(True, which='both', ls=':')
         ax2.set_xlim(xlim)
+        #ax1.set_ylim([])
+
 
         lgd = ax2.legend(frameon=True, loc='center left', bbox_to_anchor=(1.0, 0.5), markerscale=10)
 
