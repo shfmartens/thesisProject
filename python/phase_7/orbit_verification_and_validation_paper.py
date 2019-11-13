@@ -1015,9 +1015,6 @@ if __name__ == '__main__':
     stability_analysis = False
     hamiltonian_domain_analysis = False
 
-
-
-
     if ballistic_planar_projection == True:
         lagrange_point_nr = 1
         acceleration_magnitude = 0.0
