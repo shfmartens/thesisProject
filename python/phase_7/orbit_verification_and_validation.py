@@ -652,7 +652,7 @@ class DisplayPeriodicSolutions:
         arr[0, 1].semilogy(self.continuationParameter, 1e-8 * np.ones(len(self.continuationParameter)), color=self.plottingColors['limit'], linewidth=0.5, linestyle='--')
 
 
-        arr[0, 1].legend(frameon=True, loc='lower left',markersize=11)
+        arr[0, 1].legend(frameon=True, loc='lower left',markerscale=11)
         arr[0, 1].set_xlim(xlim)
         arr[0, 1].set_ylim(ylim)
 
@@ -670,7 +670,7 @@ class DisplayPeriodicSolutions:
         arr[1, 1].set_title('Velocity deviation at full period')
         arr[1, 1].semilogy(self.continuationParameter, self.deviation_xdot, linewidth=linewidth,c=self.plottingColors['tripleLine'][0], label='$|\dot{x}(T) - \dot{x}(0)|$')
         arr[1, 1].semilogy(self.continuationParameter, self.deviation_ydot, linewidth=linewidth,c=self.plottingColors['tripleLine'][1], label='$|\dot{y}(T) - \dot{y}(0)|$')
-        arr[1, 1].legend(frameon=True, loc='lower left',markersize=11)
+        arr[0, 1].legend(frameon=True, loc='lower left',markerscale=11)
         arr[1, 1].set_xlim(xlim)
         arr[1, 1].set_ylim(ylim)
         arr[1, 1].semilogy(self.continuationParameter, 1e-9 * np.ones(len(self.continuationParameter)),color=self.plottingColors['limit'], linewidth=0.5, linestyle='--')
