@@ -627,7 +627,7 @@ class DisplayPeriodicSolutions:
         pass
 
     def plot_periodicity_validation(self):
-        f, arr = plt.subplots(3, 2, figsize=self.figSizeThird)
+        f, arr = plt.subplots(3, 2, figsize=self.figSize)
         linewidth = 1
         ylim = [1e-16, 1e-8]
         ylim2 = [1e-19, 1e-1]
@@ -776,7 +776,7 @@ class DisplayPeriodicSolutions:
         pass
 
     def plot_monodromy_analysis(self):
-        f, arr = plt.subplots(1, 2, figsize=self.figSizeWide)
+        f, arr = plt.subplots(1, 2, figsize=self.figSizeThird)
         size = 7
 
         xlim = [min(self.continuationParameter), max(self.continuationParameter)]
