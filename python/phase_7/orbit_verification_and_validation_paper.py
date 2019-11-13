@@ -392,7 +392,7 @@ class PeriodicSolutionsCharacterization:
         ax1.set_xlim(xlim3)
         #ax1.set_title('$ \\lambda_{1} $, $1/\\lambda_{1}$ ')
 
-        ax4.set_ylabel('Phase [rad]')
+        ax2.set_ylabel('Phase [rad]')
         ax2.grid(True, which='both', ls=':')
         ax2.set_xlim(xlim3)
         ax2.set_ylim([-180.0,180.0])
@@ -408,8 +408,6 @@ class PeriodicSolutionsCharacterization:
         ax4.set_ylabel('Phase [rad]')
         ax4.set_xlim(xlim3)
         ax4.set_ylim([-180.0,180.0])
-        yticks = [-180,90,0,90,180]
-        yticksLabels = ('-$\\pi$','-$\\frac{\\pi}{2}$',0,'-$\\frac{\\pi}{2}$','$\\pi$')
 
         yticksLocators = [-180,-90,0,90,180]
         ylabels = ('-$\\pi$','-$\\frac{\\pi}{2}$',0,'-$\\frac{\\pi}{2}$','$\\pi$')
@@ -417,6 +415,9 @@ class PeriodicSolutionsCharacterization:
         ax4.set_yticks(yticksLocators, minor=False)
         ax2.set_yticklabels(ylabels, fontdict=None, minor=False)
         ax4.set_yticklabels(ylabels, fontdict=None, minor=False)
+
+        ax1.set_ylim([10^-2.,10^3])
+        ax3.set_ylim([10^-2,10^3])
 
 
 
