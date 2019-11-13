@@ -89,6 +89,8 @@ class PeriodicSolutionsCharacterization:
 
         # figure with two subplots next to eachother
         self.figSizeWide = (7 * (1 + np.sqrt(5)) / 2, 3.5)
+        self.figSizeWidePaper = (7 * (1 + np.sqrt(5)) / 2, 3.5 / 2)
+
         self.figureRatioWide = (7 * (1 + np.sqrt(5)) / 2) / 3.5
 
         # Colour schemes
@@ -445,7 +447,7 @@ class PeriodicSolutionsCharacterization:
         pass
 
     def ballistic_stability_analysis(self):
-        fig = plt.figure(figsize=self.figSizeWide)
+        fig = plt.figure(figsize=self.figSizeWidePaper)
 
         ax1 = fig.add_subplot(1, 2, 1)
         ax2 = fig.add_subplot(1, 2, 2)
