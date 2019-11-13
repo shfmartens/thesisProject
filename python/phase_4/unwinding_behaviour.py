@@ -622,13 +622,38 @@ class DisplayDynamicalBehaviour:
 
         sm.set_array([])
 
-        divider = make_axes_locatable(ax1)
-        cax = divider.append_axes("right", size="2%", pad=0.2)
+        ### test test
+        position_handle = ax1.get_position().bounds
+        position_handle2 = ax1.get_position().bounds
 
-        cbar0 = plt.colorbar(sm, cax=cax, label='$|| \\lambda ||$ [-]')
+        colourbar_base = position_handle2[1]
+        colourbar_height = position_handle[1] + position_handle[3] - colourbar_base
+
+        # axColorbar = fig.add_axes([0.951, 0.07, 0.02, 0.93])
+        axColorbar = fig.add_axes([0.944, colourbar_base + 0.022, 0.018, colourbar_height + 0.037])
+
+        axColorbar.get_xaxis().set_visible(False)
+        axColorbar.get_yaxis().set_visible(False)
+        axColorbar.set_visible(False)
+
+        divider = make_axes_locatable(axColorbar)
+
+        cax = divider.append_axes("left", size="100%", pad=0.0)
+
+        #cbar = plt.colorbar(sm, cax=cax, label='$|| \\lambda ||$ [-]', ticks=self.cbarTicksAngle)
+        cbar = plt.colorbar(sm, cax=cax, label='$|| \\lambda ||$ [-]')
+
+        #cbar.set_ticklabels(self.cbarTicksAngleLabels)
+
+        fig.subplots_adjust(left=0.055, right=0.942, bottom=0.07, top=1.0)
+
+        # divider = make_axes_locatable(ax1)
+        # cax = divider.append_axes("right", size="2%", pad=0.2)
+        #
+        # cbar0 = plt.colorbar(sm, cax=cax, label='$|| \\lambda ||$ [-]')
 
         #fig.subplots_adjust(hspace=0.4)
-        fig.tight_layout()
+        #fig.tight_layout()
 
         if self.lowDPI:
             fig.savefig('../../data/figures/equilibria/final_plot_eigenvalue_behaviour.png',transparent=True, dpi=self.dpi)

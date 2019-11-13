@@ -1772,13 +1772,14 @@ class DisplayEquilibriaValidation:
         ax3.set_xlabel('$\\alpha$ [-]')
         ax3.set_ylabel('$\\lambda_{saddle}$ [-]')
 
-        min_y = 10
-        max_y = -10
+        min_y = 10.0
+        max_y = -10.0
 
         for accMag in self.accelerationMagnitude:
             for seed in self.seeds:
                 for continuation in self.continuations:
                     for lagrangePointNr in self.lagrangePointNrs:
+                        hamiltonianList
                         equilibria_df = load_equilibria_acceleration(
                             '../../data/raw/equilibria/L' + str(lagrangePointNr) \
                             + '_acceleration_' \
@@ -1824,6 +1825,9 @@ class DisplayEquilibriaValidation:
                             if lagrangePointNr == 2:
                                 ax3.plot(equilibria_df['alpha'], hamiltonianList, color=self.plottingColors['lambda3'],
                                          linewidth=self.lineWidth, label='$E_{2}$')
+
+                        #print(min(hamiltonianList))
+                        #print(max(hamiltonianList))
 
                         if min(hamiltonianList) < min_y:
                             min_y = min(hamiltonianList)
@@ -2037,16 +2041,40 @@ class DisplayEquilibriaValidation:
 
         sm.set_array([])
 
-        divider = make_axes_locatable(ax1)
-        cax = divider.append_axes("right", size="2%", pad=0.2)
+        # divider = make_axes_locatable(ax1)
+        # cax = divider.append_axes("right", size="2%", pad=0.2)
+        #
+        # cbar = plt.colorbar(sm, cax=cax, label='$\\alpha$ [-]', ticks=self.cbarTicksAcc)
+        # cbar.set_ticklabels(self.cbarTicksAccLabels)
+
+
+        ### test test
+        position_handle = ax1.get_position().bounds
+        position_handle2 = ax1.get_position().bounds
+
+        colourbar_base = position_handle2[1]
+        colourbar_height = position_handle[1] + position_handle[3] - colourbar_base
+
+        #axColorbar = fig.add_axes([0.951, 0.07, 0.02, 0.93])
+        axColorbar = fig.add_axes([0.948, colourbar_base+0.020, 0.018, colourbar_height+0.042])
+
+        axColorbar.get_xaxis().set_visible(False)
+        axColorbar.get_yaxis().set_visible(False)
+        axColorbar.set_visible(False)
+
+        divider = make_axes_locatable(axColorbar)
+
+        cax = divider.append_axes("left", size="100%", pad=0.0)
 
         cbar = plt.colorbar(sm, cax=cax, label='$\\alpha$ [-]', ticks=self.cbarTicksAcc)
         cbar.set_ticklabels(self.cbarTicksAccLabels)
 
-        fig.tight_layout()
+        fig.subplots_adjust(left=0.055, right=0.946,bottom=0.07,top=1.0)
+
+
 
         if self.lowDPI:
-            fig.savefig('../../data/figures/equilibria/spatial_evolution_delta_alpha.png', transparent=True,dpi=self.dpi)
+            fig.savefig('../../data/figures/equilibria/spatial_evolution_delta_alpha.png', transparent=True,dpi=self.dpi,bbox_inches='tight', pad_inches=0)
 
         else:
             fig.savefig('../../data/figures/equilibria/spatial_evolution_delta_alpha.png', transparent=True,dpi=300)
@@ -2222,13 +2250,38 @@ class DisplayEquilibriaValidation:
 
         sm.set_array([])
 
-        divider = make_axes_locatable(ax1)
-        cax = divider.append_axes("right", size="2%", pad=0.2)
+        ### test test
+        position_handle = ax1.get_position().bounds
+        position_handle2 = ax1.get_position().bounds
+
+        colourbar_base = position_handle2[1]
+        colourbar_height = position_handle[1] + position_handle[3] - colourbar_base
+
+        # axColorbar = fig.add_axes([0.951, 0.07, 0.02, 0.93])
+        axColorbar = fig.add_axes([0.940, colourbar_base + 0.020, 0.018, colourbar_height + 0.042])
+
+        axColorbar.get_xaxis().set_visible(False)
+        axColorbar.get_yaxis().set_visible(False)
+        axColorbar.set_visible(False)
+
+        divider = make_axes_locatable(axColorbar)
+
+        cax = divider.append_axes("left", size="100%", pad=0.0)
 
         cbar = plt.colorbar(sm, cax=cax, label='$a_{lt}$ [-]', ticks=self.cbarTicksAngle)
         cbar.set_ticklabels(self.cbarTicksAngleLabels)
 
-        fig.tight_layout()
+        fig.subplots_adjust(left=0.055, right=0.938, bottom=0.07, top=1.0)
+
+
+
+        # divider = make_axes_locatable(ax1)
+        # cax = divider.append_axes("right", size="2%", pad=0.2)
+        #
+        # cbar = plt.colorbar(sm, cax=cax, label='$a_{lt}$ [-]', ticks=self.cbarTicksAngle)
+        # cbar.set_ticklabels(self.cbarTicksAngleLabels)
+        #
+        # fig.tight_layout()
 
         if self.lowDPI:
             fig.savefig('../../data/figures/equilibria/spatial_evolution_delta_acc.png', transparent=True,
@@ -2364,10 +2417,13 @@ class DisplayEquilibriaValidation:
 
 
 
-        lgd = ax0.legend(frameon=True, loc='center left',bbox_to_anchor=(2.15, 0.5),markerscale=15)
+        lgd = ax0.legend(frameon=True, loc='center left',bbox_to_anchor=(2.17, 0.5),markerscale=15)
 
         ax0.set_xlim([0,2*np.pi])
         ax1.set_xlim([0,2*np.pi])
+
+        ax0.set_ylim([0.0, 3.3])
+        ax1.set_ylim([0.0, 3.3])
 
         ticksLocators = [0, 0.5 * np.pi, np.pi, 1.5 * np.pi, 2.0 * np.pi]
         labels = ('0', '$\\frac{1}{2}\\pi$', '$\\pi$', '$\\frac{3}{2}\\pi$', '$2\\pi$')
@@ -2405,7 +2461,11 @@ class DisplayEquilibriaValidation:
         ax1.set_xlim([0,2*np.pi])
         ax0.set_xlim([0,2*np.pi])
 
-        #ax1.set_xlim([-np.pi, np.pi])
+        ylims = [-1.71,-1.38]
+        ax1.set_ylim(ylims)
+        ax0.set_ylim(ylims)
+
+        ax1.set_xlim([-np.pi, np.pi])
         #ax0.set_xlim([-np.pi, np.pi])
 
 
@@ -2585,7 +2645,7 @@ if __name__ == '__main__':
 
     ### Contours
 
-    lagrange_point_nrs = [5]
+    lagrange_point_nrs = [1,2,3,4,5]
     acceleration_magnitudes = [0.1]
     seeds = [180.0]
     continuations = ['forward']
@@ -2604,11 +2664,13 @@ if __name__ == '__main__':
     #display_equilibria_validation.plot_equilibria_validation()
     # #
 
-    display_equilibria_validation.plot_eigenvalue_acceleration_paper()
+    #display_equilibria_validation.plot_eigenvalue_acceleration_paper()
+    display_equilibria_validation.plot_hamiltonian_paper()
+    #display_equilibria_validation.plot_eigenvalue_Hamiltonian_effect()
+
 
     del display_equilibria_validation
 
-    # # # #display_equilibria_validation.plot_eigenvalue_Hamiltonian_effect()
     # # #
     # #  # display_equilibria_validation.plot_L3_phenomenon()
 
