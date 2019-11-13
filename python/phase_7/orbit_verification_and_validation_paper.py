@@ -248,7 +248,7 @@ class PeriodicSolutionsCharacterization:
         colourbar_height = position_handle[1] + position_handle[3] - colourbar_base
 
         # axColorbar = fig.add_axes([0.951, 0.07, 0.02, 0.93])
-        axColorbar = fig.add_axes([0.937, colourbar_base + 0.0215, 0.018, colourbar_height + 0.037])
+        axColorbar = fig.add_axes([0.935, colourbar_base + 0.022, 0.018, colourbar_height + 0.036])
 
         axColorbar.get_xaxis().set_visible(False)
         axColorbar.get_yaxis().set_visible(False)
@@ -263,7 +263,7 @@ class PeriodicSolutionsCharacterization:
 
         # cbar.set_ticklabels(self.cbarTicksAngleLabels)
 
-        fig.subplots_adjust(left=0.055, right=0.935, bottom=0.07, top=1.0)
+        fig.subplots_adjust(left=0.055, right=0.933, bottom=0.07, top=1.0)
 
 
         ## Create loops for continuationParameter label!
