@@ -1073,6 +1073,7 @@ class DisplayPeriodicSolutions:
 
 
 
+   
         arr[1,0].plot(self.orbitsId,self.accelerationContinuation,c=self.plottingColors['singleLine'], linewidth=1,label='$a_{lt}$ [-]')
         arr[1,0].set_xlim(xlim)
         arr[1,0].set_ylim([-0.01, 0.1])
