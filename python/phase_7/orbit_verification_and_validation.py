@@ -469,7 +469,7 @@ class DisplayPeriodicSolutions:
 
         self.figSizeThird = (7 * (1 + np.sqrt(5)) / 2, 3.5*0.75)
 
-        self.figSizeCont = (7 * (1 + np.sqrt(5)) / 2, 7.0*0.75)
+        self.figSizeCont = (7 * (1 + np.sqrt(5)) / 2, 7.0*0.73)
 
 
 
@@ -1116,7 +1116,7 @@ class DisplayPeriodicSolutions:
                 arr[i, j].grid(True, which='both', ls=':')
 
         plt.tight_layout()
-        plt.subplots_adjust(top=0.85)
+        plt.subplots_adjust(top=0.88)
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($a_{lt} = ' + str(
