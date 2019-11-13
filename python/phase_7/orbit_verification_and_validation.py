@@ -652,7 +652,7 @@ class DisplayPeriodicSolutions:
         arr[0, 1].semilogy(self.continuationParameter, 1e-8 * np.ones(len(self.continuationParameter)), color=self.plottingColors['limit'], linewidth=0.5, linestyle='--')
 
 
-        arr[0, 1].legend(frameon=True, loc='lower right')
+        arr[0, 1].legend(frameon=True, loc='lower left',markersize=11)
         arr[0, 1].set_xlim(xlim)
         arr[0, 1].set_ylim(ylim)
 
@@ -670,7 +670,7 @@ class DisplayPeriodicSolutions:
         arr[1, 1].set_title('Velocity deviation at full period')
         arr[1, 1].semilogy(self.continuationParameter, self.deviation_xdot, linewidth=linewidth,c=self.plottingColors['tripleLine'][0], label='$|\dot{x}(T) - \dot{x}(0)|$')
         arr[1, 1].semilogy(self.continuationParameter, self.deviation_ydot, linewidth=linewidth,c=self.plottingColors['tripleLine'][1], label='$|\dot{y}(T) - \dot{y}(0)|$')
-        arr[1, 1].legend(frameon=True, loc='lower right')
+        arr[1, 1].legend(frameon=True, loc='lower left',markersize=11)
         arr[1, 1].set_xlim(xlim)
         arr[1, 1].set_ylim(ylim)
         arr[1, 1].semilogy(self.continuationParameter, 1e-9 * np.ones(len(self.continuationParameter)),color=self.plottingColors['limit'], linewidth=0.5, linestyle='--')
@@ -835,7 +835,6 @@ class DisplayPeriodicSolutions:
             arr[0].set_xlabel('x [-]')
             arr[1].set_xlabel('x [-]')
 
-        arr
 
         # arr[1, 1].set_ylim([0, 1.5e-3])
         arr[1].set_ylabel(' $|||\lambda_3||-1|$ [-]')
@@ -855,7 +854,7 @@ class DisplayPeriodicSolutions:
                 "{:3.2f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.1f}".format(self.accelerationMagnitude))  + ' - Monodromy matrix eigensystem validation', size=self.suptitleSize)
 
         plt.tight_layout()
-        plt.subplots_adjust(top=0.83)
+        plt.subplots_adjust(top=0.8)
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
             if self.lowDPI:
