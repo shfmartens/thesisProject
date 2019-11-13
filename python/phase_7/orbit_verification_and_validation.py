@@ -693,7 +693,7 @@ class DisplayPeriodicSolutions:
         lns1 = arr[2, 1].semilogy(self.continuationParameter, self.maxSegmentError, linewidth=linewidth, c=self.plottingColors['tripleLine'][0],label='$e_{i}$')
         ax2 = arr[2, 1].twinx()
         ax2.tick_params(axis='y', labelcolor=self.plottingColors['tripleLine'][1])
-        lns2 ax2.plot(self.continuationParameter, self.numberOfCollocationPoints, linewidth=linewidth,color=self.plottingColors['tripleLine'][1],label='Number of nodes')
+        lns2 = ax2.plot(self.continuationParameter, self.numberOfCollocationPoints, linewidth=linewidth,color=self.plottingColors['tripleLine'][1],label='Number of nodes')
         ax2.set_ylim([0,70])
         ax2.set_xlim(xlim)
         ax2.grid(b=None)
