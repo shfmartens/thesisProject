@@ -419,8 +419,8 @@ class PeriodicSolutionsCharacterization:
         ax1.set_ylim([1e-4,1e4])
         ax1.set_ylim([1e-4,1e4])
 
-        yticksLocators2 = [1.0e-4, 1.0e-2, 1.0e-1, 1.0e2, 1.0e4]
-        ylabels2 = ('$10^{-4}$', '$10^{-2}$', '$10^{-1}$', '$10^{2}$', '$10^{4}$')
+        yticksLocators2 = [1.0e-4, 1.0e-2, 1.0e0, 1.0e2, 1.0e4]
+        ylabels2 = ('$10^{-4}$', '$10^{-2}$', '$10^{0}$', '$10^{2}$', '$10^{4}$')
         ax1.set_yticks(yticksLocators2, minor=False)
         ax3.set_yticks(yticksLocators2, minor=False)
         ax1.set_yticklabels(ylabels2, fontdict=None, minor=False)
