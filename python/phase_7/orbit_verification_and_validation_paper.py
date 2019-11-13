@@ -1054,10 +1054,6 @@ if __name__ == '__main__':
         plot_as_x_coordinate = False
         plot_as_family_number = False
 
-
-
-        
-
         orbitL1 = DisplayPeriodicSolutions('horizontal', 1, acceleration_magnitude, alpha, beta, varying_quantity,low_dpi,plot_as_x_coordinate,plot_as_family_number)
         orbitL2 = DisplayPeriodicSolutions('horizontal', 2, acceleration_magnitude, alpha, beta, varying_quantity,low_dpi,plot_as_x_coordinate,plot_as_family_number)
 
