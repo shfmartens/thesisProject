@@ -419,7 +419,12 @@ class PeriodicSolutionsCharacterization:
         ax1.set_ylim([1e-4,1e4])
         ax1.set_ylim([1e-4,1e4])
 
-
+        yticksLocators2 = [1.0e-4, 1.0e-2, 1.0, 1.0e2, 1.0e4]
+        ylabels2 = ('$10^{-4}$', '$10^{-2}$', '$1.0$', '$10^{2}$', '$10^{4}$')
+        ax1.set_yticks(yticksLocators2, minor=False)
+        ax3.set_yticks(yticksLocators2, minor=False)
+        ax1.set_yticklabels(ylabels2, fontdict=None, minor=False)
+        ax3.set_yticklabels(ylabels2, fontdict=None, minor=False)
 
 
         ax4.grid(True, which='both', ls=':')
