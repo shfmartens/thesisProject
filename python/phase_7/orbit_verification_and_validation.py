@@ -469,6 +469,9 @@ class DisplayPeriodicSolutions:
 
         self.figSizeThird = (7 * (1 + np.sqrt(5)) / 2, 3.5*0.75)
 
+        self.figSizeCont = (7 * (1 + np.sqrt(5)) / 2, 7.0*2/3)
+
+
 
         # Colour schemes
         n_colors = 3
@@ -1038,7 +1041,7 @@ class DisplayPeriodicSolutions:
         pass
 
     def plot_continuation_procedure(self):
-        f, arr = plt.subplots(2, 2, figsize=self.figSize)
+        f, arr = plt.subplots(2, 2, figsize=self.figSizeCont)
         size = 7
 
         xlim = [1,len(self.orbitsId)]
@@ -1335,9 +1338,9 @@ if __name__ == '__main__':
 
                             #display_periodic_solutions.plot_families()
                             #display_periodic_solutions.plot_periodicity_validation()
-                            display_periodic_solutions.plot_monodromy_analysis()
+                            #display_periodic_solutions.plot_monodromy_analysis()
                             #display_periodic_solutions.plot_stability()
-                            #display_periodic_solutions.plot_continuation_procedure()
+                            display_periodic_solutions.plot_continuation_procedure()
                             # display_periodic_solutions.plot_increment_of_orbits()
 
 
