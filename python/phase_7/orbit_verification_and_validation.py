@@ -1092,7 +1092,7 @@ class DisplayPeriodicSolutions:
         ax2 = arr[1, 1].twinx()
         ax2.tick_params(axis='phase [-]', labelcolor=self.plottingColors['tripleLine'][2])
         lns2 = ax2.plot(self.orbitsId, self.phase, linewidth=1,color=self.plottingColors['tripleLine'][2],label='$\\phi$ [-]')
-        ax2.set_ylim([-0.01, 2*np.pi+0.01])
+        ax2.set_ylim([-0.05, 2*np.pi+0.05])
         ax2.set_xlim(xlim)
         ax2.grid(b=None)
         #arr[1,1].legend(frameon=True, loc='lower right')
