@@ -237,13 +237,36 @@ class PeriodicSolutionsCharacterization:
 
         sm.set_array([])
 
-        divider = make_axes_locatable(ax2)
-        cax = divider.append_axes("right", size="2%", pad=0.2)
+        # divider = make_axes_locatable(ax2)
+        # cax = divider.append_axes("right", size="2%", pad=0.2)
+
+        ### test test
+        position_handle = ax1.get_position().bounds
+        position_handle2 = ax1.get_position().bounds
+
+        colourbar_base = position_handle2[1]
+        colourbar_height = position_handle[1] + position_handle[3] - colourbar_base
+
+        # axColorbar = fig.add_axes([0.951, 0.07, 0.02, 0.93])
+        axColorbar = fig.add_axes([0.944, colourbar_base + 0.022, 0.018, colourbar_height + 0.037])
+
+        axColorbar.get_xaxis().set_visible(False)
+        axColorbar.get_yaxis().set_visible(False)
+        axColorbar.set_visible(False)
+
+        divider = make_axes_locatable(axColorbar)
+
+        cax = divider.append_axes("left", size="100%", pad=0.0)
+
+        # cbar = plt.colorbar(sm, cax=cax, label='$|| \\lambda ||$ [-]', ticks=self.cbarTicksAngle)
+        cbar = plt.colorbar(sm, cax=cax, format='%.2f', label=self.continuationLabel)
+
+        # cbar.set_ticklabels(self.cbarTicksAngleLabels)
+
+        fig.subplots_adjust(left=0.055, right=0.942, bottom=0.07, top=1.0)
 
 
         ## Create loops for continuationParameter label!
-
-        cbar = plt.colorbar(sm, cax=cax, format='%.2f', label=self.continuationLabel)
 
         minimumX1 = min(df1['x'])
         minimumY1 = min(df1['y'])
@@ -281,7 +304,7 @@ class PeriodicSolutionsCharacterization:
         ax1.set_aspect(1.0)
         ax2.set_aspect(1.0)
 
-        fig.tight_layout()
+        #fig.tight_layout()
 
         if self.lowDpi:
             fig.savefig('../../data/figures/orbits/ballistic_projection.png', transparent=True, dpi=self.dpi)
