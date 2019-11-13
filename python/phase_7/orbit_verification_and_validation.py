@@ -1104,7 +1104,7 @@ class DisplayPeriodicSolutions:
         arr[1, 1].legend(lns, labs, frameon=True, loc='lower left')
 
         ticksLocators = [0.0, 0.5 * np.pi, np.pi, 1.5*np.pi, 2*np.pi]
-        labels = ('$0$', '$\\frac{1}{2}\\pi$', '$0$', '$\\frac{3{2}\\pi$', '$2\\pi$')
+        labels = ('$0$', '$ \\frac{1}{2}\\pi $', '$0$', '$ \\frac{3}{2}\\pi $', '$2 \\pi $')
         ax2.set_yticks(ticksLocators, minor=False)
         ax2.set_yticklabels(labels, fontdict=None, minor=False)
 
