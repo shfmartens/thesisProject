@@ -799,6 +799,12 @@ class DisplayPeriodicSolutions:
         # arr[0, 0].set_ylabel('Eigenvalues module [-]')
 
         d = [abs(entry - 1) for entry in self.D]
+        print('length self.D: ' + len(self.D))
+        print('length d: ' + len(d))
+        print('length d: ' + len(self.continuationParameter))
+
+
+
         arr[0, 0].semilogy(self.continuationParameter, d, c=self.plottingColors['singleLine'], linewidth=1)
         arr[0, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
         arr[0, 0].xaxis.set_ticks(xticks)
