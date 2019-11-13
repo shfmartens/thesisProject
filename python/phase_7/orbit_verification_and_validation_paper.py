@@ -1007,8 +1007,8 @@ class PeriodicSolutionsCharacterization:
 
 if __name__ == '__main__':
 
-    ballistic_planar_projection = True
-    ballistic_bifurcation_analysis = False
+    ballistic_planar_projection = False
+    ballistic_bifurcation_analysis = True
     ballistic_stability_analysis = False
     graphical_projection = False
     bifurcation_analysis = False
@@ -1050,7 +1050,7 @@ if __name__ == '__main__':
         beta = 0.0
         hamiltonian = 0.0
         varying_quantity = 'Hamiltonian'
-        low_dpi = True
+        low_dpi = False
         plot_as_x_coordinate = False
         plot_as_family_number = False
 
