@@ -690,14 +690,14 @@ class DisplayPeriodicSolutions:
         arr[2, 1].set_xlim(xlim)
         arr[2, 1].set_ylim([10e-15,1.0e-5])
         arr[2, 1].tick_params(axis='y', labelcolor=self.plottingColors['tripleLine'][0])
-        arr[2, 1].semilogy(self.continuationParameter, self.maxSegmentError, linewidth=linewidth, c=self.plottingColors['tripleLine'][0],label='$e_{i}$')
+        lns1 = arr[2, 1].semilogy(self.continuationParameter, self.maxSegmentError, linewidth=linewidth, c=self.plottingColors['tripleLine'][0],label='$e_{i}$')
         ax2 = arr[2, 1].twinx()
         ax2.tick_params(axis='y', labelcolor=self.plottingColors['tripleLine'][1])
-        ax2.plot(self.continuationParameter, self.numberOfCollocationPoints, linewidth=linewidth,color=self.plottingColors['tripleLine'][1],label='Number of nodes')
+        lns2 ax2.plot(self.continuationParameter, self.numberOfCollocationPoints, linewidth=linewidth,color=self.plottingColors['tripleLine'][1],label='Number of nodes')
         ax2.set_ylim([0,70])
         ax2.set_xlim(xlim)
         ax2.grid(b=None)
-        arr[2, 1].legend(frameon=True, loc='upper left')
+        arr[2, 1].legend(lns1,lns2,frameon=True, loc='upper left')
 
 
 
@@ -774,7 +774,7 @@ class DisplayPeriodicSolutions:
         pass
 
     def plot_monodromy_analysis(self):
-        f, arr = plt.subplots(1, 2, figsize=self.figSizeThird)
+        f, arr = plt.subplots(1, 2, figsize=self.figSizeWide)
         size = 7
 
         xlim = [min(self.continuationParameter), max(self.continuationParameter)]
@@ -856,7 +856,7 @@ class DisplayPeriodicSolutions:
                 "{:3.2f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.1f}".format(self.accelerationMagnitude))  + ' - Monodromy matrix eigensystem validation', size=self.suptitleSize)
 
         plt.tight_layout()
-        plt.subplots_adjust(top=0.8)
+        plt.subplots_adjust(top=0.83)
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
             if self.lowDPI:
