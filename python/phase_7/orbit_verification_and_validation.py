@@ -1085,7 +1085,8 @@ class DisplayPeriodicSolutions:
         arr[1,1].set_xlabel('orbit Number [-]')
         arr[1,1].set_ylabel('$x$ [-], $y$ [-]')
 
-
+        print(self.phase)
+        
         ax2 = arr[1, 1].twinx()
         ax2.tick_params(axis='phase [-]', labelcolor=self.plottingColors['tripleLine'][2])
         lns2 = ax2.plot(self.orbitsId, self.phase, linewidth=1,color=self.plottingColors['tripleLine'][2],label='$\\phi$ [-]')
