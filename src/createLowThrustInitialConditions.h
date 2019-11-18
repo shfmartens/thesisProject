@@ -62,7 +62,7 @@ Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::VectorXd& initi
 Eigen::VectorXd computeHamiltonianVaryingStateIncrement(const Eigen::VectorXd initialStateVector, const int numberOfCollocationPoints, const double massParameter);
 
 void createLowThrustInitialConditions( const int librationPointNr, const double ySign, const std::string& orbitType, const int continuationIndex, const double accelerationMagnitude, const double accelerationAngle,
-                                       const double accelerationAngle2, const double initialMass, const double familyHamiltonian, const bool startContinuationFromTextFile,
+                                       const double accelerationAngle2, const double initialMass, const double familyHamiltonian, const bool startContinuationFromTextFile, const int numberOfFamilyMembers,
                               const double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter(
             tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER,
             tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER ),

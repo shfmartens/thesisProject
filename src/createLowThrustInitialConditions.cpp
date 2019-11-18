@@ -1213,7 +1213,7 @@ Eigen::VectorXd computeHamiltonianVaryingStateIncrement(const Eigen::VectorXd in
 }
 
 void createLowThrustInitialConditions( const int librationPointNr, const double ySign, const std::string& orbitType, const int continuationIndex, const double accelerationMagnitude, const double accelerationAngle,
-                                       const double accelerationAngle2, const double initialMass, const double familyHamiltonian, const bool startContinuationFromTextFile,
+                                       const double accelerationAngle2, const double initialMass, const double familyHamiltonian, const bool startContinuationFromTextFile, const int numberOfFamilyMembers,
                               const double massParameter, const int numberOfPatchPoints, const int initialNumberOfCollocationPoints, const double maxPositionDeviationFromPeriodicOrbit, const double maxVelocityDeviationFromPeriodicOrbit, const double maxPeriodDeviationFromPeriodicOrbit, const double maxEigenvalueDeviation,
                               const boost::function< double( const Eigen::VectorXd&, const int ) > pseudoArcLengthFunctionAugmented ) {
 
@@ -1275,7 +1275,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 // ============ CONTINUATION PROCEDURE ================== //
     // Set exit parameters of continuation procedure
-    int maximumNumberOfInitialConditions = 4000;
+    int maximumNumberOfInitialConditions = numberOfFamilyMembers;
     int numberOfInitialConditions;
     if (continuationIndex == 1)
     {
