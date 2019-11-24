@@ -442,6 +442,25 @@ class DisplayPeriodicSolutions:
         print('Index for bifurcations: ')
         print(self.orbitIdBifurcations)
 
+        print('== Check termination reason: ==')
+        print('Number of members: ' + str(len(self.continuationParameter)))
+        print('FM deviation x: ' + str(self.deviation_x.tail(0)))
+        print('FM deviation y: ' + str(self.deviation_x.tail(0)))
+        print('FM deviation xdot: ' + str(self.deviation_xdot.tail(0)))
+        print('FM deviation ydot: ' + str(self.deviation_ydot.tail(0)))
+
+
+        # Print number of members
+        # Print properties of final member
+            # Maximum position deviation
+            # Maximum velcoty deviation
+            # Phase increment
+            # Error in eigenvalue of periodicity
+            # Monodromy
+            # if number is 2500
+        # if none of them: unclear: due to reversing of continuation condition !!!!
+
+
 
 
         #  =========== Plot layout settings ===============
@@ -1242,31 +1261,7 @@ class DisplayPeriodicSolutions:
         plt.tight_layout()
         plt.subplots_adjust(top=0.9)
 
-        # print('1300')
-        # print(normIncrement[1299])
-        # print('1350')
-        # print(normIncrement[1349])
-        # print('1400')
-        # print(normIncrement[1399])
-        # print('1450')
-        # print(normIncrement[1449])
-        # print('1500')
-        # print(normIncrement[1499])
-        #
-        # print('1232')
-        # print(normIncrementPhaseHalf[1232])
-        # print('1300')
-        # print(normIncrementPhaseHalf[1299])
-        # print('1350')
-        # print(normIncrementPhaseHalf[1349])
-        # print('1400')
-        # print(normIncrementPhaseHalf[1399])
-        # print('1450')
-        # print(normIncrementPhaseHalf[1449])
-        # print('1500')
-        # print(normIncrementPhaseHalf[1499])
-        # print('2000')
-        # print(normIncrementPhaseHalf[2000])
+
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($a_{lt} = ' + str(
@@ -1324,8 +1319,8 @@ class DisplayPeriodicSolutions:
 if __name__ == '__main__':
     orbit_types = ['horizontal']
     lagrange_points = [1]
-    acceleration_magnitudes = [0.1]
-    alphas = [0.0,60.0,120,180.0,240.0,300.0]
+    acceleration_magnitudes = [0.0]
+    alphas = [0.0]
     Hamiltonians = [-1.525]
     low_dpi = True
     varying_quantities = ['Hamiltonian']
