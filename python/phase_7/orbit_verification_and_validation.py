@@ -478,7 +478,8 @@ class DisplayPeriodicSolutions:
         elif len(self.continuationParameter) == 2500:
             print('Continuation procedure terminated likely due to maximumNumberOfMembers')
         else:
-            print('Continuation procedure terminated likely due to reversing of continuation condition')
+            print('All termination conditions are adhered to')
+            print('Continuation procedure terminated likely due to reversing of continuation condition!')
 
 
 
@@ -1353,8 +1354,8 @@ class DisplayPeriodicSolutions:
 if __name__ == '__main__':
     orbit_types = ['horizontal']
     lagrange_points = [1]
-    acceleration_magnitudes = [0.0]
-    alphas = [0.0]
+    acceleration_magnitudes = [0.01,0.05,0.1]
+    alphas = [0.0,60.0,120.0,180.0,240.0,300.0]
     Hamiltonians = [-1.525]
     low_dpi = True
     varying_quantities = ['Hamiltonian']
