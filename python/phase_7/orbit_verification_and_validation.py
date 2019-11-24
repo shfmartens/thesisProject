@@ -458,6 +458,7 @@ class DisplayPeriodicSolutions:
         print('FM D: ' + str(self.D[-1]))
         print('FM incrementPhaseNul: ' + str(self.incrementPhaseNul))
         print('FM incrementPhaseHalf: ' + str(self.incrementPhaseHalf))
+        print('FM Change in increment: ' + str(self.incrementPhaseHalf/self.incrementPhaseNul))
 
 
 
