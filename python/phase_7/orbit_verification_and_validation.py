@@ -448,12 +448,15 @@ class DisplayPeriodicSolutions:
         print('FM deviation y: ' + str(self.deviation_y[-1]))
         print('FM deviation xdot: ' + str(self.deviation_xdot[-1]))
         print('FM deviation ydot: ' + str(self.deviation_ydot[-1]))
+        print('FM lambda3: ' + str(self.lambda3[-1]))
+        print('FM D: ' + str(self.D[-1]))
+
+
 
 
         # Print number of members
         # Print properties of final member
-            # Maximum position deviation
-            # Maximum velcoty deviation
+
             # Phase increment
             # Error in eigenvalue of periodicity
             # Monodromy
