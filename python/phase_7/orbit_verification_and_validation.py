@@ -444,10 +444,10 @@ class DisplayPeriodicSolutions:
 
         print('== Check termination reason: ==')
         print('Number of members: ' + str(len(self.continuationParameter)))
-        print('FM deviation x: ' + str(self.deviation_x.tail(0)))
-        print('FM deviation y: ' + str(self.deviation_x.tail(0)))
-        print('FM deviation xdot: ' + str(self.deviation_xdot.tail(0)))
-        print('FM deviation ydot: ' + str(self.deviation_ydot.tail(0)))
+        print('FM deviation x: ' + str(self.deviation_x[-1]))
+        print('FM deviation y: ' + str(self.deviation_y[-1]))
+        print('FM deviation xdot: ' + str(self.deviation_xdot[-1]))
+        print('FM deviation ydot: ' + str(self.deviation_ydot[-1]))
 
 
         # Print number of members
