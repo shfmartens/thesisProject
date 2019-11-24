@@ -443,12 +443,10 @@ class DisplayPeriodicSolutions:
         print(self.orbitIdBifurcations)
 
         self.incrementPhaseNul = np.sqrt( (self.x[len(self.x)-2]-self.x[len(self.x)-1]) ** 2\
-                                 + (self.y[len(self.y)-2]-self.y[len(self.y)-1]) ** 2
-                                 + (self.z[len(self.z) - 2] - self.z[len(self.z) - 1]) ** 2)
+                                 + (self.y[len(self.y)-2]-self.y[len(self.y)-1]) ** 2)
 
         self.incrementPhaseHalf = np.sqrt((self.xPhaseHalf[len(self.xPhaseHalf) - 2] - self.xPhaseHalf[len(self.xPhaseHalf) - 1]) ** 2 \
-                                         + (self.yPhaseHalf[len(self.yPhaseHalf) - 2] - self.yPhaseHalf[len(self.yPhaseHalf) - 1]) ** 2
-                                         + (self.zPhaseHalf[len(self.zPhaseHalf) - 2] - self.zPhaseHalf[len(self.zPhaseHalf) - 1]) ** 2)
+                                         + (self.yPhaseHalf[len(self.yPhaseHalf) - 2] - self.yPhaseHalf[len(self.yPhaseHalf) - 1]) ** 2)
 
         print('== Check termination reason: ==')
         print('Number of members: ' + str(len(self.continuationParameter)))
