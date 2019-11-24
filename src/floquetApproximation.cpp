@@ -31,6 +31,7 @@
 
 #include "createEquilibriumLocations.h"
 #include "propagateOrbitAugmented.h"
+#include "createLowThrustInitialConditions.h"
 
 void computeMotionDecomposition(const int librationPointNr, const std::string orbitType, Eigen::MatrixXd statePropagationMatrix, Eigen::MatrixXd stateTransitionMatrix, Eigen::VectorXd initialPerturbationVector, const double perturbationTime, const double numericalThreshold )
 {
@@ -117,6 +118,7 @@ Eigen::VectorXd computeVelocityCorrection(const int librationPointNr, const std:
     Eigen::VectorXcd  eigenValues = eigSPM.eigenvalues();
     Eigen::MatrixXcd floquetExponentMatrix = Eigen::MatrixXcd::Zero(6,6);
 
+    std::cout << "eigSPM: eigenvalues: " << eigenValues << std::endl;
     for (int i = 0; i < 6; i++)
     {
         floquetExponentMatrix(i,i) = std::exp(eigenValues(i) * perturbationTime);
@@ -344,6 +346,8 @@ Eigen::VectorXd floquetApproximation(int librationPointNr, const double ySign, s
         offsetVector(2) = amplitude;
     }
 
+    double test = computeHamiltonian(massParameter, equilibriumStateVector);
+    std::cout << "HLT EQ: " << test << std::endl;
     initialStateVectorUncorrected = equilibriumStateVector + offsetVector;
     initialPerturbationVector = equilibriumStateVector - initialStateVectorUncorrected;
 

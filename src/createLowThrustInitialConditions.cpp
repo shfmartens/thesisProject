@@ -1220,6 +1220,9 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
     std::cout << "\nCreate initial conditions:" << std::endl;
     std::cout << "Start continuation from text file: " << startContinuationFromTextFile << "\n"<<std::endl;
 
+    std::cout << "numberOfInitialConditions: " << numberOfFamilyMembers << std::endl;
+    std::cout << "massParameter: " << massParameter << std::endl;
+
 
     // Set output maximum precision
     std::cout.precision(std::numeric_limits<double>::digits10);

@@ -1965,7 +1965,7 @@ class DisplayEquilibriaValidation:
 
         continuations = ['forward']
 
-        customAccArray = [0.003, 0.1, 0.25]
+        customAccArray = [0.1]
         customSeedsZoom = [0.0, 180.0]
         customContinuationZoom = ['backward','forward']
         for accMag in customAccArray:
@@ -1993,6 +1993,19 @@ class DisplayEquilibriaValidation:
                                 norm=plt.Normalize(vmin=0.0, vmax=2 * np.pi))
 
                             ax0.scatter(equilibria_df['x'], equilibria_df['y'], c=alpha, cmap="viridis", s=0.01)
+
+                            print('LagrangePointNr: ' + str(lagrangePointNr))
+                            print('accMag: ' + str(accMag))
+                            print('seed: ' + str(seed))
+                            print('continuation: ' + continuation)
+                            print('max_x: ' + str(max(equilibria_df['x'])))
+                            print('min_x: ' + str(min(equilibria_df['x'])))
+                            print('max_y: ' + str(max(equilibria_df['y'])))
+                            print('min_y: ' + str(min(equilibria_df['y'])))
+
+
+
+
 
         ax0.text(-0.941, 0.3, '3e-2', fontsize=5, rotation=72, rotation_mode='anchor')
         ax0.text(0.575, 0.794, '3e-2', fontsize=5, rotation=320, rotation_mode='anchor')
@@ -2309,7 +2322,7 @@ class DisplayEquilibriaValidation:
         min_y = 1000
         max_y = -1000
 
-        accMagCustom = [0.003, 0.1]
+        accMagCustom = [0.1]
         libPointCustom = [1, 2, 3, 4, 5]
         customContinuations = ['forward', 'backward']
         customSeeds = [0.0, 180.0]
@@ -2333,6 +2346,11 @@ class DisplayEquilibriaValidation:
                             lambdaList = compute_stability_type_from_list(equilibria_df['alpha'],equilibria_df['x'],equilibria_df['y'])
 
                             lambdaDF = pd.DataFrame(lambdaList,columns=['alpha', 'lambda'])
+
+                            print('lagrangePointNr: ' + str(lagrangePointNr))
+                            print('accMag: ' + str(accMag))
+                            print('HLT Min: ' + str(min(lambdaDF['lambda'])))
+                            print('HLT Max: ' + str(max(lambdaDF['lambda'])))
 
                             if lagrangePointNr == 1 and accMag < 0.01:
                                ax0.scatter(lambdaDF['alpha'],lambdaDF['lambda'],color=self.plottingColors['tripleLine'][0],linewidth=self.lineWidth, label='$E_{1}$',s=0.4)
@@ -2409,6 +2427,11 @@ class DisplayEquilibriaValidation:
                                 print(len(E3_DF['alpha']))
                                 print(max(E3_DF['lambda']))
 
+                                print('lagrangePointNr: ' + str(lagrangePointNr))
+                                print('accMag: ' + str(accMag))
+                                print('lambda Min: ' + str(min(E3_DF['lambda'])))
+                                print('lambda Max: ' + str(max(E3_DF['lambda'])))
+
 
                                 E3_DF.sort_values(by=['alpha'])
                                 print(E3_DF['alpha'])
@@ -2472,7 +2495,7 @@ class DisplayEquilibriaValidation:
         min_y = 1000
         max_y = -1000
 
-        accMagCustom = [0.003, 0.1]
+        accMagCustom = [0.1]
         libPointCustom = [1, 2, 3, 4, 5]
         customContinuations = ['forward', 'backward']
         customSeeds = [0.0, 180.0]
@@ -2510,6 +2533,14 @@ class DisplayEquilibriaValidation:
                             if lagrangePointNr == 2 and accMag > 0.01:
                                 ax1.scatter(hamiltonianDF['alpha'],hamiltonianDF['hamiltonian'],
                                             color=self.plottingColors['fifthLine'][1],linewidth=self.lineWidth, label='$E_{2}$', s=0.4)
+
+                            print('lagrangePointNr: ' +str(lagrangePointNr))
+                            print('accMag: ' +str(accMag))
+                            print('HLT Min: ' +str(min(hamiltonianDF['hamiltonian'])))
+                            print('HLT Max: ' +str(max(hamiltonianDF['hamiltonian'])))
+
+
+
 
                         if lagrangePointNr > 2 and accMag < 0.01 and seed < 90.0 and continuation == 'forward':
                             # E3, E4, E5 contours at low acc magnitude
@@ -2552,7 +2583,10 @@ class DisplayEquilibriaValidation:
                             counter = counter + 1
 
                             if counter == 12:
-
+                                print('lagrangePointNr: ' + str(lagrangePointNr))
+                                print('accMag: ' + str(accMag))
+                                print('HLT Min: ' + str(min(E3_DF['hamiltonian'])))
+                                print('HLT Max: ' + str(max(E3_DF['hamiltonian'])))
                                 ax1.scatter(E3_DF['alpha'], E3_DF['hamiltonian'], color=self.plottingColors['fifthLine'][2],linewidth=self.lineWidth, label='$E_{3}$', s=0.4)
 
         lgd = ax0.legend(frameon=True, loc='center left',bbox_to_anchor=(2.2, 0.5),markerscale=15)
@@ -2659,13 +2693,13 @@ if __name__ == '__main__':
 
 
     #display_equilibria_validation.plot_eigenvalue_acceleration_paper()
-    #display_equilibria_validation.plot_contours_zoom_and_wide_angle()
+    display_equilibria_validation.plot_contours_zoom_and_wide_angle()
     #display_equilibria_validation.plot_contours_zoom_and_wide_acc()
     #display_equilibria_validation.plot_equilibria_validation()
     # #
 
     #display_equilibria_validation.plot_eigenvalue_acceleration_paper()
-    display_equilibria_validation.plot_hamiltonian_paper()
+    #display_equilibria_validation.plot_hamiltonian_paper()
     #display_equilibria_validation.plot_eigenvalue_Hamiltonian_effect()
 
 
