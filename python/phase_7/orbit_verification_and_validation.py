@@ -460,6 +460,28 @@ class DisplayPeriodicSolutions:
         print('FM incrementPhaseHalf: ' + str(self.incrementPhaseHalf))
         print('FM Change in increment: ' + str(self.incrementPhaseHalf/self.incrementPhaseNul))
 
+        # Write statements! to show the reason
+        if self.deviation_x[-1] > 1.0e-9:
+            print('Continuation procedure terminated due to violation of X-coordinate periodicity condition')
+        elif self.deviation_y[-1] > 1.0e-9:
+            print('Continuation procedure terminated due to violation of Y-coordinate periodicity condition')
+        elif self.deviation_xdot[-1] > 1.0e-9:
+            print('Continuation procedure terminated due to violation of XDOT-coordinate periodicity condition')
+        elif self.deviation_ydot[-1] > 1.0e-9:
+            print('Continuation procedure terminated due to violation of YDOT-coordinate periodicity condition')
+        elif (self.lagrangePointNr == 1 and np.abs(np.real(self.lambda3[-1]) - 1) > 1.0e-3 ) or (self.lagrangePointNr == 2 and np.abs(np.abs(self.lambda3[-1]) - 1) > 1.0e-3):
+            print('Continuation procedure terminated due to error in lambda3 periodicity ')
+        elif np.abs(self.D[-1] - 1) > 1.0e-3:
+            print('Continuation procedure terminated due to error in determinant')
+        elif np.abs(self.incrementPhaseHalf/self.incrementPhaseNul) < 0.1:
+            print('Continuation procedure terminated due to Decrease in spacing of family')
+        elif len(self.continuationParameter) == 2500:
+            print('Continuation procedure terminated likely due to maximumNumberOfMembers')
+        else:
+            print('Continuation procedure terminated likely due to reversing of continuation condition')
+
+
+
 
 
 
