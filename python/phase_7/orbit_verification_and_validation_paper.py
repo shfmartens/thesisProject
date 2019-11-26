@@ -359,12 +359,12 @@ class PeriodicSolutionsCharacterization:
         Orbit2_l5 = [abs(entry) for entry in Orbit2.lambda5]
         Orbit2_l6 = [abs(entry) for entry in Orbit2.lambda6]
 
-        ax1.semilogy(Orbit1.continuationParameter, Orbit1_l1, c=self.plottingColors['lambda1'],label='$\lambda_{1}$')
-        ax1.semilogy(Orbit1.continuationParameter, Orbit1_l2, c=self.plottingColors['lambda2'],label='$\lambda_{2}$')
-        ax1.semilogy(Orbit1.continuationParameter, Orbit1_l3, c=self.plottingColors['lambda3'],label='$\lambda_{3}$')
-        ax1.semilogy(Orbit1.continuationParameter, Orbit1_l4, c=self.plottingColors['lambda4'],label='$1/\lambda_{1}$')
-        ax1.semilogy(Orbit1.continuationParameter, Orbit1_l5, c=self.plottingColors['lambda5'],label='$1/\lambda_{2}$')
-        ax1.semilogy(Orbit1.continuationParameter, Orbit1_l6, c=self.plottingColors['lambda6'],label='$1/\lambda_{3}$')
+        ax1.semilogy(Orbit1.continuationParameter, Orbit1_l1, c=self.plottingColors['lambda1'],label='$|\lambda_{1}|$')
+        ax1.semilogy(Orbit1.continuationParameter, Orbit1_l2, c=self.plottingColors['lambda2'],label='$|\lambda_{2}|$')
+        ax1.semilogy(Orbit1.continuationParameter, Orbit1_l3, c=self.plottingColors['lambda3'],label='$|\lambda_{3}|$')
+        ax1.semilogy(Orbit1.continuationParameter, Orbit1_l4, c=self.plottingColors['lambda4'],label='$|\\frac{1}{\lambda_{1}}|$')
+        ax1.semilogy(Orbit1.continuationParameter, Orbit1_l5, c=self.plottingColors['lambda5'],label='$|\\frac{1}{\lambda_{2}}|$')
+        ax1.semilogy(Orbit1.continuationParameter, Orbit1_l6, c=self.plottingColors['lambda6'],label='$|\\frac{1}{\lambda_{3}}|$')
         ax1.set_title('$|\lambda_1| \geq |\lambda_2| \geq |\lambda_3| = 1 = |1/\lambda_3| \geq |1/\lambda_2| \geq |1/\lambda_1|$')
 
 
