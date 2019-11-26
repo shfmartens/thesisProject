@@ -362,9 +362,9 @@ class PeriodicSolutionsCharacterization:
         ax1.semilogy(Orbit1.continuationParameter, Orbit1_l1, c=self.plottingColors['lambda1'],label='$\lambda_{1}$')
         ax1.semilogy(Orbit1.continuationParameter, Orbit1_l2, c=self.plottingColors['lambda2'],label='$\lambda_{2}$')
         ax1.semilogy(Orbit1.continuationParameter, Orbit1_l3, c=self.plottingColors['lambda3'],label='$\lambda_{3}$')
-        ax1.semilogy(Orbit1.continuationParameter, Orbit1_l4, c=self.plottingColors['lambda4'],label='$\lambda_{4}$')
-        ax1.semilogy(Orbit1.continuationParameter, Orbit1_l5, c=self.plottingColors['lambda5'],label='$\lambda_{5}$')
-        ax1.semilogy(Orbit1.continuationParameter, Orbit1_l6, c=self.plottingColors['lambda6'],label='$\lambda_{6}$')
+        ax1.semilogy(Orbit1.continuationParameter, Orbit1_l4, c=self.plottingColors['lambda4'],label='$1/\lambda_{1}$')
+        ax1.semilogy(Orbit1.continuationParameter, Orbit1_l5, c=self.plottingColors['lambda5'],label='$1/\lambda_{2}$')
+        ax1.semilogy(Orbit1.continuationParameter, Orbit1_l6, c=self.plottingColors['lambda6'],label='$1/\lambda_{3}$')
         ax1.set_title('$|\lambda_1| \geq |\lambda_2| \geq |\lambda_3| = 1 = |1/\lambda_3| \geq |1/\lambda_2| \geq |1/\lambda_1|$')
 
 
@@ -1031,8 +1031,8 @@ class PeriodicSolutionsCharacterization:
 if __name__ == '__main__':
 
     ballistic_planar_projection = False
-    ballistic_bifurcation_analysis = False
-    ballistic_stability_analysis = True
+    ballistic_bifurcation_analysis = True
+    ballistic_stability_analysis = False
     graphical_projection = False
     bifurcation_analysis = False
     stability_analysis = False
