@@ -462,11 +462,11 @@ class PeriodicSolutionsCharacterization:
 
         ax1.semilogy(Orbit1.continuationParameter, Orbit1.v1, c=self.plottingColors['lambda6'],label='$L_{1}$')
         ax1.semilogy(Orbit2.continuationParameter, Orbit2.v1, c=self.plottingColors['lambda3'],label='$L_{2}$')
-        ax1.set_title('v_{1}')
+        ax1.set_title('$\\nu_{1}$')
 
         ax2.semilogy(Orbit1.continuationParameter, Orbit1.v2, c=self.plottingColors['lambda6'],label='$L_{1}$')
         ax2.semilogy(Orbit2.continuationParameter, Orbit2.v2, c=self.plottingColors['lambda3'],label='$L_{2}$')
-        ax2.set_title('v_{2}')
+        ax2.set_title('$\\nu_{2}$')
 
         ax1.axhline(1, c=self.plottingColors['limit'], linewidth=1, linestyle='--')
         ax2.axhline(1, c=self.plottingColors['limit'], linewidth=1, linestyle='--')
