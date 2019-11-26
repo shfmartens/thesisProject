@@ -436,7 +436,7 @@ class PeriodicSolutionsCharacterization:
         lgd = ax1.legend(frameon=True, loc='center left',bbox_to_anchor=(2.165, -0.2),markerscale=10)
 
         fig.tight_layout()
-        plt.subplots_adjust(right=0.92)
+        plt.subplots_adjust(right=0.91)
 
 
         if self.lowDpi:
