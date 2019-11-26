@@ -1188,7 +1188,7 @@ if __name__ == '__main__':
         beta = 0.0
         hamiltonian = 0.0
         varying_quantity = 'Hamiltonian'
-        low_dpi = True
+        low_dpi = False
         plot_as_x_coordinate = True
         plot_as_family_number = False
 
