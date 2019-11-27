@@ -526,6 +526,8 @@ class PeriodicSolutionsCharacterization:
                 if self.varyingQuantity != 'Hamiltonian':
                     subtitleString = self.subplotTitle + str("{:4.1f}".format(self.subPlotTitleValueList[objectCounter]))
                 else:
+                    if self.subPlotTitleValueList[objectCounter] > -0.1 and self.subPlotTitleValueList[objectCounter] < 0.1:
+                        alphaRadians = '$0$'
                     if self.subPlotTitleValueList[objectCounter] > 59.9 and self.subPlotTitleValueList[objectCounter] < 60.1:
                         alphaRadians = '$\\frac{1}{3}\\pi$'
                     if self.subPlotTitleValueList[objectCounter] > 119.9 and self.subPlotTitleValueList[objectCounter] < 120.1:
