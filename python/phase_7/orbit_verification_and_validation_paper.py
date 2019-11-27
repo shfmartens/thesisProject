@@ -526,15 +526,15 @@ class PeriodicSolutionsCharacterization:
                 if self.varyingQuantity != 'Hamiltonian':
                     subtitleString = self.subplotTitle + str("{:4.1f}".format(self.subPlotTitleValueList[objectCounter]))
                 else:
-                    if self.subPlotTitleValueList[objectCounter] > 59.9 and self.subPlotTitleValueList[objectCounter] < 60.1
+                    if self.subPlotTitleValueList[objectCounter] > 59.9 and self.subPlotTitleValueList[objectCounter] < 60.1:
                         alphaRadians = '$\\frac{1}{3}\\pi$'
-                    if self.subPlotTitleValueList[objectCounter] > 119.9 and self.subPlotTitleValueList[objectCounter] < 120.1
+                    if self.subPlotTitleValueList[objectCounter] > 119.9 and self.subPlotTitleValueList[objectCounter] < 120.1:
                         alphaRadians = '$\\frac{2}{3}\\pi$'
-                    if self.subPlotTitleValueList[objectCounter] > 179.9 and self.subPlotTitleValueList[objectCounter] < 180.1
+                    if self.subPlotTitleValueList[objectCounter] > 179.9 and self.subPlotTitleValueList[objectCounter] < 180.1:
                         alphaRadians = '$\\pi$'
-                    if self.subPlotTitleValueList[objectCounter] > 239.9 and self.subPlotTitleValueList[objectCounter] < 240.1
+                    if self.subPlotTitleValueList[objectCounter] > 239.9 and self.subPlotTitleValueList[objectCounter] < 240.1:
                         alphaRadians = '$\\frac{4}{3}\\pi$'
-                    if self.subPlotTitleValueList[objectCounter] > 299.9 and self.subPlotTitleValueList[objectCounter] < 300.1
+                    if self.subPlotTitleValueList[objectCounter] > 299.9 and self.subPlotTitleValueList[objectCounter] < 300.1:
                         alphaRadians = '$\\frac{5}{3}\\pi$'
                     subtitleString = self.subplotTitle + alphaRadians
                 arr[k,j].set_title(subtitleString)
