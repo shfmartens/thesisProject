@@ -913,7 +913,7 @@ class PeriodicSolutionsCharacterization:
         else:
             colour_family = 'sixFamilies'
 
-
+        objectCounter = 0
         for i in range(len(self.orbitObjects)):
 
             if self.varyingQuantity != 'Hamiltonian':
