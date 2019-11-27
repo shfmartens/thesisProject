@@ -846,7 +846,7 @@ class PeriodicSolutionsCharacterization:
                     arr[i, j].set_yticklabels(('$10^{-4}$','$10^{-2}$','$10^{0}$','$10^{2}$','$10^{4}$'))
                     arr[i+1,j].set_ylim([-180, 180])
                     arr[i+1, j].set_yticks([-180.0, -90.0, 0.0, 90.0, 180.0])
-                    arr[i+1, j].set_yticklabels(('$-\\pi$', '$-\\frac{pi}{2}$', '$0$', '$\\frac{pi}{2}$', '$\\pi$'))
+                    arr[i+1, j].set_yticklabels(('$-\\pi$', '$-\\frac{\\pi}{2}$', '$0$', '$\\frac{\\pi}{2}$', '$\\pi$'))
 
                     objectCounter = objectCounter + 1
 
