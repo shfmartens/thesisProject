@@ -679,7 +679,7 @@ class PeriodicSolutionsCharacterization:
 
         cbar = plt.colorbar(sm, cax=cax, label=self.continuationLabel)
 
-        f.tight_layout()
+        #f.tight_layout()
 
         # print('===== TEST ASPECT RATIO THINGS ====')
         # print('position handle of plot: ' + str(position_handle2))
