@@ -1097,8 +1097,8 @@ if __name__ == '__main__':
     ballistic_stability_analysis = False
     graphical_projection = False
     bifurcation_analysis = False
-    stability_analysis = True
-    hamiltonian_domain_analysis = False
+    stability_analysis = False
+    hamiltonian_domain_analysis = True
 
     if ballistic_planar_projection == True:
         lagrange_point_nr = 1
