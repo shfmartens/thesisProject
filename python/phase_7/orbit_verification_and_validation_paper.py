@@ -681,7 +681,7 @@ class PeriodicSolutionsCharacterization:
         colourbar_base = position_handle2[1]
         colourbar_height = position_handle[1]+position_handle[3]-colourbar_base
 
-        colour_base2 = 0.05
+        colour_base2 = 0.08
         colourbar_height2 = 0.96 - colour_base2
         axColorbar = f.add_axes([0.92, colour_base2, 0.02, colourbar_height2])
         axColorbar.get_xaxis().set_visible(False)
@@ -692,7 +692,7 @@ class PeriodicSolutionsCharacterization:
 
         cax = divider.append_axes("left", size="100%", pad=0.0)
 
-        plt.subplots_adjust(left=0.06,bottom=0.05,top=0.96)
+        plt.subplots_adjust(left=0.065,bottom=0.05,top=0.96)
 
 
         cbar = plt.colorbar(sm, cax=cax, label=self.continuationLabel)
