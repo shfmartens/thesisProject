@@ -846,9 +846,9 @@ class PeriodicSolutionsCharacterization:
 
                     objectCounter = objectCounter + 1
 
-        plt.subplots_adjust(left=0.05,bottom=0.05,top=0.95,hspace=0.5)
+        plt.subplots_adjust(left=0.06,bottom=0.06,top=0.95,hspace=0.5)
 
-        lgd = arr[2,columnNumber-1].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 1.3), markerscale=10)
+        lgd = arr[2,columnNumber-1].legend(frameon=True, loc='center left', bbox_to_anchor=(1.05, 1.3), markerscale=10)
 
         if self.varyingQuantity == 'Hamiltonian':
             if self.lowDpi:
