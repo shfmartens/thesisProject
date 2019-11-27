@@ -1070,7 +1070,7 @@ class PeriodicSolutionsCharacterization:
 
         lgd = ax.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), markerscale=10)
 
-        plt.subplots_adjust(bottom=0.12,top=0.96,left=0.06)
+        plt.subplots_adjust(bottom=0.14,top=0.96,left=0.08)
         ax.set_xlabel('T [-]')
         ax.set_ylabel('$H_{lt}$ [-]')
 
