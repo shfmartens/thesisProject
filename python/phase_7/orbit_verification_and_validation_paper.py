@@ -675,8 +675,6 @@ class PeriodicSolutionsCharacterization:
 
         sm.set_array([])
 
-        plt.tight_layout()
-
         position_handle = arr[0,columnNumber-1].get_position().bounds
         position_handle2 = arr[1, columnNumber-1].get_position().bounds
 
@@ -691,6 +689,8 @@ class PeriodicSolutionsCharacterization:
         divider = make_axes_locatable(axColorbar)
 
         cax = divider.append_axes("left", size="100%", pad=0.0)
+
+        plt.tight_layout()
 
         cbar = plt.colorbar(sm, cax=cax, label=self.continuationLabel)
 
