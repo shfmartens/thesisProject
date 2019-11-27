@@ -842,7 +842,10 @@ class PeriodicSolutionsCharacterization:
                     arr[i,j].set_xlim([continuationParameter_min,continuationParameter_max])
                     arr[i+1,j].set_xlim([continuationParameter_min,continuationParameter_max])
                     arr[i,j].set_ylim([1.0e-4,1.0e4])
+                    arr[i,j].set_xticks([1.0e-4,1.0e-2,1.0e0,1.0e2,1.0e4])
+                    arr[i, j].set_xtickslabels(('$10^{-4}$','$10^{-2}$','$10^{0}$','$10^{2}$','$10^{4}$'))
                     arr[i+1,j].set_ylim([-180, 180])
+
 
                     objectCounter = objectCounter + 1
 
