@@ -514,8 +514,6 @@ class PeriodicSolutionsCharacterization:
             rownNumber = 2
             columnNumber = 3
 
-        plt.tight_layout()
-
         # Build the subtitles and labels
         objectCounter = 0
         for k in range(rownNumber):
@@ -677,6 +675,7 @@ class PeriodicSolutionsCharacterization:
 
         sm.set_array([])
 
+        plt.tight_layout()
 
         position_handle = arr[0,columnNumber-1].get_position().bounds
         position_handle2 = arr[1, columnNumber-1].get_position().bounds
