@@ -916,11 +916,31 @@ class PeriodicSolutionsCharacterization:
 
         for i in range(len(self.orbitObjects)):
 
-            # parameter for label:
-            if varying_quantity == 'Hamiltonian':
-                plotLabelString = '$\\alpha = $' + str(self.orbitObjects[i].alpha) + '$^{\\circ}$'
+            if self.varyingQuantity != 'Hamiltonian':
+                subtitleString = self.subplotTitle + str(
+                    "{:4.1f}".format(self.subPlotTitleValueList[objectCounter]))
             else:
-                plotLabelString = '$H_{lt} = $' + str(self.orbitObjects[i].Hamiltonian)
+                if self.subPlotTitleValueList[objectCounter] > -0.1 and self.subPlotTitleValueList[
+                    objectCounter] < 0.1:
+                    alphaRadians = '$0$'
+                if self.subPlotTitleValueList[objectCounter] > 59.9 and self.subPlotTitleValueList[
+                    objectCounter] < 60.1:
+                    alphaRadians = '$\\frac{1}{3}\\pi$'
+                if self.subPlotTitleValueList[objectCounter] > 119.9 and self.subPlotTitleValueList[
+                    objectCounter] < 120.1:
+                    alphaRadians = '$\\frac{2}{3}\\pi$'
+                if self.subPlotTitleValueList[objectCounter] > 179.9 and self.subPlotTitleValueList[
+                    objectCounter] < 180.1:
+                    alphaRadians = '$\\pi$'
+                if self.subPlotTitleValueList[objectCounter] > 239.9 and self.subPlotTitleValueList[
+                    objectCounter] < 240.1:
+                    alphaRadians = '$\\frac{4}{3}\\pi$'
+                if self.subPlotTitleValueList[objectCounter] > 299.9 and self.subPlotTitleValueList[
+                    objectCounter] < 300.1:
+                    alphaRadians = '$\\frac{5}{3}\\pi$'
+                subtitleString = self.subplotTitle + alphaRadians
+            arr[i].set_title(subtitleString)
+            objectCounter = objectCounter + 1
 
             arr[0].semilogy(self.orbitObjects[i].continuationParameter, self.orbitObjects[i].v1, c=self.plottingColors[colour_family][i], label=plotLabelString)
             arr[1].semilogy(self.orbitObjects[i].continuationParameter, self.orbitObjects[i].v2, c=self.plottingColors[colour_family][i], label=plotLabelString)
@@ -937,10 +957,11 @@ class PeriodicSolutionsCharacterization:
         arr[0].set_xlabel(self.continuationLabel)
         arr[1].set_xlabel(self.continuationLabel)
         arr[0].set_ylabel('Stability Index')
-        arr[0].set_title('$v_{1}$')
-        arr[1].set_title('$v_{2}$')
+        arr[0].set_title('$\\nu_{1}$')
+        arr[1].set_title('$\\nu_{2}$')
 
 
+        plt.subplots_adjust(left=0.06,bottom=0.05,top=0.95)
 
 
         lgd = arr[1].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), markerscale=10)
