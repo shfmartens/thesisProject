@@ -774,7 +774,7 @@ class PeriodicSolutionsCharacterization:
                 if j == 0 and (k == 0 or k == 2):
                     arr[k, j].set_ylabel('Eigenvalues Module [-]')
                 if j == 0 and (k == 1 or k == 3):
-                    arr[k, j].set_ylabel('Phase [$^{\\circ}$]')
+                    arr[k, j].set_ylabel('Phase [$rad$]')
 
                 arr[k, j].grid(True, which='both', ls=':')
                 if k == 0 or k == 2:
@@ -845,7 +845,8 @@ class PeriodicSolutionsCharacterization:
                     arr[i,j].set_yticks([1.0e-4,1.0e-2,1.0e0,1.0e2,1.0e4])
                     arr[i, j].set_yticklabels(('$10^{-4}$','$10^{-2}$','$10^{0}$','$10^{2}$','$10^{4}$'))
                     arr[i+1,j].set_ylim([-180, 180])
-
+                    arr[i, j].set_yticks([-180.0, -90.0, 0.0, 90.0, 180.0])
+                    arr[i, j].set_yticklabels(('$-\\pi$', '$-\\frac{pi}{2}$', '$0$', '$\\frac{pi}{2}$', '$\\pi$'))
 
                     objectCounter = objectCounter + 1
 
