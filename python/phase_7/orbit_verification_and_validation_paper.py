@@ -501,6 +501,7 @@ class PeriodicSolutionsCharacterization:
 
     def graphical_projection(self):
 
+
         numberOfPlots = len(self.orbitObjects)
         print(numberOfPlots)
         if numberOfPlots == 4:
@@ -512,6 +513,8 @@ class PeriodicSolutionsCharacterization:
             f, arr = plt.subplots(2, 3, figsize=self.figSize)
             rownNumber = 2
             columnNumber = 3
+
+        plt.tight_layout()
 
         # Build the subtitles and labels
         objectCounter = 0
@@ -688,12 +691,9 @@ class PeriodicSolutionsCharacterization:
 
         divider = make_axes_locatable(axColorbar)
 
-
         cax = divider.append_axes("left", size="100%", pad=0.0)
 
         cbar = plt.colorbar(sm, cax=cax, label=self.continuationLabel)
-
-        plt.tight_layout()
 
         # print('===== TEST ASPECT RATIO THINGS ====')
         # print('position handle of plot: ' + str(position_handle2))
