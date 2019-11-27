@@ -847,7 +847,7 @@ class PeriodicSolutionsCharacterization:
                     arr[i+1,j].set_ylim([-180, 180])
                     arr[i+1, j].set_yticks([-180.0, -90.0, 0.0, 90.0, 180.0])
                     arr[i+1, j].set_yticklabels(('$-\\pi$', '$-\\frac{\\pi}{2}$', '$0$', '$\\frac{\\pi}{2}$', '$\\pi$'))
-
+ 
                     objectCounter = objectCounter + 1
 
         plt.subplots_adjust(left=0.06,bottom=0.065,top=0.95,hspace=0.5)
