@@ -1037,17 +1037,40 @@ class PeriodicSolutionsCharacterization:
         else:
             colour_family = 'sixFamilies'
 
+        objectCounter = 0
+
         for i in range(numberOfPlots):
             # parameter for label:
-            if varying_quantity == 'Hamiltonian':
-                plotLabelString = '$\\alpha = $' + str(self.orbitObjects[i].alpha) + '$^{\\circ}$'
+            if self.varyingQuantity != 'Hamiltonian':
+                subtitleString = self.subplotTitle + str(
+                    "{:4.1f}".format(self.subPlotTitleValueList[objectCounter]))
             else:
-                plotLabelString = '$H_{lt} = $' + str(self.orbitObjects[i].Hamiltonian)
+                if self.subPlotTitleValueList[objectCounter] > -0.1 and self.subPlotTitleValueList[
+                    objectCounter] < 0.1:
+                    alphaRadians = '$0$'
+                if self.subPlotTitleValueList[objectCounter] > 59.9 and self.subPlotTitleValueList[
+                    objectCounter] < 60.1:
+                    alphaRadians = '$\\frac{1}{3}\\pi$'
+                if self.subPlotTitleValueList[objectCounter] > 119.9 and self.subPlotTitleValueList[
+                    objectCounter] < 120.1:
+                    alphaRadians = '$\\frac{2}{3}\\pi$'
+                if self.subPlotTitleValueList[objectCounter] > 179.9 and self.subPlotTitleValueList[
+                    objectCounter] < 180.1:
+                    alphaRadians = '$\\pi$'
+                if self.subPlotTitleValueList[objectCounter] > 239.9 and self.subPlotTitleValueList[
+                    objectCounter] < 240.1:
+                    alphaRadians = '$\\frac{4}{3}\\pi$'
+                if self.subPlotTitleValueList[objectCounter] > 299.9 and self.subPlotTitleValueList[
+                    objectCounter] < 300.1:
+                    alphaRadians = '$\\frac{5}{3}\\pi$'
+                subtitleString = self.subplotTitle + alphaRadians
+            objectCounter = objectCounter + 1
 
-            ax.plot(self.orbitObjects[i].T, self.orbitObjects[i].Hlt,c=self.plottingColors[colour_family][i], label=plotLabelString)
+            ax.plot(self.orbitObjects[i].T, self.orbitObjects[i].Hlt,c=self.plottingColors[colour_family][i], label=subtitleString)
 
         lgd = ax.legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), markerscale=10)
 
+        plt.subplots_adjust(bottom=0.12,top=0.96,left=0.06)
         ax.set_xlabel('T [-]')
         ax.set_ylabel('$H_{lt}$ [-]')
 
