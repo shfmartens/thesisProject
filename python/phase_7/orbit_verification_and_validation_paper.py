@@ -694,6 +694,7 @@ class PeriodicSolutionsCharacterization:
 
         plt.subplots_adjust(left=0.06,bottom=0.05,top=0.96)
 
+
         cbar = plt.colorbar(sm, cax=cax, label=self.continuationLabel)
 
         # print('===== TEST ASPECT RATIO THINGS ====')
