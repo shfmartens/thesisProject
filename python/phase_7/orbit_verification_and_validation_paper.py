@@ -690,7 +690,7 @@ class PeriodicSolutionsCharacterization:
 
         cax = divider.append_axes("left", size="100%", pad=0.0)
 
-        plt.subplots_adjust(left=0.0,bottom=0.0)
+        plt.subplots_adjust(left=0.05,bottom=0.05,top=0.95)
 
         cbar = plt.colorbar(sm, cax=cax, label=self.continuationLabel)
 
