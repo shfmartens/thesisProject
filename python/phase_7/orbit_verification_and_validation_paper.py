@@ -843,7 +843,7 @@ class PeriodicSolutionsCharacterization:
                     arr[i+1,j].set_xlim([continuationParameter_min,continuationParameter_max])
                     arr[i,j].set_ylim([1.0e-4,1.0e4])
                     arr[i,j].set_yticks([1.0e-4,1.0e-2,1.0e0,1.0e2,1.0e4])
-                    arr[i, j].set_yticklabels(('$10^{-4}$','$10^{-2}$','$10^{0}$','$10^{2}$','$10^{4}$'))
+                    arr[i, j].set_yticklabels(('$10^{-4}$','$10^{-2}$','$10^{0\\phantom{-}}$','$10^{2\\phantom{-}}$','$10^{4\\phantom{-}}$'))
                     arr[i+1,j].set_ylim([-180, 180])
                     arr[i+1, j].set_yticks([-180.0, -90.0, 0.0, 90.0, 180.0])
                     arr[i+1, j].set_yticklabels(('$-\\pi$', '$-\\frac{\\pi}{2}$', '$0$', '$\\frac{\\pi}{2}$', '$\\pi$'))
