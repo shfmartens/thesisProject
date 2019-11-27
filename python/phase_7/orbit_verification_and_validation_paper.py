@@ -939,11 +939,10 @@ class PeriodicSolutionsCharacterization:
                     objectCounter] < 300.1:
                     alphaRadians = '$\\frac{5}{3}\\pi$'
                 subtitleString = self.subplotTitle + alphaRadians
-            arr[i].set_title(subtitleString)
             objectCounter = objectCounter + 1
 
-            arr[0].semilogy(self.orbitObjects[i].continuationParameter, self.orbitObjects[i].v1, c=self.plottingColors[colour_family][i], label=plotLabelString)
-            arr[1].semilogy(self.orbitObjects[i].continuationParameter, self.orbitObjects[i].v2, c=self.plottingColors[colour_family][i], label=plotLabelString)
+            arr[0].semilogy(self.orbitObjects[i].continuationParameter, self.orbitObjects[i].v1, c=self.plottingColors[colour_family][i], label=subtitleString)
+            arr[1].semilogy(self.orbitObjects[i].continuationParameter, self.orbitObjects[i].v2, c=self.plottingColors[colour_family][i], label=subtitleString)
 
 
             if i == len(self.orbitObjects) - 1:
