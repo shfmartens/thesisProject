@@ -847,7 +847,7 @@ class PeriodicSolutionsCharacterization:
                     arr[i+1,j].set_ylim([-180, 180])
                     arr[i+1, j].set_yticks([-180.0, -90.0, 0.0, 90.0, 180.0])
                     arr[i+1, j].set_yticklabels(('$-\\pi$', '$-\\frac{\\pi}{2}$', '$0$', '$\\frac{\\pi}{2}$', '$\\pi$'))
- 
+
                     objectCounter = objectCounter + 1
 
         plt.subplots_adjust(left=0.06,bottom=0.065,top=0.95,hspace=0.5)
@@ -1076,8 +1076,8 @@ if __name__ == '__main__':
     ballistic_bifurcation_analysis = False
     ballistic_stability_analysis = False
     graphical_projection = False
-    bifurcation_analysis = True
-    stability_analysis = False
+    bifurcation_analysis = False
+    stability_analysis = True
     hamiltonian_domain_analysis = False
 
     if ballistic_planar_projection == True:
@@ -1231,7 +1231,7 @@ if __name__ == '__main__':
         hamiltonian = 0.0
         varying_quantity = 'Hamiltonian'
         low_dpi = False
-        plot_as_x_coordinate = True
+        plot_as_x_coordinate = False
         plot_as_family_number = False
 
         orbit1 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0, hamiltonian,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
