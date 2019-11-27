@@ -778,7 +778,29 @@ class PeriodicSolutionsCharacterization:
 
                 arr[k, j].grid(True, which='both', ls=':')
                 if k == 0 or k == 2:
-                    subtitleString = self.subplotTitle + str("{:4.1f}".format(self.subPlotTitleValueList[objectCounter]))
+                    if self.varyingQuantity != 'Hamiltonian':
+                        subtitleString = self.subplotTitle + str(
+                            "{:4.1f}".format(self.subPlotTitleValueList[objectCounter]))
+                    else:
+                        if self.subPlotTitleValueList[objectCounter] > -0.1 and self.subPlotTitleValueList[
+                            objectCounter] < 0.1:
+                            alphaRadians = '$0$'
+                        if self.subPlotTitleValueList[objectCounter] > 59.9 and self.subPlotTitleValueList[
+                            objectCounter] < 60.1:
+                            alphaRadians = '$\\frac{1}{3}\\pi$'
+                        if self.subPlotTitleValueList[objectCounter] > 119.9 and self.subPlotTitleValueList[
+                            objectCounter] < 120.1:
+                            alphaRadians = '$\\frac{2}{3}\\pi$'
+                        if self.subPlotTitleValueList[objectCounter] > 179.9 and self.subPlotTitleValueList[
+                            objectCounter] < 180.1:
+                            alphaRadians = '$\\pi$'
+                        if self.subPlotTitleValueList[objectCounter] > 239.9 and self.subPlotTitleValueList[
+                            objectCounter] < 240.1:
+                            alphaRadians = '$\\frac{4}{3}\\pi$'
+                        if self.subPlotTitleValueList[objectCounter] > 299.9 and self.subPlotTitleValueList[
+                            objectCounter] < 300.1:
+                            alphaRadians = '$\\frac{5}{3}\\pi$'
+                        subtitleString = self.subplotTitle + alphaRadians
                     arr[k, j].set_title(subtitleString)
                     objectCounter = objectCounter + 1
 
@@ -820,7 +842,7 @@ class PeriodicSolutionsCharacterization:
 
                     arr[i,j].set_xlim([continuationParameter_min,continuationParameter_max])
                     arr[i+1,j].set_xlim([continuationParameter_min,continuationParameter_max])
-                    arr[i,j].set_ylim([1.0e-1,1.0e4])
+                    arr[i,j].set_ylim([1.0e-4,1.0e4])
                     arr[i+1,j].set_ylim([-180, 180])
 
                     objectCounter = objectCounter + 1
