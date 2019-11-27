@@ -828,13 +828,12 @@ class PeriodicSolutionsCharacterization:
                     Orbit_l5 = [abs(entry) for entry in self.orbitObjects[objectCounter].lambda5]
                     Orbit_l6 = [abs(entry) for entry in self.orbitObjects[objectCounter].lambda6]
 
-
-                    arr[i,j].semilogy(self.orbitObjects[objectCounter].continuationParameter, Orbit_l1, c=self.plottingColors['lambda1'],label='$\lambda_{1}$')
-                    arr[i,j].semilogy(self.orbitObjects[objectCounter].continuationParameter, Orbit_l2, c=self.plottingColors['lambda2'],label='$\lambda_{2}$')
-                    arr[i,j].semilogy(self.orbitObjects[objectCounter].continuationParameter, Orbit_l3, c=self.plottingColors['lambda3'],label='$\lambda_{3}$')
-                    arr[i,j].semilogy(self.orbitObjects[objectCounter].continuationParameter, Orbit_l4, c=self.plottingColors['lambda4'],label='$\lambda_{4}$')
-                    arr[i,j].semilogy(self.orbitObjects[objectCounter].continuationParameter, Orbit_l5, c=self.plottingColors['lambda5'],label='$\lambda_{5}$')
-                    arr[i,j].semilogy(self.orbitObjects[objectCounter].continuationParameter, Orbit_l6, c=self.plottingColors['lambda6'],label='$\lambda_{6}$')
+                    arr[i,j].semilogy(self.orbitObjects[objectCounter].continuationParameter, Orbit_l1, c=self.plottingColors['lambda1'],label='$|\lambda_{1}|$')
+                    arr[i,j].semilogy(self.orbitObjects[objectCounter].continuationParameter, Orbit_l2, c=self.plottingColors['lambda2'],label='$|\lambda_{2}|$')
+                    arr[i,j].semilogy(self.orbitObjects[objectCounter].continuationParameter, Orbit_l3, c=self.plottingColors['lambda3'],label='$|\lambda_{3}|$')
+                    arr[i,j].semilogy(self.orbitObjects[objectCounter].continuationParameter, Orbit_l4, c=self.plottingColors['lambda4'],label='$|\\frac{1}{\lambda_{1}}|$')
+                    arr[i,j].semilogy(self.orbitObjects[objectCounter].continuationParameter, Orbit_l5, c=self.plottingColors['lambda5'],label='$|\\frac{1}{\lambda_{2}}|$')
+                    arr[i,j].semilogy(self.orbitObjects[objectCounter].continuationParameter, Orbit_l6, c=self.plottingColors['lambda6'],label='$|\\frac{1}{\lambda_{3}}|$')
 
                     size = 3
                     arr[i+1, j].scatter(self.orbitObjects[objectCounter].continuationParameter,np.angle(self.orbitObjects[objectCounter].lambda2, deg=True),c=self.plottingColors['lambda2'], s=size)
@@ -1196,7 +1195,7 @@ if __name__ == '__main__':
         hamiltonian = 0.0
         varying_quantity = 'Hamiltonian'
         low_dpi = False
-        plot_as_x_coordinate = True
+        plot_as_x_coordinate = False
         plot_as_family_number = False
 
         orbit1 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0, hamiltonian,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
