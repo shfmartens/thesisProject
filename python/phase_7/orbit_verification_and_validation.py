@@ -482,6 +482,9 @@ class DisplayPeriodicSolutions:
             print('Continuation procedure terminated likely due to reversing of continuation condition!')
 
 
+        print('====HAMILTONIAN RANGE===')
+        print('Hlt min:' + str(min(self.Hlt)))
+        print('Hlt min:' + str(max(self.Hlt)))
 
 
 

@@ -1299,7 +1299,7 @@ if __name__ == '__main__':
         del characterize_periodic_solutions
 
     if hamiltonian_domain_analysis == True:
-        lagrange_point_nr = 2
+        lagrange_point_nr = 1
         acceleration_magnitude = 0.01
         alpha = 0.0
         beta = 0.0
@@ -1309,6 +1309,7 @@ if __name__ == '__main__':
         plot_as_x_coordinate = False
         plot_as_family_number = False
 
+        orbit0 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.0, 0.0, hamiltonian,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
         orbit1 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0, hamiltonian,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
         orbit2 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 60.0,hamiltonian, varying_quantity, low_dpi, plot_as_x_coordinate,plot_as_family_number)
         orbit3 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 120.0,hamiltonian, varying_quantity, low_dpi, plot_as_x_coordinate,plot_as_family_number)
