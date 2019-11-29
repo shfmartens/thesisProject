@@ -52,16 +52,25 @@ int main (){
 //    {
 //        double alpha = 0.0;
 //        double accMag = 0.0107;
-//        for (int i = 1; i < 6 ; i++)
+//        for (int i = 1; i < 2 ; i++)
 //        {
+//            double tempAcc = 0.0527;
+//            double tempAng = 180.0;
 
-//           Eigen::Vector2d equilibriumTest = createEquilibriumLocations(i, 0.07, 0.0, "acceleration", massParameter);
+//           Eigen::Vector2d equilibriumTest = createEquilibriumLocations(1, tempAcc,  tempAng, "acceleration", 1.0, massParameter);
+//           Eigen::VectorXd hamiltonianTest(10); hamiltonianTest.setZero();
+//           hamiltonianTest.segment(0,2) = equilibriumTest;
+//           hamiltonianTest(6) = tempAcc;
+//           hamiltonianTest(7) = tempAng;
 
+//            double testHamiltonianValue = computeHamiltonian(massParameter, hamiltonianTest);
 //            std::cout << "\n== Eq result =="<< std::endl
 //                      << "librationPointNr: " << i << std::endl
-//                      << "alt: " << "0.003" << std::endl
-//                      << "alpha: " << 0.0 << std::endl
+//                      << "alt: " << tempAcc << std::endl
+//                      << "alpha: " << tempAng << std::endl
 //                      << "equilibriumLocation: \n" << equilibriumTest << std::endl
+//                      << "testHamiltonianValue: \n" << testHamiltonianValue << std::endl
+
 //                      << "=================" << std::endl;
 
 
@@ -104,7 +113,7 @@ int main (){
                 std::string orbitType = "horizontal";
                 int continuationIndex = 6; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
                 double accelerationMagnitude = 0.0;
-                double accelerationAngle = 0.0;
+                double accelerationAngle = 180.0;
                 double accelerationAngle2 = 0.00;
                 double initialMass = 1.0;
                 double ySign = -1.0;

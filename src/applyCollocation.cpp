@@ -1279,8 +1279,16 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
             double currentNumberOfSegments =  static_cast<double>(currentNumberOfCollocationPoints) -1.0;
             double orderOfCollocationScheme = 12.0;
 
-            double newNumberSegments = std::round( currentNumberOfSegments * pow((10.0*maximumErrorPerSegment)/maximumErrorTolerance,1.0/(orderOfCollocationScheme+1.0)) + 5);
-            numberOfCollocationPoints = static_cast<int>(newNumberSegments) +1;
+            double newNumberOfSegments;
+                    if (continuationIndex == 1)
+                    {
+                      newNumberOfSegments = std::round( currentNumberOfSegments * pow((10.0*maximumErrorPerSegment)/maximumErrorTolerance,1.0/(orderOfCollocationScheme+1.0)) + 5);
+                    } else
+                    {
+                        newNumberOfSegments = std::round( currentNumberOfSegments * pow((10.0*maximumErrorPerSegment)/maximumErrorTolerance,1.0/(orderOfCollocationScheme+1.0)) + 5);
+                        //newNumberOfSegments = currentNumberOfSegments + 2.0;
+                    }
+            numberOfCollocationPoints = static_cast<int>(newNumberOfSegments) +1;
 
             collocationGuessStart.resize(11*(numberOfCollocationPoints-1),4); collocationGuessStart.setZero();
 
