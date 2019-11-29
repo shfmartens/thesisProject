@@ -69,6 +69,8 @@ Eigen::VectorXd extractStatesContinuationVector(std::string referenceString, con
             closedir(d);
         }
 
+    std::cout << "closestHamiltonianString: " << closestHamiltonianString << std::endl;
+
     // search the corresponding statesContinuation Entry and extract the statesContinuation vector
     std::string directory_path = "../data/raw/orbits/augmented/varying_hamiltonian/";
     std::string file_name = referenceString + "_states_continuation.txt";
@@ -94,6 +96,8 @@ Eigen::VectorXd extractStatesContinuationVector(std::string referenceString, con
             // inspect the Hamiltonian value
             if (counter == 1)
                {
+
+                 //std::cout << "subs.substr(0,14): " << subs.substr(0,14)  << std::endl;
 
                   if (subs.substr(0,14) == closestHamiltonianString )
                   {
@@ -134,6 +138,7 @@ Eigen::VectorXd extractStatesContinuationVector(std::string referenceString, con
     }
     std::cout << "creating output vector " << std::endl;
     Eigen::VectorXd outputVector(statesContinuationVector.size()); outputVector.setZero();
+    std::cout << "statesContinuationVector.size(): " << statesContinuationVector.size() << std::endl;
 
     for(int k = 0; k < (statesContinuationVector.size()); k++)
     {
@@ -176,7 +181,7 @@ Eigen::MatrixXd refineOrbitHamiltonian (const int librationPointNr, const std::s
 
     // create the reference vector:
     std::string referenceString =  createReferenceString(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2);
-
+    std::cout << "referenceString: " << referenceString << std::endl;
     // Determine the orbit with hamiltonian closest to the familyHamiltonian and extract numberOfNodes and statesContinuationVector
     Eigen::VectorXd statesVector = extractStatesContinuationVector(referenceString, familyHamiltonian, numberOfCollocationPoints);
 

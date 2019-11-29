@@ -49,7 +49,7 @@ double getDefaultArcLengthAugmented(
         const Eigen::VectorXd& currentState,  const int continuationIndex  );
 
 bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differentialCorrections, const std::vector< Eigen::VectorXd >& statesContinuationVector,
-                       const Eigen::MatrixXd& stateVectorInclSTM, const std::string orbitType, const int librationPointNr, const int orbitNumber,
+                       const Eigen::MatrixXd& stateVectorInclSTM, const std::string orbitType, const int librationPointNr, const int orbitNumber, const int continuationIndex,
                        const double maxEigenvalueDeviation = 1.0e-3 );
 
 Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::VectorXd& initialStateGuess, const int orbitNumber,

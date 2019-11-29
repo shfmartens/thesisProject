@@ -562,7 +562,7 @@ Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::MatrixXd& initi
 
 
 
-    if (initialSolutionFromTextFile == false)
+    if (initialSolutionFromTextFile == false and continuationIndex == 1)
     {
 
         // determine whethter the initial condition of input in this function and output of collocation algorithm are in the desired direction!
@@ -578,7 +578,7 @@ Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::MatrixXd& initi
         double distanceCollocGuess = (initialStateMoon-initialStateColloc).norm();
         if (continuationIndex == 1)
         {
-            if(distancePreviousGuess < distanceCollocGuess )
+            if(distancePreviousGuess < distanceCollocGuess and continuationIndex == 1)
             {
                 continuationDirectionReversed = false;
             }else
@@ -1018,7 +1018,7 @@ double getDefaultArcLengthAugmented(
 }
 
 bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differentialCorrections, const std::vector< Eigen::VectorXd >& statesContinuationVector,
-                       const Eigen::MatrixXd& stateVectorInclSTM, const std::string orbitType, const int librationPointNr, const int orbitNumber,
+                       const Eigen::MatrixXd& stateVectorInclSTM, const std::string orbitType, const int librationPointNr, const int orbitNumber, const int continuationIndex,
                        const double maxEigenvalueDeviation )
 {
     // Check termination conditions
@@ -1034,7 +1034,7 @@ bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differenti
         // Check eigenvalue condition (at least one pair equalling a real one)
         // Exception for the horizontal Lyapunov family in Earth-Moon L2: eigenvalue may be of module one instead of a real one to compute a more extensive family
         continueNumericalContinuation = false;
-        if ( ( librationPointNr == 2 ) && ( orbitType == "horizontal" ) )
+        if (( ( librationPointNr == 2 ) && ( orbitType == "horizontal" ) ) or continuationIndex == 6  )
         {
             continueNumericalContinuation = checkEigenvalues( stateVectorInclSTM, maxEigenvalueDeviation, true );
             if (continueNumericalContinuation == false)
@@ -1110,7 +1110,7 @@ bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differenti
 
 //    }
 
-    if (continueNumericalContinuation == true)
+    if (continueNumericalContinuation == true and continuationIndex == 1)
     {
         Eigen::VectorXd previousStateInitial = differentialCorrections.at(differentialCorrections.size()-2).segment(10,10);
         Eigen::VectorXd currentStateInitial = differentialCorrections.at(differentialCorrections.size()-1).segment(10,10);
@@ -1141,7 +1141,7 @@ bool checkTerminationAugmented( const std::vector< Eigen::VectorXd >& differenti
 
     }
 
-    if (continueNumericalContinuation == true and orbitNumber > 900 )
+    if (( continueNumericalContinuation == true and orbitNumber > 900 and continuationIndex == 1) or ( continueNumericalContinuation == true  and continuationIndex == 6) )
     {
 
         Eigen::VectorXd finalState(10); finalState.setZero();
@@ -1255,14 +1255,42 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                     maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
     } else if (startContinuationFromTextFile == false)
     {
+        double tempAngle = 0.0;
+//        std::cout << "=== TEST TEST TEST INPUT OF REFINEORBITHAMILTONIAN ====" << std::endl
+//                  << "librationPointNr: " << librationPointNr << std::endl
+//                  << "accelerationMagnitude: " << accelerationMagnitude << std::endl
+//                  << "accelerationAngle: " << accelerationAngle << std::endl
+//                  << "tempAngle: " << tempAngle << std::endl
+//                  << "accelerationAngle2: " << accelerationAngle2 << std::endl
+//                  << "familyHamiltonian: " << familyHamiltonian << std::endl
+//                  << "continuationIndex: " << continuationIndex << std::endl;
 
-        Eigen::VectorXd statesContinuationVector = refineOrbitHamiltonian(librationPointNr, orbitType, accelerationMagnitude,accelerationAngle, accelerationAngle2,
+        Eigen::VectorXd statesContinuationVector = refineOrbitHamiltonian(librationPointNr, orbitType, accelerationMagnitude,tempAngle, accelerationAngle2,
                                                                           familyHamiltonian, massParameter, continuationIndex, numberOfCollocationPoints);
+
+        std::cout << "statesContinuationVector length: " << statesContinuationVector.size() << std::endl;
+                    std::cout << "numberOfCollocationPoints: " << numberOfCollocationPoints << std::endl;
 
 
         // Compute the interior points and nodes for each segment, this is the input for the getCollocated State
         Eigen::MatrixXd oddNodesMatrix((11*(numberOfCollocationPoints-1)), 4 );
         computeOddPoints(statesContinuationVector, oddNodesMatrix, numberOfCollocationPoints, massParameter, false);
+
+//        std::cout << "oddNodesMatrix length: " << oddNodesMatrix.size() << std::endl;
+//        std::cout << "oddNodesMatrix cols: " << oddNodesMatrix.cols() << std::endl;
+//        std::cout << "oddNodesMatrix rows: " << oddNodesMatrix.rows() << std::endl;
+//        std::cout << "oddNodesMatrix rows: " << oddNodesMatrix.block(0,0,11,4) << std::endl;
+
+        for(int i = 0; i < oddNodesMatrix.rows(); i++ )
+        {
+            for(int j = 0; j < oddNodesMatrix.cols(); j++)
+            {
+                oddNodesMatrix(i*11+7,j) = accelerationAngle;
+            }
+        }
+
+        std::cout << "oddNodesMatrix rows: " << oddNodesMatrix.block(oddNodesMatrix.rows()-11,0,11,4) << std::endl;
+
 
         Eigen::VectorXd hamiltonianVector = Eigen::VectorXd::Zero(1);
         hamiltonianVector(0) = familyHamiltonian;
@@ -1519,20 +1547,23 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
               Eigen::MatrixXd oddNodesMatrix((11*(numberOfCollocationPoints-1)), 4 );
               computeOddPoints(initialStateVectorContinuation, oddNodesMatrix, numberOfCollocationPoints, massParameter, false);
 
-              propagateAndSaveCollocationProcedure(oddNodesMatrix, Eigen::VectorXd::Zero(numberOfCollocationPoints-1), Eigen::VectorXd::Zero(4), numberOfCollocationPoints, 0, massParameter);
+              //propagateAndSaveCollocationProcedure(oddNodesMatrix, Eigen::VectorXd::Zero(numberOfCollocationPoints-1), Eigen::VectorXd::Zero(4), numberOfCollocationPoints, 0, massParameter);
 
+               double incrementTest = 0.001;
+
+               std::cout << "\naccelerationMagnitude Most recent converged member: " <<oddNodesMatrix(6,0) << std::endl;
 
                //Add thrust increment to all nodes and interior Points!
                for(int i = 0; i < (numberOfCollocationPoints-1); i ++)
                {
                    for(int j = 0; j < 4; j++)
                    {
-                       if( oddNodesMatrix(11*i+continuationIndex,j) + incrementContinuationParameter > 0.1)
+                       if( oddNodesMatrix(11*i+continuationIndex,j) + incrementTest > 0.1)
                        {
                             oddNodesMatrix(11*i+continuationIndex,j) = 0.1;
                        } else {
 
-                           oddNodesMatrix(11*i+continuationIndex,j) = oddNodesMatrix(11*i+continuationIndex,j) + 5.0* incrementContinuationParameter;
+                           oddNodesMatrix(11*i+continuationIndex,j) = oddNodesMatrix(11*i+continuationIndex,j) + incrementTest;
 
                        }
 
@@ -1540,7 +1571,11 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
                }
 
-               propagateAndSaveCollocationProcedure(oddNodesMatrix, Eigen::VectorXd::Zero(numberOfCollocationPoints-1), Eigen::VectorXd::Zero(4), numberOfCollocationPoints, 1, massParameter);
+               //propagateAndSaveCollocationProcedure(oddNodesMatrix, Eigen::VectorXd::Zero(numberOfCollocationPoints-1), Eigen::VectorXd::Zero(4), numberOfCollocationPoints, 1, massParameter);
+
+             std::cout << "\naccelerationMagnitude New Guess: " <<oddNodesMatrix(6,0) << std::endl;
+             std::cout << "\nFamily Hamiltonain: " << familyHamiltonian << std::endl;
+             std::cout << "\nTest Solution: \n" << oddNodesMatrix.block(0,0,11,4) << std::endl;
 
 
 
@@ -1600,22 +1635,44 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
           }
 
+          std::cout << "continueNumericalContinuation " << continueNumericalContinuation << std::endl;
           if (continueNumericalContinuation == true)
           {
+              std::cout << "check termination augmented: " << std::endl;
+              std::cout << "continueNumericalContinuation " << continueNumericalContinuation << std::endl;
+
               continueNumericalContinuation = checkTerminationAugmented(differentialCorrections, statesContinuation, stateVectorInclSTM, orbitType, librationPointNr, numberOfInitialConditions, maxEigenvalueDeviation );
+
+              std::cout << "check termination augmented completed: " << std::endl;
+              std::cout << "continueNumericalContinuation " << continueNumericalContinuation << std::endl;
 
           }
 
             if(continuationIndex == 6 or continuationIndex == 7)
             {
-                if (stateVectorInclSTM(0,6) > 0.1)
+                std::cout << "stateVectorInclSTM.block(0,0,10,1): \n" << stateVectorInclSTM.block(0,0,10,1) << std::endl;
+                std::cout << "stateVectorInclSTM(6,0): " << stateVectorInclSTM(6,0) << std::endl;
+                std::cout << "stateVectorInclSTM(0,7): " << stateVectorInclSTM(7,0) << std::endl;
+                std::cout << "initialAngle: " << initialAngle << std::endl;
+                std::cout << "(  std::abs(stateVectorInclSTM(0,7) - initialAngle )): " << (  std::abs(stateVectorInclSTM(0,7) - initialAngle )) << std::endl;
+
+
+
+                if (continuationIndex == 6 && stateVectorInclSTM(6,0) > 0.0995)
                 {
+
+                    std::cout << "termination condition stateVectorInclSTM(0,6) > 0.1 reached: "  << std::endl;
+
+
                     continueNumericalContinuation = 0;
                     maxThrustOrFullRevolutionReached = true;
                 }
 
-                if( ( std::abs(stateVectorInclSTM(0,7) - initialAngle )) >= 360)
+                if( (  std::abs(stateVectorInclSTM(7,0) - initialAngle )) >= 360)
                 {
+
+                    std::cout << "termination condition std::abs(stateVectorInclSTM(0,7) - initialAngle ) reached "  << std::endl;
+
                     continueNumericalContinuation = 0;
                     maxThrustOrFullRevolutionReached = true;
                 }

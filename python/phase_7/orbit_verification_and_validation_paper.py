@@ -59,14 +59,12 @@ class PeriodicSolutionsCharacterization:
         else:
             self.continuationLabel = 'Orbit number [-]'
 
-        if varying_quantity == 'Hamiltonian':
+        if varying_quantity == 'Hamiltonian' or varying_quantity == 'Acceleration':
             self.subplotTitle = '$\\alpha$ = '
             self.subPlotTitleValueList = []
             for i in range(len(self.orbitObjects)):
                 self.subPlotTitleValueList.append(orbit_objects[i].alpha)
         if varying_quantity == 'Alpha':
-            self.subplotTitle = '$H_{lt}$ =  '
-        if varying_quantity == 'Acceleration':
             self.subplotTitle = '$H_{lt}$ =  '
 
         # plot specific spacing properties
@@ -524,7 +522,7 @@ class PeriodicSolutionsCharacterization:
                 if j == 0:
                     arr[k,j].set_ylabel('y [-]')
                 arr[k,j].grid(True, which='both', ls=':')
-                if self.varyingQuantity != 'Hamiltonian':
+                if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'Acceleration':
                     subtitleString = self.subplotTitle + str("{:4.1f}".format(self.subPlotTitleValueList[objectCounter]))
                 else:
                     if self.subPlotTitleValueList[objectCounter] > -0.1 and self.subPlotTitleValueList[objectCounter] < 0.1:
@@ -583,14 +581,19 @@ class PeriodicSolutionsCharacterization:
 
         for i in range(numberOfPlots):
 
+
                 if min(self.orbitObjects[i].continuationParameter) < continuationParameter_min:
                     continuationParameter_min = min(self.orbitObjects[i].continuationParameter)
                 if max(self.orbitObjects[i].continuationParameter) > continuationParameter_max:
                     continuationParameter_max = max(self.orbitObjects[i].continuationParameter)
 
+        print('i: ' + str(i))
+        print('continuationParameter_min: ' + str(continuationParameter_min))
+        print('continuationParameter_max: ' + str(continuationParameter_max))
+
         # Create the colourbar for all instances!
         sm = plt.cm.ScalarMappable(cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",
-                                   (2000))),norm=plt.Normalize(vmin=continuationParameter_min, vmax=continuationParameter_min))
+                                   (2000))),norm=plt.Normalize(vmin=continuationParameter_min, vmax=continuationParameter_max))
 
 
         minimum_x = 1000
@@ -633,14 +636,21 @@ class PeriodicSolutionsCharacterization:
 
                 for k in orbitIdsPlot_orbit:
                     plot_color = colors_orbit[plotColorIndexBasedOnVariable_Orbit[k]]
-
-                    df1 = load_orbit(
-                        '../../data/raw/orbits/augmented/L' + str(self.orbitObjects[objectCounter].lagrangePointNr) + '_horizontal_' \
+                    if self.varyingQuantity == 'Hamiltonian':
+                        df1String = '../../data/raw/orbits/augmented/L' + str(self.orbitObjects[objectCounter].lagrangePointNr) + '_horizontal_' \
                         + str("{:12.11f}".format(self.orbitObjects[objectCounter].accelerationMagnitude)) + '_' \
                         + str("{:12.11f}".format(self.orbitObjects[objectCounter].alpha)) + '_' \
                         + str("{:12.11f}".format(self.orbitObjects[objectCounter].beta)) + '_' \
-                        + str("{:12.11f}".format(self.orbitObjects[objectCounter].Hlt[k])) + '_.txt')
-
+                        + str("{:12.11f}".format(self.orbitObjects[objectCounter].Hlt[k])) + '_.txt'
+                    if self.varyingQuantity == 'Acceleration':
+                        df1String = '../../data/raw/orbits/augmented/L' + str(
+                            self.orbitObjects[objectCounter].lagrangePointNr) + '_horizontal_' \
+                                    + str(
+                            "{:12.11f}".format(self.orbitObjects[objectCounter].accelerationContinuation[k])) + '_' \
+                                    + str("{:12.11f}".format(self.orbitObjects[objectCounter].alpha)) + '_' \
+                                    + str("{:12.11f}".format(self.orbitObjects[objectCounter].beta)) + '_' \
+                                    + str("{:12.11f}".format(self.orbitObjects[objectCounter].Hlt[k])) + '_.txt'
+                    df1 = load_orbit(df1String)
                     arr[i,j].plot(df1['x'], df1['y'], color=plot_color, alpha=self.orbitObjects[objectCounter].plotAlpha, linewidth=self.orbitObjects[objectCounter].lineWidth)
 
                     if min(df1['x']) < minimum_x:
@@ -1120,8 +1130,8 @@ if __name__ == '__main__':
     ballistic_stability_analysis = False
     graphical_projection = False
     bifurcation_analysis = False
-    stability_analysis = False
-    hamiltonian_domain_analysis = True
+    stability_analysis = True
+    hamiltonian_domain_analysis = False
 
     if ballistic_planar_projection == True:
         lagrange_point_nr = 1
@@ -1200,22 +1210,22 @@ if __name__ == '__main__':
         del characterize_periodic_solutions
 
     if  graphical_projection == True:
-        lagrange_point_nr = 2
-        acceleration_magnitude = 0.01
+        lagrange_point_nr = 1
+        acceleration_magnitude = 0.0
         alpha = 0.0
         beta = 0.0
-        hamiltonian = 0.0
-        varying_quantity = 'Hamiltonian'
+        hamiltonian = -1.55
+        varying_quantity = 'Acceleration'
         low_dpi = False
         plot_as_x_coordinate = False
         plot_as_family_number = False
 
         orbit1 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
-        orbit2 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 60.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
-        orbit3 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 120.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
-        orbit4 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 180.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
-        orbit5 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 300.0, beta, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
-        orbit6 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 240.0, beta, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
+        orbit2 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
+        orbit3 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
+        orbit4 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
+        orbit5 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
+        orbit6 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
 
 
         my_objects = []
@@ -1235,22 +1245,22 @@ if __name__ == '__main__':
         del characterize_periodic_solutions
 
     if bifurcation_analysis == True:
-        lagrange_point_nr = 2
-        acceleration_magnitude = 0.01
+        lagrange_point_nr = 1
+        acceleration_magnitude = 0.0
         alpha = 0.0
         beta = 0.0
-        hamiltonian = 0.0
-        varying_quantity = 'Hamiltonian'
+        hamiltonian = -1.55
+        varying_quantity = 'Acceleration'
         low_dpi = False
         plot_as_x_coordinate = False
         plot_as_family_number = False
 
         orbit1 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0, hamiltonian,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
-        orbit2 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 60.0,hamiltonian, varying_quantity, low_dpi, plot_as_x_coordinate,plot_as_family_number)
-        orbit3 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 120.0,hamiltonian, varying_quantity, low_dpi, plot_as_x_coordinate,plot_as_family_number)
-        orbit4 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 180.0,hamiltonian, varying_quantity, low_dpi, plot_as_x_coordinate,plot_as_family_number)
-        orbit5 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 300.0, beta,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
-        orbit6 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 240.0, beta,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
+        orbit2 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0,hamiltonian, varying_quantity, low_dpi, plot_as_x_coordinate,plot_as_family_number)
+        orbit3 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0,hamiltonian, varying_quantity, low_dpi, plot_as_x_coordinate,plot_as_family_number)
+        orbit4 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0,hamiltonian, varying_quantity, low_dpi, plot_as_x_coordinate,plot_as_family_number)
+        orbit5 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0, hamiltonian,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
+        orbit6 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0, hamiltonian,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
 
         my_objects = []
         my_objects.append(orbit1)
@@ -1267,22 +1277,22 @@ if __name__ == '__main__':
         del characterize_periodic_solutions
 
     if stability_analysis == True:
-        lagrange_point_nr = 2
-        acceleration_magnitude = 0.01
+        lagrange_point_nr = 1
+        acceleration_magnitude = 0.0
         alpha = 0.0
         beta = 0.0
-        hamiltonian = 0.0
-        varying_quantity = 'Hamiltonian'
+        hamiltonian = -1.55
+        varying_quantity = 'Acceleration'
         low_dpi = False
         plot_as_x_coordinate = False
         plot_as_family_number = False
 
         orbit1 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0, hamiltonian,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
-        orbit2 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 60.0, hamiltonian,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
-        orbit3 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 120.0, hamiltonian,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
-        orbit4 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 180.0, hamiltonian,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
-        orbit5 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 300.0, beta,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
-        orbit6 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 240.0, beta,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
+        orbit2 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0, hamiltonian,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
+        orbit3 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0, hamiltonian,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
+        orbit4 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0, hamiltonian,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
+        orbit5 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0, hamiltonian,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
+        orbit6 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0, hamiltonian,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
 
         my_objects = []
         my_objects.append(orbit1)
