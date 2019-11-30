@@ -155,6 +155,7 @@ Eigen::VectorXd extractStatesContinuationVector(std::string referenceString, con
 
 std::string createReferenceString(const int librationPointNr, const std::string orbitType, const double accelerationMagnitude, const double accelerationAngle, const double accelerationAngle2)
 {
+
     std::ostringstream ssAccelerationMagnitude;
     ssAccelerationMagnitude << std::fixed <<std::setprecision(11) << accelerationMagnitude;
     std::string stringAccelerationMagnitude = ssAccelerationMagnitude.str();
@@ -180,7 +181,17 @@ Eigen::MatrixXd refineOrbitHamiltonian (const int librationPointNr, const std::s
 {
 
     // create the reference vector:
+    //std::cout << "accelerationMagnitude: " << accelerationMagnitude << std::endl;
+    double accelerationAngleTest = 0.0;
+//    if (accelerationAngle > 0.0)
+//    {
+//        accelerationAngleTest = 0.0;
+//    } else
+//    {
+//        accelerationAngleTest = accelerationAngle;
+//    }
     std::string referenceString =  createReferenceString(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2);
+    std::cout << "referenceString: " << accelerationAngleTest << std::endl;
     std::cout << "referenceString: " << referenceString << std::endl;
     // Determine the orbit with hamiltonian closest to the familyHamiltonian and extract numberOfNodes and statesContinuationVector
     Eigen::VectorXd statesVector = extractStatesContinuationVector(referenceString, familyHamiltonian, numberOfCollocationPoints);
