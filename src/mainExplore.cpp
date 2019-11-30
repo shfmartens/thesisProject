@@ -76,7 +76,7 @@ int main (){
 
 
         }
-    }
+
 
 //    double semiMajorAxis = 384400*1000;
 //    double EarthGravPar = tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER;
