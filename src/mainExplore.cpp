@@ -54,7 +54,7 @@ int main (){
 //        double accMag = 0.0107;
         for (int i = 1; i < 2 ; i++)
         {
-            double tempAcc = 0.053;
+            double tempAcc = 0.082;
             double tempAng = 180.0;
 
            Eigen::Vector2d equilibriumTest = createEquilibriumLocations(1, tempAcc,  tempAng, "acceleration", 1.0, massParameter);
