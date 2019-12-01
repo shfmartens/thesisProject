@@ -188,6 +188,7 @@ Eigen::MatrixXd refineOrbitHamiltonian (const int librationPointNr, const std::s
 
     Eigen::VectorXd statesVector = extractStatesContinuationVector(referenceString, familyHamiltonian, numberOfCollocationPoints);
     std::cout << " extract statesContinuationFunction Finished: "  << std::endl;
+    std::cout << " statesVector.size(): " << statesVector.size()  << std::endl;
 
     double orbitHamiltonian = computeHamiltonian(massParameter, statesVector.segment(0,10) );
 
