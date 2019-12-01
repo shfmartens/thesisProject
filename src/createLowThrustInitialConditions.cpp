@@ -1303,6 +1303,10 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
         hamiltonianVector(0) = familyHamiltonian;
         bool continuationDirectionReversed = false;
         bool stableCollocationProcedure = true;
+
+        std::cout << "hamiltonianVector: " << hamiltonianVector << std::endl;
+
+
         stateVectorInclSTM = getCollocatedAugmentedInitialState(oddNodesMatrix, 0, librationPointNr, orbitType, continuationIndex, hamiltonianVector, continuationDirectionReversed, stableCollocationProcedure,
                                                                 massParameter, numberOfPatchPoints, numberOfCollocationPoints, initialConditions,
                                                                 differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit, true);
