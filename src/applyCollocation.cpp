@@ -1038,6 +1038,9 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
     Eigen::MatrixXd collocationGuessStart = initialCollocationGuess;
     int tempCounter = 0;
     // introduce a variable which will replace the initial collocation guess in the loop
+
+    std::cout << "Enter equidistribution loop" << std::endl;
+
     while(maximumErrorPerSegment > maximumErrorTolerance  )
     {
         // Evaluate the vector field at all odd points
