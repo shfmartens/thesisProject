@@ -533,8 +533,11 @@ Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::MatrixXd& initi
     Eigen::VectorXd collocatedNodes;
     Eigen::VectorXd collocatedDefects;
 
+    std::cout << "test the applyCollocation function" << std::endl;
     Eigen::VectorXd collocationResult = applyCollocation(initialOddPoints, massParameter, numberOfCollocationPoints, collocatedGuess, collocatedNodes, deviationNorms, collocatedDefects, continuationIndex, previousDesignVector, orbitNumber, stableCollocationProcedure,
                                                          maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit);
+
+    std::cout << "COMPLETED test the applyCollocation function" << std::endl;
 
 
     if (stableCollocationProcedure == false )
