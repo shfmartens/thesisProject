@@ -113,11 +113,11 @@ int main (){
                 std::string orbitType = "horizontal";
                 int continuationIndex = 6; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
                 double accelerationMagnitude = 0.0;
-                double accelerationAngle = 60.0;
+                double accelerationAngle = 0.0;
                 double accelerationAngle2 = 0.00;
                 double initialMass = 1.0;
                 double ySign = -1.0;
-                double familyHamiltonian = -1.50;
+                double familyHamiltonian = -1.525;
                 int numberOfFamilyMembers = 5000;
                 bool startContinuationFromTextFile = false;
                 createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile, numberOfFamilyMembers );
