@@ -103,9 +103,9 @@ int main (){
     // ================================
         
 
-    #pragma omp parallel num_threads(1)
-    {
-        #pragma omp for
+    //#pragma omp parallel num_threads(1)
+    //{
+      //  #pragma omp for
         for (unsigned int i=1; i<=10; i++) {
             if (i ==1)
             {
@@ -334,7 +334,7 @@ int main (){
 
                     }
         }
-    }
+ //   }
 
     // ================================
     // == Compute manifolds ==
