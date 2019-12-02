@@ -1563,6 +1563,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                double incrementTest = 0.001;
 
                std::cout << "\naccelerationMagnitude Most recent converged member: " <<oddNodesMatrix(6,0) << std::endl;
+               std::cout << "\Hamiltonain converged member: " << computeHamiltonian(massParameter,oddNodesMatrix.block(0,0,10,1)) << std::endl;
 
                //Add thrust increment to all nodes and interior Points!
                for(int i = 0; i < (numberOfCollocationPoints-1); i ++)
@@ -1587,7 +1588,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
              std::cout << "\naccelerationMagnitude New Guess: " <<oddNodesMatrix(6,0) << std::endl;
              std::cout << "\nFamily Hamiltonain: " << familyHamiltonian << std::endl;
              std::cout << "\nTest Solution: \n" << oddNodesMatrix.block(0,0,11,4) << std::endl;
-             std::cout << "\nFamily Hamiltonain: " << computeHamiltonian(massParameter,oddNodesMatrix.block(0,0,10,1)) << std::endl;
+             std::cout << "\nFamily Hamiltonain input: " << computeHamiltonian(massParameter,oddNodesMatrix.block(0,0,10,1)) << std::endl;
 
 
 

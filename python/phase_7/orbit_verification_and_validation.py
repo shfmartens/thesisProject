@@ -643,7 +643,6 @@ class DisplayPeriodicSolutions:
                             + str("{:12.11f}".format(self.beta)) + '_' \
                             + str("{:12.11f}".format(self.Hlt[i])) + '_.txt')
             if self.varyingQuantity == 'Acceleration':
-                print('Acceleration Reached')
                 # print('../../data/raw/orbits/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
                 #     + str("{:12.11f}".format(self.accelerationContinuation[i])) + '_' \
                 #     + str("{:12.11f}".format(self.alpha)) + '_' \
@@ -1133,6 +1132,7 @@ class DisplayPeriodicSolutions:
     def plot_continuation_procedure(self):
         f, arr = plt.subplots(2, 2, figsize=self.figSizeCont)
         size = 7
+        #print(self.Hlt)
 
         xlim = [1,len(self.orbitsId)]
         ylimSpacing = (max(self.Hlt)-min(self.Hlt))*1.0
@@ -1413,7 +1413,7 @@ if __name__ == '__main__':
                             display_periodic_solutions = DisplayPeriodicSolutions(orbit_type, lagrange_point, acceleration_magnitude, \
                                          alpha, Hamiltonian, varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
 
-                            display_periodic_solutions.plot_families()
+                            #display_periodic_solutions.plot_families()
                             #display_periodic_solutions.plot_periodicity_validation()
                             #display_periodic_solutions.plot_monodromy_analysis()
                             #display_periodic_solutions.plot_stability()
