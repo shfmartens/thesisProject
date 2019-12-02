@@ -103,10 +103,10 @@ int main (){
     // ================================
         
 
-    //#pragma omp parallel num_threads(1)
-    //{
-      //  #pragma omp for
-        for (unsigned int i=1; i<=1; i++) {
+    #pragma omp parallel num_threads(5)
+    {
+        #pragma omp for
+        for (unsigned int i=1; i<=5; i++) {
             if (i ==1)
             {
                 std::cout << "Run Thread " << i << std::endl;
@@ -145,7 +145,7 @@ int main (){
                 std::cout << "Run Thread " << i << std::endl;
                 std::string orbitType = "horizontal";
                 int continuationIndex = 1; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
-                double accelerationMagnitude = 0.0;
+                double accelerationMagnitude = 0.01;
                 double accelerationAngle = 120.0;
                 double accelerationAngle2 = 0.0;
                 double initialMass = 1.0;
@@ -160,7 +160,7 @@ int main (){
             {
                 std::cout << "Run Thread " << i << std::endl;
                 std::string orbitType = "horizontal";
-                int continuationIndex = 0; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
+                int continuationIndex = 1; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
                 double accelerationMagnitude = 0.01;
                 double accelerationAngle = 300.0;
                 double accelerationAngle2 = 0.0;
@@ -183,7 +183,7 @@ int main (){
                 double initialMass = 1.0;
                 double ySign = 1.0;
                 double familyHamiltonian = -1.55;
-                int numberOfFamilyMembers = 5000;
+                int numberOfFamilyMembers = 4450;
                 bool startContinuationFromTextFile = false;
                 createLowThrustInitialConditions(2, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile, numberOfFamilyMembers );
 
@@ -334,7 +334,7 @@ int main (){
 
                     }
         }
- //   }
+   }
 
     // ================================
     // == Compute manifolds ==
