@@ -1240,22 +1240,22 @@ class DisplayPeriodicSolutions:
                 "{:7.6f}".format(self.alpha)) + '_continuation_analysis.png', transparent=True,dpi=300, bbox_inches='tight')
         if self.varyingQuantity == 'Acceleration':
             if self.lowDPI:
-                plt.savefig('../../data/figures/orbits/varying_acceleration/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
+                plt.savefig('../../data/figures/orbits/varying_acceleration/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str("{:7.6f}".format(self.Hamiltonian)) + '_' + str(
                 "{:7.6f}".format(self.alpha)) + '_continuation_analysis.png', transparent=True, dpi=self.dpi, bbox_inches='tight')
             else:
                 plt.savefig('../../data/figures/orbits/varying_acceleration/L' + str(
                 self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
-                "{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
+                "{:7.6f}".format(self.Hamiltonian)) + '_' + str(
                 "{:7.6f}".format(self.alpha)) + '_continuation_analysis.png', transparent=True,dpi=300, bbox_inches='tight')
         if self.varyingQuantity == 'Alpha':
             if self.lowDPI:
-                plt.savefig('../../data/figures/orbits/varying_alpha/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
-                "{:7.6f}".format(self.alpha)) + '_continuation_analysis.png', transparent=True, dpi=self.dpi, bbox_inches='tight')
+                plt.savefig('../../data/figures/orbits/varying_alpha/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str("{:7.6f}".format(self.Hamiltonian)) + '_' + str(
+                "{:7.6f}".format(self.accelerationMagnitude)) + '_continuation_analysis.png', transparent=True, dpi=self.dpi, bbox_inches='tight')
             else:
                 plt.savefig('../../data/figures/orbits/varying_alpha/L' + str(
                 self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
-                "{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
-                "{:7.6f}".format(self.alpha)) + '_continuation_analysis.png', transparent=True,dpi=300, bbox_inches='tight')
+                "{:7.6f}".format(self.Hamiltonian)) + '_' + str(
+                "{:7.6f}".format(self.accelerationMagnitude)) + '_continuation_analysis.png', transparent=True,dpi=300, bbox_inches='tight')
 
 
 
