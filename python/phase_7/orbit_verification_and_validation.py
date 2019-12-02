@@ -574,6 +574,8 @@ class DisplayPeriodicSolutions:
         fig = plt.figure(figsize=self.figSize)
         ax = fig.gca()
 
+        print(len(self.continuationParameter))
+
         ax.set_xlabel('x [-]')
         ax.set_ylabel('y [-]')
         ax.grid(True, which='both', ls=':')
