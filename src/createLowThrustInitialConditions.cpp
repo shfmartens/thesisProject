@@ -1339,9 +1339,9 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
     bool stableCollocationProcedure = true;
     double targetHamiltonian;
     bool maxThrustOrFullRevolutionReached = false;
-    double initialAngle = 0.0;
     Eigen::VectorXd adaptedIncrementVector = Eigen::VectorXd::Zero(6);
-
+    double alphaVaryingStartingAngle = accelerationAngle;
+    double alphaVaryingReferenceAngle = accelerationAngle;
     if (continuationIndex == 1)
     {
         numberOfCollocationPoints = initialNumberOfCollocationPoints;
@@ -1563,7 +1563,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                double incrementTest = 0.001;
 
                std::cout << "\naccelerationMagnitude Most recent converged member: " <<oddNodesMatrix(6,0) << std::endl;
-               std::cout << "\Hamiltonain converged member: " << computeHamiltonian(massParameter,oddNodesMatrix.block(0,0,10,1)) << std::endl;
+               std::cout << "Hamiltonain converged member: " << computeHamiltonian(massParameter,oddNodesMatrix.block(0,0,10,1)) << std::endl;
 
                //Add thrust increment to all nodes and interior Points!
                for(int i = 0; i < (numberOfCollocationPoints-1); i ++)
@@ -1604,10 +1604,11 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
           }
           if (continuationIndex == 7)
           {
-             if(numberOfInitialConditions == 1)
-             {
-                initialAngle = stateVectorInclSTM(0,7);
-             }
+//             if(numberOfInitialConditions == 1)
+//             {
+//                alphaVaryingStartingAngle = stateVectorInclSTM(0,7);
+//                alphaVaryingReferenceAngle = alphaVaryingStartingAngle;
+//             }
 
              int numberOfStates =  3*(numberOfCollocationPoints-1)+1;
 
@@ -1620,31 +1621,58 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
              computeOddPoints(initialStateVectorContinuation, oddNodesMatrix, numberOfCollocationPoints, massParameter, false);
 
 
-              //Add thrust increment to all nodes and interior Points!
+             double angleContinuationIncrement = 1.0;
+
+             // loop to adjust the increment for determining bounds!
+             if(alphaVaryingReferenceAngle < 0.0)
+             {
+                angleContinuationIncrement = 36.0;
+             }
+             std::cout << "\nalpha Most recent converged member: " <<oddNodesMatrix(7,0) << std::endl;
+             std::cout << "Hamiltonain converged member: " << computeHamiltonian(massParameter,oddNodesMatrix.block(0,0,10,1)) << std::endl;
+
+
+              //Add angle increment to all nodes and interior Points!
               for(int i = 0; i < (numberOfCollocationPoints-1); i ++)
               {
                   for(int j = 0; j < 4; j++)
                   {
-                      if( ( std::abs(stateVectorInclSTM(0,7) - initialAngle )) >= 360)
-                      {
-                           oddNodesMatrix(11*i+continuationIndex,j) = initialAngle +360;
-                      } else {
 
-                          oddNodesMatrix(11*i+continuationIndex,j) = oddNodesMatrix(11*i+continuationIndex,j) + incrementContinuationParameter;
-
-                      }
+                      double testQuantity = oddNodesMatrix(11*i+continuationIndex,j) + angleContinuationIncrement;
+                       if (testQuantity > 360.0)
+                       {
+                           testQuantity = testQuantity - 360.0;
+                       }
+                       if (testQuantity < 0.0)
+                       {
+                           testQuantity = testQuantity + 360.0;
+                       }
+                       oddNodesMatrix(11*i+continuationIndex,j) = testQuantity;
 
                   }
 
               }
 
+              alphaVaryingReferenceAngle = alphaVaryingReferenceAngle + angleContinuationIncrement;
+
+              std::cout << "\\nalpha New Guess: " <<oddNodesMatrix(7,0) << std::endl;
+              std::cout << "\\nalphaVaryingReferenceAngle: " <<alphaVaryingReferenceAngle << std::endl;
+              std::cout << "\nFamily Hamiltonain: " << familyHamiltonian << std::endl;
+              std::cout << "\nTest Solution: \n" << oddNodesMatrix.block(0,0,11,4) << std::endl;
+              std::cout << "\nFamily Hamiltonain input: " << computeHamiltonian(massParameter,oddNodesMatrix.block(0,0,10,1)) << std::endl;
+
+
 
              Eigen::VectorXd previousDesignVector(1); previousDesignVector.setZero();
              previousDesignVector(0) = familyHamiltonian;
              bool continuationDirectionReversed = true;
-             stateVectorInclSTM = getCollocatedAugmentedInitialState( oddNodesMatrix, numberOfInitialConditions, librationPointNr, orbitType, continuationIndex, previousDesignVector, continuationDirectionReversed, stableCollocationProcedure,
-                                                                      massParameter, numberOfPatchPoints, numberOfCollocationPoints, initialConditions,
-                                                                      differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit, false);
+             if( std::abs(alphaVaryingReferenceAngle - alphaVaryingStartingAngle) < 360.0)
+             {
+                 stateVectorInclSTM = getCollocatedAugmentedInitialState( oddNodesMatrix, numberOfInitialConditions, librationPointNr, orbitType, continuationIndex, previousDesignVector, continuationDirectionReversed, stableCollocationProcedure,
+                                                                          massParameter, numberOfPatchPoints, numberOfCollocationPoints, initialConditions,
+                                                                          differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit, false);
+
+             }
 
           }
 
@@ -1666,8 +1694,8 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                 std::cout << "stateVectorInclSTM.block(0,0,10,1): \n" << stateVectorInclSTM.block(0,0,10,1) << std::endl;
                 std::cout << "stateVectorInclSTM(6,0): " << stateVectorInclSTM(6,0) << std::endl;
                 std::cout << "stateVectorInclSTM(0,7): " << stateVectorInclSTM(7,0) << std::endl;
-                std::cout << "initialAngle: " << initialAngle << std::endl;
-                std::cout << "(  std::abs(stateVectorInclSTM(0,7) - initialAngle )): " << (  std::abs(stateVectorInclSTM(0,7) - initialAngle )) << std::endl;
+                std::cout << "alphaVaryingStartingAngle: " << alphaVaryingStartingAngle << std::endl;
+                std::cout << "(  std::abs(stateVectorInclSTM(0,7) - alphaVaryingStartingAngle )): " << (  std::abs(stateVectorInclSTM(0,7) - alphaVaryingStartingAngle )) << std::endl;
 
 
 
@@ -1681,10 +1709,10 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                     maxThrustOrFullRevolutionReached = true;
                 }
 
-                if( (  std::abs(stateVectorInclSTM(7,0) - initialAngle )) >= 360)
+                if( (  alphaVaryingReferenceAngle - alphaVaryingStartingAngle ) >= 360)
                 {
 
-                    std::cout << "termination condition std::abs(stateVectorInclSTM(0,7) - initialAngle ) reached "  << std::endl;
+                    std::cout << "alphaVaryingReferenceAngle - alphaVaryingStartingAngle >= 360 reached "  << std::endl;
 
                     continueNumericalContinuation = 0;
                     maxThrustOrFullRevolutionReached = true;
@@ -1692,10 +1720,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
             }
 
-            if(continuationIndex == 7)
-            {
 
-            }
 
             std::cout << "continueNumericalContinuation: " << continueNumericalContinuation << std::endl;
 

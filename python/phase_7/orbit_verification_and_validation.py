@@ -102,13 +102,14 @@ class DisplayPeriodicSolutions:
             initial_conditions_incl_m_df = load_initial_conditions_augmented_incl_M(self.acceleration_filepath + self.monodromy_fileName)
 
         if self.varyingQuantity == 'Alpha':
-            statesContinuation_df = load_states_continuation(self.acceleration_filepath + self.continuation_fileName)
-            differentialCorrections_df = load_differential_correction(self.acceleration_filepath + self.correction_fileName)
-            initial_conditions_incl_m_df = load_initial_conditions_augmented_incl_M(self.acceleration_filepath + self.monodromy_fileName)
+            statesContinuation_df = load_states_continuation(self.alpha_filepath + self.continuation_fileName)
+            differentialCorrections_df = load_differential_correction(self.alpha_filepath + self.correction_fileName)
+            initial_conditions_incl_m_df = load_initial_conditions_augmented_incl_M(self.alpha_filepath + self.monodromy_fileName)
 
         # Generate the lists with hamiltonians, periods and number of iterations and deviations after convergence
         self.Hlt = []
         self.alphaContinuation = []
+        self.alphaContinuationRad = []
         self.accelerationContinuation = []
         self.x = []
         self.phase = []
@@ -141,7 +142,8 @@ class DisplayPeriodicSolutions:
             self.phase.append(compute_phase(row[1][3],row[1][4],self.lagrangePointNr))
             self.y.append(row[1][4])
             self.accelerationContinuation.append(row[1][9])
-            self.alphaContinuation.append(row[1][10]/180.0*np.pi)
+            self.alphaContinuation.append(row[1][10])
+            self.alphaContinuationRad.append(row[1][10]/180.0*np.pi)
             self.numberOfCollocationPoints.append(row[1][13])
 
         for row in differentialCorrections_df.iterrows():
@@ -222,15 +224,16 @@ class DisplayPeriodicSolutions:
             if self.varyingQuantity == 'Hamiltonian':
                 orbitDFString = '../../data/raw/orbits/augmented/L' + str(self.lagrangePointNr) + '_' + str(self.orbitType) \
             + '_' + str("{:12.11f}".format(self.accelerationMagnitude)) + '_' + \
-            str("{:12.11f}".format(self.alpha)) + '_' + \
-            str("{:12.11f}".format(self.beta))+ '_' + str("{:12.11f}".format(self.Hlt[i])) + '_.txt'
+            str("{:12.11f}".format(self.alpha)) + '_' + str("{:12.11f}".format(self.beta))+ '_' + str("{:12.11f}".format(self.Hlt[i])) + '_.txt'
             if self.varyingQuantity == 'Acceleration':
                 orbitDFString = '../../data/raw/orbits/augmented/L' + str(self.lagrangePointNr) + '_' + str(
                     self.orbitType) \
                                 + '_' + str("{:12.11f}".format(self.accelerationContinuation[i])) + '_' + \
-                                str("{:12.11f}".format(self.alpha)) + '_' + \
-                                str("{:12.11f}".format(self.beta)) + '_' + str(
-                    "{:12.11f}".format(self.Hlt[i])) + '_.txt'
+                                str("{:12.11f}".format(self.alpha)) + '_' + str("{:12.11f}".format(self.beta)) + '_' + str("{:12.11f}".format(self.Hlt[i])) + '_.txt'
+            if self.varyingQuantity == 'Alpha':
+                orbitDFString = '../../data/raw/orbits/augmented/L' + str(self.lagrangePointNr) + '_' + str(
+                    self.orbitType) + '_' + str("{:12.11f}".format(self.accelerationMagnitude)) + '_' + \
+                                str("{:12.11f}".format(self.alphaContinuation[i])) + '_' + str("{:12.11f}".format(self.beta)) + '_' + str("{:12.11f}".format(self.Hlt[i])) + '_.txt'
 
             orbit_df = load_orbit_augmented(orbitDFString)
 
@@ -520,7 +523,7 @@ class DisplayPeriodicSolutions:
         elif self.varyingQuantity == 'Acceleration':
             self.orbitSpacingFactor = 1
         else:
-            self.orbitSpacingFactor = 1
+            self.orbitSpacingFactor = 25
 
         # scale properties
         self.spacingFactor = 1.05
@@ -593,7 +596,7 @@ class DisplayPeriodicSolutions:
                 "{:3.3f}".format(self.Hamiltonian)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Overview', size=self.suptitleSize)
         if self.varyingQuantity == 'Alpha':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
-                "{:3.3f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.1f}".format(self.accelerationMagnitude))  + ' - Overview', size=self.suptitleSize)
+                "{:3.3f}".format(self.Hamiltonian)) + '$, $a_{lt} = ' + str("{:3.1f}".format(self.accelerationMagnitude))  + '$ - Overview', size=self.suptitleSize)
 
 
 
@@ -652,6 +655,18 @@ class DisplayPeriodicSolutions:
                     '../../data/raw/orbits/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
                     + str("{:12.11f}".format(self.accelerationContinuation[i])) + '_' \
                     + str("{:12.11f}".format(self.alpha)) + '_' \
+                    + str("{:12.11f}".format(self.beta)) + '_' \
+                    + str("{:12.11f}".format(self.Hlt[i])) + '_.txt')
+            if self.varyingQuantity == 'Alpha':
+                # print('../../data/raw/orbits/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
+                #     + str("{:12.11f}".format(self.accelerationContinuation[i])) + '_' \
+                #     + str("{:12.11f}".format(self.alpha)) + '_' \
+                #     + str("{:12.11f}".format(self.beta)) + '_' \
+                #     + str("{:12.11f}".format(self.Hlt[i])) + '_.txt')
+                df = load_orbit(
+                    '../../data/raw/orbits/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
+                    + str("{:12.11f}".format(self.accelerationMagnitude)) + '_' \
+                    + str("{:12.11f}".format(self.alphaContinuation[i])) + '_' \
                     + str("{:12.11f}".format(self.beta)) + '_' \
                     + str("{:12.11f}".format(self.Hlt[i])) + '_.txt')
 
@@ -1393,12 +1408,12 @@ class DisplayPeriodicSolutions:
 
 if __name__ == '__main__':
     orbit_types = ['horizontal']
-    lagrange_points = [2]
-    acceleration_magnitudes = [0.0]
-    alphas = [60.0,120.0,180.0]
+    lagrange_points = [1]
+    acceleration_magnitudes = [0.01]
+    alphas = [0.0]
     Hamiltonians = [-1.55]
     low_dpi = False
-    varying_quantities = ['Acceleration']
+    varying_quantities = ['Alpha']
     plot_as_x_coordinate  = False
     plot_as_family_number = False
 
@@ -1413,11 +1428,11 @@ if __name__ == '__main__':
                             display_periodic_solutions = DisplayPeriodicSolutions(orbit_type, lagrange_point, acceleration_magnitude, \
                                          alpha, Hamiltonian, varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
 
-                            #display_periodic_solutions.plot_families()
+                            display_periodic_solutions.plot_families()
                             #display_periodic_solutions.plot_periodicity_validation()
                             #display_periodic_solutions.plot_monodromy_analysis()
                             #display_periodic_solutions.plot_stability()
-                            display_periodic_solutions.plot_continuation_procedure()
+                            #display_periodic_solutions.plot_continuation_procedure()
                             #display_periodic_solutions.plot_increment_of_orbits()
 
 
