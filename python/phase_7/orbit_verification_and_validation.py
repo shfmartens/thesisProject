@@ -685,7 +685,7 @@ class DisplayPeriodicSolutions:
                             '_planar_projection.png', transparent=True, dpi=self.dpi, bbox_inches='tight')
 
             else:
-                fig.savefig('../../data/figures/orbits/varying_hamiltonian/orbits/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
+                fig.savefig('../../data/figures/orbits/varying_hamiltonian/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
                             + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
                     "{:7.6f}".format(self.alpha)) + \
                             '_planar_projection.png', transparent=True, dpi=300, bbox_inches='tight')
