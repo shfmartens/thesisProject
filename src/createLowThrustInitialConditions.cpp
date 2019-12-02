@@ -1587,6 +1587,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
              std::cout << "\naccelerationMagnitude New Guess: " <<oddNodesMatrix(6,0) << std::endl;
              std::cout << "\nFamily Hamiltonain: " << familyHamiltonian << std::endl;
              std::cout << "\nTest Solution: \n" << oddNodesMatrix.block(0,0,11,4) << std::endl;
+             std::cout << "\nFamily Hamiltonain: " << computeHamiltonian(massParameter,oddNodesMatrix.block(0,0,10,1)) << std::endl;
 
 
 
