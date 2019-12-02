@@ -635,7 +635,6 @@ class DisplayPeriodicSolutions:
 
         for i in orbitIdsPlot:
             plot_color = colors[self.plotColorIndexBasedOnContinuation[i]]
-            print(i)
 
             if self.varyingQuantity == 'Hamiltonian':
                 df = load_orbit('../../data/raw/orbits/augmented/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
