@@ -120,7 +120,7 @@ int main (){
                 double familyHamiltonian = -1.55;
                 int numberOfFamilyMembers = 1000;
                 bool startContinuationFromTextFile = false;
-                createLowThrustInitialConditions(2, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile, numberOfFamilyMembers );
+                createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile, numberOfFamilyMembers );
 
 
 
