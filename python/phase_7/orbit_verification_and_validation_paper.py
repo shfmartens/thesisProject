@@ -65,7 +65,15 @@ class PeriodicSolutionsCharacterization:
             for i in range(len(self.orbitObjects)):
                 self.subPlotTitleValueList.append(orbit_objects[i].alpha)
         if varying_quantity == 'Alpha':
-            self.subplotTitle = '$H_{lt}$ =  '
+            print('test')
+            self.subplotTitle = '$a_{lt}$ =  '
+            self.subplotTitleTwo = '$H_{lt}$ =  '
+            self.subPlotTitleValueList = []
+            self.subPlotTitleValueListTwo = []
+            for i in range(len(self.orbitObjects)):
+                self.subPlotTitleValueList.append(orbit_objects[i].accelerationMagnitude)
+                self.subPlotTitleValueListTwo.append(orbit_objects[i].Hamiltonian)
+
 
         # plot specific spacing properties
         self.orbitSpacingFactor = 50
@@ -83,7 +91,12 @@ class PeriodicSolutionsCharacterization:
         # Normal figure
         self.figSize = (7 * (1 + np.sqrt(5)) / 2, 7)
         self.figureRatio = (7 * (1 + np.sqrt(5)) / 2) / 7
+
+        self.figSizeLarge = (7 * (1 + np.sqrt(5)) / 2, 7*1.5)
+        self.figRatioLarge = (7 * (1 + np.sqrt(5)) / 2) / (7*1.5)
+
         self.figureRatioSix = (7 * (1 + np.sqrt(5)) / 2) * 2/ (7*3)
+
 
         # figure with two subplots next to eachother
         self.figSizeWide = (7 * (1 + np.sqrt(5)) / 2, 3.5)
@@ -512,6 +525,11 @@ class PeriodicSolutionsCharacterization:
             rownNumber = 2
             columnNumber = 3
 
+        if numberOfPlots == 9:
+            f, arr = plt.subplots(3, 3, figsize=self.figSizeLarge)
+            rownNumber = 3
+            columnNumber = 3
+
         # Build the subtitles and labels
         objectCounter = 0
         for k in range(rownNumber):
@@ -525,19 +543,12 @@ class PeriodicSolutionsCharacterization:
                 if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'Acceleration':
                     subtitleString = self.subplotTitle + str("{:4.1f}".format(self.subPlotTitleValueList[objectCounter]))
                 else:
-                    if self.subPlotTitleValueList[objectCounter] > -0.1 and self.subPlotTitleValueList[objectCounter] < 0.1:
-                        alphaRadians = '$0$'
-                    if self.subPlotTitleValueList[objectCounter] > 59.9 and self.subPlotTitleValueList[objectCounter] < 60.1:
-                        alphaRadians = '$\\frac{1}{3}\\pi$'
-                    if self.subPlotTitleValueList[objectCounter] > 119.9 and self.subPlotTitleValueList[objectCounter] < 120.1:
-                        alphaRadians = '$\\frac{2}{3}\\pi$'
-                    if self.subPlotTitleValueList[objectCounter] > 179.9 and self.subPlotTitleValueList[objectCounter] < 180.1:
-                        alphaRadians = '$\\pi$'
-                    if self.subPlotTitleValueList[objectCounter] > 239.9 and self.subPlotTitleValueList[objectCounter] < 240.1:
-                        alphaRadians = '$\\frac{4}{3}\\pi$'
-                    if self.subPlotTitleValueList[objectCounter] > 299.9 and self.subPlotTitleValueList[objectCounter] < 300.1:
-                        alphaRadians = '$\\frac{5}{3}\\pi$'
-                    subtitleString = self.subplotTitle + alphaRadians
+                    subtitleString = self.subplotTitleTwo + str("{:2.3f}".format(self.subPlotTitleValueListTwo[objectCounter])) + ' ' \
+                    + self.subplotTitle + str("{:2.3f}".format(self.subPlotTitleValueList[objectCounter]))
+                    print(subtitleString)
+
+                    # \
+                    # + ' ' + self.subplotTitle + str("{:1.3f}".format(self.subPlotTitleValueList[objectCounter]))
                 arr[k,j].set_title(subtitleString)
                 objectCounter = objectCounter + 1
 
@@ -592,8 +603,12 @@ class PeriodicSolutionsCharacterization:
         print('continuationParameter_max: ' + str(continuationParameter_max))
 
         # Create the colourbar for all instances!
-        sm = plt.cm.ScalarMappable(cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",
+        if varying_quantity != 'Alpha':
+            sm = plt.cm.ScalarMappable(cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",
                                    (2000))),norm=plt.Normalize(vmin=continuationParameter_min, vmax=continuationParameter_max))
+        else:
+            sm = plt.cm.ScalarMappable(cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",
+                                                                                               (2000))),norm=plt.Normalize(vmin=0,vmax=360.0))
 
 
         minimum_x = 1000
@@ -650,6 +665,13 @@ class PeriodicSolutionsCharacterization:
                                     + str("{:12.11f}".format(self.orbitObjects[objectCounter].alpha)) + '_' \
                                     + str("{:12.11f}".format(self.orbitObjects[objectCounter].beta)) + '_' \
                                     + str("{:12.11f}".format(self.orbitObjects[objectCounter].Hlt[k])) + '_.txt'
+                    if self.varyingQuantity == 'Alpha':
+                        df1String = '../../data/raw/orbits/augmented/L' + str(
+                            self.orbitObjects[objectCounter].lagrangePointNr) + '_horizontal_' \
+                                    + str("{:12.11f}".format(self.orbitObjects[objectCounter].accelerationMagnitude)) + '_' \
+                                    + str("{:12.11f}".format(self.orbitObjects[objectCounter].alphaContinuation[k])) + '_' \
+                                    + str("{:12.11f}".format(self.orbitObjects[objectCounter].beta)) + '_' \
+                                    + str("{:12.11f}".format(self.orbitObjects[objectCounter].Hlt[k])) + '_.txt'
                     df1 = load_orbit(df1String)
                     arr[i,j].plot(df1['x'], df1['y'], color=plot_color, alpha=self.orbitObjects[objectCounter].plotAlpha, linewidth=self.orbitObjects[objectCounter].lineWidth)
 
@@ -682,6 +704,11 @@ class PeriodicSolutionsCharacterization:
                                         (xMiddle + 0.5 * scaleDistance * self.figureRatioSix * self.spacingFactor)])
                     arr[i, j].set_ylim([yMiddle - 0.5 * scaleDistance * self.spacingFactor,
                                         yMiddle + 0.5 * scaleDistance * self.spacingFactor])
+                if numberOfPlots == 9:
+                    arr[i, j].set_xlim([(xMiddle - 0.5 * scaleDistance * self.figRatioLarge * self.spacingFactor),
+                                        (xMiddle + 0.5 * scaleDistance * self.figRatioLarge * self.spacingFactor)])
+                    arr[i, j].set_ylim([yMiddle - 0.5 * scaleDistance * self.spacingFactor,
+                                        yMiddle + 0.5 * scaleDistance * self.spacingFactor])
 
         sm.set_array([])
 
@@ -706,6 +733,12 @@ class PeriodicSolutionsCharacterization:
 
 
         cbar = plt.colorbar(sm, cax=cax, label=self.continuationLabel)
+
+        if self.varyingQuantity == 'Alpha':
+            cbar.set_ticks([0,90,180,270,360])
+            cbar.set_ticklabels(['$0$','$\\frac{1}{2}\\pi$','$\\pi$','$\\frac{3}{2}\\pi$','$2\\pi$'])
+
+
 
         # print('===== TEST ASPECT RATIO THINGS ====')
         # print('position handle of plot: ' + str(position_handle2))
@@ -1128,9 +1161,9 @@ if __name__ == '__main__':
     ballistic_planar_projection = False
     ballistic_bifurcation_analysis = False
     ballistic_stability_analysis = False
-    graphical_projection = False
+    graphical_projection = True
     bifurcation_analysis = False
-    stability_analysis = True
+    stability_analysis = False
     hamiltonian_domain_analysis = False
 
     if ballistic_planar_projection == True:
@@ -1211,22 +1244,24 @@ if __name__ == '__main__':
 
     if  graphical_projection == True:
         lagrange_point_nr = 1
-        acceleration_magnitude = 0.0
+        acceleration_magnitude = 0.01
         alpha = 0.0
         beta = 0.0
         hamiltonian = -1.55
-        varying_quantity = 'Acceleration'
+        varying_quantity = 'Alpha'
         low_dpi = False
         plot_as_x_coordinate = False
         plot_as_family_number = False
 
-        orbit1 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
-        orbit2 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
-        orbit3 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
-        orbit4 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
-        orbit5 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
-        orbit6 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
-
+        orbit1 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, alpha, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
+        orbit2 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, alpha, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
+        orbit3 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, alpha, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
+        orbit4 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, alpha, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
+        orbit5 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, alpha, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
+        orbit6 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, alpha, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
+        orbit7 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, alpha, hamiltonian, varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
+        orbit8 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, alpha, hamiltonian,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
+        orbit9 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, alpha, hamiltonian,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
 
         my_objects = []
         my_objects.append(orbit1)
@@ -1235,6 +1270,9 @@ if __name__ == '__main__':
         my_objects.append(orbit4)
         my_objects.append(orbit5)
         my_objects.append(orbit6)
+        my_objects.append(orbit7)
+        my_objects.append(orbit8)
+        my_objects.append(orbit9)
 
 
         characterize_periodic_solutions = PeriodicSolutionsCharacterization(lagrange_point_nr, acceleration_magnitude,

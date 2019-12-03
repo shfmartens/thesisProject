@@ -691,6 +691,8 @@ class DisplayPeriodicSolutions:
         cax, kw = matplotlib.colorbar.make_axes([ax])
 
         cbar = plt.colorbar(sm, cax=cax, label=self.colorbarLabel, format='%1.4f', **kw)
+        cbar.set_ticks([0, 90, 180, 270, 360])
+        cbar.set_ticklabels(['$0$', '$\\frac{1}{2}\\pi$', '$\\pi$', '$\\frac{3}{2}\\pi$', '$2\\pi$'])
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
             if self.lowDPI:
@@ -740,7 +742,6 @@ class DisplayPeriodicSolutions:
         xlim = [min(self.continuationParameter), max(self.continuationParameter)]
         xticks = (np.linspace(min(self.continuationParameter), max(self.continuationParameter), num=self.numberOfXTicks))
 
-        print(self.deviation_ydot)
         arr[0, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
         arr[0, 0].xaxis.set_ticks(xticks)
         arr[0, 0].set_title('Defect vector magnitude after convergence')
@@ -835,6 +836,10 @@ class DisplayPeriodicSolutions:
         for i in range(3):
             for j in range(2):
                 arr[i, j].grid(True, which='both', ls=':')
+                if self.varyingQuantity == 'Alpha' and plot_as_x_coordinate == False and plot_as_family_number == False:
+                    arr[i,j].set_xticks([0,90,180,270,360])
+                    arr[i,j].set_xticklabels(['$0$','$\\frac{1}{2}\\pi$','$\\pi$','$\\frac{3}{2}\\pi$','$2\\pi$'])
+
         ax2.grid(False)
         plt.tight_layout()
         plt.subplots_adjust(top=0.9)
@@ -848,7 +853,7 @@ class DisplayPeriodicSolutions:
                 "{:3.3f}".format(self.Hamiltonian)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Periodicity constraints verification', size=self.suptitleSize)
         if self.varyingQuantity == 'Alpha':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
-                "{:3.2f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.1f}".format(self.accelerationMagnitude))  + ' - Periodicity constraints verification', size=self.suptitleSize)
+                "{:3.3f}".format(self.Hamiltonian)) + '$, $a_{lt} = ' + str("{:3.3f}".format(self.accelerationMagnitude))  + '$) - Periodicity constraints verification', size=self.suptitleSize)
 
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
@@ -921,7 +926,11 @@ class DisplayPeriodicSolutions:
         arr[0].set_ylabel('$| 1 - Det(\mathbf{M}) |$ [-]')
         arr[0].set_title('Error in determinant ')
         arr[0].semilogy(self.continuationParameter, 1.0e-3 * np.ones(len(self.continuationParameter)), color=self.plottingColors['limit'], linewidth=1, linestyle='--')
-
+        if self.varyingQuantity == 'Alpha' and plot_as_x_coordinate == False and plot_as_family_number == False:
+            arr[0].set_xticks([0, 90, 180, 270, 360])
+            arr[0].set_xticklabels(['$0$', '$\\frac{1}{2}\\pi$', '$\\pi$', '$\\frac{3}{2}\\pi$', '$2\\pi$'])
+            arr[1].set_xticks([0, 90, 180, 270, 360])
+            arr[1].set_xticklabels(['$0$', '$\\frac{1}{2}\\pi$', '$\\pi$', '$\\frac{3}{2}\\pi$', '$2\\pi$'])
 
         # arr[1, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
         # arr[1, 0].xaxis.set_ticks(xticks)
@@ -962,7 +971,7 @@ class DisplayPeriodicSolutions:
                 "{:3.3f}".format(self.Hamiltonian)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Monodromy matrix eigensystem validation', size=self.suptitleSize)
         if self.varyingQuantity == 'Alpha':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
-                "{:3.2f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.1f}".format(self.accelerationMagnitude))  + ' - Monodromy matrix eigensystem validation', size=self.suptitleSize)
+                "{:3.3f}".format(self.Hamiltonian)) + '$, $a_{lt} = ' + str("{:3.3f}".format(self.accelerationMagnitude))  + '$) - Monodromy matrix eigensystem validation', size=self.suptitleSize)
 
         plt.tight_layout()
         plt.subplots_adjust(top=0.82)
@@ -1098,6 +1107,10 @@ class DisplayPeriodicSolutions:
         for i in range(3):
             for j in range(3):
                 arr[i, j].grid(True, which='both', ls=':')
+                if self.varyingQuantity == 'Alpha' and plot_as_x_coordinate == False and plot_as_family_number == False and i > 0:
+                    arr[i,j].set_xticks([0,90,180,270,360])
+                    arr[i,j].set_xticklabels(['$0$','$\\frac{1}{2}\\pi$','$\\pi$','$\\frac{3}{2}\\pi$','$2\\pi$'])
+
 
         plt.tight_layout()
         plt.subplots_adjust(top=0.9)
@@ -1110,7 +1123,7 @@ class DisplayPeriodicSolutions:
                 "{:3.3f}".format(self.Hamiltonian)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Eigenvalues $\lambda_i$ \& stability indices $v_i$', size=self.suptitleSize)
         if self.varyingQuantity == 'Alpha':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
-                "{:3.3f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.1f}".format(self.accelerationMagnitude))  + ' - Eigenvalues $\lambda_i$ \& stability indices $v_i$', size=self.suptitleSize)
+                "{:3.3f}".format(self.Hamiltonian)) + '$, $a_{lt} = ' + str("{:3.3f}".format(self.accelerationMagnitude))  + '$) - Eigenvalues $\lambda_i$ \& stability indices $v_i$', size=self.suptitleSize)
 
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
@@ -1168,7 +1181,7 @@ class DisplayPeriodicSolutions:
 
 
 
-        arr[0,1].plot(self.orbitsId,self.alphaContinuation,c=self.plottingColors['singleLine'], linewidth=1,label='$\\alpha$ [-]')
+        arr[0,1].plot(self.orbitsId,self.alphaContinuationRad,c=self.plottingColors['singleLine'], linewidth=1,label='$\\alpha$ [-]')
         arr[0,1].set_xlim(xlim)
         arr[0,1].set_ylim([-0.1, 2*np.pi])
         arr[0,1].set_title('$\\alpha$ evolution')
@@ -1229,6 +1242,9 @@ class DisplayPeriodicSolutions:
         for i in range(2):
             for j in range(2):
                 arr[i, j].grid(True, which='both', ls=':')
+                # if self.varyingQuantity == 'Alpha' and plot_as_x_coordinate == False and plot_as_family_number == False:
+                #     arr[i,j].set_xticks([0,90,180,270,360])
+                #     arr[i,j].set_xticklabels(['$0$','$\\frac{1}{2}\\pi$','$\\pi$','$\\frac{3}{2}\\pi$','$2\\pi$'])
 
         plt.tight_layout()
         plt.subplots_adjust(top=0.88)
@@ -1241,7 +1257,7 @@ class DisplayPeriodicSolutions:
                 "{:3.3f}".format(self.Hamiltonian)) + '$, $\\alpha = ' + str(self.alpha) + ' ^{\\circ}$) ' + ' - Numerical continuation verification', size=self.suptitleSize)
         if self.varyingQuantity == 'Alpha':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
-                "{:3.3f}".format(self.Hamiltonian)) + '$, $a_{lt} = ' + str("{:3.3f}".format(self.accelerationMagnitude))  + ' - Numerical continuation validation', size=self.suptitleSize)
+                "{:3.3f}".format(self.Hamiltonian)) + '$, $a_{lt} = ' + str("{:3.3f}".format(self.accelerationMagnitude))  + '$) - Numerical continuation validation', size=self.suptitleSize)
 
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
@@ -1428,11 +1444,11 @@ if __name__ == '__main__':
                             display_periodic_solutions = DisplayPeriodicSolutions(orbit_type, lagrange_point, acceleration_magnitude, \
                                          alpha, Hamiltonian, varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
 
-                            display_periodic_solutions.plot_families()
+                            #display_periodic_solutions.plot_families()
                             #display_periodic_solutions.plot_periodicity_validation()
                             #display_periodic_solutions.plot_monodromy_analysis()
                             #display_periodic_solutions.plot_stability()
-                            #display_periodic_solutions.plot_continuation_procedure()
+                            display_periodic_solutions.plot_continuation_procedure()
                             #display_periodic_solutions.plot_increment_of_orbits()
 
 
