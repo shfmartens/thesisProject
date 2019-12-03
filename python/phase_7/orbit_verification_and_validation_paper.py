@@ -1202,7 +1202,7 @@ if __name__ == '__main__':
     graphical_projection = True
     bifurcation_analysis = True
     stability_analysis = True
-    hamiltonian_domain_analysis = True
+    hamiltonian_domain_analysis = False
 
     if ballistic_planar_projection == True:
         lagrange_point_nr = 1
@@ -1281,12 +1281,12 @@ if __name__ == '__main__':
         del characterize_periodic_solutions
 
     if  graphical_projection == True:
-        lagrange_point_nr = 2
-        acceleration_magnitude = 0.05
+        lagrange_point_nr = 1
+        acceleration_magnitude = 0.01
         alpha = 0.0
         beta = 0.0
         hamiltonian = -1.55
-        varying_quantity = 'Hamiltonian'
+        varying_quantity = 'Acceleration'
         low_dpi = False
         plot_as_x_coordinate = False
         plot_as_family_number = False
@@ -1321,12 +1321,12 @@ if __name__ == '__main__':
         del characterize_periodic_solutions
 
     if bifurcation_analysis == True:
-        lagrange_point_nr = 2
-        acceleration_magnitude = 0.05
+        lagrange_point_nr = 1
+        acceleration_magnitude = 0.01
         alpha = 0.0
         beta = 0.0
         hamiltonian = -1.55
-        varying_quantity = 'Hamiltonian'
+        varying_quantity = 'Acceleration'
         low_dpi = False
         plot_as_x_coordinate = False
         plot_as_family_number = False
@@ -1359,12 +1359,12 @@ if __name__ == '__main__':
         del characterize_periodic_solutions
 
     if stability_analysis == True:
-        lagrange_point_nr = 2
-        acceleration_magnitude = 0.05
+        lagrange_point_nr = 1
+        acceleration_magnitude = 0.01
         alpha = 0.0
         beta = 0.0
         hamiltonian = -1.55
-        varying_quantity = 'Hamiltonian'
+        varying_quantity = 'Acceleration'
         low_dpi = False
         plot_as_x_coordinate = False
         plot_as_family_number = False
@@ -1397,12 +1397,12 @@ if __name__ == '__main__':
         del characterize_periodic_solutions
 
     if hamiltonian_domain_analysis == True:
-        lagrange_point_nr = 2
-        acceleration_magnitude = 0.05
+        lagrange_point_nr = 1
+        acceleration_magnitude = 0.0
         alpha = 0.0
         beta = 0.0
-        hamiltonian = 0.0
-        varying_quantity = 'Hamiltonian'
+        hamiltonian = -1.55
+        varying_quantity = 'Acceleration'
         low_dpi = False
         plot_as_x_coordinate = False
         plot_as_family_number = False
