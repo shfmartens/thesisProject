@@ -1621,13 +1621,13 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
              computeOddPoints(initialStateVectorContinuation, oddNodesMatrix, numberOfCollocationPoints, massParameter, false);
 
 
-             double angleContinuationIncrement = 1.0;
+             double angleContinuationIncrement = 10;
 
              // loop to adjust the increment for determining bounds!
-//             if(alphaVaryingReferenceAngle > 59.0)
-//             {
-//                angleContinuationIncrement = 10.0;
-//             }
+             if(alphaVaryingReferenceAngle > 89.0)
+             {
+                angleContinuationIncrement = 1.0;
+             }
 
              std::cout << "\nalpha Most recent converged member: " <<oddNodesMatrix(7,0) << std::endl;
              std::cout << "Hamiltonain converged member: " << computeHamiltonian(massParameter,oddNodesMatrix.block(0,0,10,1)) << std::endl;

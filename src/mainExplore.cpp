@@ -52,10 +52,10 @@ int main (){
 //    {
 //        double alpha = 0.0;
 //        double accMag = 0.0107;
-//        for (int i = 2; i < 3 ; i++)
+//        for (int i = 2; i < 3  ; i++)
 //        {
-//            double tempAcc = 0.074;
-//            double tempAng = 180.0;
+//            double tempAcc = 0.079;
+//            double tempAng = 300.0;
 
 //           Eigen::Vector2d equilibriumTest = createEquilibriumLocations(i, tempAcc,  tempAng, "acceleration", 1.0, massParameter);
 //           Eigen::VectorXd hamiltonianTest(10); hamiltonianTest.setZero();
@@ -103,16 +103,16 @@ int main (){
     // ================================
         
 
-    #pragma omp parallel num_threads(4)
+    #pragma omp parallel num_threads(1)
     {
         #pragma omp for
-        for (unsigned int i=1; i<=4; i++) {
+        for (unsigned int i=1; i<=1; i++) {
             if (i ==1)
             {
                 std::cout << "Run Thread " << i << std::endl;
                 std::string orbitType = "horizontal";
                 int continuationIndex = 7; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
-                double accelerationMagnitude = 0.01;
+                double accelerationMagnitude = 0.1;
                 double accelerationAngle = 0.0;
                 double accelerationAngle2 = 0.00;
                 double initialMass = 1.0;
