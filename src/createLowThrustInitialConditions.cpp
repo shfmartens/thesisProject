@@ -1262,7 +1262,6 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                     maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit );
     } else if (startContinuationFromTextFile == false)
     {
-        double tempAngle = 0.0;
 //        std::cout << "=== TEST TEST TEST INPUT OF REFINEORBITHAMILTONIAN ====" << std::endl
 //                  << "librationPointNr: " << librationPointNr << std::endl
 //                  << "accelerationMagnitude: " << accelerationMagnitude << std::endl
@@ -1272,23 +1271,26 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 //                  << "familyHamiltonian: " << familyHamiltonian << std::endl
 //                  << "continuationIndex: " << continuationIndex << std::endl;
 
+        bool startFromAlpha;
+        double tempAngle;
+        if (continuationIndex == 7)
+        {
+            startFromAlpha = true;
+            tempAngle = accelerationAngle;
+        } else
+        {
+            startFromAlpha= false;
+            tempAngle = 0.0;
+        }
+
         Eigen::VectorXd statesContinuationVector = refineOrbitHamiltonian(librationPointNr, orbitType, accelerationMagnitude,tempAngle, accelerationAngle2,
-                                                                          familyHamiltonian, massParameter, continuationIndex, numberOfCollocationPoints);
-
-        std::cout << "statesContinuationVector length: " << statesContinuationVector.size() << std::endl;
-                    std::cout << "numberOfCollocationPoints: " << numberOfCollocationPoints << std::endl;
-
+                                                                          familyHamiltonian, massParameter, continuationIndex, startFromAlpha, numberOfCollocationPoints);
 
         // Compute the interior points and nodes for each segment, this is the input for the getCollocated State
         Eigen::MatrixXd oddNodesMatrix((11*(numberOfCollocationPoints-1)), 4 );
         computeOddPoints(statesContinuationVector, oddNodesMatrix, numberOfCollocationPoints, massParameter, false);
 
-//        std::cout << "oddNodesMatrix length: " << oddNodesMatrix.size() << std::endl;
-//        std::cout << "oddNodesMatrix cols: " << oddNodesMatrix.cols() << std::endl;
-//        std::cout << "oddNodesMatrix rows: " << oddNodesMatrix.rows() << std::endl;
-//        std::cout << "oddNodesMatrix rows: " << oddNodesMatrix.block(0,0,11,4) << std::endl;
-
-        for(int i = 0; i < oddNodesMatrix.rows(); i++ )
+        for(int i = 0; i < (numberOfCollocationPoints-1); i++ )
         {
             for(int j = 0; j < oddNodesMatrix.cols(); j++)
             {
@@ -1560,7 +1562,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
               //propagateAndSaveCollocationProcedure(oddNodesMatrix, Eigen::VectorXd::Zero(numberOfCollocationPoints-1), Eigen::VectorXd::Zero(4), numberOfCollocationPoints, 0, massParameter);
 
-               double incrementTest = 0.001;
+               double incrementTest = 0.01;
 
                std::cout << "\naccelerationMagnitude Most recent converged member: " <<oddNodesMatrix(6,0) << std::endl;
                std::cout << "Hamiltonain converged member: " << computeHamiltonian(massParameter,oddNodesMatrix.block(0,0,10,1)) << std::endl;
@@ -1570,7 +1572,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                {
                    for(int j = 0; j < 4; j++)
                    {
-                       if( oddNodesMatrix(11*i+continuationIndex,j) + incrementTest > 0.1)
+                       if( oddNodesMatrix(11*i+continuationIndex,j) + incrementTest > 0.0995)
                        {
                             oddNodesMatrix(11*i+continuationIndex,j) = 0.1;
                        } else {
@@ -1621,13 +1623,21 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
              computeOddPoints(initialStateVectorContinuation, oddNodesMatrix, numberOfCollocationPoints, massParameter, false);
 
 
-             double angleContinuationIncrement = 10;
+             double angleContinuationIncrement = -1;
 
              // loop to adjust the increment for determining bounds!
-             if(alphaVaryingReferenceAngle > 109.0)
-             {
-                angleContinuationIncrement = 1.0;
-             }
+//             if (familyHamiltonian > -1.51 and (accelerationMagnitude > 0.04 and accelerationMagnitude < 0.06 ))
+//             {
+//                 if(alphaVaryingReferenceAngle > 129.0)
+//                 {
+//                    angleContinuationIncrement = 1.0;
+//                 }
+//             }
+
+//             if(alphaVaryingReferenceAngle > 109.0)
+//             {
+//                angleContinuationIncrement = 1.0;
+//             }
 
              std::cout << "\nalpha Most recent converged member: " <<oddNodesMatrix(7,0) << std::endl;
              std::cout << "Hamiltonain converged member: " << computeHamiltonian(massParameter,oddNodesMatrix.block(0,0,10,1)) << std::endl;

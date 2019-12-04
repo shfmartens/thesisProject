@@ -213,7 +213,7 @@ void initialiseContinuationFromTextFile (const int librationPointNr, const std::
       int orbitNumberSecondGuess;
 
       // Extract the state continuation vectors of the desired hamiltonians and put them into odd points
-      std::string property_string = createReferenceString(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2 );
+      std::string property_string = createReferenceString(librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2, -1.55, false );
       std::string continuation_fileName = property_string + "_states_continuation_startup.txt";
 
       Eigen::VectorXd statesContinuationVectorFirstGuessTemplate = extractStatesContinuationVectorFromKnownHamiltonian(continuation_fileName, hamiltonianFirstGuess, numberOfCollocationPointsFirstGuess, orbitNumberFirstGuess);
