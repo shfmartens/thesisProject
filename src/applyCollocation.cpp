@@ -24,7 +24,7 @@
 #include "computeCollocationCorrection.h"
 #include "applyMeshRefinement.h"
 #include "interpolatePolynomials.h"
-
+#include "createEquilibriumLocations.h"
 void checkMeshTiming(const Eigen::MatrixXd collocationDesignVector, const int numberOfCollocationPoints, const Eigen::VectorXd thrustAndMassParameters, const int orbitNumber, bool& stableCollocationProcedure)
 {
 
@@ -1036,6 +1036,7 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
 
     double convergedGuessMaxSegmentError = 0.0;
 
+    bool reductionExecuted = true;
     double maximumErrorPerSegment = 10.0*maximumErrorTolerance;
     Eigen::MatrixXd collocationGuessStart = initialCollocationGuess;
     int tempCounter = 0;
@@ -1078,6 +1079,9 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
         Eigen::MatrixXd collocationDefectVectorEquidistribution(lengthOfDefectVector,1);
         Eigen::VectorXd segmentErrorDistribution(numberOfCollocationPoints-1);
         Eigen::MatrixXd eightOrderDerivatives(6,numberOfCollocationPoints-1);
+
+        Eigen::MatrixXd collocationDesignVectorStable((numberOfCollocationPoints-1)*19+7,1); collocationDesignVectorStable.setZero();
+        int numberOfCollocationPointsStable;
         int meshRefinementCounter = 0;
         int numberOfCorrections = 0;
         // ======= Start the loop for mesh refinement ====== //
@@ -1092,14 +1096,18 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
 
             // input into collocationDefects function and if bool is false, return the program and collocatedAugmented initialstate!
             computeCollocationDefects(collocationDefectVector, collocationDesignVector, oddStates, oddStatesDerivatives, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, initialTime, continuationIndex, previousDesignVector, orbitNumber, stableCollocationProcedure);
-            if(stableCollocationProcedure == false and (continuationIndex == 1 or continuationIndex == 6))
+
+            if(stableCollocationProcedure == false )
             {
                 return outputVector;
-            }
-            if(stableCollocationProcedure == false and continuationIndex == 7)
+            } else
             {
-                return outputVector;
+                // save the firt collocationDesignVector And The numberOfCollocationPoints
+                collocationDesignVectorStable = collocationDesignVector;
+                numberOfCollocationPointsStable = numberOfCollocationPoints;
             }
+
+
             Eigen::VectorXd segmentErrors(numberOfCollocationPoints-1); segmentErrors.setZero();
             Eigen::VectorXd eightOrderDerivatives(numberOfCollocationPoints-1); eightOrderDerivatives.setZero();
 
@@ -1156,8 +1164,40 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
                 applyLineSearchAttenuation(collocationCorrectionVector, collocationDefectVector, collocationDesignVector, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, continuationIndex, previousDesignVector, orbitNumber, stableCollocationProcedure);
                 if(stableCollocationProcedure == false)
                 {
-                    return outputVector;
-                }
+                    if (continuationIndex < 7)
+                    {
+                        return outputVector;
+                    } else  {
+
+                        Eigen::Vector2d equiLocation = createEquilibriumLocations(1, thrustAndMassParameters(0), thrustAndMassParameters(1), "acceleration", 1.0, massParameter );
+                        Eigen::VectorXd hamiltonianLocation(10); hamiltonianLocation.setZero();
+                        hamiltonianLocation.segment(0,2) = equiLocation;
+                        double locationHamiltonian = computeHamiltonian(massParameter, hamiltonianLocation);
+
+                        if (reductionExecuted == true )
+                        {
+                        std::cout << "Orbit cannot meet error criteria with minimum number of stable patch points!" << std::endl;
+
+                        return outputVector;
+                        } else if ( locationHamiltonian > previousDesignVector(0))
+                        {
+                        std::cout << "HAMILTONIAN LIMIT OF ALPHA VARYING FAMILY REACHED!!!" << std::endl;
+                        std::cout << "equilibrium Hamiltonian: "<< locationHamiltonian << std::endl;
+                        std::cout << "family Hamiltonian: "<< previousDesignVector(0) << std::endl;
+
+                        std::cout << "HAMILTONIAN LIMIT OF ALPHA VARYING FAMILY REACHED!!!" << std::endl;
+
+                        return outputVector;
+                         } else{
+
+                            return outputVector;
+                            //collocationDesignVector = collocationDesignVectorStable;
+                            //break;
+                        }
+
+
+                        }
+                    }
                 // Relax the tolerances if a certain number of corrections is reached
                 numberOfCorrections++;
                 if ( numberOfCorrections > maxNumberOfCollocationIterations)
@@ -1203,6 +1243,11 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
             auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
             std::cout << "collocation solved in number of seconds: " << duration.count() << std::endl;
 
+            if (stableCollocationProcedure == false)
+            {
+                return outputVector;
+                break;
+            }
 
             // store the solution in a seperate variables
             Eigen::VectorXd convergedDesignVector = collocationDesignVector.block(0,0,collocationDesignVector.rows(),1);
@@ -1270,8 +1315,7 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
         }
 
 
-
-        if (maximumErrorPerSegment > maximumErrorTolerance)
+        if (maximumErrorPerSegment > maximumErrorTolerance or stableCollocationProcedure == false)
         {
 
             std::cout << "\n === MESH SOLVED AND EQUIDISTRIBUTED BUT DOES NOT MEET ERROR CRITERIA, ADDING PATCH POINTS === " << std::endl
@@ -1296,8 +1340,28 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
                       newNumberOfSegments = std::round( currentNumberOfSegments * pow((10.0*maximumErrorPerSegment)/maximumErrorTolerance,1.0/(orderOfCollocationScheme+1.0)) + 5);
                     } else
                     {
-                        newNumberOfSegments = std::round( currentNumberOfSegments * pow((10.0*maximumErrorPerSegment)/maximumErrorTolerance,1.0/(orderOfCollocationScheme+1.0)) + 5);
-                        //newNumberOfSegments = currentNumberOfSegments + 2.0;
+                        if (stableCollocationProcedure == true)
+                        {
+                            if (reductionExecuted == false)
+                            {
+                                newNumberOfSegments = std::round( currentNumberOfSegments * pow((10.0*maximumErrorPerSegment)/maximumErrorTolerance,1.0/(orderOfCollocationScheme+1.0)) + 5);
+
+                            } else
+                            {
+                                newNumberOfSegments = currentNumberOfSegments + 3.0;
+
+                            }
+                        } else
+                        {
+                            return outputVector;
+                            std::cout << "REDUCING NUMBER OF PATCH POINTS/SEGMENTS";
+
+                            newNumberOfSegments = std::floor(currentNumberOfSegments / 2.0);
+
+                            reductionExecuted = true;
+                            stableCollocationProcedure = true;
+                        }
+
                     }
             numberOfCollocationPoints = static_cast<int>(newNumberOfSegments) +1;
 
