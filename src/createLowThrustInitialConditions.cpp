@@ -1629,9 +1629,9 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
              // loop to adjust the increment for determining bounds!
              {
-                 if(alphaVaryingReferenceAngle > 79.0)
+                 if(alphaVaryingReferenceAngle > 109.0)
                  {
-                    angleContinuationIncrement = 10.0;
+                    angleContinuationIncrement = 1.0;
 
                  }
              }
