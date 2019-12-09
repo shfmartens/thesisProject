@@ -103,10 +103,10 @@ int main (){
     // ================================
         
 
-    #pragma omp parallel num_threads(4)
+    #pragma omp parallel num_threads(1)
     {
         #pragma omp for
-        for (unsigned int i=1; i<=4; i++) {
+        for (unsigned int i=1; i<=1; i++) {
             if (i ==1)
             {
                 std::cout << "Run Thread " << i << std::endl;
