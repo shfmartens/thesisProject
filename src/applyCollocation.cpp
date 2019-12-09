@@ -1096,6 +1096,7 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
 
             // input into collocationDefects function and if bool is false, return the program and collocatedAugmented initialstate!
             computeCollocationDefects(collocationDefectVector, collocationDesignVector, oddStates, oddStatesDerivatives, timeIntervals, thrustAndMassParameters, numberOfCollocationPoints, initialTime, continuationIndex, previousDesignVector, orbitNumber, stableCollocationProcedure);
+            std::cout << "\nfirst defect computation residual: " << collocationDefectVector.norm() << std::endl;
 
             if(stableCollocationProcedure == false )
             {

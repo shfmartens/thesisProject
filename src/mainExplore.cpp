@@ -46,16 +46,16 @@ int main (){
 //    Eigen::Vector3d tempVector; tempVector.setZero();
 //    tempVector(0) = 0.01;
 //        tempVector(1) = 0.04;
-//        tempVector(2) = 0.07;
+//        tempVector(2) = 0.066;
 
 //    for(int k = 0; k < 1; k++)
 //    {
 //        double alpha = 0.0;
 //        double accMag = 0.0107;
-//        for (int i = 2; i < 3  ; i++)
+//        for (int i = 1; i < 2  ; i++)
 //        {
-//            double tempAcc = 0.1;
-//            double tempAng = 122.0;
+//            double tempAcc = 0.084;
+//            double tempAng = 0.0;
 
 //           Eigen::Vector2d equilibriumTest = createEquilibriumLocations(i, tempAcc,  tempAng, "acceleration", 1.0, massParameter);
 //           Eigen::VectorXd hamiltonianTest(10); hamiltonianTest.setZero();
@@ -103,24 +103,24 @@ int main (){
     // ================================
         
 
-    #pragma omp parallel num_threads(3)
+    #pragma omp parallel num_threads(1)
     {
         #pragma omp for
-        for (unsigned int i=1; i<=3; i++) {
+        for (unsigned int i=1; i<=1; i++) {
             if (i ==1)
             {
                 std::cout << "Run Thread " << i << std::endl;
                 std::string orbitType = "horizontal";
-                int continuationIndex = 7; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
-                double accelerationMagnitude = 0.01;
-                double accelerationAngle = 0.0;
-                double accelerationAngle2 = 0.00;
+                int continuationIndex = 6; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
+                double accelerationMagnitude = 0.0;
+                double accelerationAngle = 226.0;
+                double accelerationAngle2 = 0.0;
                 double initialMass = 1.0;
                 double ySign = -1.0;
-                double familyHamiltonian = -1.55;
+                double familyHamiltonian = -1.50;
                 int numberOfFamilyMembers = 1000;
                 bool startContinuationFromTextFile = false;
-                createLowThrustInitialConditions(2, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile, numberOfFamilyMembers );
+                createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile, numberOfFamilyMembers );
 
 
 
@@ -135,7 +135,7 @@ int main (){
                 double accelerationAngle2 = 0.0;
                 double initialMass = 1.0;
                 double ySign = 1.0;
-                double familyHamiltonian = -1.525;
+                double familyHamiltonian = -1.55;
                 int numberOfFamilyMembers = 3000;
                 bool startContinuationFromTextFile = false;
                 createLowThrustInitialConditions(2, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile, numberOfFamilyMembers );

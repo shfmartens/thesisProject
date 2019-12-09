@@ -1573,9 +1573,9 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                {
                    for(int j = 0; j < 4; j++)
                    {
-                       if( oddNodesMatrix(11*i+continuationIndex,j) + incrementTest > 0.0995)
+                       if( oddNodesMatrix(11*i+continuationIndex,j) + incrementTest > 0.0495)
                        {
-                            oddNodesMatrix(11*i+continuationIndex,j) = 0.1;
+                            oddNodesMatrix(11*i+continuationIndex,j) = 0.05;
                        } else {
 
                            oddNodesMatrix(11*i+continuationIndex,j) = oddNodesMatrix(11*i+continuationIndex,j) + incrementTest;
@@ -1625,13 +1625,13 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
              Eigen::MatrixXd oddNodesMatrixOld((11*(numberOfCollocationPoints-1)), 4 );
              computeOddPoints(initialStateVectorContinuation, oddNodesMatrix, numberOfCollocationPoints, massParameter, false);
 
-             double angleContinuationIncrement = 1;
+             double angleContinuationIncrement = 10;
 
              // loop to adjust the increment for determining bounds!
              {
-                 if(alphaVaryingReferenceAngle > 320.0)
+                 if(alphaVaryingReferenceAngle > 79.0)
                  {
-                    angleContinuationIncrement = 1.0;
+                    angleContinuationIncrement = 10.0;
                  }
              }
 
@@ -1668,13 +1668,17 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
               std::cout << "\nFamily Hamiltonain: " << familyHamiltonian << std::endl;
               std::cout << "\nTest Solution: \n" << oddNodesMatrix.block(0,0,11,4) << std::endl;
               std::cout << "\nFamily Hamiltonain input: " << computeHamiltonian(massParameter,oddNodesMatrix.block(0,0,10,1)) << std::endl;
+              std::cout << "\nalphaVaryingReferenceAngle: " << alphaVaryingReferenceAngle << std::endl;
+              std::cout << "\alphaVaryingStartingAngle: " << alphaVaryingStartingAngle << std::endl;
+               std::cout << "condition: "  << std::abs(alphaVaryingReferenceAngle - alphaVaryingStartingAngle)  << std::endl;
+
 
 
 
              Eigen::VectorXd previousDesignVector(1); previousDesignVector.setZero();
              previousDesignVector(0) = familyHamiltonian;
              bool continuationDirectionReversed = true;
-             if( std::abs(alphaVaryingReferenceAngle - alphaVaryingStartingAngle) < 360.0)
+             if( std::abs(alphaVaryingReferenceAngle - alphaVaryingStartingAngle) < 359.5)
              {
 
                  stateVectorInclSTM = getCollocatedAugmentedInitialState( oddNodesMatrix, numberOfInitialConditions, librationPointNr, orbitType, continuationIndex, previousDesignVector, continuationDirectionReversed, stableCollocationProcedure,
@@ -1685,7 +1689,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                  {
                      std::cout << "start interpolating polynomials" << std::endl;
                     // Compute new number of patch points
-                     int newNumberOfCollocationPoints = numberOfCollocationPoints - 5;
+                     int newNumberOfCollocationPoints = numberOfCollocationPoints  - 5;
                      Eigen::VectorXd thrustAndMassParameters(4); thrustAndMassParameters.setZero();
                      thrustAndMassParameters = oddNodesMatrixOld.block(6,0,4,1);
 
@@ -1725,9 +1729,9 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                      oddNodesMatrix.resize(11*(newNumberOfCollocationPoints-1),4); oddNodesMatrix.setZero();
                      interpolatePolynomials(collocationDesignVector, numberOfCollocationPoints, oddNodesMatrix, newNumberOfCollocationPoints, thrustAndMassParameters, massParameter  );
 
-
-
-
+                    //int newNumberOfCollocationPoints = numberOfCollocationPoints;
+                    //oddNodesMatrix = oddNodesMatrixOld;
+                    //angleContinuationIncrement = 0.1;
                      //Add angle increment to all nodes and interior Points!
                      for(int i = 0; i < (newNumberOfCollocationPoints-1); i ++)
                      {
@@ -1749,7 +1753,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                      }
 
 
-                         std::cout << "New Odd Nodes Matrix:" << oddNodesMatrix << std::endl;
+                         std::cout << "New Odd Nodes Matrix.block(0,0,11,4):" << oddNodesMatrix.block(0,0,11,4) << std::endl;
                          numberOfCollocationPoints = newNumberOfCollocationPoints;
                          stableCollocationProcedure = true;
 
@@ -1794,7 +1798,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 
 
-                if (continuationIndex == 6 && stateVectorInclSTM(6,0) > 0.0995)
+                if (continuationIndex == 6 && stateVectorInclSTM(6,0) > 0.0495)
                 {
 
                     std::cout << "termination condition stateVectorInclSTM(0,6) > 0.1 reached: "  << std::endl;

@@ -247,10 +247,10 @@ Eigen::VectorXd extractStatesContinuationVector(std::string referenceString, con
                        storageTwo = false;
                     }
 
-                    std::cout << "storageTwo: " << storageTwo << std::endl;
+                    //std::cout << "storageTwo: " << storageTwo << std::endl;
                     if(storageTwo == true)
                     {
-                       std::cout << "storageTwo condition reached " << std::endl;
+                       //std::cout << "storageTwo condition reached " << std::endl;
                        statesContinuationVector.push_back(std::stod(subs));
                     }
 
