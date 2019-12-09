@@ -1631,7 +1631,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
              {
                  if(alphaVaryingReferenceAngle > 89.0)
                  {
-                    angleContinuationIncrement = 1.0;
+                    angleContinuationIncrement = 10.0;
                  }
              }
 
