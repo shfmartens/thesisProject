@@ -1336,6 +1336,12 @@ if __name__ == '__main__':
                                                                             alpha, hamiltonian, varying_quantity, my_objects,low_dpi,plot_as_x_coordinate,plot_as_family_number)
 
         characterize_periodic_solutions.graphical_projection()
+        characterize_periodic_solutions.bifurcation_analysis()
+        characterize_periodic_solutions.stability_analysis()
+        characterize_periodic_solutions.hamiltonian_domain_analysis()
+
+
+
 
         del characterize_periodic_solutions
 
