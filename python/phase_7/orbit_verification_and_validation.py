@@ -489,7 +489,7 @@ class DisplayPeriodicSolutions:
             print('Continuation procedure terminated due to error in determinant')
         elif np.abs(self.incrementPhaseHalf/self.incrementPhaseNul) < 0.1:
             print('Continuation procedure terminated due to Decrease in spacing of family')
-        elif len(self.continuationParameter) == 2500:
+        elif len(self.continuationParameter) == 3000 or len(self.continuationParameter) == 1000 or len(self.continuationParameter) == 4500:
             print('Continuation procedure terminated likely due to maximumNumberOfMembers')
         else:
             print('All termination conditions are adhered to')
