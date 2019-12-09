@@ -1117,7 +1117,7 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
             collocationDeviationNorms = computeCollocationDeviationNorms(collocationDefectVector, collocationDesignVector, numberOfCollocationPoints);
             std::cout << "collocation Defect Vector Norm: " << collocationDefectVector.norm()  << std::endl;
             std::cout << "max ei: " << segmentErrors.maxCoeff()  << std::endl;
-            std::cout << "max ei: " << segmentErrors.maxCoeff()-segmentErrors.minCoeff()  << std::endl;
+            std::cout << "max Delta ei: " << segmentErrors.maxCoeff()-segmentErrors.minCoeff()  << std::endl;
 
 
             double positionDefectDeviations = collocationDeviationNorms(0);

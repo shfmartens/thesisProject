@@ -551,16 +551,35 @@ class PeriodicSolutionsCharacterization:
                 if j == 0:
                     arr[k,j].set_ylabel('y [-]')
                 arr[k,j].grid(True, which='both', ls=':')
-                if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'Acceleration':
+                if self.varyingQuantity != 'Hamiltonian' and self.varyingQuantity != 'Alpha':
                     subtitleString = self.subplotTitle + str("{:4.1f}".format(self.subPlotTitleValueList[objectCounter]))
+                elif self.varyingQuantity == 'Hamiltonian':
+                    if self.subPlotTitleValueList[objectCounter] > -0.1 and self.subPlotTitleValueList[
+                        objectCounter] < 0.1:
+                        alphaRadians = '$0$'
+                    if self.subPlotTitleValueList[objectCounter] > 59.9 and self.subPlotTitleValueList[
+                        objectCounter] < 60.1:
+                        alphaRadians = '$\\frac{1}{3}\\pi$'
+                    if self.subPlotTitleValueList[objectCounter] > 119.9 and self.subPlotTitleValueList[
+                        objectCounter] < 120.1:
+                        alphaRadians = '$\\frac{2}{3}\\pi$'
+                    if self.subPlotTitleValueList[objectCounter] > 179.9 and self.subPlotTitleValueList[
+                        objectCounter] < 180.1:
+                        alphaRadians = '$\\pi$'
+                    if self.subPlotTitleValueList[objectCounter] > 239.9 and self.subPlotTitleValueList[
+                        objectCounter] < 240.1:
+                        alphaRadians = '$\\frac{4}{3}\\pi$'
+                    if self.subPlotTitleValueList[objectCounter] > 299.9 and self.subPlotTitleValueList[
+                        objectCounter] < 300.1:
+                        alphaRadians = '$\\frac{5}{3}\\pi$'
+                    subtitleString = self.subplotTitle + alphaRadians
                 else:
-                    subtitleString = self.subplotTitleTwo + str("{:2.3f}".format(self.subPlotTitleValueListTwo[objectCounter])) + ' ' \
-                    + self.subplotTitle + str("{:2.3f}".format(self.subPlotTitleValueList[objectCounter]))
-                    print(subtitleString)
+                    subtitleString = self.subplotTitleTwo + str(
+                        "{:2.3f}".format(self.subPlotTitleValueListTwo[objectCounter])) + ' ' \
+                                     + self.subplotTitle + str(
+                        "{:2.3f}".format(self.subPlotTitleValueList[objectCounter]))
 
-                    # \
-                    # + ' ' + self.subplotTitle + str("{:1.3f}".format(self.subPlotTitleValueList[objectCounter]))
-                arr[k,j].set_title(subtitleString)
+                arr[k, j].set_title(subtitleString)
                 objectCounter = objectCounter + 1
 
 
@@ -1200,13 +1219,13 @@ if __name__ == '__main__':
     ballistic_bifurcation_analysis = False
     ballistic_stability_analysis = False
     graphical_projection = True
-    bifurcation_analysis = True
-    stability_analysis = True
+    bifurcation_analysis = False
+    stability_analysis = False
     hamiltonian_domain_analysis = False
 
     if ballistic_planar_projection == True:
         lagrange_point_nr = 1
-        acceleration_magnitude = 0.05
+        acceleration_magnitude = 0.01
         alpha = 0.0
         beta = 0.0
         hamiltonian = 0.0
@@ -1281,7 +1300,7 @@ if __name__ == '__main__':
         del characterize_periodic_solutions
 
     if  graphical_projection == True:
-        lagrange_point_nr = 2
+        lagrange_point_nr = 1
         acceleration_magnitude = 0.01
         alpha = 0.0
         beta = 0.0
