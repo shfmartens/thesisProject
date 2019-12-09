@@ -1275,7 +1275,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
         double tempAngle;
         if (continuationIndex == 7)
         {
-            startFromAlpha = true;
+            startFromAlpha = false;
             tempAngle = accelerationAngle;
         } else
         {
@@ -1686,88 +1686,88 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                                                                           massParameter, numberOfPatchPoints, numberOfCollocationPoints, initialConditions,
                                                                           differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit, false);
 
-                 while ( ( stableCollocationProcedure == false and numberOfCollocationPoints > 10 ) )
-                 {
-                     std::cout << "start interpolating polynomials" << std::endl;
-                    // Compute new number of patch points
-                     int newNumberOfCollocationPoints = numberOfCollocationPoints  - 5;
-                     Eigen::VectorXd thrustAndMassParameters(4); thrustAndMassParameters.setZero();
-                     thrustAndMassParameters = oddNodesMatrixOld.block(6,0,4,1);
+//                 while ( ( stableCollocationProcedure == false and numberOfCollocationPoints > 10 ) )
+//                 {
+//                     std::cout << "start interpolating polynomials" << std::endl;
+//                    // Compute new number of patch points
+//                     int newNumberOfCollocationPoints = numberOfCollocationPoints  + 5;
+//                     Eigen::VectorXd thrustAndMassParameters(4); thrustAndMassParameters.setZero();
+//                     thrustAndMassParameters = oddNodesMatrixOld.block(6,0,4,1);
 
-                     Eigen::MatrixXd collocationDesignVector((numberOfCollocationPoints-1)*19+7,1);
-                     Eigen::MatrixXd localDesignVector(26,1); localDesignVector.setZero();
-                     for (int i = 0; i < (numberOfCollocationPoints - 1);i++)
-                     {
-                            Eigen::MatrixXd oddPointsSegment = oddNodesMatrixOld.block(i*11,0,11,4);
-                            for (int j = 0; j < 4; j++)
-                            {
-                                if (j == 0)
-                                {
-                                    localDesignVector.block(0,0,6,1) = oddPointsSegment.block(0,0,6,1);
-                                    localDesignVector(6,0) = oddPointsSegment(10,0);
-                                }
-                                if (j == 1 or j == 2)
-                                {
-                                    localDesignVector.block((j*6)+1,0,6,1) = oddPointsSegment.block(0,j,6,1);
-                                }
-                                if (j == 3)
-                                {
-                                    localDesignVector.block(19,0,6,1) = oddPointsSegment.block(0,0,6,1);
-                                    localDesignVector(25) = oddPointsSegment(10,3);
-                                }
+//                     Eigen::MatrixXd collocationDesignVector((numberOfCollocationPoints-1)*19+7,1);
+//                     Eigen::MatrixXd localDesignVector(26,1); localDesignVector.setZero();
+//                     for (int i = 0; i < (numberOfCollocationPoints - 1);i++)
+//                     {
+//                            Eigen::MatrixXd oddPointsSegment = oddNodesMatrixOld.block(i*11,0,11,4);
+//                            for (int j = 0; j < 4; j++)
+//                            {
+//                                if (j == 0)
+//                                {
+//                                    localDesignVector.block(0,0,6,1) = oddPointsSegment.block(0,0,6,1);
+//                                    localDesignVector(6,0) = oddPointsSegment(10,0);
+//                                }
+//                                if (j == 1 or j == 2)
+//                                {
+//                                    localDesignVector.block((j*6)+1,0,6,1) = oddPointsSegment.block(0,j,6,1);
+//                                }
+//                                if (j == 3)
+//                                {
+//                                    localDesignVector.block(19,0,6,1) = oddPointsSegment.block(0,0,6,1);
+//                                    localDesignVector(25) = oddPointsSegment(10,3);
+//                                }
 
-                            }
+//                            }
 
-                            collocationDesignVector.block(i*19,0,26,1) = localDesignVector;
+//                            collocationDesignVector.block(i*19,0,26,1) = localDesignVector;
 
-                     }
+//                     }
 
-                     std::cout << "collocationDesignVector.block(0,0,26,1): " << collocationDesignVector.block(0,0,26,1) << std::endl;
-                     std::cout << "oddNodesMatrixOld.block(0,0,11,4): " << collocationDesignVector.block(0,0,26,1) << std::endl;
-
-
-
-                     oddNodesMatrix.resize(11*(newNumberOfCollocationPoints-1),4); oddNodesMatrix.setZero();
-                     interpolatePolynomials(collocationDesignVector, numberOfCollocationPoints, oddNodesMatrix, newNumberOfCollocationPoints, thrustAndMassParameters, massParameter  );
-
-                    //int newNumberOfCollocationPoints = numberOfCollocationPoints;
-                    //oddNodesMatrix = oddNodesMatrixOld;
-                    //angleContinuationIncrement = 0.1;
-                     //Add angle increment to all nodes and interior Points!
-                     for(int i = 0; i < (newNumberOfCollocationPoints-1); i ++)
-                     {
-                         for(int j = 0; j < 4; j++)
-                         {
-
-                             double testQuantity = oddNodesMatrix(11*i+continuationIndex,j) + angleContinuationIncrement;
-                              if (testQuantity > 360.0)
-                              {
-                                  testQuantity = testQuantity - 360.0;
-                              }
-                              if (testQuantity < 0.0)
-                              {
-                                  testQuantity = testQuantity + 360.0;
-                              }
-                              oddNodesMatrix(11*i+continuationIndex,j) = testQuantity;
-
-                         }
-                     }
-
-
-                         std::cout << "New Odd Nodes Matrix.block(0,0,11,4):" << oddNodesMatrix.block(0,0,11,4) << std::endl;
-                         numberOfCollocationPoints = newNumberOfCollocationPoints;
-                         stableCollocationProcedure = true;
-
-                         std::cout << "numberOfCollocationPoints:" << numberOfCollocationPoints << std::endl;
-
-                                 stateVectorInclSTM = getCollocatedAugmentedInitialState( oddNodesMatrix, numberOfInitialConditions, librationPointNr, orbitType, continuationIndex, previousDesignVector, continuationDirectionReversed, stableCollocationProcedure,
-                                                                                          massParameter, numberOfPatchPoints, numberOfCollocationPoints, initialConditions,
-                                                                                          differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit, false);
+//                     std::cout << "collocationDesignVector.block(0,0,26,1): " << collocationDesignVector.block(0,0,26,1) << std::endl;
+//                     std::cout << "oddNodesMatrixOld.block(0,0,11,4): " << collocationDesignVector.block(0,0,26,1) << std::endl;
 
 
 
+//                     oddNodesMatrix.resize(11*(newNumberOfCollocationPoints-1),4); oddNodesMatrix.setZero();
+//                     interpolatePolynomials(collocationDesignVector, numberOfCollocationPoints, oddNodesMatrix, newNumberOfCollocationPoints, thrustAndMassParameters, massParameter  );
 
-                 }
+//                    //int newNumberOfCollocationPoints = numberOfCollocationPoints;
+//                    //oddNodesMatrix = oddNodesMatrixOld;
+//                    //angleContinuationIncrement = 0.1;
+//                     //Add angle increment to all nodes and interior Points!
+//                     for(int i = 0; i < (newNumberOfCollocationPoints-1); i ++)
+//                     {
+//                         for(int j = 0; j < 4; j++)
+//                         {
+
+//                             double testQuantity = oddNodesMatrix(11*i+continuationIndex,j) + angleContinuationIncrement;
+//                              if (testQuantity > 360.0)
+//                              {
+//                                  testQuantity = testQuantity - 360.0;
+//                              }
+//                              if (testQuantity < 0.0)
+//                              {
+//                                  testQuantity = testQuantity + 360.0;
+//                              }
+//                              oddNodesMatrix(11*i+continuationIndex,j) = testQuantity;
+
+//                         }
+//                     }
+
+
+//                         std::cout << "New Odd Nodes Matrix.block(0,0,11,4):" << oddNodesMatrix.block(0,0,11,4) << std::endl;
+//                         numberOfCollocationPoints = newNumberOfCollocationPoints;
+//                         stableCollocationProcedure = true;
+
+//                         std::cout << "numberOfCollocationPoints:" << numberOfCollocationPoints << std::endl;
+
+//                                 stateVectorInclSTM = getCollocatedAugmentedInitialState( oddNodesMatrix, numberOfInitialConditions, librationPointNr, orbitType, continuationIndex, previousDesignVector, continuationDirectionReversed, stableCollocationProcedure,
+//                                                                                          massParameter, numberOfPatchPoints, numberOfCollocationPoints, initialConditions,
+//                                                                                          differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit, false);
+
+
+
+
+//                 }
                      \
 
              }
