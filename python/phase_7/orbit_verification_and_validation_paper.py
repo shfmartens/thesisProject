@@ -990,7 +990,7 @@ class PeriodicSolutionsCharacterization:
         f, arr = plt.subplots(1, 2, figsize=self.figSizeWidePaper)
 
         arr[0].axhline(1, c=self.plottingColors['limit'], linewidth=1, linestyle='--')
-        arr[1].axhline(1, c=self.plottingColors['limit'], linewidth=1, linestyle='--')
+        #arr[1].axhline(1, c=self.plottingColors['limit'], linewidth=1, linestyle='--')
 
         # Determine complete the bounds of the colormap
         continuationParameter_min = 50000
