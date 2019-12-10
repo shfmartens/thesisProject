@@ -1067,7 +1067,7 @@ class PeriodicSolutionsCharacterization:
         #arr[1].set_title('$\\nu_{2}$')
 
 
-        f.subplots_adjust(left=0.06,bottom=0.25,top=0.900)
+        f.subplots_adjust(left=0.06,bottom=0.25,top=0.89)
 
 
         lgd = arr[1].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), prop={'size': 8})
