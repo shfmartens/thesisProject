@@ -496,7 +496,7 @@ class PeriodicSolutionsCharacterization:
 
 
         ax1.set_ylabel('Stability Index [-]')
-        ax1.set_ylabel('$H_{lt}$ [-]')
+        ax2.set_ylabel('$H_{lt}$ [-]')
 
         ax1.set_xlabel(self.continuationLabel)
         ax1.grid(True, which='both', ls=':')
