@@ -987,7 +987,7 @@ class PeriodicSolutionsCharacterization:
 
     def stability_analysis(self):
         numberOfPlots = len(self.orbitObjects)
-        f, arr = plt.subplots(1, 2, figsize=self.figSizeWide)
+        f, arr = plt.subplots(1, 2, figsize=self.figSizeWidePaper)
 
         arr[0].axhline(1, c=self.plottingColors['limit'], linewidth=1, linestyle='--')
         arr[1].axhline(1, c=self.plottingColors['limit'], linewidth=1, linestyle='--')
@@ -1044,7 +1044,8 @@ class PeriodicSolutionsCharacterization:
             objectCounter = objectCounter + 1
 
             arr[0].semilogy(self.orbitObjects[i].continuationParameter, self.orbitObjects[i].v1, c=self.plottingColors[colour_family][i], label=subtitleString)
-            arr[1].semilogy(self.orbitObjects[i].continuationParameter, self.orbitObjects[i].v2, c=self.plottingColors[colour_family][i], label=subtitleString)
+            #arr[1].semilogy(self.orbitObjects[i].continuationParameter, self.orbitObjects[i].v2, c=self.plottingColors[colour_family][i], label=subtitleString)
+            arr[1].plot(self.orbitObjects[i].T, self.orbitObjects[i].Hlt, c=self.plottingColors[colour_family][i], label=subtitleString)
 
 
             if i == len(self.orbitObjects) - 1:
@@ -1052,14 +1053,18 @@ class PeriodicSolutionsCharacterization:
                 arr[1].axhline(1, c=self.plottingColors['limit'], linewidth=1, linestyle='--')
 
         arr[0].set_xlim([continuationParameter_min, continuationParameter_max])
-        arr[1].set_xlim([continuationParameter_min, continuationParameter_max])
+        #arr[1].set_xlim([continuationParameter_min, continuationParameter_max])
         arr[0].set_ylim([1.0e-1, 1.0e4])
-        arr[1].set_ylim([1.0e-1, 1.0e1])
+        #arr[1].set_ylim([1.0e-1, 1.0e1])
         arr[0].set_xlabel(self.continuationLabel)
-        arr[1].set_xlabel(self.continuationLabel)
+        #arr[1].set_xlabel(self.continuationLabel)
+        arr[1].set_ylabel('$T$ [-]')
+
         arr[0].set_ylabel('Stability Index [-]')
+        arr[1].set_ylabel('$H_{lt}$ [-]')
+
         arr[0].set_title('$\\nu_{1}$')
-        arr[1].set_title('$\\nu_{2}$')
+        #arr[1].set_title('$\\nu_{2}$')
 
 
         f.subplots_adjust(left=0.06,bottom=0.14,top=0.945)
@@ -1219,10 +1224,10 @@ if __name__ == '__main__':
 
     ballistic_planar_projection = False
     ballistic_bifurcation_analysis = False
-    ballistic_stability_analysis = True
+    ballistic_stability_analysis = False
     graphical_projection = False
     bifurcation_analysis = False
-    stability_analysis = False
+    stability_analysis = True
     hamiltonian_domain_analysis = False
 
     if ballistic_planar_projection == True:
@@ -1386,7 +1391,7 @@ if __name__ == '__main__':
         del characterize_periodic_solutions
 
     if stability_analysis == True:
-        lagrange_point_nr = 2
+        lagrange_point_nr = 1
         acceleration_magnitude = 0.01
         alpha = 0.0
         beta = 0.0
