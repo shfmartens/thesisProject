@@ -1275,7 +1275,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
         double tempAngle;
         if (continuationIndex == 7)
         {
-            startFromAlpha = false;
+            startFromAlpha = true;
             tempAngle = accelerationAngle;
         } else
         {
@@ -1563,7 +1563,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
               //propagateAndSaveCollocationProcedure(oddNodesMatrix, Eigen::VectorXd::Zero(numberOfCollocationPoints-1), Eigen::VectorXd::Zero(4), numberOfCollocationPoints, 0, massParameter);
 
-               double incrementTest = 0.001;
+               double incrementTest = 0.01;
 
                std::cout << "\naccelerationMagnitude Most recent converged member: " <<oddNodesMatrix(6,0) << std::endl;
                std::cout << "Hamiltonain converged member: " << computeHamiltonian(massParameter,oddNodesMatrix.block(0,0,10,1)) << std::endl;
@@ -1573,9 +1573,9 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                {
                    for(int j = 0; j < 4; j++)
                    {
-                       if( oddNodesMatrix(11*i+continuationIndex,j) + incrementTest > 0.0535)
+                       if( oddNodesMatrix(11*i+continuationIndex,j) + incrementTest > 0.0995)
                        {
-                            oddNodesMatrix(11*i+continuationIndex,j) = 0.054;
+                            oddNodesMatrix(11*i+continuationIndex,j) = 0.1;
                        } else {
 
                            oddNodesMatrix(11*i+continuationIndex,j) = oddNodesMatrix(11*i+continuationIndex,j) + incrementTest;
@@ -1799,7 +1799,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 
 
-                if (continuationIndex == 6 && stateVectorInclSTM(6,0) > 0.0535)
+                if (continuationIndex == 6 && stateVectorInclSTM(6,0) > 0.0995)
                 {
 
                     std::cout << "termination condition stateVectorInclSTM(0,6) > 0.1 reached: "  << std::endl;
