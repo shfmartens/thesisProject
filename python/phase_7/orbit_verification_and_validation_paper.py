@@ -486,12 +486,12 @@ class PeriodicSolutionsCharacterization:
         ax1.semilogy(Orbit2.continuationParameter, Orbit2.v1, c=self.plottingColors['lambda3'],label='$L_{2}$')
         ax1.set_title('$\\nu_{1}$')
 
-        ax2.semilogy(Orbit1.continuationParameter, Orbit1.v2, c=self.plottingColors['lambda6'],label='$L_{1}$')
-        ax2.semilogy(Orbit2.continuationParameter, Orbit2.v2, c=self.plottingColors['lambda3'],label='$L_{2}$')
+        ax2.plot(Orbit1.T, Orbit1.Hlt, c=self.plottingColors['lambda6'],label='$L_{1}$')
+        ax2.plot(Orbit2.T, Orbit2.Hlt, c=self.plottingColors['lambda3'],label='$L_{2}$')
         ax2.set_title('$\\nu_{2}$')
 
         ax1.axhline(1, c=self.plottingColors['limit'], linewidth=1, linestyle='--')
-        ax2.axhline(1, c=self.plottingColors['limit'], linewidth=1, linestyle='--')
+        #ax2.axhline(1, c=self.plottingColors['limit'], linewidth=1, linestyle='--')
 
 
 
@@ -503,6 +503,8 @@ class PeriodicSolutionsCharacterization:
 
 
         ax2.set_xlabel(self.continuationLabel)
+        ax1.set_ylabel('$H_{lt}$ [-]')
+
         ax2.grid(True, which='both', ls=':')
         ax2.set_xlim(xlim)
         #ax1.set_ylim([])
@@ -1217,8 +1219,8 @@ if __name__ == '__main__':
 
     ballistic_planar_projection = False
     ballistic_bifurcation_analysis = False
-    ballistic_stability_analysis = False
-    graphical_projection = True
+    ballistic_stability_analysis = True
+    graphical_projection = False
     bifurcation_analysis = False
     stability_analysis = False
     hamiltonian_domain_analysis = False
