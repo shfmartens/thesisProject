@@ -922,7 +922,7 @@ class DisplayPeriodicSolutions:
         arr[0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
         arr[0].xaxis.set_ticks(xticks)
         arr[0].set_xlim(xlim)
-        arr[0].set_ylim([1e-14, 1e-6])
+        arr[0].set_ylim([1e-14, 1e-5])
         arr[0].set_ylabel('$| 1 - Det(\mathbf{M}) |$ [-]')
         arr[0].set_title('Error in determinant ')
         arr[0].semilogy(self.continuationParameter, 1.0e-3 * np.ones(len(self.continuationParameter)), color=self.plottingColors['limit'], linewidth=1, linestyle='--')
@@ -1293,7 +1293,7 @@ class DisplayPeriodicSolutions:
         pass
 
     def plot_increment_of_orbits(self):
-        f, arr = plt.subplots(2, 2, figsize=self.figSize)
+        f, arr = plt.subplots(2, 2, figsize=self.figSizeCont)
         size = 7
 
         xlim = [1, len(self.orbitsId)]
@@ -1365,7 +1365,7 @@ class DisplayPeriodicSolutions:
         arr[1, 1].legend(frameon=True, loc='upper right')
 
         plt.tight_layout()
-        plt.subplots_adjust(top=0.9)
+        plt.subplots_adjust(top=0.88)
 
 
 
@@ -1424,9 +1424,9 @@ class DisplayPeriodicSolutions:
 
 if __name__ == '__main__':
     orbit_types = ['horizontal']
-    lagrange_points = [2]
-    acceleration_magnitudes = [0.1]
-    alphas = [60.0,300.0]
+    lagrange_points = [1]
+    acceleration_magnitudes = [0.05]
+    alphas = [300.0]
     Hamiltonians = [-1.55]
     low_dpi = False
     varying_quantities = ['Hamiltonian']
