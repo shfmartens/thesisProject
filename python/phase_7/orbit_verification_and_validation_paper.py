@@ -1050,7 +1050,7 @@ class PeriodicSolutionsCharacterization:
 
             if i == len(self.orbitObjects) - 1:
                 arr[0].axhline(1, c=self.plottingColors['limit'], linewidth=1, linestyle='--')
-                arr[1].axhline(1, c=self.plottingColors['limit'], linewidth=1, linestyle='--')
+                #arr[1].axhline(1, c=self.plottingColors['limit'], linewidth=1, linestyle='--')
 
         arr[0].set_xlim([continuationParameter_min, continuationParameter_max])
         #arr[1].set_xlim([continuationParameter_min, continuationParameter_max])
@@ -1067,7 +1067,7 @@ class PeriodicSolutionsCharacterization:
         #arr[1].set_title('$\\nu_{2}$')
 
 
-        f.subplots_adjust(left=0.06,bottom=0.14,top=0.945)
+        f.subplots_adjust(left=0.06,bottom=0.12,top=0.945)
 
 
         lgd = arr[1].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), prop={'size': 8})
