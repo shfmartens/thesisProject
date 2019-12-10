@@ -504,7 +504,7 @@ class PeriodicSolutionsCharacterization:
         #ax1.set_ylim([])
 
 
-        ax2.set_xlabel('$T [-]')
+        ax2.set_xlabel('$T$ [-]')
 
         ax2.grid(True, which='both', ls=':')
         #ax1.set_ylim([])
