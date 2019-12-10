@@ -1391,7 +1391,7 @@ if __name__ == '__main__':
         del characterize_periodic_solutions
 
     if stability_analysis == True:
-        lagrange_point_nr = 1
+        lagrange_point_nr = 2
         acceleration_magnitude = 0.1
         alpha = 0.0
         beta = 0.0
