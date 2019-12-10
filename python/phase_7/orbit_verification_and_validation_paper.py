@@ -488,7 +488,7 @@ class PeriodicSolutionsCharacterization:
 
         ax2.plot(Orbit1.T, Orbit1.Hlt, c=self.plottingColors['lambda6'],label='$L_{1}$')
         ax2.plot(Orbit2.T, Orbit2.Hlt, c=self.plottingColors['lambda3'],label='$L_{2}$')
-        ax2.set_title('$\\nu_{2}$')
+        #ax2.set_title('$\\nu_{2}$')
 
         ax1.axhline(1, c=self.plottingColors['limit'], linewidth=1, linestyle='--')
         #ax2.axhline(1, c=self.plottingColors['limit'], linewidth=1, linestyle='--')
