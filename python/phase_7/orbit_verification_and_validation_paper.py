@@ -506,7 +506,6 @@ class PeriodicSolutionsCharacterization:
         ax1.set_ylabel('$H_{lt}$ [-]')
 
         ax2.grid(True, which='both', ls=':')
-        ax2.set_xlim(xlim)
         #ax1.set_ylim([])
 
 
