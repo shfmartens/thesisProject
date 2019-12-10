@@ -1426,10 +1426,10 @@ if __name__ == '__main__':
     orbit_types = ['horizontal']
     lagrange_points = [1]
     acceleration_magnitudes = [0.01]
-    alphas = [0.0]
+    alphas = [120.0,2420.0]
     Hamiltonians = [-1.55]
     low_dpi = False
-    varying_quantities = ['Alpha']
+    varying_quantities = ['Hamiltonian']
     plot_as_x_coordinate  = False
     plot_as_family_number = False
 
@@ -1444,12 +1444,12 @@ if __name__ == '__main__':
                             display_periodic_solutions = DisplayPeriodicSolutions(orbit_type, lagrange_point, acceleration_magnitude, \
                                          alpha, Hamiltonian, varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
 
-                            #display_periodic_solutions.plot_families()
-                            #display_periodic_solutions.plot_periodicity_validation()
-                            #display_periodic_solutions.plot_monodromy_analysis()
-                            #display_periodic_solutions.plot_stability()
+                            display_periodic_solutions.plot_families()
+                            display_periodic_solutions.plot_periodicity_validation()
+                            display_periodic_solutions.plot_monodromy_analysis()
+                            display_periodic_solutions.plot_stability()
                             display_periodic_solutions.plot_continuation_procedure()
-                            #display_periodic_solutions.plot_increment_of_orbits()
+                            display_periodic_solutions.plot_increment_of_orbits()
 
 
                             del display_periodic_solutions
