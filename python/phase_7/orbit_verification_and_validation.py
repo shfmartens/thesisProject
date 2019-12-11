@@ -106,6 +106,13 @@ class DisplayPeriodicSolutions:
             differentialCorrections_df = load_differential_correction(self.alpha_filepath + self.correction_fileName)
             initial_conditions_incl_m_df = load_initial_conditions_augmented_incl_M(self.alpha_filepath + self.monodromy_fileName)
 
+            counter = 0.0
+            for i in range(len(statesContinuation_df['orbitID'])):
+                statesContinuation_df['orbitID'][i] = counter
+                counter = counter + 1.0
+
+
+
         # Generate the lists with hamiltonians, periods and number of iterations and deviations after convergence
         self.Hlt = []
         self.alphaContinuation = []
@@ -1426,10 +1433,10 @@ if __name__ == '__main__':
     orbit_types = ['horizontal']
     lagrange_points = [1]
     acceleration_magnitudes = [0.05]
-    alphas = [300.0]
-    Hamiltonians = [-1.55]
+    alphas = [0.0]
+    Hamiltonians = [-1.50]
     low_dpi = False
-    varying_quantities = ['Hamiltonian']
+    varying_quantities = ['Alpha']
     plot_as_x_coordinate  = False
     plot_as_family_number = False
 

@@ -734,6 +734,25 @@ def load_initial_conditions_augmented_incl_M(file_path):
     data = pd.read_table(file_path, delim_whitespace=True, header=None)
     return data
 
+def concanate_alpha_varying_files():
+    fileNames =  ['../../data/raw/orbits/augmented/varying_alpha/[0-134]_L1_horizontal_0.05000000000_0.00000000000_-1.50000000000_states_continuation.txt', \
+                  '../../data/raw/orbits/augmented/varying_alpha/[135-260]_L1_horizontal_0.05000000000_0.00000000000_-1.50000000000_states_continuation.txt', \
+                  '../../data/raw/orbits/augmented/varying_alpha/[260-360]_L1_horizontal_0.05000000000_0.00000000000_-1.50000000000_states_continuation.txt']
+
+    outFileName = '../../data/raw/orbits/augmented/varying_alpha/L1_horizontal_0.05000000000_0.00000000000_-1.50000000000_states_continuation.txt'
+
+    with open(outFileName, 'w') as outfile:
+        for fname in fileNames:
+            with open(fname) as infile:
+                for line in infile:
+                    outfile.write(line)
+
+def reverse_alpha_varying_files():
+    fileName = '../../data/raw/orbits/augmented/varying_alpha/[360-260]_L1_horizontal_0.05000000000_0.00000000000_-1.50000000000_initial_conditions.txt'
+    fileNameOut = '../../data/raw/orbits/augmented/varying_alpha/[260-360]_L1_horizontal_0.05000000000_0.00000000000_-1.50000000000_initial_conditions.txt'
+
+    with open(fileName) as f, open(fileNameOut, 'w') as fout:
+        fout.writelines(reversed(f.readlines()))
 
 if __name__ == '__main__':
-    load_lagrange_points_location(0.001,60.0)
+    concanate_alpha_varying_files()
