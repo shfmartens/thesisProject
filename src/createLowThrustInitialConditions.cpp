@@ -1629,13 +1629,13 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
              Eigen::MatrixXd oddNodesMatrixOld((11*(numberOfCollocationPoints-1)), 4 );
              computeOddPoints(initialStateVectorContinuation, oddNodesMatrix, numberOfCollocationPoints, massParameter, false);
 
-             double angleContinuationIncrement = -1.0;
+             double angleContinuationIncrement = 1.0;
 
              // loop to adjust the increment for determining bounds!
              {
                  if(alphaVaryingReferenceAngle > 1.0)
                  {
-                    angleContinuationIncrement = -1.0;
+                    angleContinuationIncrement = 1.0;
 
                  }
              }
