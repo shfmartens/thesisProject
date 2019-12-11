@@ -695,8 +695,8 @@ class DisplayPeriodicSolutions:
         ax.set_ylim([Ymiddle - 0.5 * scaleDistance * self.spacingFactor, Ymiddle + 0.5 * scaleDistance * self.spacingFactor])
 
         if self.varyingQuantity == 'Alpha':
-            ax.set_xlim[0,1.3]
-            ax.set_xlim[-1.0,1.0]
+            ax.set_xlim([0,1.3])
+            ax.set_ylim([-1.0,1.0])
 
 
         sm.set_array([])
