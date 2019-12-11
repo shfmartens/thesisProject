@@ -694,6 +694,11 @@ class DisplayPeriodicSolutions:
         ax.set_xlim([(Xmiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(Xmiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
         ax.set_ylim([Ymiddle - 0.5 * scaleDistance * self.spacingFactor, Ymiddle + 0.5 * scaleDistance * self.spacingFactor])
 
+        if self.varyingQuantity == 'Alpha':
+            ax.set_xlim[0,1.3]
+            ax.set_xlim[-1.0,1.0]
+
+
         sm.set_array([])
         cax, kw = matplotlib.colorbar.make_axes([ax])
 
