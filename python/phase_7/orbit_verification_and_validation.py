@@ -530,7 +530,7 @@ class DisplayPeriodicSolutions:
         elif self.varyingQuantity == 'Acceleration':
             self.orbitSpacingFactor = 1
         else:
-            self.orbitSpacingFactor = 25
+            self.orbitSpacingFactor = 1
 
         # scale properties
         self.spacingFactor = 1.05
@@ -695,8 +695,8 @@ class DisplayPeriodicSolutions:
         ax.set_ylim([Ymiddle - 0.5 * scaleDistance * self.spacingFactor, Ymiddle + 0.5 * scaleDistance * self.spacingFactor])
 
         if self.varyingQuantity == 'Alpha':
-            ax.set_xlim([0,1.3])
-            ax.set_ylim([-1.0,1.0])
+            ax.set_xlim([-0.1,1.3])
+            ax.set_ylim([-1.2,1.2])
 
 
         sm.set_array([])
@@ -1437,7 +1437,7 @@ class DisplayPeriodicSolutions:
 if __name__ == '__main__':
     orbit_types = ['horizontal']
     lagrange_points = [1]
-    acceleration_magnitudes = [0.05]
+    acceleration_magnitudes = [0.1]
     alphas = [0.0]
     Hamiltonians = [-1.50]
     low_dpi = False
