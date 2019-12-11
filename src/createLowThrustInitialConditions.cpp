@@ -1275,7 +1275,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
         double tempAngle;
         if (continuationIndex == 7)
         {
-            startFromAlpha = true;
+            startFromAlpha = false;
             tempAngle = accelerationAngle;
         } else
         {
@@ -1565,6 +1565,10 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
                double incrementTest = 0.01;
 
+               if (incrementTest > 0.0395)
+               {
+                    incrementTest = 0.002;
+               }
                std::cout << "\naccelerationMagnitude Most recent converged member: " <<oddNodesMatrix(6,0) << std::endl;
                std::cout << "Hamiltonain converged member: " << computeHamiltonian(massParameter,oddNodesMatrix.block(0,0,10,1)) << std::endl;
 
@@ -1573,9 +1577,9 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                {
                    for(int j = 0; j < 4; j++)
                    {
-                       if( oddNodesMatrix(11*i+continuationIndex,j) + incrementTest > 0.0535)
+                       if( oddNodesMatrix(11*i+continuationIndex,j) + incrementTest > 0.0495)
                        {
-                            oddNodesMatrix(11*i+continuationIndex,j) = 0.0535;
+                            oddNodesMatrix(11*i+continuationIndex,j) = 0.0495;
                        } else {
 
                            oddNodesMatrix(11*i+continuationIndex,j) = oddNodesMatrix(11*i+continuationIndex,j) + incrementTest;
@@ -1625,13 +1629,13 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
              Eigen::MatrixXd oddNodesMatrixOld((11*(numberOfCollocationPoints-1)), 4 );
              computeOddPoints(initialStateVectorContinuation, oddNodesMatrix, numberOfCollocationPoints, massParameter, false);
 
-             double angleContinuationIncrement = 1.0;
+             double angleContinuationIncrement = -1.0;
 
              // loop to adjust the increment for determining bounds!
              {
                  if(alphaVaryingReferenceAngle > 1.0)
                  {
-                    angleContinuationIncrement = 1.0;
+                    angleContinuationIncrement = -1.0;
 
                  }
              }
@@ -1799,7 +1803,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 
 
-                if (continuationIndex == 6 && stateVectorInclSTM(6,0) > 0.0535)
+                if (continuationIndex == 6 && stateVectorInclSTM(6,0) > 0.0495)
                 {
 
                     std::cout << "termination condition stateVectorInclSTM(0,6) > 0.1 reached: "  << std::endl;
