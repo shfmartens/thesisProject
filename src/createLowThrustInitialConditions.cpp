@@ -1573,9 +1573,9 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                {
                    for(int j = 0; j < 4; j++)
                    {
-                       if( oddNodesMatrix(11*i+continuationIndex,j) + incrementTest > 0.0995)
+                       if( oddNodesMatrix(11*i+continuationIndex,j) + incrementTest > 0.0535)
                        {
-                            oddNodesMatrix(11*i+continuationIndex,j) = 0.1;
+                            oddNodesMatrix(11*i+continuationIndex,j) = 0.0535;
                        } else {
 
                            oddNodesMatrix(11*i+continuationIndex,j) = oddNodesMatrix(11*i+continuationIndex,j) + incrementTest;
@@ -1799,7 +1799,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
 
 
-                if (continuationIndex == 6 && stateVectorInclSTM(6,0) > 0.0995)
+                if (continuationIndex == 6 && stateVectorInclSTM(6,0) > 0.0535)
                 {
 
                     std::cout << "termination condition stateVectorInclSTM(0,6) > 0.1 reached: "  << std::endl;

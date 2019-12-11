@@ -1036,7 +1036,7 @@ Eigen::VectorXd applyCollocation(const Eigen::MatrixXd initialCollocationGuess, 
 
     double convergedGuessMaxSegmentError = 0.0;
 
-    bool reductionExecuted = true;
+    bool reductionExecuted = false;
     double maximumErrorPerSegment = 10.0*maximumErrorTolerance;
     Eigen::MatrixXd collocationGuessStart = initialCollocationGuess;
     int tempCounter = 0;
