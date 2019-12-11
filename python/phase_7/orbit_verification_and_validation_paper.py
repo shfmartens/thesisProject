@@ -1225,9 +1225,9 @@ if __name__ == '__main__':
     ballistic_planar_projection = False
     ballistic_bifurcation_analysis = False
     ballistic_stability_analysis = False
-    graphical_projection = False
+    graphical_projection = True
     bifurcation_analysis = False
-    stability_analysis = True
+    stability_analysis = False
     hamiltonian_domain_analysis = False
 
     if ballistic_planar_projection == True:
