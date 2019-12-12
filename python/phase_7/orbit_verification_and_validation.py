@@ -1153,11 +1153,13 @@ class DisplayPeriodicSolutions:
 
         arr[0, 0].scatter(np.real(self.lambda1), np.imag(self.lambda1), c=self.plottingColors['lambda1'], s=size)
         arr[0, 0].scatter(np.real(self.lambda6), np.imag(self.lambda6), c=self.plottingColors['lambda6'], s=size)
-        arr[0, 0].set_xlim([0, 3000])
-        arr[0, 0].set_ylim([-1000, 1000])
+        arr[0, 0].set_xlim([-2, 3000])
+        arr[0, 0].set_ylim([-4, 4])
         arr[0, 0].set_title('$\lambda_1, 1/\lambda_1$')
         arr[0, 0].set_xlabel('Re [-]')
         arr[0, 0].set_ylabel('Im [-]')
+        arr[0, 0].add_artist(unit_circle_1)
+
 
         arr[0, 1].scatter(np.real(self.lambda2), np.imag(self.lambda2), c=self.plottingColors['lambda2'], s=size)
         arr[0, 1].scatter(np.real(self.lambda5), np.imag(self.lambda5), c=self.plottingColors['lambda5'], s=size)
@@ -1561,7 +1563,7 @@ if __name__ == '__main__':
     Hamiltonians = [-1.50]
     low_dpi = False
     varying_quantities = ['Hamiltonian']
-    plot_as_x_coordinate  = False
+    plot_as_x_coordinate  = True
     plot_as_family_number = False
 
 
@@ -1577,13 +1579,13 @@ if __name__ == '__main__':
                             display_periodic_solutions = DisplayPeriodicSolutions(orbit_type, lagrange_point, acceleration_magnitude, \
                                          alpha, Hamiltonian, varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
 
-                            display_periodic_solutions.plot_families()
-                            display_periodic_solutions.plot_periodicity_validation()
-                            display_periodic_solutions.plot_monodromy_analysis()
-                            display_periodic_solutions.plot_monodromy_analysis_old()
+                            #display_periodic_solutions.plot_families()
+                            #display_periodic_solutions.plot_periodicity_validation()
+                            #display_periodic_solutions.plot_monodromy_analysis()
+                            #display_periodic_solutions.plot_monodromy_analysis_old()
                             display_periodic_solutions.plot_stability()
-                            display_periodic_solutions.plot_continuation_procedure()
-                            display_periodic_solutions.plot_increment_of_orbits()
+                            #display_periodic_solutions.plot_continuation_procedure()
+                            #display_periodic_solutions.plot_increment_of_orbits()
 
 
                             del display_periodic_solutions
