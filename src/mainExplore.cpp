@@ -166,7 +166,7 @@ int main (){
                 double accelerationAngle = 120.0;
                 double accelerationAngle2 = 0.0;
                 double initialMass = 1.0;
-                double ySign = -1.0;
+                double ySign = 1.0;
                 double familyHamiltonian = -1.50;
                 int numberOfFamilyMembers = 1000;
                 bool startContinuationFromTextFile = false;
