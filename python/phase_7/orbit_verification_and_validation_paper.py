@@ -1047,9 +1047,17 @@ class PeriodicSolutionsCharacterization:
             #arr[1].semilogy(self.orbitObjects[i].continuationParameter, self.orbitObjects[i].v2, c=self.plottingColors[colour_family][i], label=subtitleString)
             if self.varyingQuantity == 'Hamiltonian':
                 arr[1].plot(self.orbitObjects[i].T, self.orbitObjects[i].Hlt, c=self.plottingColors[colour_family][i], label=subtitleString)
-            else:
+                arr[1].set_xlabel('$T$ [-]')
+                arr[1].set_ylabel('$H_{lt}$ [-]')
+            elif self.varyingQuantity == 'Acceleration':
                 arr[1].plot(self.orbitObjects[i].continuationParameter, self.orbitObjects[i].T, c=self.plottingColors[colour_family][i], label=subtitleString)
-
+                arr[1].set_xlabel('$a_{lt}$ [-]')
+                arr[1].set_ylabel('$T$ [-]')
+            else:
+                arr[1].plot(self.orbitObjects[i].continuationParameter, self.orbitObjects[i].T,
+                            c=self.plottingColors[colour_family][i], label=subtitleString)
+                arr[1].set_xlabel('$\\alpha$ [$rad$]')
+                arr[1].set_ylabel('$T$ [-]')
 
             if i == len(self.orbitObjects) - 1:
                 arr[0].axhline(1, c=self.plottingColors['limit'], linewidth=1, linestyle='--')
@@ -1061,10 +1069,8 @@ class PeriodicSolutionsCharacterization:
         #arr[1].set_ylim([1.0e-1, 1.0e1])
         arr[0].set_xlabel(self.continuationLabel)
         #arr[1].set_xlabel(self.continuationLabel)
-        arr[1].set_xlabel('$T$ [-]')
 
         arr[0].set_ylabel('Stability Index [-]')
-        arr[1].set_ylabel('$H_{lt}$ [-]')
 
         arr[0].set_title('$\\nu_{1}$')
         #arr[1].set_title('$\\nu_{2}$')
