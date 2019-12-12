@@ -112,15 +112,15 @@ int main (){
                 std::cout << "Run Thread " << i << std::endl;
                 std::string orbitType = "horizontal";
                 int continuationIndex = 7; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
-                double accelerationMagnitude = 0.05;
-                double accelerationAngle = 0.0;
+                double accelerationMagnitude = 0.1;
+                double accelerationAngle = 93.0;
                 double accelerationAngle2 = 0.0;
                 double initialMass = 1.0;
-                double ySign = -1.0;
+                double ySign = 1.0;
                 double familyHamiltonian = -1.55;
                 int numberOfFamilyMembers = 400;
                 bool startContinuationFromTextFile = false;
-                createLowThrustInitialConditions(2, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile, numberOfFamilyMembers );
+                createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile, numberOfFamilyMembers );
 
 
 
@@ -131,11 +131,11 @@ int main (){
                 std::string orbitType = "horizontal";
                 int continuationIndex = 7; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
                 double accelerationMagnitude = 0.1;
-                double accelerationAngle = 0.0;
+                double accelerationAngle = 267.0;
                 double accelerationAngle2 = 0.0;
                 double initialMass = 1.0;
                 double ySign = -1.0;
-                double familyHamiltonian = -1.525;
+                double familyHamiltonian = -1.55;
                 int numberOfFamilyMembers = 400;
                 bool startContinuationFromTextFile = false;
                 createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile, numberOfFamilyMembers );
@@ -146,12 +146,12 @@ int main (){
                 std::cout << "Run Thread " << i << std::endl;
                 std::string orbitType = "horizontal";
                 int continuationIndex = 7; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
-                double accelerationMagnitude = 0.05;
-                double accelerationAngle = 0.0;
+                double accelerationMagnitude = 0.1;
+                double accelerationAngle = 110.0;
                 double accelerationAngle2 = 0.0;
                 double initialMass = 1.0;
                 double ySign = 1.0;
-                double familyHamiltonian = -1.55;
+                double familyHamiltonian = -1.525;
                 int numberOfFamilyMembers = 1000;
                 bool startContinuationFromTextFile = false;
                 createLowThrustInitialConditions(2, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile, numberOfFamilyMembers );
@@ -163,7 +163,7 @@ int main (){
                 std::string orbitType = "horizontal";
                 int continuationIndex = 7; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
                 double accelerationMagnitude = 0.1;
-                double accelerationAngle = 215.0;
+                double accelerationAngle = 253.0;
                 double accelerationAngle2 = 0.0;
                 double initialMass = 1.0;
                 double ySign = -1.0;

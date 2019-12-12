@@ -1275,7 +1275,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
         double tempAngle;
         if (continuationIndex == 7)
         {
-            startFromAlpha = false;
+            startFromAlpha = true;
             tempAngle = accelerationAngle;
         } else
         {
@@ -1563,7 +1563,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
               //propagateAndSaveCollocationProcedure(oddNodesMatrix, Eigen::VectorXd::Zero(numberOfCollocationPoints-1), Eigen::VectorXd::Zero(4), numberOfCollocationPoints, 0, massParameter);
 
-               double incrementTest = 0.001;
+               double incrementTest = 0.01;
 
 //               if (incrementTest > 0.0995)
 //               {
@@ -1579,7 +1579,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                    {
                        if( oddNodesMatrix(11*i+continuationIndex,j) + incrementTest > 0.0995)
                        {
-                            oddNodesMatrix(11*i+continuationIndex,j) = 0.0995;
+                            oddNodesMatrix(11*i+continuationIndex,j) = 0.1;
                        } else {
 
                            oddNodesMatrix(11*i+continuationIndex,j) = oddNodesMatrix(11*i+continuationIndex,j) + incrementTest;
