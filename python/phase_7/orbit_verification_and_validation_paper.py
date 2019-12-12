@@ -1045,7 +1045,10 @@ class PeriodicSolutionsCharacterization:
 
             arr[0].semilogy(self.orbitObjects[i].continuationParameter, self.orbitObjects[i].v1, c=self.plottingColors[colour_family][i], label=subtitleString)
             #arr[1].semilogy(self.orbitObjects[i].continuationParameter, self.orbitObjects[i].v2, c=self.plottingColors[colour_family][i], label=subtitleString)
-            arr[1].plot(self.orbitObjects[i].T, self.orbitObjects[i].Hlt, c=self.plottingColors[colour_family][i], label=subtitleString)
+            if self.varyingQuantity == 'Hamiltonian':
+                arr[1].plot(self.orbitObjects[i].T, self.orbitObjects[i].Hlt, c=self.plottingColors[colour_family][i], label=subtitleString)
+            else:
+                arr[1].plot(self.orbitObjects[i].continuationParameter, self.orbitObjects[i].T, c=self.plottingColors[colour_family][i], label=subtitleString)
 
 
             if i == len(self.orbitObjects) - 1:
