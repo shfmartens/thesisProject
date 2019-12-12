@@ -1580,7 +1580,7 @@ if __name__ == '__main__':
     Hamiltonians = [-1.50]
     low_dpi = False
     varying_quantities = ['Hamiltonian']
-    plot_as_x_coordinate  = True
+    plot_as_x_coordinate  = False
     plot_as_family_number = False
 
 
