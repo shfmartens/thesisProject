@@ -1155,7 +1155,7 @@ class DisplayPeriodicSolutions:
 
         arr[0, 0].scatter(np.real(self.lambda1), np.imag(self.lambda1), c=self.plottingColors['lambda1'], s=size)
         arr[0, 0].scatter(np.real(self.lambda6), np.imag(self.lambda6), c=self.plottingColors['lambda6'], s=size)
-        arr[0, 0].set_xlim([-2, 3000])
+        arr[0, 0].set_xlim([-4, 4])
         arr[0, 0].set_ylim([-4, 4])
         arr[0, 0].set_title('$\lambda_1, 1/\lambda_1$')
         arr[0, 0].set_xlabel('Re [-]')
