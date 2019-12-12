@@ -1312,7 +1312,7 @@ if __name__ == '__main__':
         alpha = 0.0
         beta = 0.0
         hamiltonian = -1.55
-        varying_quantity = 'Hamiltonian'
+        varying_quantity = 'Acceleration'
         low_dpi = False
         plot_as_x_coordinate = False
         plot_as_family_number = True
