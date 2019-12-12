@@ -1140,6 +1140,8 @@ class DisplayPeriodicSolutions:
     def plot_stability(self):
         unit_circle_1 = plt.Circle((0, 0), 1, color='grey', fill=False)
         unit_circle_2 = plt.Circle((0, 0), 1, color='grey', fill=False)
+        unit_circle_3 = plt.Circle((0, 0), 1, color='grey', fill=False)
+
 
         size = 7
 
@@ -1158,7 +1160,7 @@ class DisplayPeriodicSolutions:
         arr[0, 0].set_title('$\lambda_1, 1/\lambda_1$')
         arr[0, 0].set_xlabel('Re [-]')
         arr[0, 0].set_ylabel('Im [-]')
-        arr[0, 0].add_artist(unit_circle_1)
+        arr[0, 0].add_artist(unit_circle_3)
 
 
         arr[0, 1].scatter(np.real(self.lambda2), np.imag(self.lambda2), c=self.plottingColors['lambda2'], s=size)
