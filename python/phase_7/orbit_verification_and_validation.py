@@ -1033,6 +1033,21 @@ class DisplayPeriodicSolutions:
         l5 = [abs(entry) for entry in self.lambda5]
         l6 = [abs(entry) for entry in self.lambda6]
 
+        print(l1[1266])
+        print(l2[1266])
+        print(l3[1266])
+        print(l4[1266])
+        print(l5[1266])
+        print(l6[1266])
+
+        print(self.lambda1[1266])
+        print(self.lambda2[1266])
+        print(self.lambda3[1266])
+        print(self.lambda4[1266])
+        print(self.lambda5[1266])
+        print(self.lambda6[1266])
+
+
         arr[0, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
         arr[0, 0].xaxis.set_ticks(xticks)
         print(len(self.continuationParameter))
