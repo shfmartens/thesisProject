@@ -1574,17 +1574,14 @@ class DisplayPeriodicSolutions:
 
 if __name__ == '__main__':
     orbit_types = ['horizontal']
-    lagrange_points = [1]
+    lagrange_points = [2]
     acceleration_magnitudes = [0.1]
-    alphas = [60,120]
+    alphas = [60,120,180,240,300]
     Hamiltonians = [-1.50]
     low_dpi = False
     varying_quantities = ['Hamiltonian']
     plot_as_x_coordinate  = False
     plot_as_family_number = True
-
-
-
 
 
     for orbit_type in orbit_types:
