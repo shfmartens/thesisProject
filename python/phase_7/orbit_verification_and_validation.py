@@ -106,6 +106,8 @@ class DisplayPeriodicSolutions:
             differentialCorrections_df = load_differential_correction(self.alpha_filepath + self.correction_fileName)
             initial_conditions_incl_m_df = load_initial_conditions_augmented_incl_M(self.alpha_filepath + self.monodromy_fileName)
 
+            print(statesContinuation_df['alpha'][320:361])
+
             counter = 0.0
             for i in range(len(statesContinuation_df['orbitID'])):
                 statesContinuation_df['orbitID'][i] = counter
@@ -1575,9 +1577,9 @@ class DisplayPeriodicSolutions:
 if __name__ == '__main__':
     orbit_types = ['horizontal']
     lagrange_points = [1]
-    acceleration_magnitudes = [0.1]
+    acceleration_magnitudes = [0.01,0.05,0.1]
     alphas = [0.0]
-    Hamiltonians = [-1.55]
+    Hamiltonians = [-1.55,-1.525,-1.50]
     low_dpi = False
     varying_quantities = ['Alpha']
     plot_as_x_coordinate  = False
