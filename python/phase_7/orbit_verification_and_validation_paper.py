@@ -573,11 +573,11 @@ class PeriodicSolutionsCharacterization:
                         objectCounter] < 300.1:
                         alphaRadians = '$\\frac{5}{3}\\pi$'
                     subtitleString = self.subplotTitle + alphaRadians
-                    else:
-                        subtitleString = self.subplotTitleTwo + str(
-                        "{:2.3f}".format(self.subPlotTitleValueListTwo[objectCounter])) + ' ' \
-                                     + self.subplotTitle + str(
-                        "{:2.3f}".format(self.subPlotTitleValueList[objectCounter]))
+                else:
+                    subtitleString = self.subplotTitleTwo + str(
+                    "{:2.3f}".format(self.subPlotTitleValueListTwo[objectCounter])) + ' ' \
+                                    + self.subplotTitle + str(
+                    "{:2.3f}".format(self.subPlotTitleValueList[objectCounter]))
 
                 arr[k, j].set_title(subtitleString)
                 objectCounter = objectCounter + 1
@@ -1316,8 +1316,8 @@ if __name__ == '__main__':
         acceleration_magnitude = 0.0
         alpha = 0.0
         beta = 0.0
-        hamiltonian = -1.50
-        varying_quantity = 'Alpha'
+        hamiltonian = -1.55
+        varying_quantity = 'Acceleration'
         low_dpi = False
         plot_as_x_coordinate = False
         plot_as_family_number = False
