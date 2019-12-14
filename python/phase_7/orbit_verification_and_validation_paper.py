@@ -1010,10 +1010,8 @@ class PeriodicSolutionsCharacterization:
         objectCounter = 0
         for i in range(len(self.orbitObjects)):
 
-            if self.varyingQuantity != 'Hamiltonian' and self.varyingQuantity != 'Alpha':
-                subtitleString = self.subplotTitle + str(
-                    "{:4.1f}".format(self.subPlotTitleValueList[objectCounter]))
-            elif self.varyingQuantity == 'Hamiltonian':
+
+            if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'Alpha':
                 if self.subPlotTitleValueList[objectCounter] > -0.1 and self.subPlotTitleValueList[
                     objectCounter] < 0.1:
                     alphaRadians = '$0$'
