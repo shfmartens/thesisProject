@@ -642,7 +642,9 @@ class PeriodicSolutionsCharacterization:
 
 
         minimum_x = 1000
+        minimmum_x2 = -1000
         maximum_x = -1000
+
         minimum_y = 1000
         maximum_y = -1000
 
@@ -711,13 +713,20 @@ class PeriodicSolutionsCharacterization:
                         print('alpha continuation xminimum at angle: ' + str(self.orbitObjects[objectCounter].alphaContinuation[k]))
                         print('minimum x value: ' + str(minimum_x))
 
-                        
+
                     if min(df1['y']) < minimum_y:
                         minimum_y = min(df1['y'])
                     if max(df1['x']) > maximum_x:
                         maximum_x = max(df1['x'])
                     if max(df1['y']) > maximum_y:
                         maximum_y = max(df1['y'])
+
+                    if min(df1['x']) < minimum_x2 and self.orbitObjects[objectCounter].alphaContinuation[k] > 179.0:
+                        minimum_x2 = min(df1['x'])
+                        print('objectCounter: ' + str(objectCounter))
+                        print('alpha continuation xminimum at angle: ' + str(self.orbitObjects[objectCounter].alphaContinuation[k]))
+                        print('minimum x2 value: ' + str(minimum_x2))
+
 
                 objectCounter = objectCounter + 1
 
