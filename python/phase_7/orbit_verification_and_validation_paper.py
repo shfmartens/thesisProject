@@ -1011,7 +1011,7 @@ class PeriodicSolutionsCharacterization:
         for i in range(len(self.orbitObjects)):
 
 
-            if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'Alpha':
+            if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'Acceleration':
                 if self.subPlotTitleValueList[objectCounter] > -0.1 and self.subPlotTitleValueList[
                     objectCounter] < 0.1:
                     alphaRadians = '$0$'
