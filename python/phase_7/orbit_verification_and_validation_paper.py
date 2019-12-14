@@ -553,7 +553,7 @@ class PeriodicSolutionsCharacterization:
                 if j == 0:
                     arr[k,j].set_ylabel('y [-]')
                 arr[k,j].grid(True, which='both', ls=':')
-                if self.varyingQuantity == 'Hamiltonian':
+                if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'Acceleration':
                     if self.subPlotTitleValueList[objectCounter] > -0.1 and self.subPlotTitleValueList[
                         objectCounter] < 0.1:
                         alphaRadians = '$0$'
