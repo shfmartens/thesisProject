@@ -553,9 +553,7 @@ class PeriodicSolutionsCharacterization:
                 if j == 0:
                     arr[k,j].set_ylabel('y [-]')
                 arr[k,j].grid(True, which='both', ls=':')
-                if self.varyingQuantity != 'Hamiltonian' and self.varyingQuantity != 'Alpha':
-                    subtitleString = self.subplotTitle + str("{:4.1f}".format(self.subPlotTitleValueList[objectCounter]))
-                elif self.varyingQuantity == 'Hamiltonian':
+                if self.varyingQuantity == 'Hamiltonian':
                     if self.subPlotTitleValueList[objectCounter] > -0.1 and self.subPlotTitleValueList[
                         objectCounter] < 0.1:
                         alphaRadians = '$0$'
@@ -575,8 +573,8 @@ class PeriodicSolutionsCharacterization:
                         objectCounter] < 300.1:
                         alphaRadians = '$\\frac{5}{3}\\pi$'
                     subtitleString = self.subplotTitle + alphaRadians
-                else:
-                    subtitleString = self.subplotTitleTwo + str(
+                    else:
+                        subtitleString = self.subplotTitleTwo + str(
                         "{:2.3f}".format(self.subPlotTitleValueListTwo[objectCounter])) + ' ' \
                                      + self.subplotTitle + str(
                         "{:2.3f}".format(self.subPlotTitleValueList[objectCounter]))
