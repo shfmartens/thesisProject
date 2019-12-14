@@ -642,7 +642,7 @@ class PeriodicSolutionsCharacterization:
 
 
         minimum_x = 1000
-        minimum_x2 = -1000
+        minimum_x2 = 1000
         maximum_x = -1000
 
         minimum_y = 1000
