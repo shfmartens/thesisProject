@@ -710,6 +710,8 @@ class PeriodicSolutionsCharacterization:
                         print('objectCounter: ' + str(objectCounter))
                         print('alpha continuation xminimum at angle: ' + str(self.orbitObjects[objectCounter].alphaContinuation[k]))
                         print('minimum x value: ' + str(minimum_x))
+
+                        
                     if min(df1['y']) < minimum_y:
                         minimum_y = min(df1['y'])
                     if max(df1['x']) > maximum_x:
