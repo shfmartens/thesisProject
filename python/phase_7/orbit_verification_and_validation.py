@@ -1640,7 +1640,7 @@ if __name__ == '__main__':
     orbit_types = ['horizontal']
     lagrange_points = [1]
     acceleration_magnitudes = [0.01]
-    alphas = [120.0,240.0]
+    alphas = [60.0,300.0]
     Hamiltonians = [-1.55]
     low_dpi = False
     varying_quantities = ['Hamiltonian']
