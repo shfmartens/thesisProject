@@ -1499,7 +1499,7 @@ class DisplayPeriodicSolutions:
         arr[0, 0].set_title('Coordinate evolution of initial condition')
         arr[0, 0].set_xlabel('orbit Number [-]')
         arr[0, 0].set_ylabel('$x$ [-], $y$ [-]')
-        arr[0, 0].legend(frameon=True, loc='upper right')
+        #arr[0, 0].legend(frameon=True, loc='upper right')
 
         arr[0, 1].plot(self.orbitsId, self.xPhaseHalf, c=self.plottingColors['doubleLine'][0], linewidth=1, label='$x$ [-]')
         arr[0, 1].plot(self.orbitsId, self.yPhaseHalf, c=self.plottingColors['doubleLine'][1], linewidth=1, label='$y$ [-]')
@@ -1508,7 +1508,7 @@ class DisplayPeriodicSolutions:
         arr[0, 1].set_title('Coordinate evolution of $\\frac{\\phi}{2}$')
         arr[0, 1].set_xlabel('orbit Number [-]')
         arr[0, 1].set_ylabel('$x$ [-], $y$ [-]')
-        arr[0, 1].legend(frameon=True, loc='upper right')
+        arr[0, 1].legend(frameon=True, loc='middle left',bbox_to_anchor=(1, 0.5),markerscale=15)
 
         xIncrement = []
         yIncrement = []
@@ -1537,10 +1537,9 @@ class DisplayPeriodicSolutions:
         arr[1, 0].set_xlim(xlim)
         arr[1, 0].set_title('Increment evolution of initial condition')
         arr[1, 0].set_xlabel('orbit Number [-]')
-        arr[1, 0].set_ylabel('$\\Delta x$ [-], $\\Delta y$ [-], $\\Delta R$ [-]')
-        arr[1, 0].set_ylabel('$\\Delta x$ [-]')
+        arr[1, 0].set_ylabel('$\\Delta R$ [-]')
 
-        arr[1, 0].legend(frameon=True, loc='upper right')
+        #arr[1, 0].legend(frameon=True, loc='upper right')
 
         #arr[1, 1].plot(orbitIdNew, xIncrementPhaseHalf, c=self.plottingColors['tripleLine'][0], linewidth=1,label='$\\Delta x$ [-]')
         #arr[1, 1].plot(orbitIdNew, yIncrementPhaseHalf, c=self.plottingColors['tripleLine'][1], linewidth=1,label='$\\Delta y$ [-]')
@@ -1556,7 +1555,7 @@ class DisplayPeriodicSolutions:
         arr[1, 1].set_ylabel('$\\Delta x$ [-], $\\Delta y$ [-], $\\Delta R$ [-]')
         arr[1, 1].set_ylabel('$\\Delta R$ [-]')
 
-        arr[1, 1].legend(frameon=True, loc='upper right')
+        arr[1, 1].legend(frameon=True, loc='middle left',bbox_to_anchor=(1, 0.5),markerscale=15)
 
         plt.tight_layout()
         plt.subplots_adjust(top=0.88)
