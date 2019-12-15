@@ -1367,7 +1367,7 @@ class DisplayPeriodicSolutions:
         arr[0,1].set_title('$\\alpha$ evolution')
         arr[0,1].set_xlabel('orbit Number [-]')
         arr[0,1].set_ylabel('$\\alpha$ [-]')
-        arr[0,1].legend(frameon=True, loc='upper left')
+        arr[0,1].legend(frameon=True, loc='center left',bbox_to_anchor=(1, 0.5))
         ticksLocators1 = [0.0, 0.5 * np.pi, np.pi, 1.5 * np.pi, 2 * np.pi]
         labels1 = ('$0$', '$ \\frac{1}{2}\\pi $', '$0$', '$ \\frac{3}{2}\\pi $', '$2 \\pi $')
         arr[0, 1].set_yticks(ticksLocators1, minor=False)
