@@ -1378,7 +1378,7 @@ class DisplayPeriodicSolutions:
 
         arr[1,0].plot(self.orbitsId,self.accelerationContinuation,c=self.plottingColors['singleLine'], linewidth=1,label='$a_{lt}$ [-]')
         arr[1,0].set_xlim(xlim)
-        arr[1,0].set_ylim([-0.01, 0.101])
+        arr[1,0].set_ylim([-0.01, 0.11])
         arr[1,0].set_title('$a_{lt}$ evolution')
         arr[1,0].set_xlabel('orbit Number [-]')
         arr[1,0].set_ylabel('$a_{lt}$ [-]')
@@ -1631,9 +1631,9 @@ class DisplayPeriodicSolutions:
 
 if __name__ == '__main__':
     orbit_types = ['horizontal']
-    lagrange_points = [1]
-    acceleration_magnitudes = [0.01]
-    alphas = [120.0,240.0]
+    lagrange_points = [1,2]
+    acceleration_magnitudes = [0.0]
+    alphas = [0.0]
     Hamiltonians = [-1.55]
     low_dpi = False
     varying_quantities = ['Hamiltonian']
