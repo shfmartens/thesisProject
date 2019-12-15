@@ -1508,7 +1508,7 @@ class DisplayPeriodicSolutions:
         arr[0, 1].set_title('Coordinate evolution of $\\frac{\\phi}{2}$')
         arr[0, 1].set_xlabel('orbit Number [-]')
         arr[0, 1].set_ylabel('$x$ [-], $y$ [-]')
-        arr[0, 1].legend(frameon=True, loc='middle left',bbox_to_anchor=(1, 0.5),markerscale=15)
+        arr[0, 1].legend(frameon=True, loc='center left',bbox_to_anchor=(1, 0.5),markerscale=15)
 
         xIncrement = []
         yIncrement = []
@@ -1555,7 +1555,7 @@ class DisplayPeriodicSolutions:
         arr[1, 1].set_ylabel('$\\Delta x$ [-], $\\Delta y$ [-], $\\Delta R$ [-]')
         arr[1, 1].set_ylabel('$\\Delta R$ [-]')
 
-        arr[1, 1].legend(frameon=True, loc='middle left',bbox_to_anchor=(1, 0.5),markerscale=15)
+        arr[1, 1].legend(frameon=True, loc='center left',bbox_to_anchor=(1, 0.5),markerscale=15)
 
         plt.tight_layout()
         plt.subplots_adjust(top=0.88)
