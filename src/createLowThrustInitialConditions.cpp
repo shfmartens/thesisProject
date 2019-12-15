@@ -1356,22 +1356,107 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
             int numberOfCollocationPointsFirstGuess;
             int numberOfCollocationPointsSecondGuess;
 
-           // ORBIT ID // HAMILTONIAN (L1 nat)
-           // 000      // -1.594170534760879
-           // 001      // -1.594170243726332
-           // 498      // -1.516776129756689
-           // 499      // -1.516655149071308
+           // ORBIT ID // HAMILTONIAN (L1_0.05_300)
+           // 1314      // -1.522570029960905
+           // 1315      // -1.522559838309247
 
-            // ORBIT ID // HAMILTONIAN (L1 0.001 150 deg)
-           // 929      // -1.509901352006060
-           // 930      // -1.509790940125689
+            // ORBIT ID // HAMILTONIAN (L1_0.10_120)
+            // 944      // -1.490579071641380
+            // 945      // -1.490775280125600
+            // 946      // -1.490997327609825
 
-            //ORBIT ID // HAMILTONIAN (L1, 0.1, 90.0 deg)
-            // 000      // -1.593820768169883
-            // 001      // -1.593820768169883
+
+            // ORBIT ID // HAMILTONIAN (L1_0.10_180)
+            // 1208     // -1.381553547506837
+            // 1209     // -1.381539521798956
+
+            // ORBIT ID // HAMILTONIAN (L1_0.10_240)
+            // 944      // -1.481276213063030
+            // 657      // -1.481275851717424
+            // 658      // -1.481275689579328
+
+            // ORBIT ID // HAMILTONIAN (L2_0.01_000)
+            // 1361     // -1.480514418722532
+            // 1362     //  -1.480486374955382
+            // 1363     // -1.480458348792836
+
+            // ORBIT ID // HAMILTONIAN (L2_0.01_060)
+            //
+            // 1482     // -1.476557243573136
+            // 1483     // -1.476534133883270
+
+            // ORBIT ID // HAMILTONIAN (L2_0.01_120)
+            // 1581     // -1.467239773096077
+            // 1582     // -1.467219992941920
+
+            // ORBIT ID // HAMILTONIAN (L2_0.01_180)
+            //
+            // 1499     // -1.461306156522218
+            // 1500     // -1.461282912081928
+
+            // ORBIT ID // HAMILTONIAN (L2_0.01_240)
+            // 1581   // -1.467239575525572
+            // 1582   // -1.467219795463072
+
+            // ORBIT ID // HAMILTONIAN (L2_0.01_300)
+            //
+            // 1482      // -1.476557240998344
+            // 1483     // -1.476534131309950
+
+            // ORBIT ID // HAMILTONIAN (L2_0.05_000)
+            //
+            // 1107     // -1.519830115929274
+            // 1108     //  -1.519792342150114
+
+            // ORBIT ID // HAMILTONIAN (L2_0.05_060)
+            //
+            // 3036     // -1.504501080991728
+            // 3037     // -1.504483473431050
+
+            // ORBIT ID // HAMILTONIAN (L2_0.05_120)
+            //
+            // 2463     // -1.499160504284910
+            // 2464     // -1.499245484033254
+
+            // ORBIT ID // HAMILTONIAN (L2_0.05_180)
+            //
+            // 1787     // -1.424435949973189
+            // 1788     //-1.424422731444669
+
+            // ORBIT ID // HAMILTONIAN (L2_0.05_240)
+            //
+            // 2463     // -1.499160727110919
+            // 2464     // -1.499245717063275
+
+            // ORBIT ID // HAMILTONIAN (L2_0.05_300)
+            //
+            // 3036     // -1.504501407819155
+            // 3037     // -1.504483800572769
+
+            // ORBIT ID // HAMILTONIAN (L2_0.10_060)
+            //
+            //
+            //
+
+            // ORBIT ID // HAMILTONIAN (L2_0.10_120)
+            //
+            //
+            //
+
+            // ORBIT ID // HAMILTONIAN (L2_0.10_180)
+            //
+            //
+            //
+
+            // ORBIT ID // HAMILTONIAN (L2_0.10_240)
+            //
+            //
+            //
+
+
 
             initialiseContinuationFromTextFile( librationPointNr, orbitType, accelerationMagnitude, accelerationAngle, accelerationAngle2,
-                                                -1.593820768169883, -1.593820768169883, ySign, massParameter,
+                                                -1.424435949973189, -1.461282912081928, ySign, massParameter,
                                                 statesContinuationVectorFirstGuess, statesContinuationVectorSecondGuess,
                                                 numberOfCollocationPointsFirstGuess, numberOfCollocationPointsSecondGuess, adaptedIncrementVector, numberOfInitialConditions);
 
@@ -1392,15 +1477,15 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
             bool continuationDirectionReversed = true;
 
-//            std::cout << "Refinement of initial Guesses Reached" << std::endl
-//                      << "orbitNumberFirstGuess: " << orbitNumberFirstGuess << std::endl
-//                      << "orbitNumberFirstGuess: " << orbitNumberSecondGuess << std::endl
-//                      << "numberOfCollocationPointsFirstGuess: " << numberOfCollocationPointsFirstGuess << std::endl
-//                      << "numberOfCollocationPointsSecondGuess: " << numberOfCollocationPointsSecondGuess << std::endl
-//                      << "numberOfInitialConditions: " << numberOfInitialConditions << std::endl
-//                      << "adaptedIncrementVector: \n" << adaptedIncrementVector << std::endl
-//                      << "oddNodesMatrixFirst: \n" << oddNodesMatrixFirst << std::endl
-//                      << "oddNodesMatrixSecond: \n" << oddNodesMatrixSecond << std::endl;
+            std::cout << "Refinement of initial Guesses Reached" << std::endl
+                      << "orbitNumberFirstGuess: " << orbitNumberFirstGuess << std::endl
+                      << "orbitNumberFirstGuess: " << orbitNumberSecondGuess << std::endl
+                      << "numberOfCollocationPointsFirstGuess: " << numberOfCollocationPointsFirstGuess << std::endl
+                      << "numberOfCollocationPointsSecondGuess: " << numberOfCollocationPointsSecondGuess << std::endl
+                      << "numberOfInitialConditions: " << numberOfInitialConditions << std::endl
+                      << "adaptedIncrementVector: \n" << adaptedIncrementVector << std::endl;
+                      //<< "oddNodesMatrixFirst: \n" << oddNodesMatrixFirst << std::endl
+                      //<< "oddNodesMatrixSecond: \n" << oddNodesMatrixSecond << std::endl;
 
 
 
