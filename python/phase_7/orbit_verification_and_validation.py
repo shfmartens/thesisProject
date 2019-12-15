@@ -1378,7 +1378,7 @@ class DisplayPeriodicSolutions:
 
         arr[1,0].plot(self.orbitsId,self.accelerationContinuation,c=self.plottingColors['singleLine'], linewidth=1,label='$a_{lt}$ [-]')
         arr[1,0].set_xlim(xlim)
-        arr[1,0].set_ylim([-0.01, 0.1])
+        arr[1,0].set_ylim([-0.01, 0.101])
         arr[1,0].set_title('$a_{lt}$ evolution')
         arr[1,0].set_xlabel('orbit Number [-]')
         arr[1,0].set_ylabel('$a_{lt}$ [-]')
