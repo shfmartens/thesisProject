@@ -862,15 +862,15 @@ class DisplayPeriodicSolutions:
             if self.alpha < 59.0:
                 alphaTitle = '0'
             elif self.alpha > 1.0 and self.alpha < 61.0:
-                alphaTitle = '$\\frac{1}{3}\\pi$'
+                alphaTitle = '\\frac{1}{3}\\pi'
             elif self.alpha > 61.0 and self.alpha < 121.0:
-                alphaTitle = '$\\frac{1}{3}\\pi$'
+                alphaTitle = '\\frac{1}{3}\\pi'
             elif self.alpha > 121.0 and self.alpha < 181.0:
-                alphaTitle = '$\\frac{1}{3}\\pi$'
+                alphaTitle = '\\frac{1}{3}\\pi'
             elif self.alpha > 181.0 and self.alpha < 241.0:
-                alphaTitle = '$\\frac{1}{3}\\pi$'
+                alphaTitle = '\\frac{1}{3}\\pi'
             elif self.alpha > 241.0 and self.alpha < 301.0:
-                alphaTitle = '$\\frac{1}{3}\\pi$'
+                alphaTitle = '\\frac{1}{3}\\pi'
 
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
@@ -995,15 +995,15 @@ class DisplayPeriodicSolutions:
             if self.alpha < 59.0:
                 alphaTitle = '0'
             elif self.alpha > 1.0 and self.alpha < 61.0:
-                alphaTitle = '$\\frac{1}{3}\\pi$'
+                alphaTitle = '\\frac{1}{3}\\pi'
             elif self.alpha > 61.0 and self.alpha < 121.0:
-                alphaTitle = '$\\frac{1}{3}\\pi$'
+                alphaTitle = '\\frac{1}{3}\\pi'
             elif self.alpha > 121.0 and self.alpha < 181.0:
-                alphaTitle = '$\\frac{1}{3}\\pi$'
+                alphaTitle = '\\frac{1}{3}\\pi'
             elif self.alpha > 181.0 and self.alpha < 241.0:
-                alphaTitle = '$\\frac{1}{3}\\pi$'
+                alphaTitle = '\\frac{1}{3}\\pi'
             elif self.alpha > 241.0 and self.alpha < 301.0:
-                alphaTitle = '$\\frac{1}{3}\\pi$'
+                alphaTitle = '\\frac{1}{3}\\pi'
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($a_{lt} = ' + str(
@@ -1433,15 +1433,15 @@ class DisplayPeriodicSolutions:
             if self.alpha < 59.0:
                 alphaTitle = '0'
             elif self.alpha > 1.0 and self.alpha < 61.0:
-                alphaTitle = '$\\frac{1}{3}\\pi$'
+                alphaTitle = '\\frac{1}{3}\\pi'
             elif self.alpha > 61.0 and self.alpha < 121.0:
-                alphaTitle = '$\\frac{1}{3}\\pi$'
+                alphaTitle = '\\frac{1}{3}\\pi'
             elif self.alpha > 121.0 and self.alpha < 181.0:
-                alphaTitle = '$\\frac{1}{3}\\pi$'
+                alphaTitle = '\\frac{1}{3}\\pi'
             elif self.alpha > 181.0 and self.alpha < 241.0:
-                alphaTitle = '$\\frac{1}{3}\\pi$'
+                alphaTitle = '\\frac{1}{3}\\pi'
             elif self.alpha > 241.0 and self.alpha < 301.0:
-                alphaTitle = '$\\frac{1}{3}\\pi$'
+                alphaTitle = '\\frac{1}{3}\\pi'
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($a_{lt} = ' + str(
@@ -1565,15 +1565,15 @@ class DisplayPeriodicSolutions:
             if self.alpha < 59.0:
                 alphaTitle = '0'
             elif self.alpha > 1.0 and self.alpha < 61.0:
-                alphaTitle = '$\\frac{1}{3}\\pi$'
+                alphaTitle = '\\frac{1}{3}\\pi'
             elif self.alpha > 61.0 and self.alpha < 121.0:
-                alphaTitle = '$\\frac{1}{3}\\pi$'
+                alphaTitle = '\\frac{1}{3}\\pi'
             elif self.alpha > 121.0 and self.alpha < 181.0:
-                alphaTitle = '$\\frac{1}{3}\\pi$'
+                alphaTitle = '\\frac{1}{3}\\pi'
             elif self.alpha > 181.0 and self.alpha < 241.0:
-                alphaTitle = '$\\frac{1}{3}\\pi$'
+                alphaTitle = '\\frac{1}{3}\\pi'
             elif self.alpha > 241.0 and self.alpha < 301.0:
-                alphaTitle = '$\\frac{1}{3}\\pi$'
+                alphaTitle = '\\frac{1}{3}\\pi'
 
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
