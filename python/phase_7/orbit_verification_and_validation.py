@@ -1509,7 +1509,7 @@ class DisplayPeriodicSolutions:
         arr[0, 1].set_xlabel('orbit Number [-]')
         arr[0, 1].set_ylabel('$x$ [-], $y$ [-]')
         arr[0, 1].legend(frameon=True, loc='center left',bbox_to_anchor=(1, 0.5),markerscale=15)
-        arr[0, 1].set_ylim([1.0e-5,1.0e-3])
+        arr[1, 0].set_ylim([1.0e-5,1.0e-3])
 
 
         xIncrement = []
