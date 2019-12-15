@@ -864,13 +864,13 @@ class DisplayPeriodicSolutions:
             elif self.alpha > 1.0 and self.alpha < 61.0:
                 alphaTitle = '\\frac{1}{3}\\pi'
             elif self.alpha > 61.0 and self.alpha < 121.0:
-                alphaTitle = '\\frac{1}{3}\\pi'
+                alphaTitle = '\\frac{2}{3}\\pi'
             elif self.alpha > 121.0 and self.alpha < 181.0:
-                alphaTitle = '\\frac{1}{3}\\pi'
+                alphaTitle = '\\pi'
             elif self.alpha > 181.0 and self.alpha < 241.0:
-                alphaTitle = '\\frac{1}{3}\\pi'
+                alphaTitle = '\\frac{4}{3}\\pi'
             elif self.alpha > 241.0 and self.alpha < 301.0:
-                alphaTitle = '\\frac{1}{3}\\pi'
+                alphaTitle = '\\frac{5}{3}\\pi'
 
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
@@ -997,13 +997,13 @@ class DisplayPeriodicSolutions:
             elif self.alpha > 1.0 and self.alpha < 61.0:
                 alphaTitle = '\\frac{1}{3}\\pi'
             elif self.alpha > 61.0 and self.alpha < 121.0:
-                alphaTitle = '\\frac{1}{3}\\pi'
+                alphaTitle = '\\frac{2}{3}\\pi'
             elif self.alpha > 121.0 and self.alpha < 181.0:
-                alphaTitle = '\\frac{1}{3}\\pi'
+                alphaTitle = '\\pi'
             elif self.alpha > 181.0 and self.alpha < 241.0:
-                alphaTitle = '\\frac{1}{3}\\pi'
+                alphaTitle = '\\frac{4}{3}\\pi'
             elif self.alpha > 241.0 and self.alpha < 301.0:
-                alphaTitle = '\\frac{1}{3}\\pi'
+                alphaTitle = '\\frac{5}{3}\\pi'
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($a_{lt} = ' + str(
@@ -1438,16 +1438,16 @@ class DisplayPeriodicSolutions:
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'Acceleration':
             if self.alpha < 59.0:
                 alphaTitle = '0'
-            elif self.alpha > 1.0 and self.alpha < 61.0:
+                elif self.alpha > 1.0 and self.alpha < 61.0:
                 alphaTitle = '\\frac{1}{3}\\pi'
             elif self.alpha > 61.0 and self.alpha < 121.0:
-                alphaTitle = '\\frac{1}{3}\\pi'
+                alphaTitle = '\\frac{2}{3}\\pi'
             elif self.alpha > 121.0 and self.alpha < 181.0:
-                alphaTitle = '\\frac{1}{3}\\pi'
+                alphaTitle = '\\pi'
             elif self.alpha > 181.0 and self.alpha < 241.0:
-                alphaTitle = '\\frac{1}{3}\\pi'
+                alphaTitle = '\\frac{4}{3}\\pi'
             elif self.alpha > 241.0 and self.alpha < 301.0:
-                alphaTitle = '\\frac{1}{3}\\pi'
+                alphaTitle = '\\frac{5}{3}\\pi'
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($a_{lt} = ' + str(
@@ -1574,13 +1574,13 @@ class DisplayPeriodicSolutions:
             elif self.alpha > 1.0 and self.alpha < 61.0:
                 alphaTitle = '\\frac{1}{3}\\pi'
             elif self.alpha > 61.0 and self.alpha < 121.0:
-                alphaTitle = '\\frac{1}{3}\\pi'
+                alphaTitle = '\\frac{2}{3}\\pi'
             elif self.alpha > 121.0 and self.alpha < 181.0:
-                alphaTitle = '\\frac{1}{3}\\pi'
+                alphaTitle = '\\pi'
             elif self.alpha > 181.0 and self.alpha < 241.0:
-                alphaTitle = '\\frac{1}{3}\\pi'
+                alphaTitle = '\\frac{4}{3}\\pi'
             elif self.alpha > 241.0 and self.alpha < 301.0:
-                alphaTitle = '\\frac{1}{3}\\pi'
+                alphaTitle = '\\frac{5}{3}\\pi'
 
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
@@ -1638,9 +1638,9 @@ class DisplayPeriodicSolutions:
 
 if __name__ == '__main__':
     orbit_types = ['horizontal']
-    lagrange_points = [1]
-    acceleration_magnitudes = [0.1]
-    alphas = [120.0,240.0]
+    lagrange_points = [1,2]
+    acceleration_magnitudes = [0.0]
+    alphas = [0.0,0.0]
     Hamiltonians = [-1.55]
     low_dpi = False
     varying_quantities = ['Hamiltonian']
