@@ -881,7 +881,7 @@ class DisplayPeriodicSolutions:
                 "{:3.3f}".format(self.Hamiltonian)) + '$, $\\alpha = ' + alphaTitle + '$ rad) ' + ' - Periodicity constraints verification', size=self.suptitleSize)
         if self.varyingQuantity == 'Alpha':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
-                "{:3.3f}".format(self.Hamiltonian)) + '$, $a_{lt} = ' + str("{:3.3f}".format(self.accelerationMagnitude))  + '$) - Periodicity constraints verification', size=self.suptitleSize)
+                "{:3.3f}".format(self.Hamiltonian)) + '$, $a_{lt} = ' + str("{:3.2f}".format(self.accelerationMagnitude))  + '$) - Periodicity constraints verification', size=self.suptitleSize)
 
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
@@ -909,8 +909,8 @@ class DisplayPeriodicSolutions:
             else:
                 plt.savefig('../../data/figures/orbits/varying_alpha/L' + str(
                 self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
-                "{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
-                "{:7.6f}".format(self.alpha)) + '_periodicity_constraints.png', transparent=True, dpi=300, bbox_inches='tight')
+                "{:7.6f}".format(self.Hamiltonian)) + '_' + str(
+                "{:7.6f}".format(self.accelerationMagnitude)) + '_periodicity_constraints.png', transparent=True, dpi=300, bbox_inches='tight')
 
         plt.close()
         pass
@@ -1013,7 +1013,7 @@ class DisplayPeriodicSolutions:
                 "{:3.3f}".format(self.Hamiltonian)) + '$, $\\alpha = ' + alphaTitle + '$ rad) ' + ' - Monodromy matrix eigensystem validation', size=self.suptitleSize)
         if self.varyingQuantity == 'Alpha':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
-                "{:3.3f}".format(self.Hamiltonian)) + '$, $a_{lt} = ' + str("{:3.3f}".format(self.accelerationMagnitude))  + '$) - Monodromy matrix eigensystem validation', size=self.suptitleSize)
+                "{:3.3f}".format(self.Hamiltonian)) + '$, $a_{lt} = ' + str("{:3.2f}".format(self.accelerationMagnitude))  + '$) - Monodromy matrix eigensystem validation', size=self.suptitleSize)
 
         plt.tight_layout()
         plt.subplots_adjust(top=0.82)
@@ -1043,8 +1043,8 @@ class DisplayPeriodicSolutions:
             else:
                 plt.savefig('../../data/figures/orbits/varying_alpha/L' + str(
                 self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
-                "{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
-                "{:7.6f}".format(self.alpha)) + '_monodromy_analysis.png', transparent=True, dpi=300, bbox_inches='tight')
+                "{:7.6f}".format(self.Hamiltonian)) + '_' + str(
+                "{:7.6f}".format(self.accelerationMagnitude)) + '_monodromy_analysis.png', transparent=True, dpi=300, bbox_inches='tight')
 
         pass
 
@@ -1457,7 +1457,7 @@ class DisplayPeriodicSolutions:
                 "{:3.3f}".format(self.Hamiltonian)) + '$, $\\alpha = ' + alphaTitle + '$ rad) ' + ' - Numerical continuation verification', size=self.suptitleSize)
         if self.varyingQuantity == 'Alpha':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
-                "{:3.3f}".format(self.Hamiltonian)) + '$, $a_{lt} = ' + str("{:3.3f}".format(self.accelerationMagnitude))  + '$) - Numerical continuation validation', size=self.suptitleSize)
+                "{:3.3f}".format(self.Hamiltonian)) + '$, $a_{lt} = ' + str("{:3.2f}".format(self.accelerationMagnitude))  + '$) - Numerical continuation validation', size=self.suptitleSize)
 
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'xcor':
@@ -1591,7 +1591,7 @@ class DisplayPeriodicSolutions:
                 "{:3.3f}".format(self.Hamiltonian)) + '$, $\\alpha = ' + alphaTitle + '$ rad) ' + ' - Spatial evolution analysis ', size=self.suptitleSize)
         if self.varyingQuantity == 'Alpha':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($H_{lt} = ' + str(
-                "{:3.2f}".format(self.accelerationMagnitude)) + '$, $a_{lt} = ' + str("{:3.1f}".format(self.accelerationMagnitude))  + ' - Spatial evolution analysis ', size=self.suptitleSize)
+                "{:3.3f}".format(self.Hamiltonian)) + '$, $a_{lt} = ' + str("{:3.2f}".format(self.accelerationMagnitude))  + '$) - Spatial evolution analysis ', size=self.suptitleSize)
 
 
 
@@ -1628,9 +1628,9 @@ class DisplayPeriodicSolutions:
                             bbox_inches='tight')
             else:
                 plt.savefig('../../data/figures/orbits/varying_alpha/L' + str(
-                    self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
-                    "{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
-                    "{:7.6f}".format(self.alpha)) + '_spatial_analysis.png', transparent=True, dpi=300, bbox_inches='tight')
+                self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
+                "{:7.6f}".format(self.Hamiltonian)) + '_' + str(
+                "{:7.6f}".format(self.accelerationMagnitude)) +'_spatial_analysis.png', transparent=True, dpi=300, bbox_inches='tight')
 
         pass
 
