@@ -1438,7 +1438,7 @@ class DisplayPeriodicSolutions:
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'Acceleration':
             if self.alpha < 59.0:
                 alphaTitle = '0'
-                elif self.alpha > 1.0 and self.alpha < 61.0:
+            elif self.alpha > 1.0 and self.alpha < 61.0:
                 alphaTitle = '\\frac{1}{3}\\pi'
             elif self.alpha > 61.0 and self.alpha < 121.0:
                 alphaTitle = '\\frac{2}{3}\\pi'
