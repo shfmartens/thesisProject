@@ -1382,7 +1382,13 @@ class DisplayPeriodicSolutions:
         arr[1,0].set_title('$a_{lt}$ evolution')
         arr[1,0].set_xlabel('orbit Number [-]')
         arr[1,0].set_ylabel('$a_{lt}$ [-]')
-        arr[1,0].legend(frameon=True, loc='upper left')
+        if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'Alpha':
+            if self.accelerationMagnitude < 0.06:
+                arr[1,0].legend(frameon=True, loc='upper left')
+            else:
+                arr[1, 0].legend(frameon=True, loc='lower left')
+        else:
+            arr[1, 0].legend(frameon=True, loc='upper left')
 
 
 
@@ -1633,8 +1639,8 @@ class DisplayPeriodicSolutions:
 if __name__ == '__main__':
     orbit_types = ['horizontal']
     lagrange_points = [1]
-    acceleration_magnitudes = [0.05]
-    alphas = [60.0,300.0]
+    acceleration_magnitudes = [0.1]
+    alphas = [120.0,240.0]
     Hamiltonians = [-1.55]
     low_dpi = False
     varying_quantities = ['Hamiltonian']
