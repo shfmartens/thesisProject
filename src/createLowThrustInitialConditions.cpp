@@ -1275,7 +1275,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
         double tempAngle;
         if (continuationIndex == 7)
         {
-            startFromAlpha = false;
+            startFromAlpha = true;
             tempAngle = accelerationAngle;
         } else
         {
