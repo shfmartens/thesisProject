@@ -113,10 +113,10 @@ int main (){
                 std::string orbitType = "horizontal";
                 int continuationIndex = 7; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
                 double accelerationMagnitude = 0.1;
-                double accelerationAngle = 122.0;
+                double accelerationAngle = 238.0;
                 double accelerationAngle2 = 0.0;
                 double initialMass = 1.0;
-                double ySign = -1.0;
+                double ySign = 1.0;
                 double familyHamiltonian = -1.525;
                 int numberOfFamilyMembers = 73;
                 bool startContinuationFromTextFile = false;
