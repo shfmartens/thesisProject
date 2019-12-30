@@ -116,9 +116,9 @@ int main (){
                 double accelerationAngle = 60.0;
                 double accelerationAngle2 = 0.0;
                 double initialMass = 1.0;
-                double ySign = 1.0;
+                double ySign = -1.0;
                 double familyHamiltonian = -1.525;
-                int numberOfFamilyMembers = 73;
+                int numberOfFamilyMembers = 61;
                 bool startContinuationFromTextFile = false;
                 createLowThrustInitialConditions(2, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile, numberOfFamilyMembers );
 
