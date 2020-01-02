@@ -861,7 +861,7 @@ class DisplayPeriodicSolutions:
             if self.Hamiltonian == -1.50 and self.accelerationMagnitude == 0.05:
                 for i in range(3):
                     for j in range(2):
-                        xcoords = [(135.0/180.0)*np.pi, (260/180.0)*np.pi]
+                        xcoords = [135.0, 260.0]
                         for xc in xcoords:
                             arr[i,j].axvline(x=xc,color='red',linestyle='--',linewidth=0.5)
 
