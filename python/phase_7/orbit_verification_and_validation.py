@@ -1474,9 +1474,9 @@ class DisplayPeriodicSolutions:
             if self.Hamiltonian == -1.50 and self.accelerationMagnitude == 0.05:
                 xcoords = [135.0, 260.0]
             if self.Hamiltonian == -1.55 and self.accelerationMagnitude == 0.1:
-                xcoords = [93.0, 123.0, 237.0, 267.0]
+                xcoords = [93.0, 123.0, 124.0, 153.0]
             if self.Hamiltonian == -1.525 and self.accelerationMagnitude == 0.1:
-                xcoords = [110, 146.0, 214.0, 253.0]
+                xcoords = [110, 146.0, 147.0, 185.0]
             if self.Hamiltonian == -1.50 and self.accelerationMagnitude == 0.1:
                 xcoords = [126.0, 250.0]
 
