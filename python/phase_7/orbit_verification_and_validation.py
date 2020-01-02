@@ -954,7 +954,7 @@ class DisplayPeriodicSolutions:
         arr[0].xaxis.set_ticks(xticks)
         arr[0].set_xlim(xlim)
         arr[0].set_ylim([1e-14, 1e-5])
-        arr[0].set_ylabel('$| 1 - det(M) |$ [-]')
+        arr[0].set_ylabel('$| 1 - \\text{det(}M\\text{)} |$ [-]')
         arr[0].set_title('Error in determinant ')
         arr[0].semilogy(self.continuationParameter, 1.0e-3 * np.ones(len(self.continuationParameter)), color=self.plottingColors['limit'], linewidth=1, linestyle='--')
         if self.varyingQuantity == 'Alpha' and plot_as_x_coordinate == False and plot_as_family_number == False:
