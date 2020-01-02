@@ -937,7 +937,7 @@ class DisplayPeriodicSolutions:
         # arr[0, 0].xaxis.set_ticks(xticks)
         # print(len(self.continuationParameter))
 
-        
+
         # arr[0, 0].semilogy(self.continuationParameter, l1, c=self.plottingColors['lambda1'])
         # arr[0, 0].semilogy(self.continuationParameter, l2, c=self.plottingColors['lambda2'])
         # arr[0, 0].semilogy(self.continuationParameter, l3, c=self.plottingColors['lambda3'])
@@ -1647,9 +1647,9 @@ class DisplayPeriodicSolutions:
 
 if __name__ == '__main__':
     orbit_types = ['horizontal']
-    lagrange_points = [1,2]
-    acceleration_magnitudes = [0.0]
-    alphas = [0.0]
+    lagrange_points = [1]
+    acceleration_magnitudes = [0.01]
+    alphas = [120.0,240.0]
     Hamiltonians = [-1.50]
     low_dpi = False
     varying_quantities = ['Hamiltonian']
