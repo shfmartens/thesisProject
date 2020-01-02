@@ -760,10 +760,11 @@ class DisplayPeriodicSolutions:
         arr[0, 0].xaxis.set_ticks(xticks)
         arr[0, 0].set_title('Defect vector magnitude after convergence')
         arr[0, 0].semilogy(self.continuationParameter, self.totalDeviationAfterConvergence, linewidth=linewidth, c=self.plottingColors['singleLine'],label='$||\\mathbf{F}||$')
-        arr[0, 0].legend(frameon=True, loc='upper left')
         arr[0, 0].set_xlim(xlim)
         arr[0, 0].set_ylim(ylim)
         arr[0, 0].semilogy(self.continuationParameter, 1e-12 * np.ones(len(self.continuationParameter)), color=self.plottingColors['limit'], linewidth=1, linestyle='--')
+        arr[0, 0].legend(frameon=True, loc='upper left')
+
 
         arr[0, 1].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
         arr[0, 1].xaxis.set_ticks(xticks)
@@ -771,7 +772,6 @@ class DisplayPeriodicSolutions:
         arr[0, 1].semilogy(self.continuationParameter, self.deviation_x, linewidth=linewidth, c=self.plottingColors['tripleLine'][0],label='$|{x}(T) - {x}(0)|$')
         arr[0, 1].semilogy(self.continuationParameter, self.deviation_y, linewidth=linewidth, c=self.plottingColors['tripleLine'][1],label='$|{y}(T) - {y}(0)|$')
         arr[0, 1].semilogy(self.continuationParameter, 1e-9 * np.ones(len(self.continuationParameter)), color=self.plottingColors['limit'], linewidth=0.5, linestyle='--')
-        arr[0, 1].semilogy(self.continuationParameter, 1e-8 * np.ones(len(self.continuationParameter)), color=self.plottingColors['limit'], linewidth=0.5, linestyle='--')
 
 
         arr[0, 1].legend(frameon=True, loc='lower left',markerscale=11)
@@ -782,21 +782,21 @@ class DisplayPeriodicSolutions:
         arr[2, 0].xaxis.set_ticks(xticks)
         arr[2, 0].set_title('Distribution of errors over collocated trajectory')
         arr[2, 0].semilogy(self.continuationParameter, self.maxDeltaError, linewidth=linewidth, c=self.plottingColors['singleLine'], label='max($e_{i}$)-min($e_{i}$)')
-        arr[2, 0].legend(frameon=True, loc='upper left')
         arr[2, 0].set_xlim(xlim)
         arr[2, 0].set_ylim(ylim)
         arr[2, 0].semilogy(self.continuationParameter, 1e-12 * np.ones(len(self.continuationParameter)), color=self.plottingColors['limit'], linewidth=1, linestyle='--')
+        arr[2, 0].legend(frameon=True, loc='upper left')
+
 
         arr[1, 1].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
         arr[1, 1].xaxis.set_ticks(xticks)
         arr[1, 1].set_title('Velocity deviation at full period')
         arr[1, 1].semilogy(self.continuationParameter, self.deviation_xdot, linewidth=linewidth,c=self.plottingColors['tripleLine'][0], label='$|\dot{x}(T) - \dot{x}(0)|$')
         arr[1, 1].semilogy(self.continuationParameter, self.deviation_ydot, linewidth=linewidth,c=self.plottingColors['tripleLine'][1], label='$|\dot{y}(T) - \dot{y}(0)|$')
-        arr[1, 1].legend(frameon=True, loc='lower left',markerscale=11)
         arr[1, 1].set_xlim(xlim)
         arr[1, 1].set_ylim(ylim)
         arr[1, 1].semilogy(self.continuationParameter, 1e-9 * np.ones(len(self.continuationParameter)),color=self.plottingColors['limit'], linewidth=0.5, linestyle='--')
-        arr[1, 1].semilogy(self.continuationParameter, 1e-8 * np.ones(len(self.continuationParameter)),color=self.plottingColors['limit'], linewidth=0.5, linestyle='--')
+        arr[1, 1].legend(frameon=True, loc='lower left',markerscale=11)
 
         arr[1, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
         arr[1, 0].xaxis.set_ticks(xticks)
@@ -856,6 +856,21 @@ class DisplayPeriodicSolutions:
                 if self.varyingQuantity == 'Alpha' and plot_as_x_coordinate == False and plot_as_family_number == False:
                     arr[i,j].set_xticks([0,90,180,270,360])
                     arr[i,j].set_xticklabels(['$0$','$\\frac{1}{2}\\pi$','$\\pi$','$\\frac{3}{2}\\pi$','$2\\pi$'])
+
+        if self.varyingQuantity == 'Alpha' and self.lagrangePointNr == 1:
+            if self.Hamiltonian == -1.50 and self.accelerationMagnitude == 0.05:
+                for i in range(3):
+                    for j in range(2):
+                        xcoords = [135, 260]
+                        for xc in xcoords:
+                            plt.axvline(x=xc/180.0*np.pi,color='red',linestyle='--')
+
+            if self.Hamiltonian == -1.55 and self.accelerationMagnitude == 0.1:
+                print('test')
+            if self.Hamiltonian == -1.525 and self.accelerationMagnitude == 0.1:
+                print('test')
+            if self.Hamiltonian == -1.50 and self.accelerationMagnitude == 0.1:
+                print('test')
 
         ax2.grid(False)
         plt.tight_layout()
@@ -1647,12 +1662,12 @@ class DisplayPeriodicSolutions:
 
 if __name__ == '__main__':
     orbit_types = ['horizontal']
-    lagrange_points = [2]
-    acceleration_magnitudes = [0.1]
+    lagrange_points = [1]
+    acceleration_magnitudes = [0.05]
     alphas = [60.0,300]
     Hamiltonians = [-1.50]
     low_dpi = False
-    varying_quantities = ['Acceleration']
+    varying_quantities = ['Alpha']
     plot_as_x_coordinate  = False
     plot_as_family_number = False
 
