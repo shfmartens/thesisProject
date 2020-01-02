@@ -1432,7 +1432,7 @@ class DisplayPeriodicSolutions:
 
             lns = lns0 + lns1 + lns2
         labs = [l.get_label() for l in lns]
-        arr[1, 1].legend(lns, labs, frameon=True, loc='center left', bbox_to_anchor=(1.05, 0.5), markerscale=15)
+        arr[1, 1].legend(lns, labs, frameon=True, loc='center left', bbox_to_anchor=(1.0, 0.5), markerscale=15)
 
         for i in range(2):
             for j in range(2):
@@ -1675,7 +1675,7 @@ if __name__ == '__main__':
                             #display_periodic_solutions.plot_monodromy_analysis_old()
                             #display_periodic_solutions.plot_stability()
                             display_periodic_solutions.plot_continuation_procedure()
-                            display_periodic_solutions.plot_increment_of_orbits()
+                            #display_periodic_solutions.plot_increment_of_orbits()
 
 
                             del display_periodic_solutions
