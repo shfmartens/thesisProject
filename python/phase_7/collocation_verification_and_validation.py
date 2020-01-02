@@ -132,6 +132,7 @@ class DisplayCollocationProcedure:
 
 
         for i in range(3):
+            print(i)
             if i == 2:
                 pp = 43
             else:
@@ -300,7 +301,7 @@ class DisplayCollocationProcedure:
 
 
 
-        plt.suptitle('$L_{1} (a_{lt} = 0.05, \\alpha =0.0, H_{lt}=-1.525)$  - Collocation procedure validation ', size=self.suptitleSize)
+        plt.suptitle('$L_{1}$ ($a_{lt} = 0.05, \\alpha =0.0$ rad, $H_{lt}=-1.525$)  - Collocation procedure validation ', size=self.suptitleSize)
 
         fig.tight_layout()
         fig.subplots_adjust(top=0.83)
@@ -310,7 +311,7 @@ class DisplayCollocationProcedure:
             fig.savefig('../../data/figures/collocation/collocation_procedure.png', transparent=True, dpi=self.dpi, bbox_inches='tight')
 
         else:
-            fig.savefig('../../data/figures/collocation/collocation_procedure.pdf', transparent=True)
+            fig.savefig('../../data/figures/collocation/collocation_procedure.png', transparent=True, dpi=300)
 
     def plot_error_distribution(self):
         fig = plt.figure(figsize=self.figSizeLong)
@@ -540,7 +541,7 @@ class DisplayCollocationProcedure:
                 xCors = np.linspace(0, 1, num=len(errorList))
                 ax18.plot(xCors, np.ones(len(errorList)) * 1.0e-9, linestyle='--', color='black')
 
-        plt.suptitle('$L_{1} (a_{lt} = 0.05, \\alpha =0.0, H_{lt}=-1.525)$  - Mesh refinement process ',
+        plt.suptitle('$L_{1}$ ($a_{lt} = 0.05$, $\\alpha =0.0$ rad, $H_{lt}=-1.525$)  - Mesh refinement process ',
                      size=self.suptitleSize)
 
         fig.tight_layout()
@@ -550,13 +551,13 @@ class DisplayCollocationProcedure:
             fig.savefig('../../data/figures/collocation/mesh_refinement_procedure.png', transparent=True, dpi=self.dpi, bbox_inches='tight')
 
         else:
-            fig.savefig('../../data/figures/collocation/mesh_refinement_procedure.pdf', transparent=True)
+            fig.savefig('../../data/figures/collocation/mesh_refinement_procedure.png', transparent=True, dpi=300)
 
 
 
 
 if __name__ == '__main__':
-    low_dpi = True
+    low_dpi = False
     display_collocation_procedure = DisplayCollocationProcedure(low_dpi)
     display_collocation_procedure.plot_collocation_procedure()
     display_collocation_procedure.plot_error_distribution()

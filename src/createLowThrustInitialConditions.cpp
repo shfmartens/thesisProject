@@ -619,12 +619,12 @@ Eigen::MatrixXd getCollocatedAugmentedInitialState( const Eigen::MatrixXd& initi
         Eigen::MatrixXd propagatedStatesMS(10*(numberOfCollocationPoints-1),11);
 
 
-        //defectVectorMS.setZero(); stateHistoryMS.clear(); propagatedStatesMS.setZero();
-        //computeOrbitDeviations( collocatedNodes, numberOfCollocationPoints, propagatedStatesMS, defectVectorMS, stateHistoryMS, massParameter);
-        //const int magnitudeNoiseOffset = 0;
-        //const double amplitude = 9.0E-3;
-        //Eigen::VectorXd collcationSegmentErrors = computeSegmentErrors( collocatedGuess, initialOddPoints.block(6,0,4,1), numberOfCollocationPoints);
-        //writeTrajectoryErrorDataToFile(numberOfCollocationPoints, fullPeriodDeviations, defectVectorMS, collocatedDefects, collcationSegmentErrors, magnitudeNoiseOffset, amplitude );
+//        defectVectorMS.setZero(); stateHistoryMS.clear(); propagatedStatesMS.setZero();
+//        computeOrbitDeviations( collocatedNodes, numberOfCollocationPoints, propagatedStatesMS, defectVectorMS, stateHistoryMS, massParameter);
+//        const int magnitudeNoiseOffset = 0;
+//        const double amplitude = 9.0E-3;
+//        //Eigen::VectorXd collcationSegmentErrors = computeSegmentErrors( collocatedGuess, initialOddPoints.block(6,0,4,1), numberOfCollocationPoints, tempSegmentErrors, tempEightOrderDerivatives);
+//        writeTrajectoryErrorDataToFile(numberOfCollocationPoints, fullPeriodDeviations, defectVectorMS, collocatedDefects, collcationSegmentErrors, magnitudeNoiseOffset, amplitude );
 
         writeStateHistoryToFileAugmented( stateHistory, initialStateVector(6), initialStateVector(7), initialStateVector(8), collocationResult(11), orbitNumber, librationPointNr, orbitType, 1000, false );
 
@@ -1275,7 +1275,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
         double tempAngle;
         if (continuationIndex == 7)
         {
-            startFromAlpha = false;
+            startFromAlpha = true;
             tempAngle = accelerationAngle;
         } else
         {
@@ -1613,7 +1613,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                                                                              differentialCorrections, statesContinuation, maxPositionDeviationFromPeriodicOrbit, maxVelocityDeviationFromPeriodicOrbit, maxPeriodDeviationFromPeriodicOrbit, false);
                     if (stableCollocationProcedure == false)
                     {
-                        continueNumericalContinuation == false;
+                        continueNumericalContinuation = false;
                     }
                     if (continuationDirectionReversed == true )
                     {
@@ -1645,10 +1645,11 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
               // Compute the interior points and nodes for each segment, this is the input for the getCollocated State
               Eigen::MatrixXd oddNodesMatrix((11*(numberOfCollocationPoints-1)), 4 );
               computeOddPoints(initialStateVectorContinuation, oddNodesMatrix, numberOfCollocationPoints, massParameter, false);
+               //Eigen::VectorXd thrustAndMassTemp(4); thrustAndMassTemp.setZero();
+              //thrustAndMassTemp(3) = 1.0;
+              //propagateAndSaveCollocationProcedure(oddNodesMatrix, Eigen::VectorXd::Zero(numberOfCollocationPoints-1), thrustAndMassTemp, numberOfCollocationPoints, 0, massParameter);
 
-              //propagateAndSaveCollocationProcedure(oddNodesMatrix, Eigen::VectorXd::Zero(numberOfCollocationPoints-1), Eigen::VectorXd::Zero(4), numberOfCollocationPoints, 0, massParameter);
-
-               double incrementTest = 0.01;
+               double incrementTest = 0.05;
 
                if (oddNodesMatrix(6,0) > 0.0895)
                {
@@ -1664,7 +1665,7 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                    {
                        if( oddNodesMatrix(11*i+continuationIndex,j) + incrementTest > 0.0995)
                        {
-                            oddNodesMatrix(11*i+continuationIndex,j) = 0.10;
+                            oddNodesMatrix(11*i+continuationIndex,j) = 0.1;
                        } else {
 
                            oddNodesMatrix(11*i+continuationIndex,j) = oddNodesMatrix(11*i+continuationIndex,j) + incrementTest;
@@ -1674,8 +1675,8 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
                    }
 
                }
-
-               //propagateAndSaveCollocationProcedure(oddNodesMatrix, Eigen::VectorXd::Zero(numberOfCollocationPoints-1), Eigen::VectorXd::Zero(4), numberOfCollocationPoints, 1, massParameter);
+                //thrustAndMassTemp(0) = 0.05;
+               //propagateAndSaveCollocationProcedure(oddNodesMatrix, Eigen::VectorXd::Zero(numberOfCollocationPoints-1), thrustAndMassTemp, numberOfCollocationPoints, 1, massParameter);
 
              std::cout << "\naccelerationMagnitude New Guess: " <<oddNodesMatrix(6,0) << std::endl;
              std::cout << "\nFamily Hamiltonain: " << familyHamiltonian << std::endl;

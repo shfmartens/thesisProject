@@ -960,7 +960,7 @@ class initialGuessValidation:
 
             suptitle = fig.suptitle('$L_{' + str(self.lagrangePointNr) + '}$ ($a_{lt} = ' + str(
                 "{:2.1e}".format(self.accelerationMagnitude)) + ' $, $\\alpha =' + str(
-                "{:3.1f}".format(self.alpha)) + '$ $|A| = ' + str(
+                "{:3.1f}".format(self.alpha)) + '$ $A_{x} = ' + str(
                 "{:2.1e}".format(self.amplitude)) + ' $) Correction time influence ', size=self.suptitleSize)
 
             fig.tight_layout()
@@ -1154,11 +1154,11 @@ class initialGuessValidation:
         ax5 = fig3.add_subplot(1, 2, 1)
         ax6 = fig3.add_subplot(1, 2, 2)
 
-        ax1title = '$L_{1}$($a_{lt}$ = 0.1, $\\alpha$=90.0$^{\\circ}$) approximate periodic solutions'
+        ax1title = '$L_{1}$($a_{lt}$ = 0.1, $\\alpha=\\frac{1}{2}\\pi$ rad) approximate periodic solutions'
         ax1.set_title(ax1title)
-        ax3title = '$L_{1}$($a_{lt}$ = 0.1, $||A||$=$1.0 \\cdot 10^{-4}$) approximate periodic solutions'
+        ax3title = '$L_{1}$($a_{lt}$ = 0.1, $A_{x}$=$1.0 \\cdot 10^{-4}$) approximate periodic solutions'
         ax3.set_title(ax3title)
-        ax5title = '$L_{1}$($\\alpha$ = 120$^{\\circ}$, $||A||$=$1.0 \\cdot 10^{-4}$) approximate periodic solutions'
+        ax5title = '$L_{1}$($\\alpha = \\frac{2}{3}\\pi$ rad, $A_{x}$=$1.0 \\cdot 10^{-4}$) approximate periodic solutions'
         ax5.set_title(ax5title)
 
         ax2title = 'Position and velocity deviation after one orbital revolution'
@@ -1172,7 +1172,7 @@ class initialGuessValidation:
         ax1.set_ylabel('y [-]')
         ax1.grid(True, which='both', ls=':')
 
-        ax2.set_xlabel('$||A||$ [-]')
+        ax2.set_xlabel('$A_{x}$ [-]')
         ax2.set_ylabel('$||\\Delta \\bar{R}||$ [-], $||\\Delta \\bar{V}||$, [-]')
         ax2.grid(True, which='both', ls=':')
 
@@ -1212,16 +1212,16 @@ class initialGuessValidation:
 
         for k in ampArray2:
             if k < 3.0e-5:
-                legendString = '$|A| = 1.0 \\cdot 10^{-5}$'
+                legendString = '$A_{x} = 1.0 \\cdot 10^{-5}$'
                 colourstamp = 0
             if k > 3.0e-5 and k < 5.0e-5:
-                legendString = '$|A| = 4.0 \\cdot 10^{-5}$'
+                legendString = '$A_{x} = 4.0 \\cdot 10^{-5}$'
                 colourstamp = 1
             if k > 5.0e-5 and k < 8.0e-5:
-                legendString = '$|A| = 7.0 \\cdot 10^{-5}$'
+                legendString = '$A_{x} = 7.0 \\cdot 10^{-5}$'
                 colourstamp = 2
             if k > 8.0e-5:
-                legendString = '$|A| = 1.0 \\cdot 10^{-4}$'
+                legendString = '$A_{x} = 1.0 \\cdot 10^{-4}$'
                 colourstamp = 3
             orbit_df = load_orbit_augmented(
                 '../../data/raw/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
@@ -1261,6 +1261,7 @@ class initialGuessValidation:
         for lagrange_point_nr in lagrange_point_nrs:
             ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
                         color='black', marker='x')
+            ax1.scatter(0.83860821797119, 0.024289027459937, color='black', marker='x')
 
         deviation_list = []
         for i in ampArray:
@@ -1279,8 +1280,8 @@ class initialGuessValidation:
 
 
         deviation_df = pd.DataFrame(deviation_list, columns=['amplitude', 'deltaR', 'deltaV'])
-        ax2.plot(deviation_df['amplitude'], deviation_df['deltaR'], label='$|\\Delta R|$',color=sns.color_palette('viridis', 2)[0], linewidth=1)
-        ax2.plot(deviation_df['amplitude'], deviation_df['deltaV'], label='$|\\Delta V|$',color=sns.color_palette('viridis', 2)[1], linewidth=1)
+        ax2.plot(deviation_df['amplitude'], deviation_df['deltaR'], label='$||\\Delta \\bar{R}||$',color=sns.color_palette('viridis', 2)[0], linewidth=1)
+        ax2.plot(deviation_df['amplitude'], deviation_df['deltaV'], label='$||\\Delta \\bar{V}||$',color=sns.color_palette('viridis', 2)[1], linewidth=1)
 
         ax2.set_xlim([min(deviation_df['amplitude']), max(deviation_df['amplitude'])])
         ax2.set_ylim([0, max(max(deviation_df['deltaV']),max(deviation_df['deltaR'])) * self.spacingFactor])
@@ -1321,22 +1322,22 @@ class initialGuessValidation:
 
         for k in alphaArray2:
             if k < 15:
-                legendString = '$\\alpha = 0^{\\circ}$'
+                legendString = '$\\alpha = 0$ rad'
                 colourstamp = 0
             if k > 30 and k < 80:
-                legendString = '$\\alpha = 60^{\\circ}$'
+                legendString = '$\\alpha = \\frac{1}{3}\\pi$ rad'
                 colourstamp = 1
             if k > 80 and k < 130:
-                legendString = '$\\alpha = 120^{\\circ}$'
+                legendString = '$\\alpha = \\frac{2}{3}\\pi$ rad'
                 colourstamp = 2
             if k > 130 and k < 190:
-                legendString = '$\\alpha = 180^{\\circ}$'
+                legendString = '$\\alpha = \\pi$ rad'
                 colourstamp = 3
             if k > 190 and k < 250:
-                legendString = '$\\alpha = 240^{\\circ}$'
+                legendString = '$\\alpha = \\frac{4}{3}\\pi$ rad'
                 colourstamp = 4
             if k > 250 and k < 310:
-                legendString = '$\\alpha = 300^{\\circ}$'
+                legendString = '$\\alpha = \\frac{5}{3}\\pi$ rad'
                 colourstamp = 5
             orbit_df = load_orbit_augmented(
                 '../../data/raw/initial_guess/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' \
@@ -1363,9 +1364,9 @@ class initialGuessValidation:
             if self.lagrangePointNr == 2:
                 lagrange_point_nrs = ['L2']
 
-            for lagrange_point_nr in lagrange_point_nrs:
-                ax3.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
-                            color=sns.color_palette('viridis', 6)[colourstamp], marker='x',s=0.1)
+            # for lagrange_point_nr in lagrange_point_nrs:
+            #     ax3.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+            #                 color=sns.color_palette('viridis', 6)[colourstamp], marker='x',s=0.1)
 
         scaleDistance2 = max((max_x2 - min_x2), (max_y2 - min_y2))
 
@@ -1394,9 +1395,9 @@ class initialGuessValidation:
             deviation_list2.append([(i*np.pi/180.0), deltaR, deltaV])
 
         deviation_df2 = pd.DataFrame(deviation_list2, columns=['amplitude', 'deltaR', 'deltaV'])
-        ax4.plot(deviation_df2['amplitude'], deviation_df2['deltaR'], label='$|\\Delta R|$',
+        ax4.plot(deviation_df2['amplitude'], deviation_df2['deltaR'], label='$||\\Delta \\bar{R}||$',
                  color=sns.color_palette('viridis', 2)[0], linewidth=1)
-        ax4.plot(deviation_df2['amplitude'], deviation_df2['deltaV'], label='$|\\Delta V|$',
+        ax4.plot(deviation_df2['amplitude'], deviation_df2['deltaV'], label='$||\\Delta \\bar{V}||$',
                  color=sns.color_palette('viridis', 2)[1], linewidth=1)
 
         ax4.set_xlim([0, 2*np.pi])
@@ -1499,9 +1500,9 @@ class initialGuessValidation:
             deviation_list3.append([i, deltaR, deltaV])
 
         deviation_df3 = pd.DataFrame(deviation_list3, columns=['amplitude', 'deltaR', 'deltaV'])
-        ax6.plot(deviation_df3['amplitude'], deviation_df3['deltaR'], label='$|\\Delta R|$',
+        ax6.plot(deviation_df3['amplitude'], deviation_df3['deltaR'], label='$||\\Delta \\bar{R}||$',
                  color=sns.color_palette('viridis', 2)[0], linewidth=1)
-        ax6.plot(deviation_df3['amplitude'], deviation_df3['deltaV'], label='$|\\Delta V|$',
+        ax6.plot(deviation_df3['amplitude'], deviation_df3['deltaV'], label='$||\\Delta \\bar{V}||$',
                  color=sns.color_palette('viridis', 2)[1], linewidth=1)
 
         ax6.set_ylim([0, 0.0004])
@@ -1533,7 +1534,9 @@ class initialGuessValidation:
 
             # bbox_extra_artists=(lgd1, lgd2, suptitle), bbox_inches='tight'
         else:
-            fig.savefig('../../data/figures/initial_guess/phase_space_plot', transparent=True)
+            fig.savefig('../../data/figures/initial_guess/phase_space_plot_amp.png', transparent=True, dpi=300)
+            fig2.savefig('../../data/figures/initial_guess/phase_space_plot_alpha.png', transparent=True, dpi=300)
+            fig3.savefig('../../data/figures/initial_guess/phase_space_plot_acc.png', transparent=True, dpi=300)
 
         plt.close()
         pass
@@ -1580,9 +1583,13 @@ class initialGuessValidation:
             lagrange_point_nrs = ['L2']
 
         for lagrange_point_nr in lagrange_point_nrs:
-            ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+            # ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+            #             color='black', marker='x')
+            ax1.scatter(0.83860821797119, 0.024289027459937,
                         color='black', marker='x')
-            ax3.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+            # ax3.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+            #             color='black', marker='x')
+            ax3.scatter(0.83860821797119, 0.024289027459937,
                         color='black', marker='x')
 
         bodies_df = load_bodies_location()
@@ -1636,15 +1643,22 @@ class initialGuessValidation:
             colourstamp = colourstamp + 1
 
             if colourstamp == 0:
-                legendString = '$a_{lt} = 0.0$'
+                #legendString = '$a_{lt} = 0.0$'
+                legendString = '$A_{x} = 0.01$'
             if colourstamp == 1:
                 legendString = '$a_{lt} = 0.025$'
+                legendString = '$A_{x} = 0.04$'
+
             if colourstamp == 2:
                 legendString = '$a_{lt} = 0.05$'
+                legendString = '$A_{x} = 0.07$'
             if colourstamp == 3:
                 legendString = '$a_{lt} = 0.075$'
+                legendString = '$A_{x} = 0.1$'
             if colourstamp == 4:
                 legendString = '$a_{lt} = 0.1$'
+
+
 
             orbit_df_50 = load_orbit_augmented(
                 '../../data/raw/initial_guess/final_plot/L' + str(
@@ -1734,15 +1748,15 @@ class initialGuessValidation:
             deviation_list_005.append([i, deltaR, deltaVTOT])
 
         deviation_df_50 = pd.DataFrame(deviation_list_50, columns=['amplitude', 'deltaR', 'deltaV'])
-        ax2.plot(deviation_df_50['amplitude'], deviation_df_50['deltaR'], label='$|\\Delta R|$',
+        ax2.plot(deviation_df_50['amplitude'], deviation_df_50['deltaR'], label='$||\\Delta \\bar{R}||$',
                  color=sns.color_palette('viridis', 2)[0], linewidth=1)
-        ax2.plot(deviation_df_50['amplitude'], deviation_df_50['deltaV'], label='$|\\Delta V|$',
+        ax2.plot(deviation_df_50['amplitude'], deviation_df_50['deltaV'], label='$||\\Delta \\bar{V}||$',
                  color=sns.color_palette('viridis', 2)[1], linewidth=1)
 
         deviation_df_005 = pd.DataFrame(deviation_list_005, columns=['amplitude', 'deltaR', 'deltaV'])
-        ax4.plot(deviation_df_005['amplitude'], deviation_df_005['deltaR'], label='$|\\Delta R|$',
+        ax4.plot(deviation_df_005['amplitude'], deviation_df_005['deltaR'], label='$||\\Delta \\bar{R}||$',
                  color=sns.color_palette('viridis', 2)[0], linewidth=1)
-        ax4.plot(deviation_df_005['amplitude'], deviation_df_005['deltaV'], label='$|\\Delta V|$',
+        ax4.plot(deviation_df_005['amplitude'], deviation_df_005['deltaV'], label='$||\\Delta \\bar{V}||$',
                  color=sns.color_palette('viridis', 2)[1], linewidth=1)
 
         print(max(deviation_df_005['deltaR']))
@@ -1769,7 +1783,7 @@ class initialGuessValidation:
 
 
 
-        suptitle = fig.suptitle(' $L_{1}$($a_{lt}$ = 0.1, $\\alpha$=90.0$^{\\circ}$) - Correction interval effect', size=self.suptitleSize)
+        suptitle = fig.suptitle(' $L_{1}$($a_{lt}$ = 0.1, $\\alpha = \\frac{1}{2}\\pi$ rad) - Correction interval effect', size=self.suptitleSize)
 
         fig.tight_layout()
         fig.subplots_adjust(top=0.9)
@@ -1779,7 +1793,7 @@ class initialGuessValidation:
 
             # bbox_extra_artists=(lgd1, lgd2, suptitle), bbox_inches='tight'
         else:
-            fig.savefig('../../data/figures/initial_guess/final_correction_time_plot', transparent=True)
+            fig.savefig('../../data/figures/initial_guess/final_correction_time_plot.png', transparent=True, dpi=300)
 
         pass
 
@@ -1848,8 +1862,8 @@ if __name__ == '__main__':
     # amplitudes = newArray3.tolist()
     #
     # amplitudes = np.linspace(1.0E-5,1.0E-4,num=91).tolist()
-    # correction_times = [0.05,50.0]
-    # low_dpi = True
+    # correction_times = [50.0]
+    # low_dpi = False
     #
     # for lagrange_point_nr in lagrange_point_nrs:
     #     for alt_value in alt_values:

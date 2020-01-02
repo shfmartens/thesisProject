@@ -759,7 +759,7 @@ class DisplayPeriodicSolutions:
         arr[0, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
         arr[0, 0].xaxis.set_ticks(xticks)
         arr[0, 0].set_title('Defect vector magnitude after convergence')
-        arr[0, 0].semilogy(self.continuationParameter, self.totalDeviationAfterConvergence, linewidth=linewidth, c=self.plottingColors['singleLine'],label='$||F||$')
+        arr[0, 0].semilogy(self.continuationParameter, self.totalDeviationAfterConvergence, linewidth=linewidth, c=self.plottingColors['singleLine'],label='$||\\mathbf{F}||$')
         arr[0, 0].legend(frameon=True, loc='upper left')
         arr[0, 0].set_xlim(xlim)
         arr[0, 0].set_ylim(ylim)
@@ -802,7 +802,10 @@ class DisplayPeriodicSolutions:
         arr[1, 0].xaxis.set_ticks(xticks)
         arr[1, 0].set_title('Maximum number of corrections')
         arr[1, 0].set_xlim(xlim)
-        arr[1, 0].set_ylim([0, 150])
+        if max(self.numberOfIterations) < 150:
+            arr[1, 0].set_ylim([0, 150])
+        else:
+            arr[1, 0].set_ylim([0,max(self.numberOfIterations)+5])
         arr[1, 0].plot(self.continuationParameter, self.numberOfIterations, linewidth=linewidth, c=self.plottingColors['singleLine'],label='Number of corrections')
         arr[1, 0].legend(frameon=True, loc='upper left')
 
@@ -825,10 +828,10 @@ class DisplayPeriodicSolutions:
         labs = [l.get_label() for l in lns]
         arr[2,1].legend(lns, labs, frameon=True, loc='upper left')
 
-        arr[0, 0].set_ylabel('$||F||$ [-]')
-        arr[0, 1].set_ylabel('$\Delta \mathbf{R}$ [-]')
+        arr[0, 0].set_ylabel('$||\\mathbf{F}||$ [-]')
+        arr[0, 1].set_ylabel('$\Delta \\bar{R}$ [-]')
         arr[2, 0].set_ylabel('max($e_{i}$) - min($e_{i}$)[-]')
-        arr[1, 1].set_ylabel('$\Delta \mathbf{V}$ [-]')
+        arr[1, 1].set_ylabel('$\Delta \\bar{V}$ [-]')
         arr[1, 0].set_ylabel('Number of iterations [-]')
         arr[2, 1].set_ylabel('max($e_{i}$)')
         ax2.set_ylabel('Number of collocation points [-]')
@@ -951,7 +954,7 @@ class DisplayPeriodicSolutions:
         arr[0].xaxis.set_ticks(xticks)
         arr[0].set_xlim(xlim)
         arr[0].set_ylim([1e-14, 1e-5])
-        arr[0].set_ylabel('$| 1 - Det(\mathbf{M}) |$ [-]')
+        arr[0].set_ylabel('$| 1 - Det(M}) |$ [-]')
         arr[0].set_title('Error in determinant ')
         arr[0].semilogy(self.continuationParameter, 1.0e-3 * np.ones(len(self.continuationParameter)), color=self.plottingColors['limit'], linewidth=1, linestyle='--')
         if self.varyingQuantity == 'Alpha' and plot_as_x_coordinate == False and plot_as_family_number == False:
@@ -1397,7 +1400,11 @@ class DisplayPeriodicSolutions:
         #arr[1,1].plot(self.orbitsId,self.phase,c=self.plottingColors['tripleLine'][2], linewidth=1)
         arr[1,1].set_xlim(xlim)
         arr[1,1].set_ylim([-1.0,2.0])
-        arr[1,1].set_title('Spatial and phase evolution')
+        if self.varyingQuantity == 'Hamiltonian':
+            arr[1,1].set_title('Spatial and phase evolution')
+        else:
+            arr[1, 1].set_title('Spatial evolution')
+            lns = lns0 + lns1
         arr[1,1].set_xlabel('orbit Number [-]')
         arr[1,1].set_ylabel('$x$ [-], $y$ [-]')
 
@@ -1405,18 +1412,19 @@ class DisplayPeriodicSolutions:
         print(max(self.phase))
         print(min(self.phase))
 
-
-        ax2 = arr[1, 1].twinx()
-        ax2.tick_params(axis='phase [-]', labelcolor=self.plottingColors['tripleLine'][2])
-        lns2 = ax2.plot(self.orbitsId, self.phase, linewidth=1,color=self.plottingColors['tripleLine'][2],label='$\\phi$ [-]')
-        ax2.set_ylim([-0.05, 2*np.pi+0.05])
-        ax2.set_xlim(xlim)
-        ax2.grid(b=None)
-        #arr[1,1].legend(frameon=True, loc='lower right')
-        #ax2.legend(frameon=True, loc='lower right')
+        if self.varyingQuantity == 'Hamiltonian':
+            ax2 = arr[1, 1].twinx()
+            ax2.tick_params(axis='phase [-]', labelcolor=self.plottingColors['tripleLine'][2])
+            lns2 = ax2.plot(self.orbitsId, self.phase, linewidth=1,color=self.plottingColors['tripleLine'][2],label='$\\phi$ [-]')
+            ax2.set_ylim([-0.05, 2*np.pi+0.05])
+            ax2.set_xlim(xlim)
+            ax2.grid(b=None)
+            #arr[1,1].legend(frameon=True, loc='lower right')
+            #ax2.legend(frameon=True, loc='lower right')
 
         # added these three lines
-        lns = lns0 + lns1 + lns2
+
+            lns = lns0 + lns1 + lns2
         labs = [l.get_label() for l in lns]
         arr[1, 1].legend(lns, labs, frameon=True, loc='center left', bbox_to_anchor=(1.05, 0.5), markerscale=15)
 
@@ -1539,19 +1547,19 @@ class DisplayPeriodicSolutions:
 
         #arr[1, 0].plot(orbitIdNew, xIncrement, c=self.plottingColors['tripleLine'][0], linewidth=1,label='$\\Delta x$ [-]')
         #arr[1, 0].plot(orbitIdNew, yIncrement, c=self.plottingColors['tripleLine'][1], linewidth=1,label='$\\Delta y$ [-]')
-        arr[1, 0].semilogy(orbitIdNew, normIncrement, c=self.plottingColors['tripleLine'][2], linewidth=1,label='$\\Delta R$ [-]')
+        arr[1, 0].semilogy(orbitIdNew, normIncrement, c=self.plottingColors['tripleLine'][2], linewidth=1,label='$||\\Delta \\bar{R}||$ [-]')
         arr[1,1].set_ylim([1.0e-5,1.0e-3])
 
         arr[1, 0].set_xlim(xlim)
         arr[1, 0].set_title('Increment evolution of initial condition')
         arr[1, 0].set_xlabel('orbit Number [-]')
-        arr[1, 0].set_ylabel('$\\Delta R$ [-]')
+        arr[1, 0].set_ylabel('$||\\Delta \\bar{R}||$ [-]')
 
         #arr[1, 0].legend(frameon=True, loc='upper right')
 
         #arr[1, 1].plot(orbitIdNew, xIncrementPhaseHalf, c=self.plottingColors['tripleLine'][0], linewidth=1,label='$\\Delta x$ [-]')
         #arr[1, 1].plot(orbitIdNew, yIncrementPhaseHalf, c=self.plottingColors['tripleLine'][1], linewidth=1,label='$\\Delta y$ [-]')
-        arr[1, 1].semilogy(orbitIdNew, normIncrementPhaseHalf, c=self.plottingColors['tripleLine'][2], linewidth=1,label='$\\Delta R$ [-]')
+        arr[1, 1].semilogy(orbitIdNew, normIncrementPhaseHalf, c=self.plottingColors['tripleLine'][2], linewidth=1,label='$||\\Delta \\bar{R}||$ [-]')
         arr[1, 1].semilogy(self.continuationParameter, 1e-5 * np.ones(len(self.continuationParameter)),
                            color=self.plottingColors['limit'], linewidth=0.5, linestyle='--')
 
@@ -1560,8 +1568,8 @@ class DisplayPeriodicSolutions:
 
         arr[1, 1].set_title('Increment evolution of $\\frac{\\phi}{2}$')
         arr[1, 1].set_xlabel('orbit Number [-]')
-        arr[1, 1].set_ylabel('$\\Delta x$ [-], $\\Delta y$ [-], $\\Delta R$ [-]')
-        arr[1, 1].set_ylabel('$\\Delta R$ [-]')
+        #arr[1, 1].set_ylabel('$\\Delta x$ [-], $\\Delta y$ [-], $\\Delta R$ [-]')
+        arr[1, 1].set_ylabel('$||\\Delta \\bar{R}||$ [-]')
 
         arr[1, 1].legend(frameon=True, loc='center left',bbox_to_anchor=(1, 0.5),markerscale=15)
 
@@ -1638,12 +1646,12 @@ class DisplayPeriodicSolutions:
 
 if __name__ == '__main__':
     orbit_types = ['horizontal']
-    lagrange_points = [1]
-    acceleration_magnitudes = [0.05]
+    lagrange_points = [1,2]
+    acceleration_magnitudes = [0.0]
     alphas = [0.0]
     Hamiltonians = [-1.50]
     low_dpi = False
-    varying_quantities = ['Alpha']
+    varying_quantities = ['Hamiltonian']
     plot_as_x_coordinate  = False
     plot_as_family_number = False
 

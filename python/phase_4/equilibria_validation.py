@@ -1965,7 +1965,7 @@ class DisplayEquilibriaValidation:
 
         continuations = ['forward']
 
-        customAccArray = [0.1]
+        customAccArray = [0.003,0.1,0.25]
         customSeedsZoom = [0.0, 180.0]
         customContinuationZoom = ['backward','forward']
         for accMag in customAccArray:
@@ -2005,7 +2005,7 @@ class DisplayEquilibriaValidation:
 
 
 
-
+        print('first plot complete!')
 
         ax0.text(-0.941, 0.3, '3e-2', fontsize=5, rotation=72, rotation_mode='anchor')
         ax0.text(0.575, 0.794, '3e-2', fontsize=5, rotation=320, rotation_mode='anchor')
@@ -2084,13 +2084,13 @@ class DisplayEquilibriaValidation:
 
         fig.subplots_adjust(left=0.055, right=0.946,bottom=0.07,top=1.0)
 
-
+        print('start saving')
 
         if self.lowDPI:
             fig.savefig('../../data/figures/equilibria/spatial_evolution_delta_alpha.png', transparent=True,dpi=self.dpi,bbox_inches='tight', pad_inches=0)
 
         else:
-            fig.savefig('../../data/figures/equilibria/spatial_evolution_delta_alpha.png', transparent=True,dpi=300)
+            fig.savefig('../../data/figures/equilibria/spatial_evolution_delta_alpha.png', transparent=True,dpi=300,bbox_inches='tight',pad_inches=0)
         pass
 
     def plot_contours_zoom_and_wide_acc(self):
@@ -2679,7 +2679,7 @@ if __name__ == '__main__':
 
     ### Contours
 
-    lagrange_point_nrs = [1,2,3,4,5]
+    lagrange_point_nrs = [1,2,3]
     acceleration_magnitudes = [0.1]
     seeds = [180.0]
     continuations = ['forward']

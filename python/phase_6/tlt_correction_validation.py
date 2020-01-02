@@ -179,25 +179,36 @@ class TLTCorrectorValidation:
             lagrange_point_nrs = ['L2']
 
         for lagrange_point_nr in lagrange_point_nrs:
-            ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
-                        color='black', marker='x')
-            ax2.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
-                        color='black', marker='x')
-            ax3.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
-                        color='black', marker='x')
-            ax4.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
-                        color='black', marker='x')
+            # ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+            #             color='black', marker='x')
+            # ax2.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+            #             color='black', marker='x')
+            # ax3.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+            #             color='black', marker='x')
+            # ax4.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+            #             color='black', marker='x')
+            ax1.scatter(0.83860821797119, 0.024289027459937, color='black', marker='x')
+            ax2.scatter(0.83860821797119, 0.024289027459937, color='black', marker='x')
+            ax3.scatter(0.83860821797119, 0.024289027459937, color='black', marker='x')
+            ax4.scatter(0.83860821797119, 0.024289027459937, color='black', marker='x')
+
             if self.numberOfCycles > 2:
-                ax5.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
-                          color='black', marker='x')
-                ax6.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
-                            color='black', marker='x')
+                # ax5.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                #           color='black', marker='x')
+                # ax6.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                #             color='black', marker='x')
+
+                ax5.scatter(0.83860821797119, 0.024289027459937, color='black', marker='x')
+                ax6.scatter(0.83860821797119, 0.024289027459937, color='black', marker='x')
 
             if self.numberOfCycles > 3:
-                ax7.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
-                          color='black', marker='x')
-                ax8.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
-                            color='black', marker='x')
+                # ax7.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                #           color='black', marker='x')
+                # ax8.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                #             color='black', marker='x')
+                ax7.scatter(0.83860821797119, 0.024289027459937, color='black', marker='x')
+                ax8.scatter(0.83860821797119, 0.024289027459937, color='black', marker='x')
+
 
 
 
@@ -535,7 +546,7 @@ class TLTCorrectorValidation:
         #     "{:3.1f}".format(self.alpha)) + '$ $|A| = '+ str(
         #     "{:2.1e}".format(self.amplitude)) +' $) Correction procedure ', size=self.suptitleSize)
 
-        suptitle = fig.suptitle('$L_{' + str(self.lagrangePointNr) + '}$ ($a_{lt} = 0.1$, $\\alpha =90.0^{\\circ}$, $||A|| = 8.0 \\cdot 10^{-3} '' $) - Correction procedure ', size=self.suptitleSize)
+        suptitle = fig.suptitle('$L_{' + str(self.lagrangePointNr) + '}$ ($a_{lt} = 0.1$, $\\alpha =\\frac{1}{2}\\pi$ rad, $A_{x} = 8.0 \\cdot 10^{-3} '' $) - Correction procedure ', size=self.suptitleSize)
 
         fig.tight_layout()
         if self.numberOfCycles == 2:
@@ -557,7 +568,7 @@ class TLTCorrectorValidation:
                         + str("{:7.6f}".format(self.accelerationMagnitude)) + str("{:7.6f}".format(self.alpha)) + \
                         '_' + str("{:7.6f}".format(self.amplitude)) + '_' + str(self.numberOfPatchPoints) + '_' \
                         + str(self.correctionTime) + '_' + str(self.numberOfCycles) +  \
-                        '_visualization.pdf', transparent=True)
+                        '_visualization.png', transparent=True,dpi=300)
 
         plt.close()
         pass
@@ -569,11 +580,11 @@ class TLTCorrectorValidation:
         ax2 = fig.add_subplot(1, 2, 2)
         ax3 = fig.add_subplot(1, 2, 1)
 
-        ax1.set_xlabel('Corrector Cycle [-]')
-        ax1.set_ylabel('$| \\Delta R |$, $| \\Delta V |$ [-]')
+        ax1.set_xlabel('Targeter Cycle [-]')
+        ax1.set_ylabel('$|| \\Delta \\bar{R} ||$, $|| \\Delta \\bar{V} ||$ [-]')
         ax1.grid(True, which='both', ls=':')
 
-        ax2.set_xlabel('Corrector Cycle  [-]')
+        ax2.set_xlabel('Targeter Cycle  [-]')
         ax2.set_ylabel('Computational cost [s]')
         ax2.grid(True, which='both', ls=':')
 
@@ -649,11 +660,11 @@ class TLTCorrectorValidation:
         ind = np.arange(len(deviation_df['cycle']))
 
 
-        ax1.bar(ind - self.widthBar/2, deviation_df['deltaR'], self.widthBar, label='$||\Delta R||$',color=self.plottingColors['lambda6'])
-        ax1.bar(ind + self.widthBar/2, deviation_df['deltaV'], self.widthBar, label='$||\Delta V||$',color=self.plottingColors['lambda3'])
+        ax1.bar(ind - self.widthBar/2, deviation_df['deltaR'], self.widthBar, label='$||\Delta \\bar{R}||$',color=self.plottingColors['lambda6'])
+        ax1.bar(ind + self.widthBar/2, deviation_df['deltaV'], self.widthBar, label='$||\Delta \\bar{V}||$',color=self.plottingColors['lambda3'])
         ax1.set_yscale('log')
-        ax1.hlines(1.0E-12,min(ind)-1,max(ind)+1,color='black',linestyle='--',label=' $||\Delta R ||$ Tolerance')
-        ax1.hlines(5.0E-12,min(ind)-1,max(ind)+1,color='black',linestyle='-.',label=' $||\Delta V ||$ Tolerance')
+        ax1.hlines(1.0E-12,min(ind)-1,max(ind)+1,color='black',linestyle='--',label=' $||\Delta \\bar{R} ||$ Tolerance')
+        ax1.hlines(5.0E-12,min(ind)-1,max(ind)+1,color='black',linestyle='-.',label=' $||\Delta \\bar{V} ||$ Tolerance')
 
         ax1.set_xlim(min(ind)-1,max(ind)+1)
 
@@ -705,7 +716,7 @@ class TLTCorrectorValidation:
         #     "{:2.1e}".format(self.accelerationMagnitude)) + ' $, $\\alpha =' + str(
         #     "{:3.1f}".format(self.alpha)) + '$ $|A| = ' + str(
         #     "{:2.1e}".format(self.amplitude)) + ' $) Convergence behaviour using ' + str(self.numberOfPatchPoints) + ' patch points ', size=self.suptitleSize)
-        suptitle = fig.suptitle('$L_{' + str(self.lagrangePointNr) + '}$ ($a_{lt} = 0.1$, $\\alpha =90.0^{\\circ}$, $||A|| = 8.0 \\cdot 10^{-3} '' $) - Convergence behaviour using ' + str(self.numberOfPatchPoints) + ' patch points ', size=self.suptitleSize)
+        suptitle = fig.suptitle('$L_{' + str(self.lagrangePointNr) + '}$ ($a_{lt} = 0.1$, $\\alpha =\\frac{1}{2}\\pi$, $A_{x} = 8.0 \\cdot 10^{-3} '' $) - Convergence behaviour using ' + str(self.numberOfPatchPoints) + ' nodes ', size=self.suptitleSize)
 
         ax1.set_title('State defects', y=1.10)
         ax2.set_title('TLT computational cost and Level I behaviour', y=1.10)
@@ -727,7 +738,7 @@ class TLTCorrectorValidation:
                         + str("{:7.6f}".format(self.accelerationMagnitude)) + str("{:7.6f}".format(self.alpha)) + \
                         '_' + str("{:7.6f}".format(self.amplitude)) + '_' + str(self.numberOfPatchPoints) + '_' \
                         + str(self.correctionTime) +  \
-                        '_convergence_behaviour.pdf', transparent=True)
+                        '_convergence_behaviour.png',  transparent=True, dpi=300)
         pass
 
     def plot_sensitivity_analysis(self):
@@ -753,24 +764,24 @@ class TLTCorrectorValidation:
 
 
 
-        ax2.set_xlabel('Number of patch points [-]')
+        ax2.set_xlabel('Number of nodes [-]')
         ax2.set_ylabel('y [-]')
         ax2.grid(True, which='both', ls=':')
 
-        ax4.set_xlabel('Number of patch points [-]')
+        ax4.set_xlabel('Number of nodes [-]')
         ax4.set_ylabel('y [-]')
         ax4.grid(True, which='both', ls=':')
 
-        ax6.set_xlabel('Number of patch points [-]')
+        ax6.set_xlabel('Number of nodes [-]')
         ax6.set_ylabel('y [-]')
         ax6.grid(True, which='both', ls=':')
 
-        ax1.set_title('$||A|| = 1.0 \\cdot 10^{-4}$ ')
-        ax2.set_title('Convergence behaviour at $||A||=1.0 \\cdot 10^{-4}$')
-        ax3.set_title('$||A|| = 1.0 \\cdot 10^{-3} $')
-        ax4.set_title('Convergence behaviour at $||A||=1.0 \\cdot 10^{-3}$')
-        ax5.set_title('$||A|| = 1.0 \\cdot 10^{-2} $')
-        ax6.set_title('Convergence behaviour at $||A||=1.0 \\cdot 10^{-2}$')
+        ax1.set_title('$A_{x} = 1.0 \\cdot 10^{-4}$ ')
+        ax2.set_title('Convergence behaviour at $A_{x}=1.0 \\cdot 10^{-4}$')
+        ax3.set_title('$A_{x} = 1.0 \\cdot 10^{-3} $')
+        ax4.set_title('Convergence behaviour at $A_{x}=1.0 \\cdot 10^{-3}$')
+        ax5.set_title('$A_{x} = 1.0 \\cdot 10^{-2} $')
+        ax6.set_title('Convergence behaviour at $A_{x}=1.0 \\cdot 10^{-2}$')
 
         bodies_df = load_bodies_location()
         u = np.linspace(0, 2 * np.pi, 100)
@@ -792,12 +803,17 @@ class TLTCorrectorValidation:
             lagrange_point_nrs = ['L2']
 
         for lagrange_point_nr in lagrange_point_nrs:
-            ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
-                        color='black', marker='x')
-            ax3.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
-                        color='black', marker='x')
-            ax5.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
-                        color='black', marker='x')
+            # ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+            #             color='black', marker='x')
+            #
+            # ax3.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+            #             color='black', marker='x')
+            # ax5.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+            #             color='black', marker='x')
+
+            ax1.scatter(0.83860821797119, 0.024289027459937, color='black', marker='x')
+            ax3.scatter(0.83860821797119, 0.024289027459937, color='black', marker='x')
+            ax5.scatter(0.83860821797119, 0.024289027459937, color='black', marker='x')
 
 
         min_x1 = 1000
@@ -1057,7 +1073,7 @@ class TLTCorrectorValidation:
         #     "{:2.1e}".format(self.accelerationMagnitude)) + ' $, $\\alpha =' + str(
         #     "{:3.1f}".format(self.alpha)) +' $) Sensitivity analysis ', size=self.suptitleSize)
 
-        suptitle = fig.suptitle('$L_{' + str(self.lagrangePointNr) + '}$ ($a_{lt} = 0.1  $, $\\alpha = 90.0^{\\circ}$) -  Influence of number of nodes', size=self.suptitleSize)
+        suptitle = fig.suptitle('$L_{' + str(self.lagrangePointNr) + '}$ ($a_{lt} = 0.1  $, $\\alpha = \\frac{1}{2}\\pi$ rad) -  Influence of number of nodes', size=self.suptitleSize)
 
         fig.tight_layout()
         fig.subplots_adjust(top=0.9)
@@ -1070,7 +1086,7 @@ class TLTCorrectorValidation:
         else:
             fig.savefig('../../data/figures/tlt_corrector/L' + str(self.lagrangePointNr) + '_' \
                         + str("{:7.6f}".format(self.accelerationMagnitude)) + str("{:7.6f}".format(self.alpha)) \
-                        + '_' + str(self.correctionTime) + '_sensitivity_analysis.pdf', transparent=True)
+                        + '_' + str(self.correctionTime) + '_sensitivity_analysis.png', transparent=True, dpi=300)
 
         pass
 
@@ -1082,29 +1098,29 @@ if __name__ == '__main__':
     amplitudes = [0.008]
     numbers_of_patch_points = [5]
     correction_times = [0.05]
-    numbers_of_cycles = [2,3,4]
+    numbers_of_cycles = [3]
     low_dpi = False
 
-    # for lagrange_point_nr in lagrange_point_nrs:
-    #     for acceleration_magnitude in acceleration_magnitudes:
-    #         for alpha in alphas:
-    #             for amplitude in amplitudes:
-    #                 for number_of_patch_points in numbers_of_patch_points:
-    #                     for correction_time in correction_times:
-    #                         for number_of_cycles in numbers_of_cycles:
-    #                             tlt_corrector_validation = TLTCorrectorValidation(lagrange_point_nr, orbit_type, acceleration_magnitude, alpha, \
-    #                                                                           amplitude, number_of_patch_points, correction_time, number_of_cycles, low_dpi)
-    #
-    #
-    #                             tlt_corrector_validation.plot_tlt_visualization()
-    #
-    #                             del tlt_corrector_validation
-    # #
+    for lagrange_point_nr in lagrange_point_nrs:
+        for acceleration_magnitude in acceleration_magnitudes:
+            for alpha in alphas:
+                for amplitude in amplitudes:
+                    for number_of_patch_points in numbers_of_patch_points:
+                        for correction_time in correction_times:
+                            for number_of_cycles in numbers_of_cycles:
+                                tlt_corrector_validation = TLTCorrectorValidation(lagrange_point_nr, orbit_type, acceleration_magnitude, alpha, \
+                                                                              amplitude, number_of_patch_points, correction_time, number_of_cycles, low_dpi)
+
+
+                                tlt_corrector_validation.plot_tlt_visualization()
+
+                                del tlt_corrector_validation
+
     # amplitudes = [0.008]
     # numbers_of_patch_points = [5]
     # correction_times = [0.05]
-
-
+    # number_of_cycles = 4
+    #
     # for lagrange_point_nr in lagrange_point_nrs:
     #     for acceleration_magnitude in acceleration_magnitudes:
     #         for alpha in alphas:
@@ -1118,16 +1134,16 @@ if __name__ == '__main__':
     #
     #                         del tlt_corrector_validation
 
-    amplitudes = [0.0001,0.001,0.01]
-    numbers_of_patch_points = [4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
-
-    for lagrange_point_nr in lagrange_point_nrs:
-        for acceleration_magnitude in acceleration_magnitudes:
-            for alpha in alphas:
-                for correction_time in correction_times:
-                    tlt_corrector_validation = TLTCorrectorValidation(lagrange_point_nr, orbit_type, acceleration_magnitude,
-                                                                       alpha, amplitudes, numbers_of_patch_points,correction_time, numbers_of_cycles,low_dpi)
-
-                    tlt_corrector_validation.plot_sensitivity_analysis()
-
-                    del tlt_corrector_validation
+    # amplitudes = [0.0001,0.001,0.01]
+    # numbers_of_patch_points = [4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+    #
+    # for lagrange_point_nr in lagrange_point_nrs:
+    #     for acceleration_magnitude in acceleration_magnitudes:
+    #         for alpha in alphas:
+    #             for correction_time in correction_times:
+    #                 tlt_corrector_validation = TLTCorrectorValidation(lagrange_point_nr, orbit_type, acceleration_magnitude,
+    #                                                                    alpha, amplitudes, numbers_of_patch_points,correction_time, numbers_of_cycles,low_dpi)
+    #
+    #                 tlt_corrector_validation.plot_sensitivity_analysis()
+    #
+    #                 del tlt_corrector_validation
