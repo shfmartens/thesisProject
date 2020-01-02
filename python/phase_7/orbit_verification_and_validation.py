@@ -859,18 +859,18 @@ class DisplayPeriodicSolutions:
 
         if self.varyingQuantity == 'Alpha' and self.lagrangePointNr == 1:
             if self.Hamiltonian == -1.50 and self.accelerationMagnitude == 0.05:
-                for i in range(3):
-                    for j in range(2):
-                        xcoords = [135.0, 260.0]
-                        for xc in xcoords:
-                            arr[i,j].axvline(x=xc,color='red',linestyle='--',linewidth=0.5)
-
+                xcoords = [135.0, 260.0]
             if self.Hamiltonian == -1.55 and self.accelerationMagnitude == 0.1:
-                print('test')
+                xcoords = [93.0,123.0,237.0,267.0]
             if self.Hamiltonian == -1.525 and self.accelerationMagnitude == 0.1:
-                print('test')
+                xcoords = [110, 146.0, 214.0, 253.0]
             if self.Hamiltonian == -1.50 and self.accelerationMagnitude == 0.1:
-                print('test')
+                xcoords = [126.0, 250.0]
+
+            for i in range(3):
+                for j in range(2):
+                    for xc in xcoords:
+                        arr[i,j].axvline(x=xc,color='red',linestyle='--',linewidth=0.5)
 
         ax2.grid(False)
         plt.tight_layout()
@@ -1007,6 +1007,20 @@ class DisplayPeriodicSolutions:
         arr[1].set_ylabel(' $|||\lambda_3||-1|$ [-]')
         arr[1].set_title('Error in eigenvalue pair denoting periodicity')
         arr[1].legend(frameon=True, loc='center left',bbox_to_anchor=(1, 0.5),markerscale=15)
+
+        if self.varyingQuantity == 'Alpha' and self.lagrangePointNr == 1:
+            if self.Hamiltonian == -1.50 and self.accelerationMagnitude == 0.05:
+                xcoords = [135.0, 260.0]
+            if self.Hamiltonian == -1.55 and self.accelerationMagnitude == 0.1:
+                xcoords = [93.0, 123.0, 237.0, 267.0]
+            if self.Hamiltonian == -1.525 and self.accelerationMagnitude == 0.1:
+                xcoords = [110, 146.0, 214.0, 253.0]
+            if self.Hamiltonian == -1.50 and self.accelerationMagnitude == 0.1:
+                xcoords = [126.0, 250.0]
+
+            for i in range(2):
+                for xc in xcoords:
+                        arr[i].axvline(x=xc, color='red', linestyle='--', linewidth=0.5)
 
         #arr[1, 0].set_title('Order of linear instability')
 
@@ -1455,6 +1469,21 @@ class DisplayPeriodicSolutions:
                 # if self.varyingQuantity == 'Alpha' and plot_as_x_coordinate == False and plot_as_family_number == False:
                 #     arr[i,j].set_xticks([0,90,180,270,360])
                 #     arr[i,j].set_xticklabels(['$0$','$\\frac{1}{2}\\pi$','$\\pi$','$\\frac{3}{2}\\pi$','$2\\pi$'])
+
+        if self.varyingQuantity == 'Alpha' and self.lagrangePointNr == 1:
+            if self.Hamiltonian == -1.50 and self.accelerationMagnitude == 0.05:
+                xcoords = [135.0, 260.0]
+            if self.Hamiltonian == -1.55 and self.accelerationMagnitude == 0.1:
+                xcoords = [93.0, 123.0, 237.0, 267.0]
+            if self.Hamiltonian == -1.525 and self.accelerationMagnitude == 0.1:
+                xcoords = [110, 146.0, 214.0, 253.0]
+            if self.Hamiltonian == -1.50 and self.accelerationMagnitude == 0.1:
+                xcoords = [126.0, 250.0]
+
+            for i in range(2):
+                for j in range(2):
+                    for xc in xcoords:
+                        arr[i, j].axvline(x=xc, color='red', linestyle='--', linewidth=0.5)
 
         plt.tight_layout()
         plt.subplots_adjust(top=0.88)
