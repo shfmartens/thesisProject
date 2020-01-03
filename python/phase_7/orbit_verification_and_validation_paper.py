@@ -206,13 +206,12 @@ class PeriodicSolutionsCharacterization:
 
         #print(continuation_normalized_orbit1)
 
-        colors_orbit1 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",1))(continuation_normalized_orbit1)
-        colors_orbit2 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",1))(continuation_normalized_orbit2)
+        colors_orbit1 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",1000))(continuation_normalized_orbit1)
+        colors_orbit2 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",1000))(continuation_normalized_orbit2)
 
         numberOfPlotColorIndices_Orbit1 = len(Orbit1.continuationParameter)
         numberOfPlotColorIndices_Orbit2 = len(Orbit2.continuationParameter)
 
-        print(colors_orbit1)
 
         plotColorIndexBasedOnHlt_Orbit1 = []
         plotColorIndexBasedOnHlt_Orbit2 = []
@@ -220,7 +219,6 @@ class PeriodicSolutionsCharacterization:
         for hamiltonian in Orbit1.continuationParameter:
             plotColorIndexBasedOnHlt_Orbit1.append(  \
                 int( np.round ( ( (hamiltonian - Hlt_min) / (Hlt_max - Hlt_min) ) * (numberOfPlotColorIndices_Orbit1 - 1) ) )     )
-        print(plotColorIndexBasedOnHlt_Orbit1)
 
         for hamiltonian in Orbit2.continuationParameter:
             plotColorIndexBasedOnHlt_Orbit2.append( \
@@ -233,7 +231,7 @@ class PeriodicSolutionsCharacterization:
         orbitIdsPlot_orbit1 = list(range(0, len(Orbit1.continuationParameter), Orbit1.orbitSpacingFactor))
         if orbitIdsPlot_orbit1 != len(Orbit1.continuationParameter):
             orbitIdsPlot_orbit1.append(len(Orbit1.continuationParameter) - 1)
-
+        print(orbitIdsPlot_orbit1)
         orbitIdsPlot_orbit2 = list(range(0, len(Orbit2.continuationParameter), Orbit2.orbitSpacingFactor))
         if orbitIdsPlot_orbit2 != len(Orbit2.continuationParameter):
             orbitIdsPlot_orbit2.append(len(Orbit2.continuationParameter) - 1)
