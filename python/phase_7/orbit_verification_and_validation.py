@@ -590,6 +590,11 @@ class DisplayPeriodicSolutions:
             self.lambda5.append(eigenvalue[sorting_indices[4]])
             self.lambda6.append(eigenvalue[sorting_indices[5]])
 
+            if self.alpha == 300:
+                print(self.lambda2[-1])
+                print(self.lambda5[-1])
+
+
             # Determine order of linear instability
             reduction = 0
             for i in range(6):
