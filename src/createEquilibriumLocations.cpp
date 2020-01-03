@@ -88,9 +88,9 @@ void writeResultsToFile (const int librationPointNr, const double parameterOfInt
 //                                                                          << ic->second(31)  << std::setw(25) << ic->second(32) << std::setw(25) << ic->second(33) << std::setw(25) << ic->second(34) << std::setw(25) << ic->second(35) << std::endl;
 //    }
 
-    remove(("../data/data/raw/equilibria/L" + std::to_string(librationPointNr) + "_" + parameterSpecification + "_" + std::to_string(parameterOfInterest) + "_" + std::to_string(seedAngle) + "_" + direction + "_equilibria_deviation.txt").c_str());
+    remove(("../data/data/raw/equilibria/equilibria_val/L" + std::to_string(librationPointNr) + "_" + parameterSpecification + "_" + std::to_string(parameterOfInterest) + "_" + std::to_string(seedAngle) + "_" + direction + "_equilibria_deviation.txt").c_str());
     std::ofstream textFileInitialConditionsDeviation;
-   textFileInitialConditionsDeviation.open(("../data/raw/equilibria/L" + std::to_string(librationPointNr) + "_" + parameterSpecification + "_" + std::to_string(parameterOfInterest) + "_" + std::to_string(seedAngle) + "_" + direction + "_equilibria_deviation.txt"));
+   textFileInitialConditionsDeviation.open(("../data/raw/equilibria/equilibria_val/L" + std::to_string(librationPointNr) + "_" + parameterSpecification + "_" + std::to_string(parameterOfInterest) + "_" + std::to_string(seedAngle) + "_" + direction + "_equilibria_deviation.txt"));
 
     textFileInitialConditionsDeviation.precision(std::numeric_limits<double>::digits10);
 
@@ -347,8 +347,8 @@ Eigen::Vector2d createEquilibriumLocations (const int librationPointNr, const do
     Eigen::Vector2d targetEquilibrium;
     Eigen::MatrixXd linearizedStability;
     Eigen::VectorXd fullEquilibriumVector(10); fullEquilibriumVector.setZero();
-    //double angleModCondition = 3;
-    //double propagationTime = tudat::mathematical_constants::PI;
+//    double angleModCondition = 3.0;
+//    double propagationTime = tudat::mathematical_constants::PI;
 
     fullEquilibriumVector(6) = thrustAcceleration;
     fullEquilibriumVector(9) = 1.0;
@@ -457,6 +457,17 @@ Eigen::Vector2d createEquilibriumLocations (const int librationPointNr, const do
                                      alphaLog = alpha;
                                  }
 
+//                                 if ( stepCounter % (saveFrequency*100) == 0)
+//                                 {
+//                                     std::cout  << "alpha: " << alpha << std::endl
+//                                                << "alphaLog: " << alphaLog << std::endl
+//                                                << "std::abs(std::fmod(alphaLog,angleModCondition)): " << std::abs(std::fmod(alphaLog,angleModCondition)) << std::endl
+//                                                << "std::abs(std::abs(std::fmod(alphaLog,angleModCondition))-angleModCondition): " << std::abs(std::abs(std::fmod(alphaLog,angleModCondition)) - angleModCondition) << std::endl
+//                                                << "stepSize/10.0: " << stepSize/10.0 << std::endl;
+
+//                                 }
+
+
                                  equilibriaCatalog[ alphaLog * tudat::mathematical_constants::PI / 180.0 ] = equilibriumLocationWithIterations;
                                  stabilityCatalog [alphaLog * tudat::mathematical_constants::PI / 180.0 ] = linearizedStability;
 
@@ -475,7 +486,12 @@ Eigen::Vector2d createEquilibriumLocations (const int librationPointNr, const do
                                  alphaLog = alpha;
                              }
 
-//                             if (std::abs(std::fmod(alphaLog,angleModCondition)) < stepSize/10.0 or std::abs(alphaLog - 359.5) < stepSize/10 or std::abs(alphaLog - 179.5) < stepSize/10 )
+//                             if (std::abs(std::fmod(alphaLog,1.0) < stepSize/10.0))
+//                             {
+//                                     std::cout << "alphaLog: "<< alphaLog << std::endl;
+//                            }
+
+//                             if ( ( std::abs(std::fmod(alphaLog,angleModCondition)) < stepSize/10.0 or std::abs(std::abs(std::fmod(alphaLog,angleModCondition)) - angleModCondition) < stepSize/10.0 ) or std::abs(alphaLog - 360.0) < stepSize*2.0 or std::abs(alphaLog - 180.0) < stepSize*2.0 )
 //                             {
 //                                   std::cout << "alphaLog: " << alphaLog << std::endl;
 //                                   std::cout << "angleModCondition: " << angleModCondition << std::endl;

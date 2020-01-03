@@ -52,30 +52,30 @@ int main (){
 //    {
 //        double alpha = 0.0;
 //        double accMag = 0.0107;
-//        for (int i = 1; i < 2  ; i++)
-//        {
-//            double tempAcc = 0.1;
-//            double tempAng = 90.0;
+        for (int i = 3; i < 4  ; i++)
+        {
+            double tempAcc = 0.1;
+            double tempAng = 20.0;
 
-//           Eigen::Vector2d equilibriumTest = createEquilibriumLocations(i, tempAcc,  tempAng, "acceleration", 1.0, massParameter);
-//           Eigen::VectorXd hamiltonianTest(10); hamiltonianTest.setZero();
-//           hamiltonianTest.segment(0,2) = equilibriumTest;
-//           hamiltonianTest(6) = tempAcc;
-//           hamiltonianTest(7) = tempAng;
+           Eigen::Vector2d equilibriumTest = createEquilibriumLocations(i, tempAcc,  tempAng, "acceleration", 1.0, massParameter);
+           Eigen::VectorXd hamiltonianTest(10); hamiltonianTest.setZero();
+           hamiltonianTest.segment(0,2) = equilibriumTest;
+           hamiltonianTest(6) = tempAcc;
+           hamiltonianTest(7) = tempAng;
 
-//            double testHamiltonianValue = computeHamiltonian(massParameter, hamiltonianTest);
-//            std::cout << "\n== Eq result =="<< std::endl
-//                      << "librationPointNr: " << i << std::endl
-//                      << "alt: " << tempAcc << std::endl
-//                      << "alpha: " << tempAng << std::endl
-//                      << "equilibriumLocation: \n" << equilibriumTest << std::endl
-//                      << "testHamiltonianValue: \n" << testHamiltonianValue << std::endl
+            double testHamiltonianValue = computeHamiltonian(massParameter, hamiltonianTest);
+            std::cout << "\n== Eq result =="<< std::endl
+                      << "librationPointNr: " << i << std::endl
+                      << "alt: " << tempAcc << std::endl
+                      << "alpha: " << tempAng << std::endl
+                      << "equilibriumLocation: \n" << equilibriumTest << std::endl
+                      << "testHamiltonianValue: \n" << testHamiltonianValue << std::endl
 
-//                      << "=================" << std::endl;
+                      << "=================" << std::endl;
 
 
 
-//        }
+        }
 
 
 //    double semiMajorAxis = 384400*1000;
@@ -120,7 +120,7 @@ int main (){
                 double familyHamiltonian = -1.525;
                 int numberOfFamilyMembers = 2;
                 bool startContinuationFromTextFile = false;
-                createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile, numberOfFamilyMembers );
+                //createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile, numberOfFamilyMembers );
 
 
 

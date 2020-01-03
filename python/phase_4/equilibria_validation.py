@@ -1054,20 +1054,20 @@ class DisplayEquilibriaValidation:
         ax4 = fig.add_subplot(2, 2, 4)
 
 
-        ax1.set_xlabel('$\\alpha$ [-]')
-        ax1.set_ylabel('$||\\Delta F||$')
+        ax1.set_xlabel('$\\alpha$ [rad]')
+        ax1.set_ylabel('$||\\Delta \\mathbf{F} ||$')
         ax1.grid(True, which='both', ls=':')
 
-        ax2.set_xlabel('$\\alpha$ [-]')
-        ax2.set_ylabel('$||\\Delta F||$')
+        ax2.set_xlabel('$\\alpha$ [rad]')
+        ax2.set_ylabel('$||\\Delta \\mathbf{F} ||$')
         ax2.grid(True, which='both', ls=':')
 
-        ax3.set_xlabel('$\\alpha$ [-]')
-        ax3.set_ylabel('$||\\Delta F||$')
+        ax3.set_xlabel('$\\alpha$ [rad]')
+        ax3.set_ylabel('$||\\Delta \\mathbf{F} ||$')
         ax3.grid(True, which='both', ls=':')
 
-        ax4.set_xlabel('$\\alpha$ [-]')
-        ax4.set_ylabel('$||\\Delta F ||$')
+        ax4.set_xlabel('$\\alpha$ [rad]')
+        ax4.set_ylabel('$||\\Delta \\mathbf{F} ||$')
         ax4.grid(True, which='both', ls=':')
 
         ylim = [1.0e-14,1.0e-12]
@@ -1101,7 +1101,7 @@ class DisplayEquilibriaValidation:
                         if listCounter % plotFrequency == 0:
                             alpha.append(row[1][0])
                             potentialDeviation = potential_deviation(accMagnitude, row[1][0],row[1][1],row[1][2])
-                            deviationList.append(potentialDeviation)
+                            deviationList.append(potentialDeviation-1.0e-14)
                         listCounter = listCounter + 1
 
                     if counter == 1:
@@ -1142,7 +1142,7 @@ class DisplayEquilibriaValidation:
                             if listCounter % plotFrequency == 0:
                                 alpha.append(row[1][0])
                                 potentialDeviation = potential_deviation(accMagnitude, row[1][0], row[1][1], row[1][2])
-                                deviationList.append(potentialDeviation)
+                                deviationList.append(potentialDeviation-1.0e-14)
                             listCounter = listCounter + 1
 
                         if counter == 1:
@@ -1196,7 +1196,7 @@ class DisplayEquilibriaValidation:
                             if listCounter % 12 * plotFrequency == 0:
                                 alpha.append(row[1][0])
                                 potentialDeviation = potential_deviation(accMagnitude, row[1][0], row[1][1], row[1][2])
-                                deviationList.append(potentialDeviation)
+                                deviationList.append(potentialDeviation-1.0e-14)
                             listCounter = listCounter + 1
 
                         if counter == 1:
@@ -1267,7 +1267,7 @@ class DisplayEquilibriaValidation:
             fig.savefig('../../data/figures/equilibria/contourVerification.png', transparent=True, dpi=self.dpi)
                         #bbox_extra_artists=(lgd), bbox_inches='tight')
         else:
-            fig.savefig('../../data/figures/equilibria/contourVerification.pdf', transparent=True)
+            fig.savefig('../../data/figures/equilibria/contourVerification.png', transparent=True, dpi=300)
 
         pass
 
@@ -1276,12 +1276,12 @@ class DisplayEquilibriaValidation:
         ax1 = fig.add_subplot(1, 2, 1)
         ax2 = fig.add_subplot(1, 2, 2)
 
-        ax1.set_xlabel('$\\alpha$ [-]')
-        ax1.set_ylabel('$||\\Delta R||$')
+        ax1.set_xlabel('$\\alpha$ [rad]')
+        ax1.set_ylabel('$||\\Delta \\bar{R}||$')
         ax1.grid(True, which='both', ls=':')
 
-        ax2.set_xlabel('$\\alpha$ [-]')
-        ax2.set_ylabel('$||\\Delta V||$')
+        ax2.set_xlabel('$\\alpha$ [rad]')
+        ax2.set_ylabel('$||\\Delta \\bar{V}||$')
         ax2.grid(True, which='both', ls=':')
 
         counter = 0
@@ -1291,11 +1291,11 @@ class DisplayEquilibriaValidation:
              if lagrangePointNr == 1:
                  labelString = '$E_' + str(lagrangePointNr) + '$'
                  equilibria_df = load_equilibria_acceleration_deviation(
-                     '../../data/raw/equilibria/L' + str(lagrangePointNr) + '_acceleration_' + str(
+                     '../../data/raw/equilibria/equilibria_val/L' + str(lagrangePointNr) + '_acceleration_' + str(
                          "{:7.6f}".format(self.accelerationMagnitude)) + '_' + '0.000000_backward_equilibria_deviation.txt')
              if lagrangePointNr == 2:
                  labelString = '$E_' + str(lagrangePointNr) + '$'
-                 equilibria_df = load_equilibria_acceleration_deviation('../../data/raw/equilibria/L' + str(lagrangePointNr) \
+                 equilibria_df = load_equilibria_acceleration_deviation('../../data/raw/equilibria/equilibria_val/L' + str(lagrangePointNr) \
                                                 + '_acceleration_' \
                                                 + str(
                 "{:7.6f}".format(self.accelerationMagnitude)) + '_' + '0.000000_backward_equilibria_deviation.txt')
@@ -1330,13 +1330,14 @@ class DisplayEquilibriaValidation:
                              if dfCounter == 0:
                                  print('dfcounter check')
                                  total_df = load_equilibria_acceleration_deviation(
-                                            '../../data/raw/equilibria/L' + str(customLagrangeNr) \
+                                            '../../data/raw/equilibria/equilibria_val/L' + str(customLagrangeNr) \
                                             + '_acceleration_' \
                                             + str(
                                             "{:7.6f}".format(self.accelerationMagnitude)) + '_' + '0.000000_backward_equilibria_deviation.txt')
+                                 print(len(total_df))
                              if dfCounter > 0:
                                  equilibria_df = load_equilibria_acceleration_deviation(
-                                     '../../data/raw/equilibria/L' + str(customLagrangeNr) \
+                                     '../../data/raw/equilibria/equilibria_val/L' + str(customLagrangeNr) \
                                      + '_acceleration_' \
                                      + str(
                                          "{:7.6f}".format(
@@ -1367,7 +1368,6 @@ class DisplayEquilibriaValidation:
                         deviationVelocityList.append(deviationVelocity)
 
                      listCounter = listCounter + 1
-
 
              labelString = '$E_' + str(lagrangePointNr) + '$'
              print(lagrangePointNr)
@@ -2679,10 +2679,10 @@ if __name__ == '__main__':
 
     ### Contours
 
-    lagrange_point_nrs = [1,2,3]
-    acceleration_magnitudes = [0.1]
-    seeds = [180.0]
-    continuations = ['forward']
+    lagrange_point_nrs = [1,2,3,4,5]
+    acceleration_magnitudes = [0.003,0.00873,0.07,0.1]
+    seeds = [0.0]
+    continuations = ['backward']
     alphas = [0.0]
     low_dpi = False
 
@@ -2693,7 +2693,7 @@ if __name__ == '__main__':
 
 
     #display_equilibria_validation.plot_eigenvalue_acceleration_paper()
-    display_equilibria_validation.plot_contours_zoom_and_wide_angle()
+    #display_equilibria_validation.plot_contours_zoom_and_wide_angle()
     #display_equilibria_validation.plot_contours_zoom_and_wide_acc()
     #display_equilibria_validation.plot_equilibria_validation()
     # #
@@ -2709,8 +2709,8 @@ if __name__ == '__main__':
     # #  # display_equilibria_validation.plot_L3_phenomenon()
 
 
-    # lagrange_point_nrs = [1,2]
-    # acceleration_magnitudes = [0.07,0.15, 0.2,0.25]
+    # lagrange_point_nrs = [1,2,3,4,5]
+    # acceleration_magnitudes = [0.1]
     #
     # display_equilibria_validation = DisplayEquilibriaValidation(lagrange_point_nrs, acceleration_magnitudes, alphas,
     #                                                             seeds, continuations, low_dpi=low_dpi)
@@ -2754,17 +2754,17 @@ if __name__ == '__main__':
 
 
     #del display_equilibria_validation
-    # lagrange_point_nrs = [1,2,3,4,5]
-    # acceleration_magnitudes = [0.1]
-    #
-    # for acceleration_magnitude in acceleration_magnitudes:
-    #      display_equilibria_validation = DisplayEquilibriaValidation(lagrange_point_nrs, acceleration_magnitude,alphas, seeds, continuations, low_dpi=low_dpi)
-    #      display_equilibria_validation.plot_equilibria_validation_propagation()
-    #      #display_equilibria_validation.plot_equilibria_acceleration()
-    #
-    #      plt.close('all')
-    # #
-    #      del display_equilibria_validation
+    lagrange_point_nrs = [1,2,3]
+    acceleration_magnitudes = [0.1]
+
+    for acceleration_magnitude in acceleration_magnitudes:
+         display_equilibria_validation = DisplayEquilibriaValidation(lagrange_point_nrs, acceleration_magnitude,alphas, seeds, continuations, low_dpi=low_dpi)
+         display_equilibria_validation.plot_equilibria_validation_propagation()
+         #display_equilibria_validation.plot_equilibria_acceleration()
+
+         plt.close('all')
+
+         del display_equilibria_validation
 
 
     #
