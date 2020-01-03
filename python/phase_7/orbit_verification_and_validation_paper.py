@@ -206,10 +206,9 @@ class PeriodicSolutionsCharacterization:
 
         #print(continuation_normalized_orbit1)
 
-        number_of_colors = 1000
 
-        colors_orbit1 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",number_of_colors))(continuation_normalized_orbit1)
-        colors_orbit2 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",number_of_colors))(continuation_normalized_orbit2)
+        colors_orbit1 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r"))(continuation_normalized_orbit1)
+        colors_orbit2 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r"))(continuation_normalized_orbit2)
 
         print(colors_orbit1.tolist())
 
@@ -220,19 +219,18 @@ class PeriodicSolutionsCharacterization:
         plotColorIndexBasedOnHlt_Orbit1 = []
         plotColorIndexBasedOnHlt_Orbit2 = []
 
-        #numberOfPlotColorIndices_Orbit2
-        #numberOfPlotColorIndices_Orbit1
+
         for hamiltonian in Orbit1.continuationParameter:
             plotColorIndexBasedOnHlt_Orbit1.append(  \
-                int( np.round ( ( (hamiltonian - Hlt_min) / (Hlt_max - Hlt_min) ) * (number_of_colors - 1) ) )     )
+                int( np.round ( ( (hamiltonian - Hlt_min) / (Hlt_max - Hlt_min) ) * (numberOfPlotColorIndices_Orbit1 - 1) ) )     )
 
         for hamiltonian in Orbit2.continuationParameter:
             plotColorIndexBasedOnHlt_Orbit2.append( \
-                int(np.round(((hamiltonian - Hlt_min) / (Hlt_max - Hlt_min)) * (number_of_colors - 1))))
+                int(np.round(((hamiltonian - Hlt_min) / (Hlt_max - Hlt_min)) * (plotColorIndexBasedOnHlt_Orbit2 - 1))))
 
         print(plotColorIndexBasedOnHlt_Orbit1)
         sm = plt.cm.ScalarMappable(cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",
-             (number_of_colors ))),norm=plt.Normalize(vmin=Hlt_min, vmax=Hlt_max))
+             (plotColorIndexBasedOnHlt_Orbit1 ))),norm=plt.Normalize(vmin=Hlt_min, vmax=Hlt_max))
 
 
         orbitIdsPlot_orbit1 = list(range(0, len(Orbit1.continuationParameter), Orbit1.orbitSpacingFactor))
