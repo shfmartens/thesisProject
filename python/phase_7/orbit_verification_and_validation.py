@@ -293,9 +293,12 @@ class DisplayPeriodicSolutions:
             eigenvalue = np.linalg.eigvals(M)
 
             sorting_indices = [-1, -1, -1, -1, -1, -1]
-            idx_real_one = []
+            idx_in_plane = []
+            idx_manifolds = []
+            idx_out_plane = []
 
-            if counter_temp == 1266:
+
+            if counter_temp == 1096:
                 print ('family member: ' + str(counter_temp))
                 print ('M: ' + str(M))
                 print('eigenvalues: ' + str(eigenvalue))
@@ -309,14 +312,18 @@ class DisplayPeriodicSolutions:
                     if abs(l.real - 1.0) < self.maxEigenvalueDeviation:
                         if sorting_indices[2] == -1:
                             sorting_indices[2] = idx
-                            idx_real_one.append(idx)
+                            idx_in_plane.append(idx)
                         elif sorting_indices[3] == -1:
                             sorting_indices[3] = idx
-                            idx_real_one.append(idx)
+                            idx_in_plane.append(idx)
 
-            if counter_temp == 1266:
+            if counter_temp == 1096:
                 print('sorting_indices: ' + str(sorting_indices))
-                print('idx_real_one: ' + str(idx_real_one))
+                print('idx_in_plane: ' + str(idx_in_plane))
+                print('idx_manifolds: ' + str(idx_manifolds))
+                print('idx_out_plane: ' + str(idx_out_plane))
+
+
 
 
             # Find indices of the pair of largest/smallest real eigenvalue (corresponding to the unstable/stable subspace)
@@ -326,64 +333,76 @@ class DisplayPeriodicSolutions:
                 if abs(l.imag) < self.maxEigenvalueDeviation:
                     if abs(l.real) == max(abs(eigenvalue.real)):
                             sorting_indices[0] = idx
+                            idx_manifolds.append(idx)
                     elif abs(abs(l.real) - 1.0 / max(abs(eigenvalue.real))) < self.maxEigenvalueDeviation:
                             sorting_indices[5] = idx
+                            idx_manifolds.append(idx)
 
-            if counter_temp == 1266:
+            if counter_temp == 1096:
                 print('sorting_indices: ' + str(sorting_indices))
-                print('idx_real_one: ' + str(idx_real_one))
+                print('idx_in_plane: ' + str(idx_in_plane))
+                print('idx_manifolds: ' + str(idx_manifolds))
+                print('idx_out_plane: ' + str(idx_out_plane))
 
             missing_indices = sorted(list(set(list(range(-1, 6))) - set(sorting_indices)))
 
-            if counter_temp == 1266:
+            if counter_temp == 1096:
                 print('sorting_indices: ' + str(sorting_indices))
                 print('missing_indices: ' + str(missing_indices))
 
             if eigenvalue.real[missing_indices[0]] > eigenvalue.real[missing_indices[1]]:
                 sorting_indices[1] = missing_indices[0]
                 sorting_indices[4] = missing_indices[1]
+                idx_out_plane.append(missing_indices[0])
+                idx_out_plane.append(missing_indices[1])
+
             else:
                 sorting_indices[1] = missing_indices[1]
                 sorting_indices[4] = missing_indices[0]
+                idx_out_plane.append(missing_indices[1])
+                idx_out_plane.append(missing_indices[0])
 
-            if counter_temp == 1266:
+            if counter_temp == 1096:
                 print('sorting_indices: ' + str(sorting_indices))
+                print('idx_in_plane: ' + str(idx_in_plane))
+                print('idx_manifolds: ' + str(idx_manifolds))
+                print('idx_out_plane: ' + str(idx_out_plane))
 
             if len(sorting_indices) > len(set(sorting_indices)):
                 print('\nWARNING: SORTING INDEX IS NOT UNIQUE FOR ' + self.orbitType + ' AT L' + str(
                      self.lagrangePointNr) + 'counter_temp is: ' + str(counter_temp) )
-                if len(idx_real_one) != 2:
-                    print('len(idx_real_one) != 2')
-                    idx_real_one = []
+                if len(idx_in_plane) != 2:
+                    print('len(idx_in_plane) != 2')
+                    idx_in_plane = []
                     # Find indices of the first pair of real eigenvalue equal to one
                     for idx, l in enumerate(eigenvalue):
                         if abs(l.imag) < 2 * self.maxEigenvalueDeviation:
                             if abs(l.real - 1.0) < 2 * self.maxEigenvalueDeviation:
                                 if sorting_indices[2] == -1:
                                     sorting_indices[2] = idx
-                                    idx_real_one.append(idx)
+                                    idx_in_plane.append(idx)
                                 elif sorting_indices[3] == -1:
                                     sorting_indices[3] = idx
-                                    idx_real_one.append(idx)
+                                    idx_in_plane.append(idx)
                         print(sorting_indices)
 
-                if len(idx_real_one) == 2:
-                    print('len(idx_real_one) == 2')
+                if len(idx_in_plane) == 2:
+                    print('len(idx_in_plane) == 2')
 
                     sorting_indices = [-1, -1, -1, -1, -1, -1]
-                    sorting_indices[2] = idx_real_one[0]
-                    sorting_indices[3] = idx_real_one[1]
+                    sorting_indices[2] = idx_in_plane[0]
+                    sorting_indices[3] = idx_in_plane[1]
                     # Assume two times real one and two conjugate pairs
                     for idx, l in enumerate(eigenvalue):
-                        # min(abs(np.angle(eigenvalue[list(set(range(6)) - set(idx_real_one))], deg=True)))
-                        # if abs(np.angle(l, deg=True))%180 == min(abs(np.angle(eigenvalue[list(set(range(6)) - set(idx_real_one))], deg=True)) %180):
-                        if l.real == eigenvalue[list(set(range(6)) - set(idx_real_one))].real.max():
+                        # min(abs(np.angle(eigenvalue[list(set(range(6)) - set(idx_in_plane))], deg=True)))
+                        # if abs(np.angle(l, deg=True))%180 == min(abs(np.angle(eigenvalue[list(set(range(6)) - set(idx_in_plane))], deg=True)) %180):
+                        if l.real == eigenvalue[list(set(range(6)) - set(idx_in_plane))].real.max():
                             if l.imag > 0:
                                 sorting_indices[0] = idx
                             elif l.imag < 0:
                                 sorting_indices[5] = idx
-                        # if abs(np.angle(l, deg=True))%180 == max(abs(np.angle(eigenvalue[list(set(range(6)) - set(idx_real_one))], deg=True)) %180):
-                        if l.real == eigenvalue[list(set(range(6)) - set(idx_real_one))].real.min():
+                        # if abs(np.angle(l, deg=True))%180 == max(abs(np.angle(eigenvalue[list(set(range(6)) - set(idx_in_plane))], deg=True)) %180):
+                        if l.real == eigenvalue[list(set(range(6)) - set(idx_in_plane))].real.min():
                             if l.imag > 0:
                                 sorting_indices[1] = idx
                             elif l.imag < 0:
@@ -397,13 +416,13 @@ class DisplayPeriodicSolutions:
                     # Sorting eigenvalues from largest to smallest norm, excluding real one
 
                     # Sorting based on previous phase
-                    if len(idx_real_one) == 2:
+                    if len(idx_in_plane) == 2:
                         sorting_indices = [-1, -1, -1, -1, -1, -1]
-                        sorting_indices[2] = idx_real_one[0]
-                        sorting_indices[3] = idx_real_one[1]
+                        sorting_indices[2] = idx_in_plane[0]
+                        sorting_indices[3] = idx_in_plane[1]
 
                         # Assume two times real one and two conjugate pairs
-                        for idx, l in enumerate(eigenvalue[list(set(range(6)) - set(idx_real_one))]):
+                        for idx, l in enumerate(eigenvalue[list(set(range(6)) - set(idx_in_plane))]):
                             print(idx)
                             if abs(l.real - self.lambda1[-1].real) == min(
                                     abs(eigenvalue.real - self.lambda1[-1].real)) and abs(
@@ -1722,7 +1741,7 @@ class DisplayPeriodicSolutions:
 
 if __name__ == '__main__':
     orbit_types = ['horizontal']
-    lagrange_points = [2]
+    lagrange_points = [1]
     acceleration_magnitudes = [0.05]
     alphas = [120.0]
     Hamiltonians = [-1.55]
