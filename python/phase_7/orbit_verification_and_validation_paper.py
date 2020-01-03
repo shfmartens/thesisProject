@@ -264,7 +264,7 @@ class PeriodicSolutionsCharacterization:
         for i in Orbit1.orbitIdBifurcations:
             plot_color1 = colors_orbit1[i]
 
-            linewidthBifurcation = 3
+            linewidthBifurcation = 2
 
             df1BF = load_orbit(
                 '../../data/raw/orbits/augmented/L' + str(Orbit1.lagrangePointNr) + '_' + Orbit1.orbitType + '_' \
@@ -290,7 +290,7 @@ class PeriodicSolutionsCharacterization:
         for i in Orbit2.orbitIdBifurcations:
             plot_color2 = colors_orbit2[i]
 
-            linewidthBifurcation = 3
+            linewidthBifurcation = 2
 
             df2BF = load_orbit(
                 '../../data/raw/orbits/augmented/L' + str(Orbit2.lagrangePointNr) + '_' + Orbit2.orbitType + '_' \
