@@ -295,7 +295,7 @@ class DisplayPeriodicSolutions:
             sorting_indices = [-1, -1, -1, -1, -1, -1]
             idx_real_one = []
 
-            if counter_temp == 130:
+            if counter_temp == 1235:
                 print ('family member: ' + str(counter_temp))
                 print ('M: ' + str(M))
                 print('eigenvalues: ' + str(eigenvalue))
@@ -314,7 +314,7 @@ class DisplayPeriodicSolutions:
                             sorting_indices[3] = idx
                             idx_real_one.append(idx)
 
-            if counter_temp == 130:
+            if counter_temp == 1235:
                 print('sorting_indices: ' + str(sorting_indices))
                 print('idx_real_one: ' + str(idx_real_one))
 
@@ -329,13 +329,13 @@ class DisplayPeriodicSolutions:
                     elif abs(abs(l.real) - 1.0 / max(abs(eigenvalue.real))) < self.maxEigenvalueDeviation:
                             sorting_indices[5] = idx
 
-            if counter_temp == 130:
+            if counter_temp == 1235:
                 print('sorting_indices: ' + str(sorting_indices))
                 print('idx_real_one: ' + str(idx_real_one))
 
             missing_indices = sorted(list(set(list(range(-1, 6))) - set(sorting_indices)))
 
-            if counter_temp == 130:
+            if counter_temp == 1235:
                 print('sorting_indices: ' + str(sorting_indices))
                 print('missing_indices: ' + str(missing_indices))
 
@@ -346,7 +346,7 @@ class DisplayPeriodicSolutions:
                 sorting_indices[1] = missing_indices[1]
                 sorting_indices[4] = missing_indices[0]
 
-            if counter_temp == 130:
+            if counter_temp == 1235:
                 print('sorting_indices: ' + str(sorting_indices))
 
             if len(sorting_indices) > len(set(sorting_indices)):
