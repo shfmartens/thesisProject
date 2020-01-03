@@ -382,8 +382,6 @@ class DisplayPeriodicSolutions:
                     print('abs(l): '  + str(abs(l)))
                     print('self.maxEigenvalueDeviation: '  + str(self.maxEigenvalueDeviation)
 
-
-                    print(abs(l))
                     if (abs(l) - 1.0) < self.maxEigenvalueDeviation:
                         eigenvalues_module_1 = eigenvalues_module_1 + 1
 
