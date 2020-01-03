@@ -52,10 +52,10 @@ int main (){
 //    {
 //        double alpha = 0.0;
 //        double accMag = 0.0107;
-        for (int i = 3; i < 4  ; i++)
+        for (int i = 4; i < 5  ; i++)
         {
-            double tempAcc = 0.1;
-            double tempAng = 20.0;
+            double tempAcc = 0.0;
+            double tempAng = 0.0;
 
            Eigen::Vector2d equilibriumTest = createEquilibriumLocations(i, tempAcc,  tempAng, "acceleration", 1.0, massParameter);
            Eigen::VectorXd hamiltonianTest(10); hamiltonianTest.setZero();

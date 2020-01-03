@@ -710,9 +710,9 @@ class PeriodicSolutionsCharacterization:
 
                     if min(df1['x']) < minimum_x:
                         minimum_x = min(df1['x'])
-                        print('objectCounter: ' + str(objectCounter))
-                        print('alpha continuation xminimum at angle: ' + str(self.orbitObjects[objectCounter].alphaContinuation[k]))
-                        print('minimum x value: ' + str(minimum_x))
+                        # print('objectCounter: ' + str(objectCounter))
+                        # print('alpha continuation xminimum at angle: ' + str(self.orbitObjects[objectCounter].alphaContinuation[k]))
+                        # print('minimum x value: ' + str(minimum_x))
 
 
                     if min(df1['y']) < minimum_y:
@@ -724,9 +724,9 @@ class PeriodicSolutionsCharacterization:
 
                     if min(df1['x']) < minimum_x2 and self.orbitObjects[objectCounter].alphaContinuation[k] > 179.0:
                         minimum_x2 = min(df1['x'])
-                        print('objectCounter: ' + str(objectCounter))
-                        print('alpha continuation xminimum at angle: ' + str(self.orbitObjects[objectCounter].alphaContinuation[k]))
-                        print('minimum x2 value: ' + str(minimum_x2))
+                        # print('objectCounter: ' + str(objectCounter))
+                        # print('alpha continuation xminimum at angle: ' + str(self.orbitObjects[objectCounter].alphaContinuation[k]))
+                        # print('minimum x2 value: ' + str(minimum_x2))
 
 
                 objectCounter = objectCounter + 1
@@ -1063,7 +1063,7 @@ class PeriodicSolutionsCharacterization:
             arr[0].semilogy(self.orbitObjects[i].continuationParameter, self.orbitObjects[i].v1, c=self.plottingColors[colour_family][i], linestyle = stabilityLineStyle, label=subtitleString)
             #arr[1].semilogy(self.orbitObjects[i].continuationParameter, self.orbitObjects[i].v2, c=self.plottingColors[colour_family][i], label=subtitleString)
             if self.varyingQuantity == 'Hamiltonian':
-                arr[1].plot(self.orbitObjects[i].T, self.orbitObjects[i].Hlt, c=self.plottingColors[colour_family][i], label=subtitleString)
+                arr[1].plot(self.orbitObjects[i].T, self.orbitObjects[i].Hlt, c=self.plottingColors[colour_family][i], linestyle = stabilityLineStyle, label=subtitleString)
                 arr[1].set_xlabel('$T$ [-]')
                 arr[1].set_ylabel('$H_{lt}$ [-]')
             elif self.varyingQuantity == 'Acceleration':
