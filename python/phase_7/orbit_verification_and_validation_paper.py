@@ -287,6 +287,20 @@ class PeriodicSolutionsCharacterization:
 
             ax2.plot(df2['x'], df2['y'], color=plot_color2, alpha=Orbit2.plotAlpha, linewidth=Orbit2.lineWidth)
 
+        for i in Orbit2.orbitIdBifurcations:
+            plot_color2 = colors_orbit2[i]
+
+            linewidthBifurcation = 3
+
+            df1 = load_orbit(
+                '../../data/raw/orbits/augmented/L' + str(Orbit2.lagrangePointNr) + '_' + Orbit2.orbitType + '_' \
+                + str("{:12.11f}".format(Orbit2.accelerationMagnitude)) + '_' \
+                + str("{:12.11f}".format(Orbit2.alpha)) + '_' \
+                + str("{:12.11f}".format(Orbit2.beta)) + '_' \
+                + str("{:12.11f}".format(Orbit2.Hlt[i])) + '_.txt')
+
+            ax2.plot(df1['x'], df1['y'], color=plot_color2, alpha=Orbit2.plotAlpha, linewidth=linewidthBifurcation)
+
         sm.set_array([])
 
         # divider = make_axes_locatable(ax2)
@@ -356,6 +370,7 @@ class PeriodicSolutionsCharacterization:
 
         ax1.set_aspect(1.0)
         ax2.set_aspect(1.0)
+
 
         #fig.tight_layout()
 
