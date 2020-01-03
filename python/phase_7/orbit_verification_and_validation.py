@@ -614,7 +614,7 @@ class DisplayPeriodicSolutions:
 
         if self.alpha == 300:
             print('lambda2: final ' + str(self.lambda2[1012]))
-            print('lambda5: final ' + str(self.lambda2[1015]))
+            print('lambda5: final ' + str(self.lambda5[1012]))
 
 
 
