@@ -204,8 +204,8 @@ class PeriodicSolutionsCharacterization:
         continuation_normalized_orbit1 = [(value - Hlt_min) / (Hlt_max - Hlt_min) for value in Orbit1.continuationParameter]
         continuation_normalized_orbit2 = [(value - Hlt_min) / (Hlt_max - Hlt_min) for value in Orbit2.continuationParameter]
 
-        colors_orbit1 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",256))(continuation_normalized_orbit1)
-        colors_orbit2 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",256))(continuation_normalized_orbit2)
+        colors_orbit1 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",3000))(continuation_normalized_orbit1)
+        colors_orbit2 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",3000))(continuation_normalized_orbit2)
 
         numberOfPlotColorIndices_Orbit1 = len(Orbit1.continuationParameter)
         numberOfPlotColorIndices_Orbit2 = len(Orbit2.continuationParameter)
@@ -1278,8 +1278,8 @@ if __name__ == '__main__':
         characterize_periodic_solutions = PeriodicSolutionsCharacterization(lagrange_point_nr,acceleration_magnitude, alpha, hamiltonian,varying_quantity, my_objects, low_dpi,plot_as_x_coordinate,plot_as_family_number)
 
         characterize_periodic_solutions.ballistic_graphical_projection()
-        characterize_periodic_solutions.ballistic_bifurcation_analysis()
-        characterize_periodic_solutions.ballistic_stability_analysis()
+        #characterize_periodic_solutions.ballistic_bifurcation_analysis()
+        #characterize_periodic_solutions.ballistic_stability_analysis()
 
 
         del characterize_periodic_solutions
