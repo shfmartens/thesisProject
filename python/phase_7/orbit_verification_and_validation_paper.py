@@ -704,10 +704,9 @@ class PeriodicSolutionsCharacterization:
                     (value - continuationParameter_min) / (continuationParameter_max - continuationParameter_min) \
                     for value in self.orbitObjects[objectCounter].continuationParameter]
 
+                number_of_colors_orbit = len(self.orbitObjects[objectCounter].continuationParameter)
 
-                #print('continuation_normalized_orbit: ' +str(continuation_normalized_orbit) )
-
-                colors_orbit = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r", 256))(
+                colors_orbit = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r", number_of_colors_orbit))(
                     continuation_normalized_orbit)
 
                 numberOfPlotColorIndices_Orbit = len(self.orbitObjects[objectCounter].continuationParameter)
@@ -717,7 +716,7 @@ class PeriodicSolutionsCharacterization:
                 for variable in self.orbitObjects[objectCounter].continuationParameter:
                     plotColorIndexBasedOnVariable_Orbit.append( \
                         int(np.round(
-                            ((variable - continuationParameter_min) / (continuationParameter_max - continuationParameter_min)) * (numberOfPlotColorIndices_Orbit - 1))))
+                            ((variable - continuationParameter_min) / (continuationParameter_max - continuationParameter_min)) * (number_of_colors_orbit - 1))))
 
                 orbitIdsPlot_orbit = []
                 orbitIdsPlot_orbit = list(range(0, len(self.orbitObjects[objectCounter].continuationParameter), self.orbitObjects[objectCounter].orbitSpacingFactor))
@@ -729,7 +728,9 @@ class PeriodicSolutionsCharacterization:
 
 
                 for k in orbitIdsPlot_orbit:
-                    plot_color = colors_orbit[plotColorIndexBasedOnVariable_Orbit[k]]
+                    #plot_color = colors_orbit[plotColorIndexBasedOnVariable_Orbit[k]]
+                    plot_color = colors_orbit[k]
+
                     if self.varyingQuantity == 'Hamiltonian':
                         df1String = '../../data/raw/orbits/augmented/L' + str(self.orbitObjects[objectCounter].lagrangePointNr) + '_horizontal_' \
                         + str("{:12.11f}".format(self.orbitObjects[objectCounter].accelerationMagnitude)) + '_' \
@@ -1294,10 +1295,10 @@ class PeriodicSolutionsCharacterization:
 
 if __name__ == '__main__':
 
-    ballistic_planar_projection = True
+    ballistic_planar_projection = False
     ballistic_bifurcation_analysis = False
     ballistic_stability_analysis = False
-    graphical_projection = False
+    graphical_projection = True
     bifurcation_analysis = False
     stability_analysis = False
     hamiltonian_domain_analysis = False
