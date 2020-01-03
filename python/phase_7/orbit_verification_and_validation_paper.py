@@ -1030,21 +1030,27 @@ class PeriodicSolutionsCharacterization:
                 if self.subPlotTitleValueList[objectCounter] > -0.1 and self.subPlotTitleValueList[
                     objectCounter] < 0.1:
                     alphaRadians = '$0$'
+                    stabilityLineStyle = '-'
                 if self.subPlotTitleValueList[objectCounter] > 59.9 and self.subPlotTitleValueList[
                     objectCounter] < 60.1:
                     alphaRadians = '$\\frac{1}{3}\\pi$'
+                    stabilityLineStyle = '-'
                 if self.subPlotTitleValueList[objectCounter] > 119.9 and self.subPlotTitleValueList[
                     objectCounter] < 120.1:
                     alphaRadians = '$\\frac{2}{3}\\pi$'
+                    stabilityLineStyle = '-'
                 if self.subPlotTitleValueList[objectCounter] > 179.9 and self.subPlotTitleValueList[
                     objectCounter] < 180.1:
                     alphaRadians = '$\\pi$'
+                    stabilityLineStyle = '-'
                 if self.subPlotTitleValueList[objectCounter] > 239.9 and self.subPlotTitleValueList[
                     objectCounter] < 240.1:
                     alphaRadians = '$\\frac{4}{3}\\pi$'
+                    stabilityLineStyle = '--'
                 if self.subPlotTitleValueList[objectCounter] > 299.9 and self.subPlotTitleValueList[
                     objectCounter] < 300.1:
                     alphaRadians = '$\\frac{5}{3}\\pi$'
+                    stabilityLineStyle = '--'
                 subtitleString = self.subplotTitle + alphaRadians
             else:
                 subtitleString = self.subplotTitleTwo + str(
@@ -1054,14 +1060,14 @@ class PeriodicSolutionsCharacterization:
 
             objectCounter = objectCounter + 1
 
-            arr[0].semilogy(self.orbitObjects[i].continuationParameter, self.orbitObjects[i].v1, c=self.plottingColors[colour_family][i], label=subtitleString)
+            arr[0].semilogy(self.orbitObjects[i].continuationParameter, self.orbitObjects[i].v1, c=self.plottingColors[colour_family][i], linestyle = stabilityLineStyle, label=subtitleString)
             #arr[1].semilogy(self.orbitObjects[i].continuationParameter, self.orbitObjects[i].v2, c=self.plottingColors[colour_family][i], label=subtitleString)
             if self.varyingQuantity == 'Hamiltonian':
                 arr[1].plot(self.orbitObjects[i].T, self.orbitObjects[i].Hlt, c=self.plottingColors[colour_family][i], label=subtitleString)
                 arr[1].set_xlabel('$T$ [-]')
                 arr[1].set_ylabel('$H_{lt}$ [-]')
             elif self.varyingQuantity == 'Acceleration':
-                arr[1].plot(self.orbitObjects[i].continuationParameter, self.orbitObjects[i].T, c=self.plottingColors[colour_family][i], label=subtitleString)
+                arr[1].plot(self.orbitObjects[i].continuationParameter, self.orbitObjects[i].T, c=self.plottingColors[colour_family][i], linestyle = stabilityLineStyle, label=subtitleString)
                 arr[1].set_xlabel('$a_{lt}$ [-]')
                 arr[1].set_ylabel('$T$ [-]')
             else:
