@@ -298,7 +298,7 @@ class DisplayPeriodicSolutions:
             idx_out_plane = []
 
 
-            if counter_temp == 1096:
+            if counter_temp == 1017:
                 print ('family member: ' + str(counter_temp))
                 print ('M: ' + str(M))
                 print('eigenvalues: ' + str(eigenvalue))
@@ -317,7 +317,7 @@ class DisplayPeriodicSolutions:
                             sorting_indices[3] = idx
                             idx_in_plane.append(idx)
 
-            if counter_temp == 1096:
+            if counter_temp == 1017:
                 print('sorting_indices: ' + str(sorting_indices))
                 print('idx_in_plane: ' + str(idx_in_plane))
                 print('idx_manifolds: ' + str(idx_manifolds))
@@ -338,7 +338,7 @@ class DisplayPeriodicSolutions:
                             sorting_indices[5] = idx
                             idx_manifolds.append(idx)
 
-            if counter_temp == 1096:
+            if counter_temp == 1017:
                 print('sorting_indices: ' + str(sorting_indices))
                 print('idx_in_plane: ' + str(idx_in_plane))
                 print('idx_manifolds: ' + str(idx_manifolds))
@@ -346,7 +346,7 @@ class DisplayPeriodicSolutions:
 
             missing_indices = sorted(list(set(list(range(-1, 6))) - set(sorting_indices)))
 
-            if counter_temp == 1096:
+            if counter_temp == 1017:
                 print('sorting_indices: ' + str(sorting_indices))
                 print('missing_indices: ' + str(missing_indices))
 
@@ -362,7 +362,7 @@ class DisplayPeriodicSolutions:
                 idx_out_plane.append(missing_indices[1])
                 idx_out_plane.append(missing_indices[0])
 
-            if counter_temp == 1096:
+            if counter_temp == 1017:
                 print('sorting_indices: ' + str(sorting_indices))
                 print('idx_in_plane: ' + str(idx_in_plane))
                 print('idx_manifolds: ' + str(idx_manifolds))
@@ -392,7 +392,7 @@ class DisplayPeriodicSolutions:
                     idx_manifolds = []
                     idx_out_plane = []
 
-                    if counter_temp == 1096:
+                    if counter_temp == 1017:
                         print('resetted the sorting, start with manifolds')
                         print('sorting_indices: ' + str(sorting_indices))
                         print('idx_in_plane: ' + str(idx_in_plane))
@@ -409,7 +409,7 @@ class DisplayPeriodicSolutions:
                                 sorting_indices[5] = idx
                                 idx_manifolds.append(idx)
 
-                    if counter_temp == 1096:
+                    if counter_temp == 1017:
                         print('manifolds selected')
                         print('sorting_indices: ' + str(sorting_indices))
                         print('idx_in_plane: ' + str(idx_in_plane))
@@ -428,7 +428,7 @@ class DisplayPeriodicSolutions:
                                 sorting_indices[3] = idx
                                 idx_in_plane.append(idx)
 
-                    if counter_temp == 1096:
+                    if counter_temp == 1017:
                         print('in-plane moduli')
                         print('sorting_indices: ' + str(sorting_indices))
                         print('idx_in_plane: ' + str(idx_in_plane))
@@ -438,7 +438,7 @@ class DisplayPeriodicSolutions:
                     # Select the in-plane moduli with relaxed constraints
                     missing_indices = sorted(list(set(list(range(-1, 6))) - set(sorting_indices)))
 
-                    if counter_temp == 1096:
+                    if counter_temp == 1017:
                         print('sorting_indices: ' + str(sorting_indices))
                         print('missing_indices: ' + str(missing_indices))
 
@@ -455,7 +455,7 @@ class DisplayPeriodicSolutions:
                         idx_out_plane.append(missing_indices[0])
 
 
-                    if counter_temp == 1096:
+                    if counter_temp == 1017:
                         print('out-plane moduli')
                         print('sorting_indices: ' + str(sorting_indices))
                         print('idx_in_plane: ' + str(idx_in_plane))
