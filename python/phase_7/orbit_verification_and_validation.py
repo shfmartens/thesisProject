@@ -426,7 +426,7 @@ class DisplayPeriodicSolutions:
                     for idx, l in enumerate(eigenvalue):
                         if idx == (sorting_indices[0] or sorting_indices[5]):
                             continue
-                        if abs(l.real - 1.0) < 3.0 * self.maxEigenvalueDeviation and abs(l.imag) < self.maxEigenvalueDeviation:
+                        if abs(l.real - 1.0) < 3.0 * self.maxEigenvalueDeviation:
                             if sorting_indices[2] == -1:
                                 sorting_indices[2] = idx
                                 idx_in_plane.append(idx)
