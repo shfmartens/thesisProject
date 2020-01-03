@@ -377,9 +377,8 @@ class DisplayPeriodicSolutions:
 
                 # Determine if all eigenvalues are on real axis or unit circle
                 eigenvalues_module_1 = 0
-                for l in enumerate(eigenvalue):
-
-                    if(abs(l) - 1.0) < self.maxEigenvalueDeviation:
+                for idx, l in enumerate(eigenvalue):
+                    if (abs(l) - 1.0) < self.maxEigenvalueDeviation:
                         eigenvalues_module_1 = eigenvalues_module_1 + 1
 
                 print('eigenvalues_module_1: ' + str(eigenvalues_module_1))
