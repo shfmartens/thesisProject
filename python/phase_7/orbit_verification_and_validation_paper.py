@@ -206,8 +206,10 @@ class PeriodicSolutionsCharacterization:
 
         #print(continuation_normalized_orbit1)
 
-        colors_orbit1 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",1000))(continuation_normalized_orbit1)
-        colors_orbit2 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",1000))(continuation_normalized_orbit2)
+        number_of_colors = 256
+
+        colors_orbit1 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",number_of_colors))(continuation_normalized_orbit1)
+        colors_orbit2 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",number_of_colors))(continuation_normalized_orbit2)
 
         numberOfPlotColorIndices_Orbit1 = len(Orbit1.continuationParameter)
         numberOfPlotColorIndices_Orbit2 = len(Orbit2.continuationParameter)
@@ -216,13 +218,15 @@ class PeriodicSolutionsCharacterization:
         plotColorIndexBasedOnHlt_Orbit1 = []
         plotColorIndexBasedOnHlt_Orbit2 = []
 
+        #numberOfPlotColorIndices_Orbit2
+        #numberOfPlotColorIndices_Orbit1
         for hamiltonian in Orbit1.continuationParameter:
             plotColorIndexBasedOnHlt_Orbit1.append(  \
-                int( np.round ( ( (hamiltonian - Hlt_min) / (Hlt_max - Hlt_min) ) * (numberOfPlotColorIndices_Orbit1 - 1) ) )     )
+                int( np.round ( ( (hamiltonian - Hlt_min) / (Hlt_max - Hlt_min) ) * (number_of_colors - 1) ) )     )
 
         for hamiltonian in Orbit2.continuationParameter:
             plotColorIndexBasedOnHlt_Orbit2.append( \
-                int(np.round(((hamiltonian - Hlt_min) / (Hlt_max - Hlt_min)) * (numberOfPlotColorIndices_Orbit2 - 1))))
+                int(np.round(((hamiltonian - Hlt_min) / (Hlt_max - Hlt_min)) * (number_of_colors - 1))))
 
         sm = plt.cm.ScalarMappable(cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",
              (len(Orbit1.continuationParameter) +len(Orbit2.continuationParameter) ))),norm=plt.Normalize(vmin=Hlt_min, vmax=Hlt_max))
@@ -234,7 +238,7 @@ class PeriodicSolutionsCharacterization:
 
         if orbitIdsPlot_orbit1 != len(Orbit1.continuationParameter):
             orbitIdsPlot_orbit1.append(len(Orbit1.continuationParameter) - 1)
-        
+
         print(orbitIdsPlot_orbit1)
         orbitIdsPlot_orbit2 = list(range(0, len(Orbit2.continuationParameter), Orbit2.orbitSpacingFactor))
         if orbitIdsPlot_orbit2 != len(Orbit2.continuationParameter):
