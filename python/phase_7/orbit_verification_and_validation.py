@@ -528,7 +528,7 @@ class DisplayPeriodicSolutions:
 
         # plot specific spacing properties
         if self.varyingQuantity == 'Hamiltonian':
-            self.orbitSpacingFactor = 200
+            self.orbitSpacingFactor = 100
         elif self.varyingQuantity == 'Acceleration':
             self.orbitSpacingFactor = 1
         else:
