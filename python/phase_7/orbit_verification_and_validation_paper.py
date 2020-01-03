@@ -168,11 +168,8 @@ class PeriodicSolutionsCharacterization:
         ax2.grid(True, which='both', ls=':')
 
         # Plot libration point
-        lagrange_points_df = load_lagrange_points_location_augmented(self.accelerationMagnitude, self.alpha)
-        if self.lagrangePointNr == 1:
-            lagrange_point_nrs = ['L1', 'L2', 'L3', 'L4', 'L5']
-        if self.lagrangePointNr == 2:
-            lagrange_point_nrs = ['L1', 'L2', 'L3', 'L4', 'L5']
+        lagrange_points_df = load_lagrange_points_location()
+        lagrange_point_nrs = ['L1','L2','L3','L4','L5']
 
         for lagrange_point_nr in lagrange_point_nrs:
             ax1.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
@@ -585,11 +582,15 @@ class PeriodicSolutionsCharacterization:
 
         ## Plot bodies and natural libration points
                 # Plot libration point
-                lagrange_points_df = load_lagrange_points_location_augmented(self.accelerationMagnitude, self.alpha)
-                if self.lagrangePointNr == 1:
-                    lagrange_point_nrs = ['L1', 'L2']
-                if self.lagrangePointNr == 2:
-                    lagrange_point_nrs = ['L1', 'L2']
+                # lagrange_points_df = load_lagrange_points_location_augmented(self.accelerationMagnitude, self.alpha)
+                # if self.lagrangePointNr == 1:
+                #     lagrange_point_nrs = ['L1', 'L2']
+                # if self.lagrangePointNr == 2:
+                #     lagrange_point_nrs = ['L1', 'L2']
+
+                # Plot libration point
+                lagrange_points_df = load_lagrange_points_location()
+                lagrange_point_nrs = ['L1', 'L2', 'L3', 'L4', 'L5']
 
                 for lagrange_point_nr in lagrange_point_nrs:
                     for i in range(rownNumber):
@@ -1244,7 +1245,7 @@ if __name__ == '__main__':
     ballistic_planar_projection = True
     ballistic_bifurcation_analysis = False
     ballistic_stability_analysis = False
-    graphical_projection = False
+    graphical_projection = True
     bifurcation_analysis = False
     stability_analysis = False
     hamiltonian_domain_analysis = False
@@ -1330,24 +1331,24 @@ if __name__ == '__main__':
 
     if  graphical_projection == True:
         lagrange_point_nr = 1
-        acceleration_magnitude = 0.0
+        acceleration_magnitude = 0.01
         alpha = 0.0
         beta = 0.0
         hamiltonian = -1.50
-        varying_quantity = 'Alpha'
+        varying_quantity = 'Hamiltonian'
         low_dpi = False
         plot_as_x_coordinate = False
         plot_as_family_number = False
 
-        orbit1 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.01, alpha, -1.55, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
-        orbit2 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.01, alpha, -1.525, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
-        orbit3 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.01, alpha, -1.50, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
-        orbit4 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.05, alpha, -1.55, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
-        orbit5 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.05, alpha, -1.525, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
-        orbit6 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.05, alpha, -1.50, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
-        orbit7 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.10, alpha, -1.55, varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
-        orbit8 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.10, alpha, -1.525,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
-        orbit9 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.10, alpha, -1.50,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
+        orbit1 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.01, 0.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
+        orbit2 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.01, 60.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
+        orbit3 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.01, 120.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
+        orbit4 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.05, 180.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
+        orbit5 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.05, 240.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
+        orbit6 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.05, 300.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
+        # orbit7 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.10, alpha, -1.55, varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
+        # orbit8 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.10, alpha, -1.525,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
+        # orbit9 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.10, alpha, -1.50,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
 
         my_objects = []
         my_objects.append(orbit1)
@@ -1356,9 +1357,9 @@ if __name__ == '__main__':
         my_objects.append(orbit4)
         my_objects.append(orbit5)
         my_objects.append(orbit6)
-        my_objects.append(orbit7)
-        my_objects.append(orbit8)
-        my_objects.append(orbit9)
+        # my_objects.append(orbit7)
+        # my_objects.append(orbit8)
+        # my_objects.append(orbit9)
 
 
         characterize_periodic_solutions = PeriodicSolutionsCharacterization(lagrange_point_nr, acceleration_magnitude,
