@@ -229,6 +229,9 @@ class PeriodicSolutionsCharacterization:
 
 
         orbitIdsPlot_orbit1 = list(range(0, len(Orbit1.continuationParameter), Orbit1.orbitSpacingFactor))
+        print(orbitIdsPlot_orbit1)
+        print(Orbit1.orbitSpacingFactor)
+
         if orbitIdsPlot_orbit1 != len(Orbit1.continuationParameter):
             orbitIdsPlot_orbit1.append(len(Orbit1.continuationParameter) - 1)
 
