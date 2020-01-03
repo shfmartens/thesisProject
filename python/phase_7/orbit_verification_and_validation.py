@@ -375,6 +375,16 @@ class DisplayPeriodicSolutions:
                 print('\nWARNING: SORTING INDEX IS NOT UNIQUE FOR ' + self.orbitType + ' AT L' + str(
                      self.lagrangePointNr) + 'counter_temp is: ' + str(counter_temp) )
 
+                # Determine if all eigenvalues are on real axis or unit circle
+                eigenvalues_module_1 = 0
+                for l in enumerate(eigenvalue):
+
+                    if(abs(l) - 1.0) < self.maxEigenvalueDeviation:
+                        eigenvalues_module_1 = eigenvalues_module_1 + 1
+
+                print('eigenvalues_module_1: ' + str(eigenvalues_module_1))
+
+
 
 
 
