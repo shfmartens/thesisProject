@@ -383,117 +383,179 @@ class DisplayPeriodicSolutions:
 
                 print('eigenvalues_module_1: ' + str(eigenvalues_module_1))
 
+                if eigenvalues_module_1 != 6 and len(idx_manifolds) == 2:
 
-
-
-
-                if len(idx_in_plane) != 2:
-                    print('len(idx_in_plane) != 2')
-                    idx_in_plane = []
-                    # Find indices of the first pair of real eigenvalue equal to one
-                    for idx, l in enumerate(eigenvalue):
-                        if abs(l.imag) < 2 * self.maxEigenvalueDeviation:
-                            if abs(l.real - 1.0) < 2 * self.maxEigenvalueDeviation:
-                                if sorting_indices[2] == -1:
-                                    sorting_indices[2] = idx
-                                    idx_in_plane.append(idx)
-                                elif sorting_indices[3] == -1:
-                                    sorting_indices[3] = idx
-                                    idx_in_plane.append(idx)
-                        print(sorting_indices)
-
-                if len(idx_in_plane) == 2:
-                    print('len(idx_in_plane) == 2')
+                    # restart setting but start with invariant manifolds
 
                     sorting_indices = [-1, -1, -1, -1, -1, -1]
-                    sorting_indices[2] = idx_in_plane[0]
-                    sorting_indices[3] = idx_in_plane[1]
-                    # Assume two times real one and two conjugate pairs
+                    idx_in_plane = []
+                    idx_manifolds = []
+                    idx_out_plane = []
+
+                    if counter_temp == 1096:
+                        print('resetted the sorting, start with manifolds')
+                        print('sorting_indices: ' + str(sorting_indices))
+                        print('idx_in_plane: ' + str(idx_in_plane))
+                        print('idx_manifolds: ' + str(idx_manifolds))
+                        print('idx_out_plane: ' + str(idx_out_plane))
+
+                    # Find indices of the pair of largest/smallest real eigenvalue (corresponding to the unstable/stable subspace)
                     for idx, l in enumerate(eigenvalue):
-                        # min(abs(np.angle(eigenvalue[list(set(range(6)) - set(idx_in_plane))], deg=True)))
-                        # if abs(np.angle(l, deg=True))%180 == min(abs(np.angle(eigenvalue[list(set(range(6)) - set(idx_in_plane))], deg=True)) %180):
-                        if l.real == eigenvalue[list(set(range(6)) - set(idx_in_plane))].real.max():
-                            if l.imag > 0:
+                        if abs(l.imag) < self.maxEigenvalueDeviation:
+                            if abs(l.real) == max(abs(eigenvalue.real)):
                                 sorting_indices[0] = idx
-                            elif l.imag < 0:
+                                idx_manifolds.append(idx)
+                            elif abs(abs(l.real) - 1.0 / max(abs(eigenvalue.real))) < self.maxEigenvalueDeviation:
                                 sorting_indices[5] = idx
-                        # if abs(np.angle(l, deg=True))%180 == max(abs(np.angle(eigenvalue[list(set(range(6)) - set(idx_in_plane))], deg=True)) %180):
-                        if l.real == eigenvalue[list(set(range(6)) - set(idx_in_plane))].real.min():
-                            if l.imag > 0:
-                                sorting_indices[1] = idx
-                            elif l.imag < 0:
-                                sorting_indices[4] = idx
-                        print(sorting_indices)
+                                idx_manifolds.append(idx)
 
-                if len(sorting_indices) > len(set(sorting_indices)):
-                    print('len(sorting_indices) > len(set(sorting_indices))')
+                    if counter_temp == 1096:
+                        print('manifolds selected')
+                        print('sorting_indices: ' + str(sorting_indices))
+                        print('idx_in_plane: ' + str(idx_in_plane))
+                        print('idx_manifolds: ' + str(idx_manifolds))
+                        print('idx_out_plane: ' + str(idx_out_plane))
 
-                    print('\nWARNING: SORTING INDEX IS STILL NOT UNIQUE')
-                    # Sorting eigenvalues from largest to smallest norm, excluding real one
+                    # Select the in-plane moduli with relaxed constraints
+                    for idx, l in enumerate(eigenvalue):
+                        if idx == (sorting_indices[0] or sorting_indices[5]):
+                            continue
+                        if abs(l.real - 1.0) < 3.0 * self.maxEigenvalueDeviation and abs(l.imag) < self.maxEigenvalueDeviation:
+                            if sorting_indices[2] == -1:
+                                sorting_indices[2] = idx
+                                idx_in_plane.append(idx)
+                            elif sorting_indices[3] == -1:
+                                sorting_indices[3] = idx
+                                idx_in_plane.append(idx)
 
-                    # Sorting based on previous phase
-                    if len(idx_in_plane) == 2:
-                        sorting_indices = [-1, -1, -1, -1, -1, -1]
-                        sorting_indices[2] = idx_in_plane[0]
-                        sorting_indices[3] = idx_in_plane[1]
+                    # Select the in-plane moduli with relaxed constraints
+                    missing_indices = sorted(list(set(list(range(-1, 6))) - set(sorting_indices)))
 
-                        # Assume two times real one and two conjugate pairs
-                        for idx, l in enumerate(eigenvalue[list(set(range(6)) - set(idx_in_plane))]):
-                            print(idx)
-                            if abs(l.real - self.lambda1[-1].real) == min(
-                                    abs(eigenvalue.real - self.lambda1[-1].real)) and abs(
-                                    l.imag - self.lambda1[-1].imag) == min(
-                                    abs(eigenvalue.imag - self.lambda1[-1].imag)):
-                                sorting_indices[0] = idx
-                            if abs(l.real - self.lambda2[-1].real) == min(
-                                    abs(eigenvalue.real - self.lambda2[-1].real)) and abs(
-                                    l.imag - self.lambda2[-1].imag) == min(
-                                    abs(eigenvalue.imag - self.lambda2[-1].imag)):
-                                sorting_indices[1] = idx
-                            if abs(l.real - self.lambda5[-1].real) == min(
-                                    abs(eigenvalue.real - self.lambda5[-1].real)) and abs(
-                                    l.imag - self.lambda5[-1].imag) == min(
-                                    abs(eigenvalue.imag - self.lambda5[-1].imag)):
-                                sorting_indices[4] = idx
-                            if abs(l.real - self.lambda6[-1].real) == min(
-                                    abs(eigenvalue.real - self.lambda6[-1].real)) and abs(
-                                    l.imag - self.lambda6[-1].imag) == min(
-                                    abs(eigenvalue.imag - self.lambda6[-1].imag)):
-                                sorting_indices[5] = idx
-                            print(sorting_indices)
+                    if counter_temp == 1096:
+                        print('sorting_indices: ' + str(sorting_indices))
+                        print('missing_indices: ' + str(missing_indices))
 
-                    pass
-                if (sorting_indices[1] and sorting_indices[4]) == -1:
-                    # Fill two missing values
-                    two_missing_indices = list(set(list(range(-1, 6))) - set(sorting_indices))
-                    if abs(eigenvalue[two_missing_indices[0]].real) > abs(eigenvalue[two_missing_indices[1]].real):
-                        sorting_indices[1] = two_missing_indices[0]
-                        sorting_indices[4] = two_missing_indices[1]
+                    if eigenvalue.real[missing_indices[0]] > eigenvalue.real[missing_indices[1]]:
+                        sorting_indices[1] = missing_indices[0]
+                        sorting_indices[4] = missing_indices[1]
+                        idx_out_plane.append(missing_indices[0])
+                        idx_out_plane.append(missing_indices[1])
+
                     else:
-                        sorting_indices[1] = two_missing_indices[1]
-                        sorting_indices[4] = two_missing_indices[0]
-                    print(sorting_indices)
-                if (sorting_indices[0] and sorting_indices[5]) == -1:
-                    # Fill two missing values
-                    two_missing_indices = list(set(list(range(-1, 6))) - set(sorting_indices))
-                    print(eigenvalue)
-                    print(sorting_indices)
-                    print(two_missing_indices)
-                    # TODO quick fix for extended v-l
-                    # if len(two_missing_indices)==1:
-                    #     print('odd that only one index remains')
-                    #     if sorting_indices[0] == -1:
-                    #         sorting_indices[0] = two_missing_indices[0]
-                    #     else:
-                    #         sorting_indices[5] = two_missing_indices[0]
-                    # sorting_indices = abs(eigenvalue).argsort()[::-1]
-                    if abs(eigenvalue[two_missing_indices[0]].real) > abs(eigenvalue[two_missing_indices[1]].real):
-                        sorting_indices[0] = two_missing_indices[0]
-                        sorting_indices[5] = two_missing_indices[1]
-                    else:
-                        sorting_indices[0] = two_missing_indices[1]
-                        sorting_indices[5] = two_missing_indices[0]
-                    print(sorting_indices)
+                        sorting_indices[1] = missing_indices[1]
+                        sorting_indices[4] = missing_indices[0]
+                        idx_out_plane.append(missing_indices[1])
+                        idx_out_plane.append(missing_indices[0])
+
+
+
+                # if len(idx_in_plane) != 2:
+                #     print('len(idx_in_plane) != 2')
+                #     idx_in_plane = []
+                #     # Find indices of the first pair of real eigenvalue equal to one
+                #     for idx, l in enumerate(eigenvalue):
+                #         if abs(l.imag) < 2 * self.maxEigenvalueDeviation:
+                #             if abs(l.real - 1.0) < 2 * self.maxEigenvalueDeviation:
+                #                 if sorting_indices[2] == -1:
+                #                     sorting_indices[2] = idx
+                #                     idx_in_plane.append(idx)
+                #                 elif sorting_indices[3] == -1:
+                #                     sorting_indices[3] = idx
+                #                     idx_in_plane.append(idx)
+                #         print(sorting_indices)
+                #
+                # if len(idx_in_plane) == 2:
+                #     print('len(idx_in_plane) == 2')
+                #
+                #     sorting_indices = [-1, -1, -1, -1, -1, -1]
+                #     sorting_indices[2] = idx_in_plane[0]
+                #     sorting_indices[3] = idx_in_plane[1]
+                #     # Assume two times real one and two conjugate pairs
+                #     for idx, l in enumerate(eigenvalue):
+                #         # min(abs(np.angle(eigenvalue[list(set(range(6)) - set(idx_in_plane))], deg=True)))
+                #         # if abs(np.angle(l, deg=True))%180 == min(abs(np.angle(eigenvalue[list(set(range(6)) - set(idx_in_plane))], deg=True)) %180):
+                #         if l.real == eigenvalue[list(set(range(6)) - set(idx_in_plane))].real.max():
+                #             if l.imag > 0:
+                #                 sorting_indices[0] = idx
+                #             elif l.imag < 0:
+                #                 sorting_indices[5] = idx
+                #         # if abs(np.angle(l, deg=True))%180 == max(abs(np.angle(eigenvalue[list(set(range(6)) - set(idx_in_plane))], deg=True)) %180):
+                #         if l.real == eigenvalue[list(set(range(6)) - set(idx_in_plane))].real.min():
+                #             if l.imag > 0:
+                #                 sorting_indices[1] = idx
+                #             elif l.imag < 0:
+                #                 sorting_indices[4] = idx
+                #         print(sorting_indices)
+                #
+                # if len(sorting_indices) > len(set(sorting_indices)):
+                #     print('len(sorting_indices) > len(set(sorting_indices))')
+                #
+                #     print('\nWARNING: SORTING INDEX IS STILL NOT UNIQUE')
+                #     # Sorting eigenvalues from largest to smallest norm, excluding real one
+                #
+                #     # Sorting based on previous phase
+                #     if len(idx_in_plane) == 2:
+                #         sorting_indices = [-1, -1, -1, -1, -1, -1]
+                #         sorting_indices[2] = idx_in_plane[0]
+                #         sorting_indices[3] = idx_in_plane[1]
+                #
+                #         # Assume two times real one and two conjugate pairs
+                #         for idx, l in enumerate(eigenvalue[list(set(range(6)) - set(idx_in_plane))]):
+                #             print(idx)
+                #             if abs(l.real - self.lambda1[-1].real) == min(
+                #                     abs(eigenvalue.real - self.lambda1[-1].real)) and abs(
+                #                     l.imag - self.lambda1[-1].imag) == min(
+                #                     abs(eigenvalue.imag - self.lambda1[-1].imag)):
+                #                 sorting_indices[0] = idx
+                #             if abs(l.real - self.lambda2[-1].real) == min(
+                #                     abs(eigenvalue.real - self.lambda2[-1].real)) and abs(
+                #                     l.imag - self.lambda2[-1].imag) == min(
+                #                     abs(eigenvalue.imag - self.lambda2[-1].imag)):
+                #                 sorting_indices[1] = idx
+                #             if abs(l.real - self.lambda5[-1].real) == min(
+                #                     abs(eigenvalue.real - self.lambda5[-1].real)) and abs(
+                #                     l.imag - self.lambda5[-1].imag) == min(
+                #                     abs(eigenvalue.imag - self.lambda5[-1].imag)):
+                #                 sorting_indices[4] = idx
+                #             if abs(l.real - self.lambda6[-1].real) == min(
+                #                     abs(eigenvalue.real - self.lambda6[-1].real)) and abs(
+                #                     l.imag - self.lambda6[-1].imag) == min(
+                #                     abs(eigenvalue.imag - self.lambda6[-1].imag)):
+                #                 sorting_indices[5] = idx
+                #             print(sorting_indices)
+                #
+                #     pass
+                # if (sorting_indices[1] and sorting_indices[4]) == -1:
+                #     # Fill two missing values
+                #     two_missing_indices = list(set(list(range(-1, 6))) - set(sorting_indices))
+                #     if abs(eigenvalue[two_missing_indices[0]].real) > abs(eigenvalue[two_missing_indices[1]].real):
+                #         sorting_indices[1] = two_missing_indices[0]
+                #         sorting_indices[4] = two_missing_indices[1]
+                #     else:
+                #         sorting_indices[1] = two_missing_indices[1]
+                #         sorting_indices[4] = two_missing_indices[0]
+                #     print(sorting_indices)
+                # if (sorting_indices[0] and sorting_indices[5]) == -1:
+                #     # Fill two missing values
+                #     two_missing_indices = list(set(list(range(-1, 6))) - set(sorting_indices))
+                #     print(eigenvalue)
+                #     print(sorting_indices)
+                #     print(two_missing_indices)
+                #     # TODO quick fix for extended v-l
+                #     # if len(two_missing_indices)==1:
+                #     #     print('odd that only one index remains')
+                #     #     if sorting_indices[0] == -1:
+                #     #         sorting_indices[0] = two_missing_indices[0]
+                #     #     else:
+                #     #         sorting_indices[5] = two_missing_indices[0]
+                #     # sorting_indices = abs(eigenvalue).argsort()[::-1]
+                #     if abs(eigenvalue[two_missing_indices[0]].real) > abs(eigenvalue[two_missing_indices[1]].real):
+                #         sorting_indices[0] = two_missing_indices[0]
+                #         sorting_indices[5] = two_missing_indices[1]
+                #     else:
+                #         sorting_indices[0] = two_missing_indices[1]
+                #         sorting_indices[5] = two_missing_indices[0]
+                #     print(sorting_indices)
 
                 if len(sorting_indices) > len(set(sorting_indices)):
                     print('\nWARNING: SORTING INDEX IS STILL STILL NOT UNIQUE')
