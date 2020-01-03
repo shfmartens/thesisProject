@@ -613,8 +613,8 @@ class DisplayPeriodicSolutions:
             counter_temp = counter_temp + 1
 
         if self.alpha == 300:
-            print(self.lambda2[1000:1012])
-            print(self.lambda5[1000:1012])
+            print('lambda2: final ' + str(self.lambda2[1012]))
+            print('lambda5: final ' + str(self.lambda2[1015]))
 
 
 
