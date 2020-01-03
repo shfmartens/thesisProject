@@ -206,8 +206,8 @@ class PeriodicSolutionsCharacterization:
 
         #print(continuation_normalized_orbit1)
 
-        colors_orbit1 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",3))(continuation_normalized_orbit1)
-        colors_orbit2 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",5))(continuation_normalized_orbit2)
+        colors_orbit1 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",1))(continuation_normalized_orbit1)
+        colors_orbit2 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",1))(continuation_normalized_orbit2)
 
         numberOfPlotColorIndices_Orbit1 = len(Orbit1.continuationParameter)
         numberOfPlotColorIndices_Orbit2 = len(Orbit2.continuationParameter)
