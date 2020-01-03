@@ -777,6 +777,7 @@ class PeriodicSolutionsCharacterization:
 
                 for k in self.orbitObjects[objectCounter].orbitIdBifurcations:
                     plot_color = colors_orbit[k]
+                    print('ObjectCounter: ' +str(objectCounter) + ' index bifurcation : ' + str(k))
 
                     if self.varyingQuantity == 'Hamiltonian':
                         df1String = '../../data/raw/orbits/augmented/L' + str(
