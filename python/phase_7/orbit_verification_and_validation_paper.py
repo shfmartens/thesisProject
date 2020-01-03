@@ -775,6 +775,38 @@ class PeriodicSolutionsCharacterization:
                         # print('alpha continuation xminimum at angle: ' + str(self.orbitObjects[objectCounter].alphaContinuation[k]))
                         # print('minimum x2 value: ' + str(minimum_x2))
 
+                for k in self.orbitObjects[objectCounter].orbitIdBifurcations:
+                    plot_color = colors_orbit[k]
+
+                    if self.varyingQuantity == 'Hamiltonian':
+                        df1String = '../../data/raw/orbits/augmented/L' + str(
+                            self.orbitObjects[objectCounter].lagrangePointNr) + '_horizontal_' \
+                                    + str(
+                            "{:12.11f}".format(self.orbitObjects[objectCounter].accelerationMagnitude)) + '_' \
+                                    + str("{:12.11f}".format(self.orbitObjects[objectCounter].alpha)) + '_' \
+                                    + str("{:12.11f}".format(self.orbitObjects[objectCounter].beta)) + '_' \
+                                    + str("{:12.11f}".format(self.orbitObjects[objectCounter].Hlt[k])) + '_.txt'
+                    if self.varyingQuantity == 'Acceleration':
+                        df1String = '../../data/raw/orbits/augmented/L' + str(
+                            self.orbitObjects[objectCounter].lagrangePointNr) + '_horizontal_' \
+                                    + str(
+                            "{:12.11f}".format(self.orbitObjects[objectCounter].accelerationContinuation[k])) + '_' \
+                                    + str("{:12.11f}".format(self.orbitObjects[objectCounter].alpha)) + '_' \
+                                    + str("{:12.11f}".format(self.orbitObjects[objectCounter].beta)) + '_' \
+                                    + str("{:12.11f}".format(self.orbitObjects[objectCounter].Hlt[k])) + '_.txt'
+                    if self.varyingQuantity == 'Alpha':
+                        df1String = '../../data/raw/orbits/augmented/L' + str(
+                            self.orbitObjects[objectCounter].lagrangePointNr) + '_horizontal_' \
+                                    + str(
+                            "{:12.11f}".format(self.orbitObjects[objectCounter].accelerationMagnitude)) + '_' \
+                                    + str(
+                            "{:12.11f}".format(self.orbitObjects[objectCounter].alphaContinuation[k])) + '_' \
+                                    + str("{:12.11f}".format(self.orbitObjects[objectCounter].beta)) + '_' \
+                                    + str("{:12.11f}".format(self.orbitObjects[objectCounter].Hlt[k])) + '_.txt'
+                    df1 = load_orbit(df1String)
+                    arr[i, j].plot(df1['x'], df1['y'], color=plot_color,
+                                   alpha=self.orbitObjects[objectCounter].plotAlpha,
+                                   linewidth=2)
 
                 objectCounter = objectCounter + 1
 
