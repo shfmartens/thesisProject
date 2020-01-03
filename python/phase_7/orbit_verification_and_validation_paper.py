@@ -204,6 +204,8 @@ class PeriodicSolutionsCharacterization:
         continuation_normalized_orbit1 = [(value - Hlt_min) / (Hlt_max - Hlt_min) for value in Orbit1.continuationParameter]
         continuation_normalized_orbit2 = [(value - Hlt_min) / (Hlt_max - Hlt_min) for value in Orbit2.continuationParameter]
 
+        print(continuation_normalized_orbit1)
+
         colors_orbit1 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",3000))(continuation_normalized_orbit1)
         colors_orbit2 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",3000))(continuation_normalized_orbit2)
 
