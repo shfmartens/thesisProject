@@ -1454,10 +1454,6 @@ if __name__ == '__main__':
         characterize_periodic_solutions.graphical_projection()
         characterize_periodic_solutions.bifurcation_analysis()
         characterize_periodic_solutions.stability_analysis()
-        #characterize_periodic_solutions.hamiltonian_domain_analysis()
-
-
-
 
         del characterize_periodic_solutions
 
