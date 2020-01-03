@@ -230,7 +230,7 @@ class PeriodicSolutionsCharacterization:
 
         print(plotColorIndexBasedOnHlt_Orbit1)
         sm = plt.cm.ScalarMappable(cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",
-             (len(Orbit1.continuationParameter) +len(Orbit2.continuationParameter) ))),norm=plt.Normalize(vmin=Hlt_min, vmax=Hlt_max))
+             (number_of_colors ))),norm=plt.Normalize(vmin=Hlt_min, vmax=Hlt_max))
 
 
         orbitIdsPlot_orbit1 = list(range(0, len(Orbit1.continuationParameter), Orbit1.orbitSpacingFactor))
