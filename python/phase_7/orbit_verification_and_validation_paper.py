@@ -261,19 +261,19 @@ class PeriodicSolutionsCharacterization:
             ax1.plot(df1['x'], df1['y'], color=plot_color1, alpha=Orbit1.plotAlpha, linewidth=Orbit1.lineWidth)
 
         # # Plot the bifurcations
-        for i in Orbit1.orbitIdBifurcations:
-            plot_color1 = colors_orbit1[i]
-
-            linewidthBifurcation = 3
-
-            df1 = load_orbit(
-                '../../data/raw/orbits/augmented/L' + str(Orbit1.lagrangePointNr) + '_' + Orbit1.orbitType + '_' \
-                + str("{:12.11f}".format(Orbit1.accelerationMagnitude)) + '_' \
-                + str("{:12.11f}".format(Orbit1.alpha)) + '_' \
-                + str("{:12.11f}".format(Orbit1.beta)) + '_' \
-                + str("{:12.11f}".format(Orbit1.Hlt[i])) + '_.txt')
-
-            ax1.plot(df1['x'], df1['y'], color=plot_color1, alpha=Orbit1.plotAlpha, linewidth=linewidthBifurcation)
+        # for i in Orbit1.orbitIdBifurcations:
+        #     plot_color1 = colors_orbit1[i]
+        #
+        #     linewidthBifurcation = 3
+        #
+        #     df1 = load_orbit(
+        #         '../../data/raw/orbits/augmented/L' + str(Orbit1.lagrangePointNr) + '_' + Orbit1.orbitType + '_' \
+        #         + str("{:12.11f}".format(Orbit1.accelerationMagnitude)) + '_' \
+        #         + str("{:12.11f}".format(Orbit1.alpha)) + '_' \
+        #         + str("{:12.11f}".format(Orbit1.beta)) + '_' \
+        #         + str("{:12.11f}".format(Orbit1.Hlt[i])) + '_.txt')
+        #
+        #     ax1.plot(df1['x'], df1['y'], color=plot_color1, alpha=Orbit1.plotAlpha, linewidth=linewidthBifurcation)
 
 
         for i in orbitIdsPlot_orbit2:
