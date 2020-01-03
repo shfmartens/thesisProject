@@ -206,10 +206,12 @@ class PeriodicSolutionsCharacterization:
 
         #print(continuation_normalized_orbit1)
 
-        number_of_colors = 3
+        number_of_colors_orbit1 = len(Orbit1.continuationParameter)
+        number_of_colors_orbit2 = len(Orbit2.continuationParameter)
 
-        colors_orbit1 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",number_of_colors))(continuation_normalized_orbit1)
-        colors_orbit2 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",number_of_colors))(continuation_normalized_orbit2)
+
+        colors_orbit1 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",number_of_colors_orbit1))(continuation_normalized_orbit1)
+        colors_orbit2 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",number_of_colors_orbit2))(continuation_normalized_orbit2)
         print('length of colors_orbit_1:' +str(len(colors_orbit1)))
         print(colors_orbit1.tolist())
 
@@ -224,15 +226,15 @@ class PeriodicSolutionsCharacterization:
         #numberOfPlotColorIndices_Orbit1
         for hamiltonian in Orbit1.continuationParameter:
             plotColorIndexBasedOnHlt_Orbit1.append(  \
-                int( np.round ( ( (hamiltonian - Hlt_min) / (Hlt_max - Hlt_min) ) * (number_of_colors - 1) ) )     )
+                int( np.round ( ( (hamiltonian - Hlt_min) / (Hlt_max - Hlt_min) ) * (number_of_colors_orbit1 - 1) ) )     )
 
         for hamiltonian in Orbit2.continuationParameter:
             plotColorIndexBasedOnHlt_Orbit2.append( \
-                int(np.round(((hamiltonian - Hlt_min) / (Hlt_max - Hlt_min)) * (number_of_colors - 1))))
+                int(np.round(((hamiltonian - Hlt_min) / (Hlt_max - Hlt_min)) * (number_of_colors_orbit2 - 1))))
 
         print(plotColorIndexBasedOnHlt_Orbit1)
         sm = plt.cm.ScalarMappable(cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",
-             (number_of_colors ))),norm=plt.Normalize(vmin=Hlt_min, vmax=Hlt_max))
+             (number_of_colors_orbit1 ))),norm=plt.Normalize(vmin=Hlt_min, vmax=Hlt_max))
 
 
         orbitIdsPlot_orbit1 = list(range(0, len(Orbit1.continuationParameter), Orbit1.orbitSpacingFactor))
