@@ -368,9 +368,16 @@ class DisplayPeriodicSolutions:
                 print('idx_manifolds: ' + str(idx_manifolds))
                 print('idx_out_plane: ' + str(idx_out_plane))
 
+                print('len(sorting_indices): ' + str(len(sorting_indices)))
+                print('len(set(sorting_indices)): ' + str(len(set(sorting_indices))))
+
             if len(sorting_indices) > len(set(sorting_indices)):
                 print('\nWARNING: SORTING INDEX IS NOT UNIQUE FOR ' + self.orbitType + ' AT L' + str(
                      self.lagrangePointNr) + 'counter_temp is: ' + str(counter_temp) )
+
+
+
+
                 if len(idx_in_plane) != 2:
                     print('len(idx_in_plane) != 2')
                     idx_in_plane = []
