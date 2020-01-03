@@ -428,6 +428,13 @@ class DisplayPeriodicSolutions:
                                 sorting_indices[3] = idx
                                 idx_in_plane.append(idx)
 
+                    if counter_temp == 1096:
+                        print('in-plane moduli')
+                        print('sorting_indices: ' + str(sorting_indices))
+                        print('idx_in_plane: ' + str(idx_in_plane))
+                        print('idx_manifolds: ' + str(idx_manifolds))
+                        print('idx_out_plane: ' + str(idx_out_plane))
+
                     # Select the in-plane moduli with relaxed constraints
                     missing_indices = sorted(list(set(list(range(-1, 6))) - set(sorting_indices)))
 
@@ -448,6 +455,12 @@ class DisplayPeriodicSolutions:
                         idx_out_plane.append(missing_indices[0])
 
 
+                    if counter_temp == 1096:
+                        print('out-plane moduli')
+                        print('sorting_indices: ' + str(sorting_indices))
+                        print('idx_in_plane: ' + str(idx_in_plane))
+                        print('idx_manifolds: ' + str(idx_manifolds))
+                        print('idx_out_plane: ' + str(idx_out_plane))
 
                 # if len(idx_in_plane) != 2:
                 #     print('len(idx_in_plane) != 2')
