@@ -590,9 +590,7 @@ class DisplayPeriodicSolutions:
             self.lambda5.append(eigenvalue[sorting_indices[4]])
             self.lambda6.append(eigenvalue[sorting_indices[5]])
 
-            # if self.alpha == 300:
-            #     print(self.lambda2[-1])
-            #     print(self.lambda5[-1])
+
 
 
             # Determine order of linear instability
@@ -613,6 +611,11 @@ class DisplayPeriodicSolutions:
             self.D.append(np.linalg.det(M))
 
             counter_temp = counter_temp + 1
+
+        if self.alpha == 300:
+            print(self.lambda2[1008])
+            print(self.lambda2[1009])
+            print(self.lambda2[1010])
 
         print('Index for bifurcations: ')
         print(self.orbitIdBifurcations)
