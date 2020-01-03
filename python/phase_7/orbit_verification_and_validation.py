@@ -353,6 +353,7 @@ class DisplayPeriodicSolutions:
                 print('\nWARNING: SORTING INDEX IS NOT UNIQUE FOR ' + self.orbitType + ' AT L' + str(
                      self.lagrangePointNr) + 'counter_temp is: ' + str(counter_temp) )
                 if len(idx_real_one) != 2:
+                    print('len(idx_real_one) != 2')
                     idx_real_one = []
                     # Find indices of the first pair of real eigenvalue equal to one
                     for idx, l in enumerate(eigenvalue):
@@ -364,8 +365,11 @@ class DisplayPeriodicSolutions:
                                 elif sorting_indices[3] == -1:
                                     sorting_indices[3] = idx
                                     idx_real_one.append(idx)
+                        print(sorting_indices)
 
                 if len(idx_real_one) == 2:
+                    print('len(idx_real_one) == 2')
+
                     sorting_indices = [-1, -1, -1, -1, -1, -1]
                     sorting_indices[2] = idx_real_one[0]
                     sorting_indices[3] = idx_real_one[1]
@@ -387,6 +391,8 @@ class DisplayPeriodicSolutions:
                         print(sorting_indices)
 
                 if len(sorting_indices) > len(set(sorting_indices)):
+                    print('len(sorting_indices) > len(set(sorting_indices))')
+
                     print('\nWARNING: SORTING INDEX IS STILL NOT UNIQUE')
                     # Sorting eigenvalues from largest to smallest norm, excluding real one
 
