@@ -613,9 +613,10 @@ class DisplayPeriodicSolutions:
             counter_temp = counter_temp + 1
 
         if self.alpha == 300:
-            print(self.lambda2[1008])
-            print(self.lambda2[1009])
-            print(self.lambda2[1010])
+            print(self.lambda2[1000:1012])
+            print(self.lambda5[1000:1012])
+
+
 
         print('Index for bifurcations: ')
         print(self.orbitIdBifurcations)
