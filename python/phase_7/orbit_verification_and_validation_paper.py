@@ -206,7 +206,7 @@ class PeriodicSolutionsCharacterization:
 
         #print(continuation_normalized_orbit1)
 
-        number_of_colors = 1000
+        number_of_colors = 3
 
         colors_orbit1 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",number_of_colors))(continuation_normalized_orbit1)
         colors_orbit2 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",number_of_colors))(continuation_normalized_orbit2)
