@@ -284,6 +284,7 @@ class DisplayPeriodicSolutions:
         self.v3 = []
 
         self.maxEigenvalueDeviation = 1.0e-3  # Changed from 1e-3
+        counter_temp = 0
         for row in initial_conditions_incl_m_df.iterrows():
             M = np.matrix(
                 [list(row[1][12:18]), list(row[1][22:28]), list(row[1][32:38]), list(row[1][42:48]), list(row[1][52:58]),
@@ -293,6 +294,13 @@ class DisplayPeriodicSolutions:
 
             sorting_indices = [-1, -1, -1, -1, -1, -1]
             idx_real_one = []
+
+            if counter_temp == 123:
+                print ('family member: ' + str(counter_temp))
+                print ('M: ' + str(M))
+                print('eigenvalues: ' + str(eigenvalue))
+                print('sorting_indices: ' + str(sorting_indices))
+
 
 
             # Find indices of the first pair of real eigenvalue equal to one
@@ -461,6 +469,8 @@ class DisplayPeriodicSolutions:
             self.v2.append(abs(eigenvalue[sorting_indices[1]] + eigenvalue[sorting_indices[4]]) / 2)
             self.v3.append(abs(eigenvalue[sorting_indices[2]] + eigenvalue[sorting_indices[3]]) / 2)
             self.D.append(np.linalg.det(M))
+
+            counter_temp = counter_temp + 1
 
         print('Index for bifurcations: ')
         print(self.orbitIdBifurcations)
@@ -1692,11 +1702,11 @@ class DisplayPeriodicSolutions:
 if __name__ == '__main__':
     orbit_types = ['horizontal']
     lagrange_points = [1]
-    acceleration_magnitudes = [0.1]
-    alphas = [60.0]
-    Hamiltonians = [-1.55,-1.525,-1.50]
+    acceleration_magnitudes = [0.0]
+    alphas = [0.0]
+    Hamiltonians = [-1.55]
     low_dpi = False
-    varying_quantities = ['Alpha']
+    varying_quantities = ['Hamiltonian']
     plot_as_x_coordinate  = False
     plot_as_family_number = False
 
@@ -1714,11 +1724,11 @@ if __name__ == '__main__':
                                          alpha, Hamiltonian, varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
 
                             #display_periodic_solutions.plot_families()
-                            display_periodic_solutions.plot_periodicity_validation()
-                            display_periodic_solutions.plot_monodromy_analysis()
+                            #display_periodic_solutions.plot_periodicity_validation()
+                            #display_periodic_solutions.plot_monodromy_analysis()
                             #display_periodic_solutions.plot_monodromy_analysis_old()
                             #display_periodic_solutions.plot_stability()
-                            display_periodic_solutions.plot_continuation_procedure()
+                            #display_periodic_solutions.plot_continuation_procedure()
                             #display_periodic_solutions.plot_increment_of_orbits()
 
 
