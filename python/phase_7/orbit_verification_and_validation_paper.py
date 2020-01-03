@@ -206,7 +206,7 @@ class PeriodicSolutionsCharacterization:
 
         #print(continuation_normalized_orbit1)
 
-        number_of_colors = 2
+        number_of_colors = 512
 
         colors_orbit1 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",number_of_colors))(continuation_normalized_orbit1)
         colors_orbit2 = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",number_of_colors))(continuation_normalized_orbit2)
@@ -246,6 +246,9 @@ class PeriodicSolutionsCharacterization:
 
         for i in orbitIdsPlot_orbit1:
             plot_color1 = colors_orbit1[plotColorIndexBasedOnHlt_Orbit1[i]]
+            print(i)
+            print(plotColorIndexBasedOnHlt_Orbit1[i])
+            print(plot_color1)
 
             df1 = load_orbit('../../data/raw/orbits/augmented/L' + str(Orbit1.lagrangePointNr) + '_' + Orbit1.orbitType + '_' \
                             + str("{:12.11f}".format(Orbit1.accelerationMagnitude)) + '_' \
