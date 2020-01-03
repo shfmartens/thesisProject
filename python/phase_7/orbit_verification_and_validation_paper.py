@@ -221,7 +221,7 @@ class PeriodicSolutionsCharacterization:
             plotColorIndexBasedOnHlt_Orbit1.append(  \
                 int( np.round ( ( (hamiltonian - Hlt_min) / (Hlt_max - Hlt_min) ) * (numberOfPlotColorIndices_Orbit1 - 1) ) )     )
 
-
+        print(plotColorIndexBasedOnHlt_Orbit1)
         for hamiltonian in Orbit2.continuationParameter:
             plotColorIndexBasedOnHlt_Orbit2.append( \
                 int(np.round(((hamiltonian - Hlt_min) / (Hlt_max - Hlt_min)) * (numberOfPlotColorIndices_Orbit2 - 1))))
