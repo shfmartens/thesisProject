@@ -351,7 +351,7 @@ class DisplayPeriodicSolutions:
 
             if len(sorting_indices) > len(set(sorting_indices)):
                 print('\nWARNING: SORTING INDEX IS NOT UNIQUE FOR ' + self.orbitType + ' AT L' + str(
-                     self.lagrangePointNr))
+                     self.lagrangePointNr) + 'counter_temp is: ' + str(counter_temp) )
                 if len(idx_real_one) != 2:
                     idx_real_one = []
                     # Find indices of the first pair of real eigenvalue equal to one
@@ -1717,8 +1717,8 @@ class DisplayPeriodicSolutions:
 if __name__ == '__main__':
     orbit_types = ['horizontal']
     lagrange_points = [1]
-    acceleration_magnitudes = [0.0]
-    alphas = [0.0]
+    acceleration_magnitudes = [0.05]
+    alphas = [120.0]
     Hamiltonians = [-1.55]
     low_dpi = False
     varying_quantities = ['Hamiltonian']
