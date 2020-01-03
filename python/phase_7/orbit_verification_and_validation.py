@@ -314,6 +314,11 @@ class DisplayPeriodicSolutions:
                             sorting_indices[3] = idx
                             idx_real_one.append(idx)
 
+            if counter_temp == 123:
+                print('sorting_indices: ' + str(sorting_indices))
+                print('idx_real_one: ' + str(idx_real_one))
+
+
             # Find indices of the pair of largest/smallest real eigenvalue (corresponding to the unstable/stable subspace)
             for idx, l in enumerate(eigenvalue):
                 if idx == (sorting_indices[2] or sorting_indices[3]):
@@ -324,8 +329,15 @@ class DisplayPeriodicSolutions:
                     elif abs(abs(l.real) - 1.0 / max(abs(eigenvalue.real))) < self.maxEigenvalueDeviation:
                             sorting_indices[5] = idx
 
+            if counter_temp == 123:
+                print('sorting_indices: ' + str(sorting_indices))
+                print('idx_real_one: ' + str(idx_real_one))
 
             missing_indices = sorted(list(set(list(range(-1, 6))) - set(sorting_indices)))
+
+            if counter_temp == 123:
+                print('sorting_indices: ' + str(sorting_indices))
+                print('missing_indices: ' + str(missing_indices))
 
             if eigenvalue.real[missing_indices[0]] > eigenvalue.real[missing_indices[1]]:
                 sorting_indices[1] = missing_indices[0]
@@ -333,6 +345,9 @@ class DisplayPeriodicSolutions:
             else:
                 sorting_indices[1] = missing_indices[1]
                 sorting_indices[4] = missing_indices[0]
+
+            if counter_temp == 123:
+                print('sorting_indices: ' + str(sorting_indices))
 
             if len(sorting_indices) > len(set(sorting_indices)):
                 print('\nWARNING: SORTING INDEX IS NOT UNIQUE FOR ' + self.orbitType + ' AT L' + str(
