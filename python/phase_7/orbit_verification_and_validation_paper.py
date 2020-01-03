@@ -952,7 +952,7 @@ class PeriodicSolutionsCharacterization:
                 if j == 0 and (k == 0 or k == 2 or (k == 4 and numberOfPlots == 9) ):
                     arr[k, j].set_ylabel('Eigenvalues Module [-]')
                 if j == 0 and (k == 1 or k == 3 or (k == 5 and numberOfPlots == 9)):
-                    arr[k, j].set_ylabel('Phase [$rad$]')
+                    arr[k, j].set_ylabel('Phase [rad]')
 
                 arr[k, j].grid(True, which='both', ls=':')
                 if k == 0 or k == 2 or (k == 4 and numberOfPlots == 9) :
