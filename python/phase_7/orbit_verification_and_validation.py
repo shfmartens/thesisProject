@@ -1205,16 +1205,16 @@ class DisplayPeriodicSolutions:
         l5 = [abs(entry) for entry in self.lambda5]
         l6 = [abs(entry) for entry in self.lambda6]
 
-        # print('Hlt max: ' + str(max(self.Hlt)))
+        #print('Hlt max: ' + str(max(self.Hlt)))
         # print('index Hlt max: ' + str(self.Hlt.index(max(self.Hlt))))
         #
         # print('Hlt 1265: ' + str(self.Hlt[1265]))
-        # print('lambda1 1265: ' + str(self.lambda1[1265]))
-        # print('lambda2 1265: ' + str(self.lambda2[1265]))
-        # print('lambda3 1265: ' + str(self.lambda3[1265]))
-        # print('lambda4 1265: ' + str(self.lambda4[1265]))
-        # print('lambda5 1265: ' + str(self.lambda5[1265]))
-        # print('lambda6 1265: ' + str(self.lambda6[1265]))
+        print('lambda1 1210: ' + str(self.lambda1[1205]))
+        print('lambda2 1210: ' + str(self.lambda2[1206]))
+        print('lambda3 1210: ' + str(self.lambda3[1207]))
+        print('lambda4 1210: ' + str(self.lambda4[1265]))
+        print('lambda5 1210: ' + str(self.lambda5[1208]))
+        print('lambda6 1210: ' + str(self.lambda6[1209]))
         #
         # print('Hlt max: ' + str(self.Hlt[1263:1278]))
 
