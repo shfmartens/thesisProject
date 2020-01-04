@@ -479,11 +479,12 @@ class DisplayPeriodicSolutions:
                     idx_out_plane = []
 
                     if counter_temp == 1266:
-                        print('out-plane moduli')
+                        print('START ALTERNATIVE SELECTION!')
                         print('sorting_indices: ' + str(sorting_indices))
                         print('idx_in_plane: ' + str(idx_in_plane))
                         print('idx_manifolds: ' + str(idx_manifolds))
                         print('idx_out_plane: ' + str(idx_out_plane))
+                        print('eigenvalues: ' + str(eigenvalue))
 
                     # Find indices of the in-plane component (with real value close to +1)
                     for idx, l in enumerate(eigenvalue):
