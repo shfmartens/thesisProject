@@ -1416,8 +1416,8 @@ if __name__ == '__main__':
         del characterize_periodic_solutions
 
     if  graphical_projection == True:
-        lagrange_point_nr = 1
-        acceleration_magnitude = 0.1
+        lagrange_point_nr = 2
+        acceleration_magnitude = 0.05
         alpha = 0.0
         beta = 0.0
         hamiltonian = -1.50
