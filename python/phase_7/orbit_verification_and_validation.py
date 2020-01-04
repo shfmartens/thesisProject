@@ -515,7 +515,7 @@ class DisplayPeriodicSolutions:
                             idx_minimal_2 = idx
 
                     sorting_indices[1] = idx_minimal_2
-                    idx_in_plane.append(idx_minimal_2)
+                    idx_out_plane.append(idx_minimal_2)
 
                     PhaseDiscrepancy = 4.0 * np.pi
                     idx_minimal_5 = 0
@@ -527,7 +527,7 @@ class DisplayPeriodicSolutions:
                             idx_minimal_5 = idx
 
                     sorting_indices[4] = idx_minimal_5
-                    idx_in_plane.append(idx_minimal_5)
+                    idx_out_plane.append(idx_minimal_5)
 
                     if counter_temp == 1266:
                         print('out-plane moduli')
