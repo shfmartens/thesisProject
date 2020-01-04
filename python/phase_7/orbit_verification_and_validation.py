@@ -324,6 +324,7 @@ class DisplayPeriodicSolutions:
                 print('idx_out_plane: ' + str(idx_out_plane))
 
             no_manifolds_on_positive_axes = False
+            unstable_manifold_on_negative_axes = False
 
             for idx, l in enumerate(eigenvalue):
                 #Check if it is a real eigenvector with magnitude larger than 1.0
@@ -333,6 +334,8 @@ class DisplayPeriodicSolutions:
 
             if no_manifolds_on_positive_axes == False:
                 print('counter_temp: ' + str(counter_temp) + ' no_manifolds_on_positive_axes')
+
+
 
             # Find indices of the pair of largest/smallest real eigenvalue (corresponding to the unstable/stable subspace)
             for idx, l in enumerate(eigenvalue):
@@ -344,6 +347,7 @@ class DisplayPeriodicSolutions:
                             idx_manifolds.append(idx)
                             if l.real < 0.0:
                                 print('counter_temp:' + str(counter_temp) + 'UNSTABLE MANIFOLD ON NEGATIVE AXES')
+                                unstable_manifold_on_negative_axes = True
                     elif abs(abs(l.real) - 1.0 / max(abs(eigenvalue.real))) < self.maxEigenvalueDeviation:
                             sorting_indices[5] = idx
                             idx_manifolds.append(idx)
@@ -573,9 +577,91 @@ class DisplayPeriodicSolutions:
                         print('idx_manifolds: ' + str(idx_manifolds))
                         print('idx_out_plane: ' + str(idx_out_plane))
 
+                # In case there are positive real eigenvalues not on unit axes but negative out-of-plane real lamda's are selected
+                if unstable_manifold_on_negative_axes == True and no_manifolds_on_positive_axes == False:
+                    sorting_indices = [-1, -1, -1, -1, -1, -1]
+                    idx_in_plane = []
+                    idx_manifolds = []
+                    idx_out_plane = []
 
-                    # Find indices of the out-plane component (with real value close to +1)
+                    print('SORT AGAIN WITH DIFFERENT RULE FOR MANIFOLDS!')
+                    print('family member: ' + str(counter_temp))
+                    print('M: ' + str(M))
+                    print('eigenvalues: ' + str(eigenvalue))
+                    print('sorting_indices: ' + str(sorting_indices))
 
+                    # Find indices of the first pair of real eigenvalue equal to one
+                    for idx, l in enumerate(eigenvalue):
+                        if abs(l.imag) < self.maxEigenvalueDeviation:
+                            if abs(l.real - 1.0) < self.maxEigenvalueDeviation:
+                                if sorting_indices[2] == -1:
+                                    sorting_indices[2] = idx
+                                    idx_in_plane.append(idx)
+                                elif sorting_indices[3] == -1:
+                                    sorting_indices[3] = idx
+                                    idx_in_plane.append(idx)
+
+                        print('IN PLANE SELECTED!')
+                        print('sorting_indices: ' + str(sorting_indices))
+                        print('idx_in_plane: ' + str(idx_in_plane))
+                        print('idx_manifolds: ' + str(idx_manifolds))
+                        print('idx_out_plane: ' + str(idx_out_plane))
+
+                    minimum_lambda = 1.0e-6
+                    minimum_idx = 0
+                    maximum_lambda = -10
+                    maximum_idx = 0
+
+                    # Find indices of the pair of largest/smallest real eigenvalue (corresponding to the unstable/stable subspace)
+                    for idx, l in enumerate(eigenvalue):
+                        if idx == (sorting_indices[2] or sorting_indices[3]):
+                            continue
+                        if abs(l.imag) < self.maxEigenvalueDeviationand and l.real > 0.0:
+                            if l.real < minimum_lambda:
+                                minimum_idx = idx
+                            if l.real > maximum_lambda:
+                                maximum_idx = idx
+
+                    sorting_indices[0] = maximum_idx
+                    idx_manifolds.append(maximum_idx)
+                    sorting_indices[5] = minimum_idx
+                    idx_manifolds.append(minimum_idx)
+
+                    print('MANIFOLDS SELECTED')
+                    print('sorting_indices: ' + str(sorting_indices))
+                    print('idx_in_plane: ' + str(idx_in_plane))
+                    print('idx_manifolds: ' + str(idx_manifolds))
+                    print('idx_out_plane: ' + str(idx_out_plane))
+
+                    missing_indices = sorted(list(set(list(range(-1, 6))) - set(sorting_indices)))
+
+
+                    print('sorting_indices: ' + str(sorting_indices))
+                    print('missing_indices: ' + str(missing_indices))
+
+                    if eigenvalue.real[missing_indices[0]] > eigenvalue.real[missing_indices[1]]:
+                        sorting_indices[1] = missing_indices[0]
+                        sorting_indices[4] = missing_indices[1]
+                        idx_out_plane.append(missing_indices[0])
+                        idx_out_plane.append(missing_indices[1])
+
+                    else:
+                        sorting_indices[1] = missing_indices[1]
+                        sorting_indices[4] = missing_indices[0]
+                        idx_out_plane.append(missing_indices[1])
+                        idx_out_plane.append(missing_indices[0])
+
+                    print('OUT OF PLANE SELECTED')
+                    print('sorting_indices: ' + str(sorting_indices))
+                    print('idx_in_plane: ' + str(idx_in_plane))
+                    print('idx_manifolds: ' + str(idx_manifolds))
+                    print('idx_out_plane: ' + str(idx_out_plane))
+
+                    # Reset the sorting
+                    # Select in-plane identical to the nominal case
+                    # Find maximum real eigenvalue on positive axis
+                    # Find minimum eigenvalue on positive axis
+                    # Select the out-of-plane according to common rule!
 
 
 
