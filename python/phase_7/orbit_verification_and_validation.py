@@ -327,7 +327,7 @@ class DisplayPeriodicSolutions:
 
             for idx, l in enumerate(eigenvalue):
                 #Check if it is a real eigenvector with magnitude larger than 1.0
-                if abs(l.imag) < self.maxEigenvalueDeviation and abs(abs(l)-1.0) > self.eigenvalueDeviation:
+                if abs(l.imag) < self.maxEigenvalueDeviation and abs(abs(l)-1.0) > self.maxEigenvalueDeviation:
                     if l.real > 0.0:
                         no_manifolds_on_positive_axes = True
                         print('counter_temp:' + str(counter_temp) + 'no_manifolds_on_positive_axes')
@@ -341,6 +341,8 @@ class DisplayPeriodicSolutions:
                     if abs(l.real) == max(abs(eigenvalue.real)):
                             sorting_indices[0] = idx
                             idx_manifolds.append(idx)
+                            if l.real < 0.0:
+                                print('counter_temp:' + str(counter_temp) + 'UNSTABLE MANIFOLD ON NEGATIVE AXES')
                     elif abs(abs(l.real) - 1.0 / max(abs(eigenvalue.real))) < self.maxEigenvalueDeviation:
                             sorting_indices[5] = idx
                             idx_manifolds.append(idx)
