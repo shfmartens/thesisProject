@@ -323,17 +323,17 @@ class DisplayPeriodicSolutions:
                 print('idx_manifolds: ' + str(idx_manifolds))
                 print('idx_out_plane: ' + str(idx_out_plane))
 
-            no_manifolds_on_positive_axes = False
+            no_manifolds_on_positive_axes = True
             unstable_manifold_on_negative_axes = False
 
             for idx, l in enumerate(eigenvalue):
                 #Check if it is a real eigenvector with magnitude larger than 1.0
                 if abs(l.imag) < self.maxEigenvalueDeviation and abs(abs(l)-1.0) > self.maxEigenvalueDeviation:
                     if l.real > 0.0:
-                        no_manifolds_on_positive_axes = True
+                        no_manifolds_on_positive_axes = False
 
             if no_manifolds_on_positive_axes == False:
-                print('counter_temp: ' + str(counter_temp) + ' no_manifolds_on_positive_axes')
+                print('counter_temp: ' + str(counter_temp) + ' no_Manifolds_on_positive_axes')
 
 
 
