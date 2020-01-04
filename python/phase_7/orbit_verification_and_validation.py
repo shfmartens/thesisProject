@@ -330,8 +330,9 @@ class DisplayPeriodicSolutions:
                 if abs(l.imag) < self.maxEigenvalueDeviation and abs(abs(l)-1.0) > self.maxEigenvalueDeviation:
                     if l.real > 0.0:
                         no_manifolds_on_positive_axes = True
-                        print('counter_temp:' + str(counter_temp) + 'no_manifolds_on_positive_axes')
 
+            if no_manifolds_on_positive_axes == False:
+                print('counter_temp: ' + str(counter_temp) + ' no_manifolds_on_positive_axes')
 
             # Find indices of the pair of largest/smallest real eigenvalue (corresponding to the unstable/stable subspace)
             for idx, l in enumerate(eigenvalue):
