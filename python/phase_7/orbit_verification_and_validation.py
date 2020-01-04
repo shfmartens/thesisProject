@@ -389,6 +389,7 @@ class DisplayPeriodicSolutions:
 
                 print('eigenvalues_module_1: ' + str(eigenvalues_module_1))
 
+                # If not the case and manifolds are present: assume that in_center_subspace exceeds threshold deviation
                 if eigenvalues_module_1 != 6 and len(idx_manifolds) == 2:
 
                     # restart setting but start with invariant manifolds
@@ -467,6 +468,34 @@ class DisplayPeriodicSolutions:
                         print('idx_in_plane: ' + str(idx_in_plane))
                         print('idx_manifolds: ' + str(idx_manifolds))
                         print('idx_out_plane: ' + str(idx_out_plane))
+
+                # If so: start with in-plane by selecting pair with real component closest to one!
+                if eigenvalues_module_1 == 6:
+
+                    # restart sorting setting
+                    sorting_indices = [-1, -1, -1, -1, -1, -1]
+                    idx_in_plane = []
+                    idx_manifolds = []
+                    idx_out_plane = []
+
+                    # Find indices of the in-plane component (with real value close to +1)
+                    for idx, l in enumerate(eigenvalue):
+                        if abs(l.real - 1.0) < self.maxEigenvalueDeviation:
+                            if sorting_indices[2] == -1:
+                                sorting_indices[2] = idx
+                                idx_in_plane.append(idx)
+                            elif sorting_indices[3] == -1:
+                                sorting_indices[3] = idx
+                                idx_in_plane.append(idx)
+
+                    print('final value self.lambda2: ' + str(self.lambda2[-1]))
+                    print('final value self.lambda5: ' + str(self.lambda5[-1]))
+
+
+                    # Find indices of the out-plane component (with real value close to +1)
+
+
+
 
                 # if len(idx_in_plane) != 2:
                 #     print('len(idx_in_plane) != 2')
@@ -1104,18 +1133,18 @@ class DisplayPeriodicSolutions:
         l5 = [abs(entry) for entry in self.lambda5]
         l6 = [abs(entry) for entry in self.lambda6]
 
-        print('Hlt max: ' + str(max(self.Hlt)))
-        print('index Hlt max: ' + str(self.Hlt.index(max(self.Hlt))))
-
-        print('Hlt 1265: ' + str(self.Hlt[1265]))
-        print('lambda1 1265: ' + str(self.lambda1[1265]))
-        print('lambda2 1265: ' + str(self.lambda2[1265]))
-        print('lambda3 1265: ' + str(self.lambda3[1265]))
-        print('lambda4 1265: ' + str(self.lambda4[1265]))
-        print('lambda5 1265: ' + str(self.lambda5[1265]))
-        print('lambda6 1265: ' + str(self.lambda6[1265]))
-
-        print('Hlt max: ' + str(self.Hlt[1263:1278]))
+        # print('Hlt max: ' + str(max(self.Hlt)))
+        # print('index Hlt max: ' + str(self.Hlt.index(max(self.Hlt))))
+        #
+        # print('Hlt 1265: ' + str(self.Hlt[1265]))
+        # print('lambda1 1265: ' + str(self.lambda1[1265]))
+        # print('lambda2 1265: ' + str(self.lambda2[1265]))
+        # print('lambda3 1265: ' + str(self.lambda3[1265]))
+        # print('lambda4 1265: ' + str(self.lambda4[1265]))
+        # print('lambda5 1265: ' + str(self.lambda5[1265]))
+        # print('lambda6 1265: ' + str(self.lambda6[1265]))
+        #
+        # print('Hlt max: ' + str(self.Hlt[1263:1278]))
 
 
 
