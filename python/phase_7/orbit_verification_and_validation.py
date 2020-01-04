@@ -619,9 +619,7 @@ class DisplayPeriodicSolutions:
 
                 # Find indices of the pair of largest/smallest real eigenvalue (corresponding to the unstable/stable subspace)
                 for idx, l in enumerate(eigenvalue):
-                    if idx == (sorting_indices[2] or sorting_indices[3]):
-                        continue
-                    if abs(l.imag) < self.maxEigenvalueDeviation and l.real > 0.0 and idx != (sorting_indices[2] and idx != sorting_indices[3]):
+                    if abs(l.imag) < self.maxEigenvalueDeviation and l.real > 0.0:
                         print(l.real)
                         if l.real < minimum_lambda:
                             minimum_idx = idx
