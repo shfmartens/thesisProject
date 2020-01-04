@@ -331,10 +331,10 @@ class DisplayPeriodicSolutions:
                 if idx == (sorting_indices[2] or sorting_indices[3]):
                     continue
                 if abs(l.imag) < self.maxEigenvalueDeviation:
-                    if abs(l.real) == max(abs(eigenvalue.real)):
+                    if abs(l.real) == max(abs(eigenvalue.real)) and l.real > 0:
                             sorting_indices[0] = idx
                             idx_manifolds.append(idx)
-                    elif abs(abs(l.real) - 1.0 / max(abs(eigenvalue.real))) < self.maxEigenvalueDeviation:
+                    elif abs(abs(l.real) - 1.0 / max(abs(eigenvalue.real))) < self.maxEigenvalueDeviation and l.real > 0:
                             sorting_indices[5] = idx
                             idx_manifolds.append(idx)
 
