@@ -323,7 +323,14 @@ class DisplayPeriodicSolutions:
                 print('idx_manifolds: ' + str(idx_manifolds))
                 print('idx_out_plane: ' + str(idx_out_plane))
 
+            no_manifolds_on_positive_axes = False
 
+            for idx, l in enumerate(eigenvalue):
+                #Check if it is a real eigenvector with magnitude larger than 1.0
+                if abs(l.imag) < self.maxEigenvalueDeviation and abs(abs(l)-1.0) > self.eigenvalueDeviation:
+                    if l.real > 0.0:
+                        no_manifolds_on_positive_axes = True
+                        print('counter_temp:' + str(counter_temp) + 'no_manifolds_on_positive_axes')
 
 
             # Find indices of the pair of largest/smallest real eigenvalue (corresponding to the unstable/stable subspace)
@@ -331,10 +338,10 @@ class DisplayPeriodicSolutions:
                 if idx == (sorting_indices[2] or sorting_indices[3]):
                     continue
                 if abs(l.imag) < self.maxEigenvalueDeviation:
-                    if abs(l.real) == max(abs(eigenvalue.real)) and l.real > 0:
+                    if abs(l.real) == max(abs(eigenvalue.real)):
                             sorting_indices[0] = idx
                             idx_manifolds.append(idx)
-                    elif abs(abs(l.real) - 1.0 / max(abs(eigenvalue.real))) < self.maxEigenvalueDeviation and l.real > 0:
+                    elif abs(abs(l.real) - 1.0 / max(abs(eigenvalue.real))) < self.maxEigenvalueDeviation:
                             sorting_indices[5] = idx
                             idx_manifolds.append(idx)
 
