@@ -1304,12 +1304,12 @@ class DisplayPeriodicSolutions:
         # print('index Hlt max: ' + str(self.Hlt.index(max(self.Hlt))))
         #
         # print('Hlt 1265: ' + str(self.Hlt[1265]))
-        print('lambda1 1210: ' + str(self.lambda1[1200:1210]))
-        print('lambda2 1210: ' + str(self.lambda2[1200:1210]))
-        print('lambda3 1210: ' + str(self.lambda3[1200:1210]))
-        print('lambda4 1210: ' + str(self.lambda4[1200:1210]))
-        print('lambda5 1210: ' + str(self.lambda5[1200:1210]))
-        print('lambda6 1210: ' + str(self.lambda6[1200:1210]))
+        print('lambda1 1014: ' + str(self.lambda1[1000:1014]))
+        print('lambda2 1014: ' + str(self.lambda2[1000:1014]))
+        print('lambda3 1014: ' + str(self.lambda3[1000:1014]))
+        print('lambda4 1014: ' + str(self.lambda4[1000:1014]))
+        print('lambda5 1014: ' + str(self.lambda5[1000:1014]))
+        print('lambda6 1014: ' + str(self.lambda6[1000:1014]))
 
         #
         # print('Hlt max: ' + str(self.Hlt[1263:1278]))
@@ -2061,7 +2061,7 @@ if __name__ == '__main__':
     orbit_types = ['horizontal']
     lagrange_points = [1]
     acceleration_magnitudes = [0.10]
-    alphas = [180.0]
+    alphas = [300.0]
     Hamiltonians = [-1.55]
     low_dpi = False
     varying_quantities = ['Hamiltonian']
