@@ -497,7 +497,7 @@ class DisplayPeriodicSolutions:
                                 idx_in_plane.append(idx)
 
                     if counter_temp == 1266:
-                        print('out-plane moduli')
+                        print('in-plane moduli SELECTED')
                         print('sorting_indices: ' + str(sorting_indices))
                         print('idx_in_plane: ' + str(idx_in_plane))
                         print('idx_manifolds: ' + str(idx_manifolds))
@@ -531,14 +531,37 @@ class DisplayPeriodicSolutions:
                     idx_out_plane.append(idx_minimal_5)
 
                     if counter_temp == 1266:
-                        print('out-plane moduli')
+                        print('out-plane moduli SELECTED')
                         print('sorting_indices: ' + str(sorting_indices))
                         print('idx_in_plane: ' + str(idx_in_plane))
                         print('idx_manifolds: ' + str(idx_manifolds))
                         print('idx_out_plane: ' + str(idx_out_plane))
 
-                    # Compute phase of previous ones and compute eigenvalue with minimal deviation w.r.t the phase!
+                    # Determine the manifolds!
+                    missing_indices = sorted(list(set(list(range(-1, 6))) - set(sorting_indices)))
 
+                    if counter_temp == 1266:
+                        print('sorting_indices: ' + str(sorting_indices))
+                        print('missing_indices: ' + str(missing_indices))
+
+                    if eigenvalue.imag[missing_indices[0]] > eigenvalue.imag[missing_indices[1]]:
+                        sorting_indices[0] = missing_indices[0]
+                        sorting_indices[5] = missing_indices[1]
+                        idx_manifolds.append(missing_indices[0])
+                        idx_manifolds.append(missing_indices[1])
+
+                    else:
+                        sorting_indices[0] = missing_indices[1]
+                        sorting_indices[5] = missing_indices[0]
+                        idx_manifolds.append(missing_indices[1])
+                        idx_manifolds.append(missing_indices[0])
+
+                    if counter_temp == 1266:
+                        print('Manifolds SELECTED')
+                        print('sorting_indices: ' + str(sorting_indices))
+                        print('idx_in_plane: ' + str(idx_in_plane))
+                        print('idx_manifolds: ' + str(idx_manifolds))
+                        print('idx_out_plane: ' + str(idx_out_plane))
 
 
                     # Find indices of the out-plane component (with real value close to +1)
