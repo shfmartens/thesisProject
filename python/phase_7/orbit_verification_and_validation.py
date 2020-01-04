@@ -621,7 +621,7 @@ class DisplayPeriodicSolutions:
                 for idx, l in enumerate(eigenvalue):
                     if idx == (sorting_indices[2] or sorting_indices[3]):
                         continue
-                    if abs(l.imag) < self.maxEigenvalueDeviation and l.real > 0.0:
+                    if abs(l.imag) < self.maxEigenvalueDeviation and l.real > 0.0 and idx != (sorting_indices[2] and idx != sorting_indices[3]):
                         if l.real < minimum_lambda:
                             minimum_idx = idx
                         if l.real > maximum_lambda:
