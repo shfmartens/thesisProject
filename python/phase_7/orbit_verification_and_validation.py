@@ -1214,6 +1214,8 @@ class DisplayPeriodicSolutions:
         print('lambda3 1210: ' + str(self.lambda3[1205:1210]))
         print('lambda4 1210: ' + str(self.lambda4[1205:1210]))
         print('lambda5 1210: ' + str(self.lambda5[1205:1210]))
+        print('lambda6 1210: ' + str(self.lambda6[1205:1210]))
+
         #
         # print('Hlt max: ' + str(self.Hlt[1263:1278]))
 
