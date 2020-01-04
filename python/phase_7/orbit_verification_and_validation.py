@@ -413,7 +413,7 @@ class DisplayPeriodicSolutions:
                     idx_manifolds = []
                     idx_out_plane = []
 
-                    if counter_temp == 1266:
+                    if counter_temp == 1011:
                         print('resetted the sorting, start with manifolds')
                         print('sorting_indices: ' + str(sorting_indices))
                         print('idx_in_plane: ' + str(idx_in_plane))
@@ -430,7 +430,7 @@ class DisplayPeriodicSolutions:
                                 sorting_indices[5] = idx
                                 idx_manifolds.append(idx)
 
-                    if counter_temp == 1266:
+                    if counter_temp == 1011:
                         print('manifolds selected')
                         print('sorting_indices: ' + str(sorting_indices))
                         print('idx_in_plane: ' + str(idx_in_plane))
@@ -449,7 +449,7 @@ class DisplayPeriodicSolutions:
                                 sorting_indices[3] = idx
                                 idx_in_plane.append(idx)
 
-                    if counter_temp == 1266:
+                    if counter_temp == 1011:
                         print('in-plane moduli')
                         print('sorting_indices: ' + str(sorting_indices))
                         print('idx_in_plane: ' + str(idx_in_plane))
@@ -459,7 +459,7 @@ class DisplayPeriodicSolutions:
                     # Select the in-plane moduli with relaxed constraints
                     missing_indices = sorted(list(set(list(range(-1, 6))) - set(sorting_indices)))
 
-                    if counter_temp == 1266:
+                    if counter_temp == 1011:
                         print('sorting_indices: ' + str(sorting_indices))
                         print('missing_indices: ' + str(missing_indices))
 
@@ -476,7 +476,7 @@ class DisplayPeriodicSolutions:
                         idx_out_plane.append(missing_indices[0])
 
 
-                    if counter_temp == 1266:
+                    if counter_temp == 1011:
                         print('out-plane moduli')
                         print('sorting_indices: ' + str(sorting_indices))
                         print('idx_in_plane: ' + str(idx_in_plane))
@@ -1304,12 +1304,12 @@ class DisplayPeriodicSolutions:
         # print('index Hlt max: ' + str(self.Hlt.index(max(self.Hlt))))
         #
         # print('Hlt 1265: ' + str(self.Hlt[1265]))
-        print('lambda1 1014: ' + str(self.lambda1[1011]))
-        print('lambda2 1014: ' + str(self.lambda2[1011]))
-        print('lambda3 1014: ' + str(self.lambda3[1011]))
-        print('lambda4 1014: ' + str(self.lambda4[1011]))
-        print('lambda5 1014: ' + str(self.lambda5[1011]))
-        print('lambda6 1014: ' + str(self.lambda6[1011]))
+        print('lambda1 1011: ' + str(self.lambda1[1011]))
+        print('lambda2 1011: ' + str(self.lambda2[1011]))
+        print('lambda3 1011: ' + str(self.lambda3[1011]))
+        print('lambda4 1011: ' + str(self.lambda4[1011]))
+        print('lambda5 1011: ' + str(self.lambda5[1011]))
+        print('lambda6 1011: ' + str(self.lambda6[1011]))
 
         #
         # print('Hlt max: ' + str(self.Hlt[1263:1278]))
