@@ -580,7 +580,7 @@ class DisplayPeriodicSolutions:
             if counter_temp > 1201:
                 print('unstable_manifold_on_negative_axes :' + str(unstable_manifold_on_negative_axes))
                 print('no_manifolds_on_positive_axes :' + str(no_manifolds_on_positive_axes))
-
+                print(eigenvalue)
 
             # In case there are positive real eigenvalues not on unit axes but negative out-of-plane real lamda's are selected
             if unstable_manifold_on_negative_axes == True and no_manifolds_on_positive_axes == False:
@@ -662,7 +662,7 @@ class DisplayPeriodicSolutions:
                 print('idx_manifolds: ' + str(idx_manifolds))
                 print('idx_out_plane: ' + str(idx_out_plane))
 
-                    
+
                 # if len(idx_in_plane) != 2:
                 #     print('len(idx_in_plane) != 2')
                 #     idx_in_plane = []
