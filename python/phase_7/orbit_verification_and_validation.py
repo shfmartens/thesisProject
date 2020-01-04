@@ -612,7 +612,7 @@ class DisplayPeriodicSolutions:
                 print('idx_manifolds: ' + str(idx_manifolds))
                 print('idx_out_plane: ' + str(idx_out_plane))
 
-                minimum_lambda = 1.0e-6
+                minimum_lambda = 1.0e6
                 minimum_idx = 0
                 maximum_lambda = -10
                 maximum_idx = 0
