@@ -1104,6 +1104,10 @@ class DisplayPeriodicSolutions:
         l5 = [abs(entry) for entry in self.lambda5]
         l6 = [abs(entry) for entry in self.lambda6]
 
+        print('lambda3 1264: ' + str(self.lambda2[1264]))
+        print('lambda3 1265: ' + str(self.lambda2[1265]))
+        print('lambda3 1266: ' + str(self.lambda2[1266]))
+
         # arr[0, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
         # arr[0, 0].xaxis.set_ticks(xticks)
         # print(len(self.continuationParameter))
@@ -1871,7 +1875,7 @@ if __name__ == '__main__':
 
                             #display_periodic_solutions.plot_families()
                             #display_periodic_solutions.plot_periodicity_validation()
-                            #display_periodic_solutions.plot_monodromy_analysis()
+                            display_periodic_solutions.plot_monodromy_analysis()
                             #display_periodic_solutions.plot_monodromy_analysis_old()
                             #display_periodic_solutions.plot_stability()
                             #display_periodic_solutions.plot_continuation_procedure()
