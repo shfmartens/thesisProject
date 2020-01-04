@@ -1104,11 +1104,11 @@ class DisplayPeriodicSolutions:
         l5 = [abs(entry) for entry in self.lambda5]
         l6 = [abs(entry) for entry in self.lambda6]
 
-        print('Hlt max: ' + max(self.Hlt))
-        print('index Hlt max: ' + self.Hlt.index(max(self.Hlt)))
+        print('Hlt max: ' + str(max(self.Hlt)))
+        print('index Hlt max: ' + str(self.Hlt.index(max(self.Hlt))))
 
-        print('Hlt 1265: ' + self.Hlt[1265])
-        print('lambda2 1265: ' + self.lambda2[1265])
+        print('Hlt 1265: ' + str(self.Hlt[1265]))
+        print('lambda2 1265: ' + str(self.lambda2[1265])
 
 
         # arr[0, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
