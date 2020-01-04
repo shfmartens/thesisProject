@@ -494,7 +494,7 @@ class DisplayPeriodicSolutions:
                             elif sorting_indices[3] == -1:
                                 sorting_indices[3] = idx
                                 idx_in_plane.append(idx)
-                                
+
                     if counter_temp == 1266:
                         print('out-plane moduli')
                         print('sorting_indices: ' + str(sorting_indices))
@@ -502,8 +502,42 @@ class DisplayPeriodicSolutions:
                         print('idx_manifolds: ' + str(idx_manifolds))
                         print('idx_out_plane: ' + str(idx_out_plane))
 
-                    print('final value self.lambda2: ' + str(self.lambda2[-1]))
-                    print('final value self.lambda5: ' + str(self.lambda5[-1]))
+                    previousLambda2  = self.lambda2[-1]
+                    previousLambda5 = self.lambda5[-1]
+
+                    PhaseDiscrepancy = 4.0*np.pi
+                    idx_minimal_2 = 0
+                    for idx, l in enumerate(eigenvalue):
+                        if idx == (sorting_indices[2] or sorting_indices[3]):
+                            continue
+                        if abs(np.angle(previousLambda2) - np.angle(l)) < PhaseDiscrepancy:
+                            PhaseDiscrepancy = abs(np.angle(previousLambda2) - np.angle(l))
+                            idx_minimal_2 = idx
+
+                    sorting_indices[1] = idx_minimal_2
+                    idx_in_plane.append(idx_minimal_2)
+
+                    PhaseDiscrepancy = 4.0 * np.pi
+                    idx_minimal_5 = 0
+                    for idx, l in enumerate(eigenvalue):
+                        if idx == (sorting_indices[2] or sorting_indices[3]):
+                            continue
+                        if abs(np.angle(previousLambda5) - np.angle(l)) < PhaseDiscrepancy:
+                            PhaseDiscrepancy = abs(np.angle(previousLambda2) - np.angle(l))
+                            idx_minimal_5 = idx
+
+                    sorting_indices[4] = idx_minimal_5
+                    idx_in_plane.append(idx_minimal_5)
+
+                    if counter_temp == 1266:
+                        print('out-plane moduli')
+                        print('sorting_indices: ' + str(sorting_indices))
+                        print('idx_in_plane: ' + str(idx_in_plane))
+                        print('idx_manifolds: ' + str(idx_manifolds))
+                        print('idx_out_plane: ' + str(idx_out_plane))
+
+                    # Compute phase of previous ones and compute eigenvalue with minimal deviation w.r.t the phase!
+
 
 
                     # Find indices of the out-plane component (with real value close to +1)
