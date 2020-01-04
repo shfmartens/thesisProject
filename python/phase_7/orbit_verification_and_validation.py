@@ -1104,9 +1104,8 @@ class DisplayPeriodicSolutions:
         l5 = [abs(entry) for entry in self.lambda5]
         l6 = [abs(entry) for entry in self.lambda6]
 
-        print('lambda3 1264: ' + str(self.lambda2[1264]))
-        print('lambda3 1265: ' + str(self.lambda2[1265]))
-        print('lambda3 1266: ' + str(self.lambda2[1266]))
+        print('Hlt 1265: ' + str(self.Hlt[1265:1277]))
+
 
         # arr[0, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
         # arr[0, 0].xaxis.set_ticks(xticks)
