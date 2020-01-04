@@ -1115,6 +1115,9 @@ class DisplayPeriodicSolutions:
         print('lambda5 1265: ' + str(self.lambda5[1265]))
         print('lambda6 1265: ' + str(self.lambda6[1265]))
 
+        print('Hlt max: ' + str(max(self.Hlt[1265:1278])))
+
+
 
         # arr[0, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
         # arr[0, 0].xaxis.set_ticks(xticks)
