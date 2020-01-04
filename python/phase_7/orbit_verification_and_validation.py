@@ -624,8 +624,10 @@ class DisplayPeriodicSolutions:
                     if abs(l.imag) < self.maxEigenvalueDeviation and l.real > 0.0 and idx != (sorting_indices[2] and idx != sorting_indices[3]):
                         if l.real < minimum_lambda:
                             minimum_idx = idx
+                            minimum_lambda = l.real
                         if l.real > maximum_lambda:
                             maximum_idx = idx
+                            maximum_lambda = l.real
 
                 sorting_indices[0] = maximum_idx
                 idx_manifolds.append(maximum_idx)
