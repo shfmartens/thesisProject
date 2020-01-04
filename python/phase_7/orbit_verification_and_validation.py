@@ -404,7 +404,7 @@ class DisplayPeriodicSolutions:
                 print('eigenvalues_module_1: ' + str(eigenvalues_module_1))
 
                 # If not the case and manifolds are present: assume that in_center_subspace exceeds threshold deviation
-                if eigenvalues_module_1 != 6 and len(idx_manifolds) == 2:
+                if eigenvalues_module_1 != 6 and (len(idx_manifolds) == 2 or len(idx_in_plane == 1)):
 
                     # restart setting but start with invariant manifolds
 
