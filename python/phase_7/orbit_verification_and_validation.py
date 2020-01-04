@@ -1108,7 +1108,7 @@ class DisplayPeriodicSolutions:
         print('index Hlt max: ' + str(self.Hlt.index(max(self.Hlt))))
 
         print('Hlt 1265: ' + str(self.Hlt[1265]))
-        print('lambda2 1265: ' + str(self.lambda2[1265])
+        print('lambda2 1265: ' + str(self.lambda2[1265]))
 
 
         # arr[0, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
