@@ -577,7 +577,7 @@ class DisplayPeriodicSolutions:
                         print('idx_manifolds: ' + str(idx_manifolds))
                         print('idx_out_plane: ' + str(idx_out_plane))
 
-                if counter_temp > 1201
+                if counter_temp > 1201:
                     print('unstable_manifold_on_negative_axes :' + print(unstable_manifold_on_negative_axes))
                     print('no_manifolds_on_positive_axes :' + print(no_manifolds_on_positive_axes))
 
