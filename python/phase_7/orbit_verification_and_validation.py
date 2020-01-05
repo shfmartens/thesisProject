@@ -933,6 +933,79 @@ class DisplayPeriodicSolutions:
                         idx_out_plane.append(missing_indices[1])
                         idx_out_plane.append(missing_indices[0])
 
+            l2_300 = False
+            if self.varyingQuantity == 'Hamiltonian' and self.lagrangePointNr == 2 and self.accelerationMagnitude > 0.09 and self.alpha > 290:
+                l2_300 = True
+            if counter_temp == 1952 and l2_300 == True:
+
+                sorting_indices = [-1, -1, -1, -1, -1, -1]
+                idx_in_plane = []
+                idx_manifolds = []
+                idx_out_plane = []
+
+                # Find indices of the first pair of real eigenvalue equal to one
+                ref_deviation = 80
+                lambda1_sorting = 0
+                for idx, l in enumerate(eigenvalue):
+                    if abs(l.imag) > 0.0
+                        if abs(l.real + 0.31882701) < ref_deviation:
+                            ref_deviation = l.real + 0.31882701
+                            lambda1_sorting = lambda1_sorting
+
+                sorting_indices[0] = lambda1_sorting
+
+                ref_deviation = 80
+                lambda2_sorting = 0
+                for idx, l in enumerate(eigenvalue):
+                    if abs(l.imag) > 0.0:
+                        if abs(l.real - 0.98760742) < ref_deviation:
+                            ref_deviation = l.real - 0.98760742
+                            lambda2_sorting = idx
+
+                sorting_indices[1] = lambda2_sorting
+
+                ref_deviation = 80
+                lambda3_sorting = 0
+                for idx, l in enumerate(eigenvalue):
+                    if abs(l.imag) < 3.0 * self.maxEigenvalueDeviation:
+                        if abs(l.real - 0.9986) < ref_deviation:
+                            ref_deviation = l.real - 0.9986
+                            lambda3_sorting = idx
+
+                sorting_indices[3] = lambda3_sorting
+
+                ref_deviation = 80
+                lambda4_sorting = 0
+                for idx, l in enumerate(eigenvalue):
+                    if abs(l.imag) < 3.0 * self.maxEigenvalueDeviation:
+                        if abs(l.real - 1.00123037) < ref_deviation:
+                            ref_deviation = l.real - 1.00123037
+                            lambda4_sorting = idx
+
+                sorting_indices[2] = lambda4_sorting
+
+                ref_deviation = 80
+                lambda5_sorting = 0
+                for idx, l in enumerate(eigenvalue):
+                    if abs(l.imag) < 0.0:
+                        if abs(l.real - 0.98760742) < ref_deviation:
+                            ref_deviation = l.real - 0.98760742
+                            lambda5_sorting = idx
+
+                sorting_indices[4] = lambda5_sorting
+
+                ref_deviation = 80
+                lambda6_sorting = 0
+                for idx, l in enumerate(eigenvalue):
+                    if abs(l.imag) < 0.0
+                        if abs(l.real + 0.31882701) < ref_deviation:
+                            ref_deviation = l.real + 0.31882701
+                            lambda1_sorting = lambda6_sorting
+
+                sorting_indices[5] = lambda6_sorting
+
+                print('FINAL ADAP: ' + str(sorting_indices))
+
 
 
                 ## Sort complex values
