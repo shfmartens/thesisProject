@@ -584,7 +584,7 @@ class DisplayPeriodicSolutions:
             #     print(eigenvalue)
 
             l2_180 = False
-            if self.varyingQuantity == 'Hamiltonian' and self.lagrangePointNr == 2 and self.alpha > 170.0 and self.alpha < 190.0:
+            if self.varyingQuantity == 'Hamiltonian' and self.lagrangePointNr == 2 and self.accelerationMagnitude > 0.09 and self.alpha > 170.0 and self.alpha < 190.0:
                 l2_180 = True
 
             # In case there are positive real eigenvalues not on unit axes but negative out-of-plane real lamda's are selected
