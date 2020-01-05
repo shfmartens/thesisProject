@@ -668,7 +668,47 @@ class DisplayPeriodicSolutions:
                 # print('idx_manifolds: ' + str(idx_manifolds))
                 # print('idx_out_plane: ' + str(idx_out_plane))
 
-            if l2_180 == True and counter_temp > 1610 and counter_temp < 1629 or counter_temp == 2036:
+            if l2_180 == True and counter_temp == 2036:
+                sorting_indices = [-1, -1, -1, -1, -1, -1]
+                idx_in_plane = []
+                idx_manifolds = []
+                idx_out_plane = []
+
+                # Find indices of the first pair of real eigenvalue equal to one
+                for idx, l in enumerate(eigenvalue):
+                    if abs(l.imag) < self.maxEigenvalueDeviation or (
+                            abs(l.imag) < 3.0 * self.maxEigenvalueDeviation and counter_temp > 2034):
+                        if abs(l.real - 1.0) < 3.0 * self.maxEigenvalueDeviation:
+                            if sorting_indices[2] == -1:
+                                sorting_indices[2] = idx
+                                idx_in_plane.append(idx)
+                            elif sorting_indices[3] == -1:
+                                sorting_indices[3] = idx
+                                idx_in_plane.append(idx)
+
+                # Find indices of the pair of largest/smallest positive real eigenvalue (corresponding to the unstable/stable subspace)
+                max_lambda = -10
+                max_index = 0
+                minimum_lambda = 1000
+                min_index = 0
+                for idx, l in enumerate(eigenvalue):
+                        if abs(l.imag) < self.maxEigenvalueDeviation and l.real > 0.0:
+                            if l.real > max_lambda:
+                                max_lambda = l.real
+                                max_index = idx
+                            if l.real < minimum_lambda:
+                                minimum_lambda = l.real
+                                min_index = idx
+
+                sorting_indices[0] = max_index
+                idx_manifolds.append(max_index)
+                sorting_indices[5] = min_index
+                idx_manifolds.append(min_index)
+
+                missing_indices = sorted(list(set(list(range(-1, 6))) - set(sorting_indices)))
+
+
+            if l2_180 == True and counter_temp > 1610 and counter_temp < 1629:
 
                 sorting_indices = [-1, -1, -1, -1, -1, -1]
                 idx_in_plane = []
@@ -686,6 +726,19 @@ class DisplayPeriodicSolutions:
                             elif sorting_indices[3] == -1:
                                 sorting_indices[3] = idx
                                 idx_in_plane.append(idx)
+
+                if eigenvalue.real[missing_indices[0]] > eigenvalue.real[missing_indices[1]]:
+                    sorting_indices[1] = missing_indices[0]
+                    sorting_indices[4] = missing_indices[1]
+                    idx_out_plane.append(missing_indices[0])
+                    idx_out_plane.append(missing_indices[1])
+
+                else:
+                    sorting_indices[1] = missing_indices[1]
+                    sorting_indices[4] = missing_indices[0]
+                    idx_out_plane.append(missing_indices[1])
+                    idx_out_plane.append(missing_indices[0])
+
 
 
 
