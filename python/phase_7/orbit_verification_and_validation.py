@@ -709,6 +709,19 @@ class DisplayPeriodicSolutions:
                 idx_manifolds.append(min_index)
 
 
+                if eigenvalue.real[missing_indices[0]] > eigenvalue.real[missing_indices[1]]:
+                    sorting_indices[1] = missing_indices[0]
+                    sorting_indices[4] = missing_indices[1]
+                    idx_out_plane.append(missing_indices[0])
+                    idx_out_plane.append(missing_indices[1])
+
+                else:
+                    sorting_indices[1] = missing_indices[1]
+                    sorting_indices[4] = missing_indices[0]
+                    idx_out_plane.append(missing_indices[1])
+                    idx_out_plane.append(missing_indices[0])
+
+
 
 
 
