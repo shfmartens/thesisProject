@@ -767,6 +767,7 @@ class DisplayPeriodicSolutions:
                         print('idx_in_plane: ' + str(idx_in_plane))
                         print('idx_manifolds: ' + str(idx_manifolds))
                         print('idx_out_plane: ' + str(idx_out_plane))
+                        print(eigenvalue)
 
 
 
