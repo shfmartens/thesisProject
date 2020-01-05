@@ -1032,13 +1032,14 @@ class DisplayPeriodicSolutions:
                     sorting_indices = abs(eigenvalue).argsort()[::-1]
                     print(eigenvalue[sorting_indices])
 
-            self.eigenvalues.append(eigenvalue[sorting_indices])
-            self.lambda1.append(eigenvalue[sorting_indices[0]])
-            self.lambda2.append(eigenvalue[sorting_indices[1]])
-            self.lambda3.append(eigenvalue[sorting_indices[2]])
-            self.lambda4.append(eigenvalue[sorting_indices[3]])
-            self.lambda5.append(eigenvalue[sorting_indices[4]])
-            self.lambda6.append(eigenvalue[sorting_indices[5]])
+            if l2_180 == False or (l2_180 == True and counter_temp !=2036):
+                self.eigenvalues.append(eigenvalue[sorting_indices])
+                self.lambda1.append(eigenvalue[sorting_indices[0]])
+                self.lambda2.append(eigenvalue[sorting_indices[1]])
+                self.lambda3.append(eigenvalue[sorting_indices[2]])
+                self.lambda4.append(eigenvalue[sorting_indices[3]])
+                self.lambda5.append(eigenvalue[sorting_indices[4]])
+                self.lambda6.append(eigenvalue[sorting_indices[5]])
 
 
 
@@ -1052,13 +1053,15 @@ class DisplayPeriodicSolutions:
             if len(self.orderOfLinearInstability) > 0:
                 # Check for a bifurcation, when the order of linear instability changes
                 if (6 - reduction) != self.orderOfLinearInstability[-1]:
-                    self.orbitIdBifurcations.append(row[0])
+                    if l2_180 == False or (l2_180 == True and counter_temp != 2036):
+                        self.orbitIdBifurcations.append(row[0])
 
-            self.orderOfLinearInstability.append(6 - reduction)
-            self.v1.append(abs(eigenvalue[sorting_indices[0]] + eigenvalue[sorting_indices[5]]) / 2)
-            self.v2.append(abs(eigenvalue[sorting_indices[1]] + eigenvalue[sorting_indices[4]]) / 2)
-            self.v3.append(abs(eigenvalue[sorting_indices[2]] + eigenvalue[sorting_indices[3]]) / 2)
-            self.D.append(np.linalg.det(M))
+            if l2_180 == False or (l2_180 == True and counter_temp !=2036):
+                self.orderOfLinearInstability.append(6 - reduction)
+                self.v1.append(abs(eigenvalue[sorting_indices[0]] + eigenvalue[sorting_indices[5]]) / 2)
+                self.v2.append(abs(eigenvalue[sorting_indices[1]] + eigenvalue[sorting_indices[4]]) / 2)
+                self.v3.append(abs(eigenvalue[sorting_indices[2]] + eigenvalue[sorting_indices[3]]) / 2)
+                self.D.append(np.linalg.det(M))
 
             counter_temp = counter_temp + 1
 
