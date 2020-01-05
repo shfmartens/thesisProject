@@ -304,8 +304,8 @@ class DisplayPeriodicSolutions:
             #     print('eigenvalues: ' + str(eigenvalue))
             #     print('sorting_indices: ' + str(sorting_indices))
 
-            if counter_temp > 2035 and counter_temp < 2039:
-                print('member ' + str(counter_temp) + ' eigenvalues: ' + str(eigenvalue))
+            # if counter_temp > 2035 and counter_temp < 2039:
+            #     print('member ' + str(counter_temp) + ' eigenvalues: ' + str(eigenvalue))
 
             # Find indices of the first pair of real eigenvalue equal to one
             for idx, l in enumerate(eigenvalue):
@@ -712,7 +712,7 @@ class DisplayPeriodicSolutions:
                 if counter_negative_axes == 2:
                     for idx, l in enumerate(eigenvalue):
                         if abs(l.imag) < self.maxEigenvalueDeviation and l.real < 0.0:
-                            print(l.real)
+                            #print(l.real)
                             if l.real < minimum_lambda:
                                 minimum_idx = idx
                                 minimum_lambda = l.real
@@ -858,7 +858,7 @@ class DisplayPeriodicSolutions:
                     print('\nWARNING: SORTING INDEX IS STILL STILL NOT UNIQUE')
                     # Sorting eigenvalues from largest to smallest norm, excluding real one
                     sorting_indices = abs(eigenvalue).argsort()[::-1]
-                print(eigenvalue[sorting_indices])
+                    print(eigenvalue[sorting_indices])
 
             self.eigenvalues.append(eigenvalue[sorting_indices])
             self.lambda1.append(eigenvalue[sorting_indices[0]])
