@@ -676,7 +676,7 @@ class DisplayPeriodicSolutions:
                 idx_manifolds = []
                 idx_out_plane = []
 
-                print('SORT AGAIN WITH DIFFERENT RULE FOR MANIFOLDS!')
+                print('L2 0.1 180 CASE!')
                 print('family member: ' + str(counter_temp))
                 print('M: ' + str(M))
                 print('eigenvalues: ' + str(eigenvalue))
@@ -698,6 +698,49 @@ class DisplayPeriodicSolutions:
                 print('idx_in_plane: ' + str(idx_in_plane))
                 print('idx_manifolds: ' + str(idx_manifolds))
                 print('idx_out_plane: ' + str(idx_out_plane))
+
+                counter_negative_axes = 0
+
+                for idx, l in enumerate(eigenvalue):
+                    if abs(l.imag) < self.maxEigenvalueDeviation:
+                        if abs(l.real-1.0) > self.maxEigenvalueDeviation
+                            counter_negative_axes = counter_negative_axes + 1
+
+
+                if counter_negative_axes == 2:
+                    for idx, l in enumerate(eigenvalue):
+                        if abs(l.imag) < self.maxEigenvalueDeviation and l.real > 0.0:
+                            print(l.real)
+                            if l.real < minimum_lambda:
+                                minimum_idx = idx
+                                minimum_lambda = l.real
+                            if l.real > maximum_lambda:
+                                maximum_idx = idx
+                                maximum_lambda = l.real
+
+                    sorting_indices[1] = maximum_idx
+                    idx_manifolds.append(maximum_idx)
+                    sorting_indices[4] = minimum_idx
+                    idx_manifolds.append(minimum_idx)
+
+                    missing_indices = sorted(list(set(list(range(-1, 6))) - set(sorting_indices)))
+
+                    print('sorting_indices: ' + str(sorting_indices))
+                    print('missing_indices: ' + str(missing_indices))
+
+                    if eigenvalue.imag[missing_indices[0]] > eigenvalue.imag[missing_indices[1]]:
+                        sorting_indices[0] = missing_indices[0]
+                        sorting_indices[5] = missing_indices[1]
+                        idx_out_plane.append(missing_indices[0])
+                        idx_out_plane.append(missing_indices[1])
+
+                    else:
+                        sorting_indices[0] = missing_indices[1]
+                        sorting_indices[5] = missing_indices[0]
+                        idx_out_plane.append(missing_indices[1])
+                        idx_out_plane.append(missing_indices[0])
+
+
 
                 ## Sort complex values
 
