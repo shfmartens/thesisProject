@@ -668,7 +668,50 @@ class DisplayPeriodicSolutions:
                 # print('idx_manifolds: ' + str(idx_manifolds))
                 # print('idx_out_plane: ' + str(idx_out_plane))
 
-            if l2_180 == True and
+            if l2_180 == True and counter_temp > 1610 and counter_temp < 1629:
+
+                sorting_indices = [-1, -1, -1, -1, -1, -1]
+                idx_in_plane = []
+                idx_manifolds = []
+                idx_out_plane = []
+
+                # Find indices of the first pair of real eigenvalue equal to one
+                for idx, l in enumerate(eigenvalue):
+                    if abs(l.imag) < self.maxEigenvalueDeviation or (
+                            abs(l.imag) < 3.0 * self.maxEigenvalueDeviation and counter_temp > 2034):
+                        if abs(l.real - 1.0) < 3.0 * self.maxEigenvalueDeviation:
+                            if sorting_indices[2] == -1:
+                                sorting_indices[2] = idx
+                                idx_in_plane.append(idx)
+                            elif sorting_indices[3] == -1:
+                                sorting_indices[3] = idx
+                                idx_in_plane.append(idx)
+
+
+
+                # Find indices of the pair of largest/smallest positive real eigenvalue (corresponding to the unstable/stable subspace)
+                max_lambda = -10
+                max_index = 0
+                minimum_lambda = 1000
+                min_index = 0
+                for idx, l in enumerate(eigenvalue):
+                    if abs(l.imag) < self.maxEigenvalueDeviation and l.real > 0.0:
+                            if l.real > maximum_lambda:
+                                    l.real = maximum_lambda
+                                    max_index = idx
+                            if l.real < minimum_lambda:
+                                    l.real = minimum_lambda
+                                    min_index = idx
+
+                sorting_indices[0] = max_index
+                idx_manifolds.append(max_index)
+                sorting_indices[5] = min_index
+                idx_manifolds.append(min_index)
+
+
+
+
+
 
             # In case there are positive real eigenvalues not on unit axes but negative out-of-plane real lamda's are selected
             if unstable_manifold_on_negative_axes == True and no_manifolds_on_positive_axes == True and l2_180 == True:
