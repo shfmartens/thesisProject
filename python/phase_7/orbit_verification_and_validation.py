@@ -675,12 +675,6 @@ class DisplayPeriodicSolutions:
             #     idx_out_plane = []
 
 
-
-
-
-
-
-
             # In case there are positive real eigenvalues not on unit axes but negative out-of-plane real lamda's are selected
             if unstable_manifold_on_negative_axes == True and no_manifolds_on_positive_axes == True and l2_180 == True:
 
