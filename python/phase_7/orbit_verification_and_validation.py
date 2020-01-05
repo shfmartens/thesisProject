@@ -1746,6 +1746,8 @@ class DisplayPeriodicSolutions:
 
 
 
+        
+
         arr[0, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
         arr[0, 0].xaxis.set_ticks(xticks)
         print(len(self.continuationParameter))
