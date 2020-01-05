@@ -669,7 +669,7 @@ class DisplayPeriodicSolutions:
                 # print('idx_out_plane: ' + str(idx_out_plane))
 
             # In case there are positive real eigenvalues not on unit axes but negative out-of-plane real lamda's are selected
-            if unstable_manifold_on_negative_axes == True and no_manifolds_on_positive_axes == True and l2_180 == True:
+            if unstable_manifold_on_negative_axes == True and no_manifolds_on_positive_axes == True and l2_180 == True and counter_temp > 1640:
 
                 sorting_indices = [-1, -1, -1, -1, -1, -1]
                 idx_in_plane = []
