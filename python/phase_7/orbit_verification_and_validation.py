@@ -106,7 +106,7 @@ class DisplayPeriodicSolutions:
             differentialCorrections_df = load_differential_correction(self.alpha_filepath + self.correction_fileName)
             initial_conditions_incl_m_df = load_initial_conditions_augmented_incl_M(self.alpha_filepath + self.monodromy_fileName)
 
-            print(statesContinuation_df['alpha'][320:361])
+            #print(statesContinuation_df['alpha'][320:361])
 
             counter = 0.0
             for i in range(len(statesContinuation_df['orbitID'])):
