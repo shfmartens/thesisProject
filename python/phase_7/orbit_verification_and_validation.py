@@ -683,7 +683,7 @@ class DisplayPeriodicSolutions:
                             ref_deviation = l.real-1.24
                             lambda1_sorting = lambda1_sorting
 
-                sorting_indices[0] = idx
+                sorting_indices[0] = lambda1_sorting
 
                 ref_deviation = 80
                 lambda2_sorting = 0
