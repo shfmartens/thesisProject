@@ -709,7 +709,7 @@ class DisplayPeriodicSolutions:
                 idx_manifolds.append(min_index)
 
                 missing_indices = sorted(list(set(list(range(-1, 6))) - set(sorting_indices)))
-                
+
                 if eigenvalue.real[missing_indices[0]] > eigenvalue.real[missing_indices[1]]:
                     sorting_indices[1] = missing_indices[0]
                     sorting_indices[4] = missing_indices[1]
@@ -735,7 +735,7 @@ class DisplayPeriodicSolutions:
                 idx_manifolds = []
                 idx_out_plane = []
 
-                if counter_temp == 2036:
+                if counter_temp > 2034:
                     print('L2 0.1 180 CASE!')
                     print('family member: ' + str(counter_temp))
                     print('M: ' + str(M))
@@ -753,7 +753,7 @@ class DisplayPeriodicSolutions:
                                 sorting_indices[3] = idx
                                 idx_in_plane.append(idx)
 
-                if counter_temp == 2036:
+                if counter_temp > 2034:
                     print('IN PLANE SELECTED!')
                     print('sorting_indices: ' + str(sorting_indices))
                     print('idx_in_plane: ' + str(idx_in_plane))
@@ -770,7 +770,7 @@ class DisplayPeriodicSolutions:
                 minimum_lambda = 10
                 maximum_lambda = -1.0e6
 
-                if counter_temp == 2036:
+                if counter_temp > 2034:
                     print('Number of neg axes: ' + str(counter_negative_axes))
                     print('sorting_indices: ' + str(sorting_indices))
                     print('idx_in_plane: ' + str(idx_in_plane))
@@ -799,7 +799,7 @@ class DisplayPeriodicSolutions:
 
 
 
-                    if counter_temp == 2036:
+                    if counter_temp > 2034:
                         print('SELECTED OUT PLANE: axes num ' + str(counter_negative_axes))
                         print('sorting_indices: ' + str(sorting_indices))
                         print('idx_in_plane: ' + str(idx_in_plane))
@@ -820,7 +820,7 @@ class DisplayPeriodicSolutions:
                         idx_out_plane.append(missing_indices[1])
                         idx_out_plane.append(missing_indices[0])
 
-                    if counter_temp == 2036:
+                    if counter_temp > 2034:
                         print('SELECTED Manifolds: axes num ' + str(counter_negative_axes))
                         print('sorting_indices: ' + str(sorting_indices))
                         print('idx_in_plane: ' + str(idx_in_plane))
