@@ -304,7 +304,7 @@ class DisplayPeriodicSolutions:
                 print('eigenvalues: ' + str(eigenvalue))
                 print('sorting_indices: ' + str(sorting_indices))
 
-            if counter_temp > 1695 and counter_temp < 1701:
+            if counter_temp > 1967 and counter_temp < 1973:
                 print('member ' + str(counter_temp) + ' eigenvalues: ' + str(eigenvalue))
 
             # Find indices of the first pair of real eigenvalue equal to one
