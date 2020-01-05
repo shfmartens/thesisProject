@@ -298,7 +298,7 @@ class DisplayPeriodicSolutions:
             idx_out_plane = []
 
 
-            if counter_temp == 2036:
+        if counter_temp > 1945 and counter_temp < 1957:
                 print ('family member: ' + str(counter_temp))
                 print ('M: ' + str(M))
                 print('eigenvalues: ' + str(eigenvalue))
@@ -1737,12 +1737,12 @@ class DisplayPeriodicSolutions:
         # print(l5[1266])
         # print(l6[1266])
 
-        print('lambda1: ' + str(self.lambda1[960:975]))
-        print('lambda2: ' + str(self.lambda2[960:975]))
-        print('lambda3: ' + str(self.lambda3[960:975]))
-        print('lambda4: ' + str(self.lambda4[960:975]))
-        print('lambda5: ' + str(self.lambda5[960:975]))
-        print('lambda6: ' + str(self.lambda6[960:975]))
+        print('lambda1: ' + str(self.lambda1[1947:1957]))
+        print('lambda2: ' + str(self.lambda2[1947:1957]))
+        print('lambda3: ' + str(self.lambda3[1947:1957]))
+        print('lambda4: ' + str(self.lambda4[1947:1957]))
+        print('lambda5: ' + str(self.lambda5[1947:1957]))
+        print('lambda6: ' + str(self.lambda6[1947:1957]))
 
 
         arr[0, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
@@ -1906,11 +1906,6 @@ class DisplayPeriodicSolutions:
         arr[1, 1].scatter(self.continuationParameter, np.angle(self.lambda5, deg=True), c=self.plottingColors['lambda5'], s=size)
         arr[1, 1].set_xlim(xlim)
         arr[1, 1].set_ylim([-180, 180])
-        arr[1, 1].axvline(x=960)
-        arr[1, 1].axvline(x=1000)
-        arr[1, 1].axvline(x=1938)
-
-
 
         arr[1, 2].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
         arr[1, 2].xaxis.set_ticks(xticks)
