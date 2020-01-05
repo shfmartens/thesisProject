@@ -583,8 +583,12 @@ class DisplayPeriodicSolutions:
             #     print('no_manifolds_on_positive_axes :' + str(no_manifolds_on_positive_axes))
             #     print(eigenvalue)
 
+            l2_180 = False
+            if self.varyingQuantity == 'Hamiltonian' and self.lagrangePointNr == 2 and self.alpha > 170.0 and self.alpha < 190.0:
+                l2_180 = True
+
             # In case there are positive real eigenvalues not on unit axes but negative out-of-plane real lamda's are selected
-            if unstable_manifold_on_negative_axes == True and no_manifolds_on_positive_axes == False:
+            if unstable_manifold_on_negative_axes == True and no_manifolds_on_positive_axes == False and l2_180 == False:
                 sorting_indices = [-1, -1, -1, -1, -1, -1]
                 idx_in_plane = []
                 idx_manifolds = []
@@ -664,6 +668,9 @@ class DisplayPeriodicSolutions:
                 print('idx_manifolds: ' + str(idx_manifolds))
                 print('idx_out_plane: ' + str(idx_out_plane))
 
+                # In case there are positive real eigenvalues not on unit axes but negative out-of-plane real lamda's are selected
+                if unstable_manifold_on_negative_axes == True and no_manifolds_on_positive_axes == False and l2_180 == True:
+                    print('tempCounter: ' + str(counter_temp))
 
                 # if len(idx_in_plane) != 2:
                 #     print('len(idx_in_plane) != 2')
