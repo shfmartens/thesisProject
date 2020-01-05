@@ -668,7 +668,7 @@ class DisplayPeriodicSolutions:
                 # print('idx_manifolds: ' + str(idx_manifolds))
                 # print('idx_out_plane: ' + str(idx_out_plane))
 
-            if l2_180 == True and counter_temp > 1610 and counter_temp < 1629:
+            if l2_180 == True and counter_temp > 1610 and counter_temp < 1629 or counter_temp == 2036:
 
                 sorting_indices = [-1, -1, -1, -1, -1, -1]
                 idx_in_plane = []
