@@ -685,7 +685,7 @@ class DisplayPeriodicSolutions:
 
                 # Find indices of the first pair of real eigenvalue equal to one
                 for idx, l in enumerate(eigenvalue):
-                    if abs(l.imag) < self.maxEigenvalueDeviation:
+                    if abs(l.imag) < self.maxEigenvalueDeviation or (abs(l.imag) < 3.0*self.maxEigenvalueDeviation and counter_temp == 2035):
                         if abs(l.real - 1.0) < 3.0*self.maxEigenvalueDeviation:
                             if sorting_indices[2] == -1:
                                 sorting_indices[2] = idx
@@ -767,7 +767,7 @@ class DisplayPeriodicSolutions:
                         print('idx_in_plane: ' + str(idx_in_plane))
                         print('idx_manifolds: ' + str(idx_manifolds))
                         print('idx_out_plane: ' + str(idx_out_plane))
-                        
+
 
 
                 if counter_negative_axes == 4:
