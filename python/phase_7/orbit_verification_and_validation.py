@@ -1470,13 +1470,14 @@ class DisplayPeriodicSolutions:
         # print(l4[1266])
         # print(l5[1266])
         # print(l6[1266])
-        #
-        # print(self.lambda1[1266])
-        # print(self.lambda2[1266])
-        # print(self.lambda3[1266])
-        # print(self.lambda4[1266])
-        # print(self.lambda5[1266])
-        # print(self.lambda6[1266])
+
+        print('lambda1: ' + str(self.lambda1[325:335]))
+        print('lambda2: ' + str(self.lambda2[325:335]))
+        print('lambda3: ' + str(self.lambda3[325:335]))
+        print('lambda4: ' + str(self.lambda4[325:335]))
+        print('lambda5: ' + str(self.lambda5[325:335]))
+        print('lambda6: ' + str(self.lambda5[325:335]))
+
 
 
         arr[0, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
