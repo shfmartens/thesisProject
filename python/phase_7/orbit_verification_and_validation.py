@@ -1463,7 +1463,7 @@ class DisplayPeriodicSolutions:
         print('lambda3: ' + str(self.lambda3[2000:2037]))
         print('lambda4: ' + str(self.lambda4[2000:2037]))
         print('lambda5: ' + str(self.lambda5[2000:2037]))
-        print('lambda6: ' + str(self.lambda5[2000:2037]))
+        print('lambda6: ' + str(self.lambda6[2000:2037]))
 
 
 
