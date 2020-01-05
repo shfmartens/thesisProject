@@ -696,8 +696,8 @@ class DisplayPeriodicSolutions:
                 min_index = 0
                 for idx, l in enumerate(eigenvalue):
                     if abs(l.imag) < self.maxEigenvalueDeviation and l.real > 0.0:
-                            if l.real > maximum_lambda:
-                                    l.real = maximum_lambda
+                            if l.real > max_lambda:
+                                    l.real = max_lambda
                                     max_index = idx
                             if l.real < minimum_lambda:
                                     l.real = minimum_lambda
