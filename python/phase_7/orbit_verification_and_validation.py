@@ -707,6 +707,18 @@ class DisplayPeriodicSolutions:
 
                 missing_indices = sorted(list(set(list(range(-1, 6))) - set(sorting_indices)))
 
+                if eigenvalue.real[missing_indices[0]] > eigenvalue.real[missing_indices[1]]:
+                    sorting_indices[1] = missing_indices[0]
+                    sorting_indices[4] = missing_indices[1]
+                    idx_out_plane.append(missing_indices[0])
+                    idx_out_plane.append(missing_indices[1])
+
+                else:
+                    sorting_indices[1] = missing_indices[1]
+                    sorting_indices[4] = missing_indices[0]
+                    idx_out_plane.append(missing_indices[1])
+                    idx_out_plane.append(missing_indices[0])
+
 
             if l2_180 == True and counter_temp > 1610 and counter_temp < 1629:
 
@@ -726,21 +738,6 @@ class DisplayPeriodicSolutions:
                             elif sorting_indices[3] == -1:
                                 sorting_indices[3] = idx
                                 idx_in_plane.append(idx)
-
-                if eigenvalue.real[missing_indices[0]] > eigenvalue.real[missing_indices[1]]:
-                    sorting_indices[1] = missing_indices[0]
-                    sorting_indices[4] = missing_indices[1]
-                    idx_out_plane.append(missing_indices[0])
-                    idx_out_plane.append(missing_indices[1])
-
-                else:
-                    sorting_indices[1] = missing_indices[1]
-                    sorting_indices[4] = missing_indices[0]
-                    idx_out_plane.append(missing_indices[1])
-                    idx_out_plane.append(missing_indices[0])
-
-
-
 
                 # Find indices of the pair of largest/smallest positive real eigenvalue (corresponding to the unstable/stable subspace)
                 max_lambda = -10
