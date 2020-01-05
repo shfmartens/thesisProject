@@ -304,7 +304,7 @@ class DisplayPeriodicSolutions:
                 print('eigenvalues: ' + str(eigenvalue))
                 print('sorting_indices: ' + str(sorting_indices))
 
-            if counter_temp > 1626 and counter_temp < 1632:
+            if counter_temp > 1695 and counter_temp < 1701:
                 print('member ' + str(counter_temp) + ' eigenvalues: ' + str(eigenvalue))
 
             # Find indices of the first pair of real eigenvalue equal to one
@@ -670,7 +670,36 @@ class DisplayPeriodicSolutions:
 
             # In case there are positive real eigenvalues not on unit axes but negative out-of-plane real lamda's are selected
             if unstable_manifold_on_negative_axes == True and no_manifolds_on_positive_axes == True and l2_180 == True:
-                print('tempCounter: ' + str(counter_temp))
+
+                sorting_indices = [-1, -1, -1, -1, -1, -1]
+                idx_in_plane = []
+                idx_manifolds = []
+                idx_out_plane = []
+
+                print('SORT AGAIN WITH DIFFERENT RULE FOR MANIFOLDS!')
+                print('family member: ' + str(counter_temp))
+                print('M: ' + str(M))
+                print('eigenvalues: ' + str(eigenvalue))
+                print('sorting_indices: ' + str(sorting_indices))
+
+                # Find indices of the first pair of real eigenvalue equal to one
+                for idx, l in enumerate(eigenvalue):
+                    if abs(l.imag) < self.maxEigenvalueDeviation:
+                        if abs(l.real - 1.0) < self.maxEigenvalueDeviation:
+                            if sorting_indices[2] == -1:
+                                sorting_indices[2] = idx
+                                idx_in_plane.append(idx)
+                            elif sorting_indices[3] == -1:
+                                sorting_indices[3] = idx
+                                idx_in_plane.append(idx)
+
+                print('IN PLANE SELECTED!')
+                print('sorting_indices: ' + str(sorting_indices))
+                print('idx_in_plane: ' + str(idx_in_plane))
+                print('idx_manifolds: ' + str(idx_manifolds))
+                print('idx_out_plane: ' + str(idx_out_plane))
+
+                ## Sort complex values
 
                 # if len(idx_in_plane) != 2:
                 #     print('len(idx_in_plane) != 2')
