@@ -669,7 +669,7 @@ class DisplayPeriodicSolutions:
                 # print('idx_out_plane: ' + str(idx_out_plane))
 
             # In case there are positive real eigenvalues not on unit axes but negative out-of-plane real lamda's are selected
-            if unstable_manifold_on_negative_axes == True and no_manifolds_on_positive_axes == True and l2_180 == True and counter_temp > 1640:
+            if unstable_manifold_on_negative_axes == True and no_manifolds_on_positive_axes == True and l2_180 == True and:
 
                 sorting_indices = [-1, -1, -1, -1, -1, -1]
                 idx_in_plane = []
@@ -1445,12 +1445,12 @@ class DisplayPeriodicSolutions:
         l5 = [abs(entry) for entry in self.lambda5]
         l6 = [abs(entry) for entry in self.lambda6]
 
-        # print('lambda1: ' + str(self.lambda1[1625:1635]))
-        # print('lambda2: ' + str(self.lambda2[1625:1635]))
-        # print('lambda3: ' + str(self.lambda3[1625:1635]))
-        # print('lambda4: ' + str(self.lambda4[1625:1635]))
-        # print('lambda5: ' + str(self.lambda5[1625:1635]))
-        # print('lambda6: ' + str(self.lambda6[1625:1635]))
+        print('lambda1: ' + str(self.lambda1[1620:1630]))
+        print('lambda2: ' + str(self.lambda2[1620:1630]))
+        print('lambda3: ' + str(self.lambda3[1620:1630]))
+        print('lambda4: ' + str(self.lambda4[1620:1630]))
+        print('lambda5: ' + str(self.lambda5[1620:1630]))
+        print('lambda6: ' + str(self.lambda5[1620:1630]))
 
 
 
