@@ -706,6 +706,8 @@ class DisplayPeriodicSolutions:
                         if abs(l.real-1.0) > self.maxEigenvalueDeviation:
                             counter_negative_axes = counter_negative_axes + 1
 
+                minimum_lambda = 10
+                maximum_lambda = -1.0e6
 
                 if counter_negative_axes == 2:
                     for idx, l in enumerate(eigenvalue):
