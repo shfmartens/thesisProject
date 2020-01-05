@@ -738,8 +738,6 @@ class DisplayPeriodicSolutions:
 
                 print('FINAL ADAP: ' + str(sorting_indices))
 
-                [1.24338819  1.00140018  0.99860222  0.8042537 - 4.453111 - 0.22456211]
-
 
             if l2_180 == True and counter_temp > 1610 and counter_temp < 1629:
 
