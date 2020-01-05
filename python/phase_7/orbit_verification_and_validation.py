@@ -703,7 +703,7 @@ class DisplayPeriodicSolutions:
 
                 for idx, l in enumerate(eigenvalue):
                     if abs(l.imag) < self.maxEigenvalueDeviation:
-                        if abs(l.real-1.0) > self.maxEigenvalueDeviation
+                        if abs(l.real-1.0) > self.maxEigenvalueDeviation:
                             counter_negative_axes = counter_negative_axes + 1
 
 
