@@ -680,6 +680,7 @@ class DisplayPeriodicSolutions:
                 for idx, l in enumerate(eigenvalue):
                     if abs(l.imag) < 3.0 * self.maxEigenvalueDeviation:
                         if abs(l.real-1.24) < ref_deviation:
+                            ref_deviation = l.real-1.24
                             lambda1_sorting = lambda1_sorting
 
                 sorting_indices[0] = idx
@@ -689,6 +690,7 @@ class DisplayPeriodicSolutions:
                 for idx, l in enumerate(eigenvalue):
                     if abs(l.imag) < 3.0 * self.maxEigenvalueDeviation:
                         if abs(l.real + 0.22) < ref_deviation:
+                            ref_deviation = l.real + 0.22
                             lambda1_sorting = idx
 
                 sorting_indices[1] = lambda2_sorting
@@ -699,6 +701,7 @@ class DisplayPeriodicSolutions:
                 for idx, l in enumerate(eigenvalue):
                     if abs(l.imag) < 3.0 * self.maxEigenvalueDeviation:
                         if abs(l.real -0.9986) < ref_deviation:
+                            ref_deviation = l.real -0.9986
                             lambda3_sorting = idx
 
                 sorting_indices[3] = lambda3_sorting
@@ -708,6 +711,7 @@ class DisplayPeriodicSolutions:
                 for idx, l in enumerate(eigenvalue):
                     if abs(l.imag) < 3.0 * self.maxEigenvalueDeviation:
                         if abs(l.real - 1.0014) < ref_deviation:
+                            ref_deviation =l.real - 1.0014
                             lambda4_sorting = idx
 
                 sorting_indices[2] = lambda4_sorting
@@ -717,6 +721,7 @@ class DisplayPeriodicSolutions:
                 for idx, l in enumerate(eigenvalue):
                     if abs(l.imag) < 3.0 * self.maxEigenvalueDeviation:
                         if abs(l.real +4.45) < ref_deviation:
+                            ref_deviation =l.real +4.45
                             lambda5_sorting = idx
 
                 sorting_indices[4] = lambda5_sorting
@@ -726,6 +731,7 @@ class DisplayPeriodicSolutions:
                 for idx, l in enumerate(eigenvalue):
                     if abs(l.imag) < 3.0 * self.maxEigenvalueDeviation:
                         if abs(l.real - 0.8042537) < ref_deviation:
+                            ref_deviation =l.real - 0.8042537
                             lambda6_sorting = idx
 
                 sorting_indices[5] = lambda6_sorting
