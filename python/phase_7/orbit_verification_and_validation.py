@@ -680,7 +680,7 @@ class DisplayPeriodicSolutions:
                 for idx, l in enumerate(eigenvalue):
                     if abs(l.imag) < 3.0 * self.maxEigenvalueDeviation:
                         if abs(l.real-1.24) < ref_deviation:
-                            lambda1_sorting = idx
+                            lambda1_sorting = lambda1_sorting
 
                 sorting_indices[0] = idx
 
@@ -691,7 +691,7 @@ class DisplayPeriodicSolutions:
                         if abs(l.real + 0.22) < ref_deviation:
                             lambda1_sorting = idx
 
-                sorting_indices[1] = idx
+                sorting_indices[1] = lambda2_sorting
 
 
                 ref_deviation = 80
@@ -701,7 +701,7 @@ class DisplayPeriodicSolutions:
                         if abs(l.real -0.9986) < ref_deviation:
                             lambda3_sorting = idx
 
-                sorting_indices[3] = idx
+                sorting_indices[3] = lambda3_sorting
 
                 ref_deviation = 80
                 lambda4_sorting = 0
@@ -710,7 +710,7 @@ class DisplayPeriodicSolutions:
                         if abs(l.real - 1.0014) < ref_deviation:
                             lambda4_sorting = idx
 
-                sorting_indices[2] = idx
+                sorting_indices[2] = lambda4_sorting
 
                 ref_deviation = 80
                 lambda5_sorting = 0
@@ -719,7 +719,7 @@ class DisplayPeriodicSolutions:
                         if abs(l.real +4.45) < ref_deviation:
                             lambda5_sorting = idx
 
-                sorting_indices[4] = idx
+                sorting_indices[4] = lambda5_sorting
 
                 ref_deviation = 80
                 lambda6_sorting = 0
@@ -728,7 +728,7 @@ class DisplayPeriodicSolutions:
                         if abs(l.real - 0.8042537) < ref_deviation:
                             lambda6_sorting = idx
 
-                sorting_indices[5] = idx
+                sorting_indices[5] = lambda6_sorting
 
                 print('FINAL ADAP: ' + str(sorting_indices))
 
