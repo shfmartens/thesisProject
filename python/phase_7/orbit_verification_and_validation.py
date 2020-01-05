@@ -1504,12 +1504,12 @@ class DisplayPeriodicSolutions:
         l5 = [abs(entry) for entry in self.lambda5]
         l6 = [abs(entry) for entry in self.lambda6]
 
-        print('lambda1: ' + str(self.lambda1[2030:2036]))
-        print('lambda2: ' + str(self.lambda2[2030:2036]))
-        print('lambda3: ' + str(self.lambda3[2030:2036]))
-        print('lambda4: ' + str(self.lambda4[2030:2036]))
-        print('lambda5: ' + str(self.lambda5[2030:2036]))
-        print('lambda6: ' + str(self.lambda5[2030:2036]))
+        print('lambda1: ' + str(self.lambda1[2030:2037]))
+        print('lambda2: ' + str(self.lambda2[2030:2037]))
+        print('lambda3: ' + str(self.lambda3[2030:2037]))
+        print('lambda4: ' + str(self.lambda4[2030:2037]))
+        print('lambda5: ' + str(self.lambda5[2030:2037]))
+        print('lambda6: ' + str(self.lambda5[2030:2037]))
 
 
 
