@@ -625,7 +625,7 @@ class DisplayPeriodicSolutions:
                 # Find indices of the pair of largest/smallest real eigenvalue (corresponding to the unstable/stable subspace)
                 for idx, l in enumerate(eigenvalue):
                     if abs(l.imag) < self.maxEigenvalueDeviation and l.real > 0.0:
-                        print(l.real)
+                        #print(l.real)
                         if l.real < minimum_lambda:
                             minimum_idx = idx
                             minimum_lambda = l.real
@@ -890,9 +890,9 @@ class DisplayPeriodicSolutions:
 
             counter_temp = counter_temp + 1
 
-        if self.alpha == 300:
-            print('lambda2: final ' + str(self.lambda2[1011]))
-            print('lambda5: final ' + str(self.lambda5[1011]))
+        # if self.alpha == 300:
+        #     print('lambda2: final ' + str(self.lambda2[1011]))
+        #     print('lambda5: final ' + str(self.lambda5[1011]))
 
 
 
