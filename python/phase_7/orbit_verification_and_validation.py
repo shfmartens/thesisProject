@@ -685,7 +685,7 @@ class DisplayPeriodicSolutions:
 
                 # Find indices of the first pair of real eigenvalue equal to one
                 for idx, l in enumerate(eigenvalue):
-                    if abs(l.imag) < self.maxEigenvalueDeviation or (abs(l.imag) < 3.0*self.maxEigenvalueDeviation and counter_temp == 2035):
+                    if abs(l.imag) < self.maxEigenvalueDeviation or (abs(l.imag) < 3.0*self.maxEigenvalueDeviation and counter_temp > 2034):
                         if abs(l.real - 1.0) < 3.0*self.maxEigenvalueDeviation:
                             if sorting_indices[2] == -1:
                                 sorting_indices[2] = idx
