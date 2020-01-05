@@ -304,7 +304,8 @@ class DisplayPeriodicSolutions:
                 print('eigenvalues: ' + str(eigenvalue))
                 print('sorting_indices: ' + str(sorting_indices))
 
-
+            if counter_temp > 1626 and counter_temp < 1632:
+                print('member ' + str(counter_temp) + ' eigenvalues: ' + str(eigenvalue))
 
             # Find indices of the first pair of real eigenvalue equal to one
             for idx, l in enumerate(eigenvalue):
