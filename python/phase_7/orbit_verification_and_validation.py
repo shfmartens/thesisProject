@@ -1304,12 +1304,12 @@ class DisplayPeriodicSolutions:
         # print('index Hlt max: ' + str(self.Hlt.index(max(self.Hlt))))
         #
         # print('Hlt 1265: ' + str(self.Hlt[1265]))
-        print('lambda1 1011: ' + str(self.lambda1[1011]))
-        print('lambda2 1011: ' + str(self.lambda2[1011]))
-        print('lambda3 1011: ' + str(self.lambda3[1011]))
-        print('lambda4 1011: ' + str(self.lambda4[1011]))
-        print('lambda5 1011: ' + str(self.lambda5[1011]))
-        print('lambda6 1011: ' + str(self.lambda6[1011]))
+        # print('lambda1 1011: ' + str(self.lambda1[1011]))
+        # print('lambda2 1011: ' + str(self.lambda2[1011]))
+        # print('lambda3 1011: ' + str(self.lambda3[1011]))
+        # print('lambda4 1011: ' + str(self.lambda4[1011]))
+        # print('lambda5 1011: ' + str(self.lambda5[1011]))
+        # print('lambda6 1011: ' + str(self.lambda6[1011]))
 
         #
         # print('Hlt max: ' + str(self.Hlt[1263:1278]))
