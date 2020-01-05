@@ -676,11 +676,12 @@ class DisplayPeriodicSolutions:
                 idx_manifolds = []
                 idx_out_plane = []
 
-                # print('L2 0.1 180 CASE!')
-                # print('family member: ' + str(counter_temp))
-                # print('M: ' + str(M))
-                # print('eigenvalues: ' + str(eigenvalue))
-                # print('sorting_indices: ' + str(sorting_indices))
+                if counter_temp == 2035:
+                    print('L2 0.1 180 CASE!')
+                    print('family member: ' + str(counter_temp))
+                    print('M: ' + str(M))
+                    print('eigenvalues: ' + str(eigenvalue))
+                    print('sorting_indices: ' + str(sorting_indices))
 
                 # Find indices of the first pair of real eigenvalue equal to one
                 for idx, l in enumerate(eigenvalue):
@@ -693,11 +694,12 @@ class DisplayPeriodicSolutions:
                                 sorting_indices[3] = idx
                                 idx_in_plane.append(idx)
 
-                # print('IN PLANE SELECTED!')
-                # print('sorting_indices: ' + str(sorting_indices))
-                # print('idx_in_plane: ' + str(idx_in_plane))
-                # print('idx_manifolds: ' + str(idx_manifolds))
-                # print('idx_out_plane: ' + str(idx_out_plane))
+                if counter_temp == 2035:
+                    print('IN PLANE SELECTED!')
+                    print('sorting_indices: ' + str(sorting_indices))
+                    print('idx_in_plane: ' + str(idx_in_plane))
+                    print('idx_manifolds: ' + str(idx_manifolds))
+                    print('idx_out_plane: ' + str(idx_out_plane))
 
                 counter_negative_axes = 0
 
@@ -708,6 +710,13 @@ class DisplayPeriodicSolutions:
 
                 minimum_lambda = 10
                 maximum_lambda = -1.0e6
+
+                if counter_temp == 2035:
+                    print('Number of neg axes: ' + str(counter_negative_axes))
+                    print('sorting_indices: ' + str(sorting_indices))
+                    print('idx_in_plane: ' + str(idx_in_plane))
+                    print('idx_manifolds: ' + str(idx_manifolds))
+                    print('idx_out_plane: ' + str(idx_out_plane))
 
                 if counter_negative_axes == 2:
                     for idx, l in enumerate(eigenvalue):
@@ -721,26 +730,44 @@ class DisplayPeriodicSolutions:
                                 maximum_lambda = l.real
 
                     sorting_indices[1] = maximum_idx
-                    idx_manifolds.append(maximum_idx)
+                    idx_out_plane.append(maximum_idx)
                     sorting_indices[4] = minimum_idx
-                    idx_manifolds.append(minimum_idx)
+                    idx_out_plane.append(minimum_idx)
+
+
 
                     missing_indices = sorted(list(set(list(range(-1, 6))) - set(sorting_indices)))
 
-                    # print('sorting_indices: ' + str(sorting_indices))
-                    # print('missing_indices: ' + str(missing_indices))
+
+
+                    if counter_temp == 2035:
+                        print('SELECTED OUT PLANE: axes num ' + str(counter_negative_axes))
+                        print('sorting_indices: ' + str(sorting_indices))
+                        print('idx_in_plane: ' + str(idx_in_plane))
+                        print('idx_manifolds: ' + str(idx_manifolds))
+                        print('idx_out_plane: ' + str(idx_out_plane))
+                        print('sorting_indices: ' + str(sorting_indices))
+                        print('missing_indices: ' + str(missing_indices))
 
                     if eigenvalue.imag[missing_indices[0]] > eigenvalue.imag[missing_indices[1]]:
                         sorting_indices[0] = missing_indices[0]
                         sorting_indices[5] = missing_indices[1]
-                        idx_out_plane.append(missing_indices[0])
-                        idx_out_plane.append(missing_indices[1])
+                        idx_manifolds.append(missing_indices[0])
+                        idx_manifolds.append(missing_indices[1])
 
                     else:
                         sorting_indices[0] = missing_indices[1]
                         sorting_indices[5] = missing_indices[0]
                         idx_out_plane.append(missing_indices[1])
                         idx_out_plane.append(missing_indices[0])
+
+                    if counter_temp == 2035:
+                        print('SELECTED Manifolds: axes num ' + str(counter_negative_axes))
+                        print('sorting_indices: ' + str(sorting_indices))
+                        print('idx_in_plane: ' + str(idx_in_plane))
+                        print('idx_manifolds: ' + str(idx_manifolds))
+                        print('idx_out_plane: ' + str(idx_out_plane))
+                        
 
 
                 if counter_negative_axes == 4:
