@@ -1465,12 +1465,12 @@ class DisplayPeriodicSolutions:
         # print(l5[1266])
         # print(l6[1266])
 
-        print('lambda1: ' + str(self.lambda1[325:335]))
-        print('lambda2: ' + str(self.lambda2[325:335]))
-        print('lambda3: ' + str(self.lambda3[325:335]))
-        print('lambda4: ' + str(self.lambda4[325:335]))
-        print('lambda5: ' + str(self.lambda5[325:335]))
-        print('lambda6: ' + str(self.lambda5[325:335]))
+        print('lambda1: ' + str(self.lambda1[1627:1632]))
+        print('lambda2: ' + str(self.lambda2[1627:1632]))
+        print('lambda3: ' + str(self.lambda3[1627:1632]))
+        print('lambda4: ' + str(self.lambda4[1627:1632]))
+        print('lambda5: ' + str(self.lambda5[1627:1632]))
+        print('lambda6: ' + str(self.lambda5[1627:1632]))
 
 
 
