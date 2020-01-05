@@ -691,7 +691,7 @@ class DisplayPeriodicSolutions:
                     if abs(l.imag) < 3.0 * self.maxEigenvalueDeviation:
                         if abs(l.real + 0.22) < ref_deviation:
                             ref_deviation = l.real + 0.22
-                            lambda1_sorting = idx
+                            lambda2_sorting = idx
 
                 sorting_indices[1] = lambda2_sorting
 
@@ -731,12 +731,14 @@ class DisplayPeriodicSolutions:
                 for idx, l in enumerate(eigenvalue):
                     if abs(l.imag) < 3.0 * self.maxEigenvalueDeviation:
                         if abs(l.real - 0.8042537) < ref_deviation:
-                            ref_deviation =l.real - 0.8042537
+                            ref_deviation = l.real - 0.8042537
                             lambda6_sorting = idx
 
                 sorting_indices[5] = lambda6_sorting
 
                 print('FINAL ADAP: ' + str(sorting_indices))
+
+                [1.24338819  1.00140018  0.99860222  0.8042537 - 4.453111 - 0.22456211]
 
 
             if l2_180 == True and counter_temp > 1610 and counter_temp < 1629:
