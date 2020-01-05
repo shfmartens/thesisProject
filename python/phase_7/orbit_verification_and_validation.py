@@ -855,7 +855,7 @@ class DisplayPeriodicSolutions:
                 #     print(sorting_indices)
 
                 if len(sorting_indices) > len(set(sorting_indices)):
-                    print('\nWARNING: SORTING INDEX IS STILL STILL NOT UNIQUE')
+                    print('\nWARNING: SORTING INDEX IS STILL STILL NOT UNIQUE for counter temp: ' + str(counter_temp))
                     # Sorting eigenvalues from largest to smallest norm, excluding real one
                     sorting_indices = abs(eigenvalue).argsort()[::-1]
                     print(eigenvalue[sorting_indices])
