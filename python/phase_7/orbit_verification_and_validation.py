@@ -1906,8 +1906,10 @@ class DisplayPeriodicSolutions:
         arr[1, 1].scatter(self.continuationParameter, np.angle(self.lambda5, deg=True), c=self.plottingColors['lambda5'], s=size)
         arr[1, 1].set_xlim(xlim)
         arr[1, 1].set_ylim([-180, 180])
-        arr[1,1].plt.axvline(x=960)
-        arr[1,1].plt.axvline(x=980)
+        arr[1, 1].axvline(x=960)
+        arr[1, 1].axvline(x=1000)
+        arr[1, 1].axvline(x=1938)
+
 
 
         arr[1, 2].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
