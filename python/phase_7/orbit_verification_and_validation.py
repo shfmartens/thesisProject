@@ -708,7 +708,8 @@ class DisplayPeriodicSolutions:
                 sorting_indices[5] = min_index
                 idx_manifolds.append(min_index)
 
-
+                missing_indices = sorted(list(set(list(range(-1, 6))) - set(sorting_indices)))
+                
                 if eigenvalue.real[missing_indices[0]] > eigenvalue.real[missing_indices[1]]:
                     sorting_indices[1] = missing_indices[0]
                     sorting_indices[4] = missing_indices[1]
