@@ -743,6 +743,41 @@ class DisplayPeriodicSolutions:
                         idx_out_plane.append(missing_indices[0])
 
 
+                if counter_negative_axes == 4:
+
+                    for idx, l in enumerate(eigenvalue):
+                        if abs(l.imag) < self.maxEigenvalueDeviation and l.real < 0.0:
+                            #print(l.real)
+                            if l.real < minimum_lambda:
+                                minimum_idx = idx
+                                minimum_lambda = l.real
+                            if l.real > maximum_lambda:
+                                maximum_idx = idx
+                                maximum_lambda = l.real
+
+                    sorting_indices[1] = maximum_idx
+                    idx_manifolds.append(maximum_idx)
+                    sorting_indices[4] = minimum_idx
+                    idx_manifolds.append(minimum_idx)
+
+                    missing_indices = sorted(list(set(list(range(-1, 6))) - set(sorting_indices)))
+
+                    # print('sorting_indices: ' + str(sorting_indices))
+                    # print('missing_indices: ' + str(missing_indices))
+
+                    if eigenvalue.real[missing_indices[0]] > eigenvalue.real[missing_indices[1]]:
+                        sorting_indices[0] = missing_indices[0]
+                        sorting_indices[5] = missing_indices[1]
+                        idx_out_plane.append(missing_indices[0])
+                        idx_out_plane.append(missing_indices[1])
+
+                    else:
+                        sorting_indices[0] = missing_indices[1]
+                        sorting_indices[5] = missing_indices[0]
+                        idx_out_plane.append(missing_indices[1])
+                        idx_out_plane.append(missing_indices[0])
+
+
 
                 ## Sort complex values
 
