@@ -1742,10 +1742,13 @@ class DisplayPeriodicSolutions:
         print('Bifurcation indices: ' + str(self.orbitIdBifurcations))
         bifurcationHamiltonian = []
         for i in self.orbitIdBifurcations:
-            print('test: ' + str(i) )
-        print('Continuation paramter indices indices: ' + str(self.orbitIdBifurcations))
+            bifurcationHamiltonian.append(self.continuationParameter[i])
+        print('Continuation Parameter value at bifurcations: ' + str(bifurcationHamiltonian))
+        print('Minimum Continuation parameter ' + str(min(self.continuationParameter)) + ' at member: ' + str(self.continuationParameter.index(min(self.continuationParameter))))
+        print('Maximum Continuation parameter ' + str(max(self.continuationParameter)) + ' at member: ' + str(self.continuationParameter.index(max(self.continuationParameter))))
 
-
+        print('Minimum v1 ' + str(min(self.v1)) + ' at member: ' + str(self.v1.index(min(self.v1))))
+        print('Maximum v1 ' + str(max(self.v1)) + ' at member: ' + str(self.continuationParameter.index(max(self.v1))))
 
         xlim = [min(self.continuationParameter), max(self.continuationParameter)]
 
