@@ -1748,7 +1748,7 @@ class DisplayPeriodicSolutions:
         print('Maximum Continuation parameter ' + str(max(self.continuationParameter)) + ' at member: ' + str(self.continuationParameter.index(max(self.continuationParameter))))
 
         print('Minimum v1 ' + str(min(self.v1)) + ' at member: ' + str(self.v1.index(min(self.v1))))
-        print('Maximum v1 ' + str(max(self.v1)) + ' at member: ' + str(self.continuationParameter.index(max(self.v1))))
+        print('Maximum v1 ' + str(max(self.v1)) + ' at member: ' + str(self.v1.index(max(self.v1))))
 
         xlim = [min(self.continuationParameter), max(self.continuationParameter)]
 
