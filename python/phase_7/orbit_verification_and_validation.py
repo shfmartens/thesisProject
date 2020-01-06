@@ -936,7 +936,7 @@ class DisplayPeriodicSolutions:
             l2_300 = False
             if self.varyingQuantity == 'Hamiltonian' and self.lagrangePointNr == 2 and self.accelerationMagnitude > 0.09 and self.alpha > 290:
                 l2_300 = True
-            if counter_temp == 1952 and l2_300 == True:
+            if counter_temp >1951 and counter_temp < 1955 and l2_300 == True:
 
                 if counter_temp == 1952:
                     sorting_indices = [0, 5, 2,3, 4, 1]
