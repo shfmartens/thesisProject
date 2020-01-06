@@ -1737,7 +1737,7 @@ class DisplayPeriodicSolutions:
 
         print('=========== EXTRACTING QUANTIFICATION INFO ================')
         print('Varying quantity: ' + str(self.varyingQuantity) )
-        print('Family: L'+str(self.lagrangePointNr) + 'Hlt: ' + str(self.Hamiltonian) + ' alt: ' +str(self.accelerationMagnitude) + ' alpha: ' + str(self.alpha))
+        print('Family: L'+str(self.lagrangePointNr) + ', Hlt: ' + str(self.Hamiltonian) + ', alt: ' +str(self.accelerationMagnitude) + ', alpha: ' + str(self.alpha))
         print('# Members: ' + str(len(self.continuationParameter)))
         print('Bifurcation indices: ' + str(self.orbitIdBifurcations))
         bifurcationHamiltonian = []
