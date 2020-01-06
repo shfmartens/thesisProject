@@ -1746,24 +1746,9 @@ class DisplayPeriodicSolutions:
         l5 = [abs(entry) for entry in self.lambda5]
         l6 = [abs(entry) for entry in self.lambda6]
 
-        # print(l1[1266])
-        # print(l2[1266])
-        # print(l3[1266])
-        # print(l4[1266])
-        # print(l5[1266])
-        # print(l6[1266])
-
-        print('lambda1: ' + str(self.lambda1[1947:1957]))
-        print('lambda2: ' + str(self.lambda2[1947:1957]))
-        print('lambda3: ' + str(self.lambda3[1947:1957]))
-        print('lambda4: ' + str(self.lambda4[1947:1957]))
-        print('lambda5: ' + str(self.lambda5[1947:1957]))
-        print('lambda6: ' + str(self.lambda6[1947:1957]))
-
 
         arr[0, 0].xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.4f'))
         arr[0, 0].xaxis.set_ticks(xticks)
-        print(len(self.continuationParameter))
 
         arr[0, 0].semilogy(self.continuationParameter, l1, c=self.plottingColors['lambda1'])
         arr[0, 0].semilogy(self.continuationParameter, l2, c=self.plottingColors['lambda2'])
@@ -2362,9 +2347,9 @@ if __name__ == '__main__':
 
                             #display_periodic_solutions.plot_families()
                             #display_periodic_solutions.plot_periodicity_validation()
-                            display_periodic_solutions.plot_monodromy_analysis()
-                            #display_periodic_solutions.plot_monodromy_analysis_old()
-                            display_periodic_solutions.plot_stability()
+                            #display_periodic_solutions.plot_monodromy_analysis()
+                            display_periodic_solutions.plot_monodromy_analysis_old()
+                            #display_periodic_solutions.plot_stability()
                             #display_periodic_solutions.plot_continuation_procedure()
                             #display_periodic_solutions.plot_increment_of_orbits()
 
