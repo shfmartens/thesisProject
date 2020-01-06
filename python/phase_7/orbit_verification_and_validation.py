@@ -1735,6 +1735,18 @@ class DisplayPeriodicSolutions:
         f, arr = plt.subplots(2, 2, figsize=self.figSize)
         size = 7
 
+        print('=========== EXTRACTING QUANTIFICATION INFO ================')
+        print('Varying quantity: ' + str(self.varyingQuantity) )
+        print('Family: L'+str(self.lagrangePointNr) + 'Hlt: ' + str(self.Hamiltonian) + ' alt: ' +str(self.accelerationMagnitude) + ' alpha: ' + str(self.alpha))
+        print('# Members: ' + str(len(self.continuationParameter)))
+        print('Bifurcation indices: ' + str(self.orbitIdBifurcations))
+        bifurcationHamiltonian = []
+        for i in self.orbitIdBifurcations:
+            print('test: ' + i )
+        print('Continuation paramter indices indices: ' + str(self.orbitIdBifurcations))
+
+
+
         xlim = [min(self.continuationParameter), max(self.continuationParameter)]
 
         xticks = (np.linspace(min(self.continuationParameter), max(self.continuationParameter), num=self.numberOfXTicks))
@@ -2074,9 +2086,6 @@ class DisplayPeriodicSolutions:
         arr[1,1].set_ylabel('$x$ [-], $y$ [-]')
 
 
-        print(max(self.phase))
-        print(min(self.phase))
-
         if self.varyingQuantity == 'Hamiltonian':
             ax2 = arr[1, 1].twinx()
             ax2.tick_params(axis='phase [-]', labelcolor=self.plottingColors['tripleLine'][2])
@@ -2349,7 +2358,7 @@ if __name__ == '__main__':
                             #display_periodic_solutions.plot_periodicity_validation()
                             #display_periodic_solutions.plot_monodromy_analysis()
                             display_periodic_solutions.plot_monodromy_analysis_old()
-                            #display_periodic_solutions.plot_stability()
+                            display_periodic_solutions.plot_stability()
                             #display_periodic_solutions.plot_continuation_procedure()
                             #display_periodic_solutions.plot_increment_of_orbits()
 
