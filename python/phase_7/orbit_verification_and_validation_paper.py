@@ -1137,6 +1137,7 @@ class PeriodicSolutionsCharacterization:
                     "{:2.3f}".format(self.subPlotTitleValueListTwo[objectCounter])) + ' \n' \
                                  + self.subplotTitle + str(
                     "{:2.3f}".format(self.subPlotTitleValueList[objectCounter]))
+                stabilityLineStyle = '-'
 
             objectCounter = objectCounter + 1
 
