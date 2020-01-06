@@ -945,7 +945,7 @@ class DisplayPeriodicSolutions:
                     sorting_indices = [0, 5, 3,2, 4, 1]
 
                 if counter_temp == 1954:
-                    sorting_indices = [0, 5, 1,2, 4, 3]
+                    sorting_indices = [0, 5, 2,3, 4, 1]
 
                 print('FINAL ADAP: ' + str(sorting_indices))
 
