@@ -1171,7 +1171,7 @@ class DisplayPeriodicSolutions:
         if self.varyingQuantity == 'Hamiltonian':
             self.orbitSpacingFactor = 100
         elif self.varyingQuantity == 'Acceleration':
-            self.orbitSpacingFactor = 5
+            self.orbitSpacingFactor = 1
         else:
             self.orbitSpacingFactor = 1
 
