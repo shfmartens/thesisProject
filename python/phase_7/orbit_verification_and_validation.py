@@ -948,7 +948,7 @@ class DisplayPeriodicSolutions:
                 lambda1_sorting = 0
                 for idx, l in enumerate(eigenvalue):
                     if abs(l.imag) > 0.0:
-                        if abs(l.real + 0.31882701) < ref_deviation:
+                        if abs(l.real - 0.31882701) < ref_deviation:
                             ref_deviation = l.real + 0.31882701
                             lambda1_sorting = lambda1_sorting
 
@@ -958,7 +958,7 @@ class DisplayPeriodicSolutions:
                 lambda2_sorting = 0
                 for idx, l in enumerate(eigenvalue):
                     if abs(l.imag) > 0.0:
-                        if abs(l.real - 0.98760742) < ref_deviation:
+                        if abs(l.real + 0.98760742) < ref_deviation:
                             ref_deviation = l.real - 0.98760742
                             lambda2_sorting = idx
 
@@ -988,7 +988,7 @@ class DisplayPeriodicSolutions:
                 lambda5_sorting = 0
                 for idx, l in enumerate(eigenvalue):
                     if abs(l.imag) < 0.0:
-                        if abs(l.real - 0.98760742) < ref_deviation:
+                        if abs(l.real + 0.98760742) < ref_deviation:
                             ref_deviation = l.real - 0.98760742
                             lambda5_sorting = idx
 
@@ -998,7 +998,7 @@ class DisplayPeriodicSolutions:
                 lambda6_sorting = 0
                 for idx, l in enumerate(eigenvalue):
                     if abs(l.imag) < 0.0:
-                        if abs(l.real + 0.31882701) < ref_deviation:
+                        if abs(l.real - 0.31882701) < ref_deviation:
                             ref_deviation = l.real + 0.31882701
                             lambda6_sorting = lambda6_sorting
 
