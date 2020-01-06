@@ -1742,7 +1742,7 @@ class DisplayPeriodicSolutions:
         print('Bifurcation indices: ' + str(self.orbitIdBifurcations))
         bifurcationHamiltonian = []
         for i in self.orbitIdBifurcations:
-            print('test: ' + i )
+            print('test: ' + str(i) )
         print('Continuation paramter indices indices: ' + str(self.orbitIdBifurcations))
 
 
