@@ -796,7 +796,7 @@ class PeriodicSolutionsCharacterization:
                                     + str("{:12.11f}".format(self.orbitObjects[objectCounter].beta)) + '_' \
                                     + str("{:12.11f}".format(self.orbitObjects[objectCounter].Hlt[k])) + '_.txt'
                         if self.varyingQuantity == 'Alpha':
-                        df1String = '../../data/raw/orbits/augmented/L' + str(
+                            df1String = '../../data/raw/orbits/augmented/L' + str(
                             self.orbitObjects[objectCounter].lagrangePointNr) + '_horizontal_' \
                                     + str(
                             "{:12.11f}".format(self.orbitObjects[objectCounter].accelerationMagnitude)) + '_' \
