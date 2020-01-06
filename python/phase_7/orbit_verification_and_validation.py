@@ -1004,6 +1004,8 @@ class DisplayPeriodicSolutions:
 
                 sorting_indices[5] = lambda6_sorting
 
+                sorting_indices = [0, 4, 2,3, 5, 1]
+
                 print('FINAL ADAP: ' + str(sorting_indices))
 
 
