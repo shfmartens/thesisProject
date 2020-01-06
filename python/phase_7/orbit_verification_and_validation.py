@@ -1000,7 +1000,7 @@ class DisplayPeriodicSolutions:
                     if l.imag > 0.0:
                         if abs(l.real - 0.3188) < ref_deviation:
                             ref_deviation = abs(l.real - 0.3188)
-                            lambda6_sorting = lambda1_sorting
+                            lambda6_sorting = idx
 
                 sorting_indices[5] = lambda6_sorting
 
