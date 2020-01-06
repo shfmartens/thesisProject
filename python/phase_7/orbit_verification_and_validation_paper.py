@@ -617,7 +617,7 @@ class PeriodicSolutionsCharacterization:
                         alphaRadians = '$\\frac{5}{3}\\pi$'
                     subtitleString = self.subplotTitle + alphaRadians
                 else:
-                    subtitleString = self.subplotTitleTwo + str(
+                    subtitleString = str(objectCounter) + '. '  + self.subplotTitleTwo + str(
                     "{:2.3f}".format(self.subPlotTitleValueListTwo[objectCounter])) + ' ' \
                                     + self.subplotTitle + str(
                     "{:2.3f}".format(self.subPlotTitleValueList[objectCounter]))
@@ -1133,10 +1133,11 @@ class PeriodicSolutionsCharacterization:
                     stabilityLineStyle = '--'
                 subtitleString = self.subplotTitle + alphaRadians
             else:
-                subtitleString = self.subplotTitleTwo + str(
-                    "{:2.3f}".format(self.subPlotTitleValueListTwo[objectCounter])) + ' \n' \
-                                 + self.subplotTitle + str(
-                    "{:2.3f}".format(self.subPlotTitleValueList[objectCounter]))
+                # subtitleString = self.subplotTitleTwo + str(
+                #     "{:2.3f}".format(self.subPlotTitleValueListTwo[objectCounter])) + ' \n' \
+                #                  + self.subplotTitle + str(
+                #     "{:2.3f}".format(self.subPlotTitleValueList[objectCounter]))
+                subtitleString = str(objectCounter)
                 stabilityLineStyle = '-'
 
             objectCounter = objectCounter + 1
@@ -1154,7 +1155,7 @@ class PeriodicSolutionsCharacterization:
             else:
                 arr[1].plot(self.orbitObjects[i].continuationParameter, self.orbitObjects[i].T,
                             c=self.plottingColors[colour_family][i], label=subtitleString)
-                arr[1].set_xlabel('$\\alpha$ [$rad$]')
+                arr[1].set_xlabel('$\\alpha$ [rad]')
                 arr[1].set_ylabel('$T$ [-]')
 
             if i == len(self.orbitObjects) - 1:
