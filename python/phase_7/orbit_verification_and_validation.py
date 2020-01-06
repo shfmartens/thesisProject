@@ -997,7 +997,7 @@ class DisplayPeriodicSolutions:
                 ref_deviation = 80
                 lambda6_sorting = 0
                 for idx, l in enumerate(eigenvalue):
-                    if abs(l.imag) < 0.0:
+                    if l.imag < 0.0:
                         if abs(l.real - 0.31882701) < ref_deviation:
                             ref_deviation = l.real + 0.31882701
                             lambda6_sorting = lambda6_sorting
