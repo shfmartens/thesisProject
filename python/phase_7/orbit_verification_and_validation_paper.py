@@ -774,28 +774,28 @@ class PeriodicSolutionsCharacterization:
                         # print('objectCounter: ' + str(objectCounter))
                         # print('alpha continuation xminimum at angle: ' + str(self.orbitObjects[objectCounter].alphaContinuation[k]))
                         # print('minimum x2 value: ' + str(minimum_x2))
+                if self.varyingQuantity == 'Hamiltonian':
+                    for k in self.orbitObjects[objectCounter].orbitIdBifurcations:
+                        plot_color = colors_orbit[k]
+                        print('ObjectCounter: ' +str(objectCounter) + ' index bifurcation : ' + str(k))
 
-                for k in self.orbitObjects[objectCounter].orbitIdBifurcations:
-                    plot_color = colors_orbit[k]
-                    print('ObjectCounter: ' +str(objectCounter) + ' index bifurcation : ' + str(k))
-
-                    if self.varyingQuantity == 'Hamiltonian':
-                        df1String = '../../data/raw/orbits/augmented/L' + str(
-                            self.orbitObjects[objectCounter].lagrangePointNr) + '_horizontal_' \
+                        if self.varyingQuantity == 'Hamiltonian':
+                            df1String = '../../data/raw/orbits/augmented/L' + str(
+                                self.orbitObjects[objectCounter].lagrangePointNr) + '_horizontal_' \
                                     + str(
-                            "{:12.11f}".format(self.orbitObjects[objectCounter].accelerationMagnitude)) + '_' \
+                                "{:12.11f}".format(self.orbitObjects[objectCounter].accelerationMagnitude)) + '_' \
                                     + str("{:12.11f}".format(self.orbitObjects[objectCounter].alpha)) + '_' \
                                     + str("{:12.11f}".format(self.orbitObjects[objectCounter].beta)) + '_' \
                                     + str("{:12.11f}".format(self.orbitObjects[objectCounter].Hlt[k])) + '_.txt'
-                    if self.varyingQuantity == 'Acceleration':
-                        df1String = '../../data/raw/orbits/augmented/L' + str(
+                        if self.varyingQuantity == 'Acceleration':
+                            df1String = '../../data/raw/orbits/augmented/L' + str(
                             self.orbitObjects[objectCounter].lagrangePointNr) + '_horizontal_' \
                                     + str(
                             "{:12.11f}".format(self.orbitObjects[objectCounter].accelerationContinuation[k])) + '_' \
                                     + str("{:12.11f}".format(self.orbitObjects[objectCounter].alpha)) + '_' \
                                     + str("{:12.11f}".format(self.orbitObjects[objectCounter].beta)) + '_' \
                                     + str("{:12.11f}".format(self.orbitObjects[objectCounter].Hlt[k])) + '_.txt'
-                    if self.varyingQuantity == 'Alpha':
+                        if self.varyingQuantity == 'Alpha':
                         df1String = '../../data/raw/orbits/augmented/L' + str(
                             self.orbitObjects[objectCounter].lagrangePointNr) + '_horizontal_' \
                                     + str(
@@ -804,8 +804,8 @@ class PeriodicSolutionsCharacterization:
                             "{:12.11f}".format(self.orbitObjects[objectCounter].alphaContinuation[k])) + '_' \
                                     + str("{:12.11f}".format(self.orbitObjects[objectCounter].beta)) + '_' \
                                     + str("{:12.11f}".format(self.orbitObjects[objectCounter].Hlt[k])) + '_.txt'
-                    df1 = load_orbit(df1String)
-                    arr[i, j].plot(df1['x'], df1['y'], color=plot_color,
+                        df1 = load_orbit(df1String)
+                        arr[i, j].plot(df1['x'], df1['y'], color=plot_color,
                                    alpha=self.orbitObjects[objectCounter].plotAlpha,
                                    linewidth=2)
 
@@ -1416,11 +1416,11 @@ if __name__ == '__main__':
         del characterize_periodic_solutions
 
     if  graphical_projection == True:
-        lagrange_point_nr = 2
+        lagrange_point_nr = 1
         acceleration_magnitude = 0.1
         alpha = 0.0
         beta = 0.0
-        hamiltonian = -1.50
+        hamiltonian = -1.525
         varying_quantity = 'Hamiltonian'
         low_dpi = False
         plot_as_x_coordinate = False
@@ -1452,7 +1452,7 @@ if __name__ == '__main__':
                                                                             alpha, hamiltonian, varying_quantity, my_objects,low_dpi,plot_as_x_coordinate,plot_as_family_number)
 
         characterize_periodic_solutions.graphical_projection()
-        characterize_periodic_solutions.bifurcation_analysis()
+        #characterize_periodic_solutions.bifurcation_analysis()
         characterize_periodic_solutions.stability_analysis()
 
         del characterize_periodic_solutions
