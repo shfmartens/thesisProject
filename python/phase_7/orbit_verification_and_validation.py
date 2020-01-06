@@ -2345,7 +2345,7 @@ if __name__ == '__main__':
     low_dpi = False
     varying_quantities = ['Hamiltonian']
     plot_as_x_coordinate  = False
-    plot_as_family_number = True
+    plot_as_family_number = False
 
 
     for orbit_type in orbit_types:
