@@ -617,7 +617,7 @@ class PeriodicSolutionsCharacterization:
                         alphaRadians = '$\\frac{5}{3}\\pi$'
                     subtitleString = self.subplotTitle + alphaRadians
                 else:
-                    subtitleString = str(objectCounter) + '. '  + self.subplotTitleTwo + str(
+                    subtitleString = str(objectCounter + 1) + '. '  + self.subplotTitleTwo + str(
                     "{:2.3f}".format(self.subPlotTitleValueListTwo[objectCounter])) + ' ' \
                                     + self.subplotTitle + str(
                     "{:2.3f}".format(self.subPlotTitleValueList[objectCounter]))
@@ -1137,7 +1137,7 @@ class PeriodicSolutionsCharacterization:
                 #     "{:2.3f}".format(self.subPlotTitleValueListTwo[objectCounter])) + ' \n' \
                 #                  + self.subplotTitle + str(
                 #     "{:2.3f}".format(self.subPlotTitleValueList[objectCounter]))
-                subtitleString = str(objectCounter)
+                subtitleString = str(objectCounter+1)
                 stabilityLineStyle = '-'
 
             objectCounter = objectCounter + 1
