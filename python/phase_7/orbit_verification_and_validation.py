@@ -298,7 +298,7 @@ class DisplayPeriodicSolutions:
             idx_out_plane = []
 
 
-            if counter_temp > 1695 and counter_temp < 1703:
+            if counter_temp > 1967 and counter_temp < 1972:
                 print ('family member: ' + str(counter_temp))
                 print ('M: ' + str(M))
                 print('eigenvalues: ' + str(eigenvalue))
