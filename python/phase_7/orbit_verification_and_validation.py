@@ -1753,7 +1753,7 @@ class DisplayPeriodicSolutions:
         print('Maximum v1 ' + str(max(self.v1)) + ' at member: ' + str(self.v1.index(max(self.v1))))
 
         print('local extrema max: ' + str(max(self.continuationParameter[800:1500])) + ' at member: ' + str(self.continuationParameter[800:1500].index(max(self.continuationParameter[800:1500]))+800))
-        print('local minimum: ' + str(min(self.continuationParameter[1500:2200])) + ' at member: ' + str(self.continuationParameter[1500:2200].index(min(self.continuationParameter[1500:2200]))+1500))
+        print('local extrema minimum: ' + str(min(self.continuationParameter[1500:2600])) + ' at member: ' + str(self.continuationParameter[1500:2600].index(min(self.continuationParameter[1500:2600]))+2600))
 
         xlim = [min(self.continuationParameter), max(self.continuationParameter)]
 
