@@ -1755,6 +1755,7 @@ class DisplayPeriodicSolutions:
         print('local extrema max: ' + str(max(self.continuationParameter[800:1500])) + ' at member: ' + str(self.continuationParameter[800:1500].index(max(self.continuationParameter[800:1500]))+800))
         print('local extrema minimum: ' + str(min(self.continuationParameter[1500:2600])) + ' at member: ' + str(self.continuationParameter[1500:2600].index(min(self.continuationParameter[1500:2600]))+2600))
 
+        print('max T: ' + str(max(self.T)) + ' at member: ' + str(self.T.index(max(self.T))))
         xlim = [min(self.continuationParameter), max(self.continuationParameter)]
 
         xticks = (np.linspace(min(self.continuationParameter), max(self.continuationParameter), num=self.numberOfXTicks))
