@@ -298,11 +298,11 @@ class DisplayPeriodicSolutions:
             idx_out_plane = []
 
 
-            if counter_temp > 2034 and counter_temp < 2080:
-                print ('family member: ' + str(counter_temp))
-                print ('M: ' + str(M))
-                print('eigenvalues: ' + str(eigenvalue))
-                print('sorting_indices: ' + str(sorting_indices))
+            # if counter_temp > 2034 and counter_temp < 2080:
+            #     print ('family member: ' + str(counter_temp))
+            #     print ('M: ' + str(M))
+            #     print('eigenvalues: ' + str(eigenvalue))
+            #     print('sorting_indices: ' + str(sorting_indices))
 
             # if counter_temp > 2035 and counter_temp < 2039:
             #     print('member ' + str(counter_temp) + ' eigenvalues: ' + str(eigenvalue))
@@ -2342,7 +2342,7 @@ if __name__ == '__main__':
     orbit_types = ['horizontal']
     lagrange_points = [2]
     acceleration_magnitudes = [0.1]
-    alphas = [180.0]
+    alphas = [60.0]
     Hamiltonians = [-1.525]
     low_dpi = False
     varying_quantities = ['Hamiltonian']
