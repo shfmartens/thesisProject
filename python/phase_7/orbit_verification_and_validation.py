@@ -298,14 +298,14 @@ class DisplayPeriodicSolutions:
             idx_out_plane = []
 
 
-            # if counter_temp > 2034 and counter_temp < 2080:
-            #     print ('family member: ' + str(counter_temp))
-            #     print ('M: ' + str(M))
-            #     print('eigenvalues: ' + str(eigenvalue))
-            #     print('sorting_indices: ' + str(sorting_indices))
+            if counter_temp > 963 and counter_temp < 975:
+                print ('family member: ' + str(counter_temp))
+                print ('M: ' + str(M))
+                print('eigenvalues: ' + str(eigenvalue))
+                print('sorting_indices: ' + str(sorting_indices))
 
-            # if counter_temp > 2035 and counter_temp < 2039:
-            #     print('member ' + str(counter_temp) + ' eigenvalues: ' + str(eigenvalue))
+            if counter_temp > 2035 and counter_temp < 2039:
+                print('member ' + str(counter_temp) + ' eigenvalues: ' + str(eigenvalue))
 
             # Find indices of the first pair of real eigenvalue equal to one
             for idx, l in enumerate(eigenvalue):
