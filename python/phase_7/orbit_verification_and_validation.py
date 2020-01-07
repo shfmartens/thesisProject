@@ -1753,10 +1753,11 @@ class DisplayPeriodicSolutions:
         print('Maximum v1 ' + str(max(self.v1)) + ' at member: ' + str(self.v1.index(max(self.v1))))
 
         print('local extrema max: ' + str(max(self.continuationParameter[800:1500])) + ' at member: ' + str(self.continuationParameter[800:1500].index(max(self.continuationParameter[800:1500]))+800))
-        print('local extrema minimum: ' + str(min(self.continuationParameter[1500:4449])) + ' at member: ' + str(self.continuationParameter[1500:4449].index(min(self.continuationParameter[1500:4449]))+1500))
+        print('local extrema minimum: ' + str(min(self.continuationParameter[1000:4449])) + ' at member: ' + str(self.continuationParameter[1000:4449].index(min(self.continuationParameter[1000:4449]))+1500))
 
         print('max T: ' + str(max(self.T)) + ' at member: ' + str(self.T.index(max(self.T))))
-        print('Hamiltonian of max T')
+        print('Hamiltonian of max T: ' + str(self.continuationParameter))
+
         xlim = [min(self.continuationParameter), max(self.continuationParameter)]
 
         xticks = (np.linspace(min(self.continuationParameter), max(self.continuationParameter), num=self.numberOfXTicks))
