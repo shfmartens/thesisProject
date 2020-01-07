@@ -298,7 +298,7 @@ class DisplayPeriodicSolutions:
             idx_out_plane = []
 
 
-            if counter_temp > 938 and counter_temp < 950:
+            if counter_temp > 926 and counter_temp < 935:
                 print ('family member: ' + str(counter_temp))
                 print ('M: ' + str(M))
                 print('eigenvalues: ' + str(eigenvalue))
@@ -2347,7 +2347,7 @@ if __name__ == '__main__':
     low_dpi = False
     varying_quantities = ['Hamiltonian']
     plot_as_x_coordinate  = False
-    plot_as_family_number = False
+    plot_as_family_number = True
 
 
     for orbit_type in orbit_types:
