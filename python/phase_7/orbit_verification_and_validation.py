@@ -1795,7 +1795,7 @@ class DisplayPeriodicSolutions:
         arr[1,1].semilogy(self.continuationParameter, 1.0e-3 * np.ones(len(self.continuationParameter)), color=self.plottingColors['limit'], linewidth=1, linestyle='--')
         if self.varyingQuantity == 'Alpha' and plot_as_x_coordinate == False and plot_as_family_number == False:
             arr[0,0].set_xticks([0, 90, 180, 270, 360])
-            arr[0.0].set_xticklabels(['$0$', '$\\frac{1}{2}\\pi$', '$\\pi$', '$\\frac{3}{2}\\pi$', '$2\\pi$'])
+            arr[0,0].set_xticklabels(['$0$', '$\\frac{1}{2}\\pi$', '$\\pi$', '$\\frac{3}{2}\\pi$', '$2\\pi$'])
             arr[1,1].set_xticks([0, 90, 180, 270, 360])
             arr[1,1].set_xticklabels(['$0$', '$\\frac{1}{2}\\pi$', '$\\pi$', '$\\frac{3}{2}\\pi$', '$2\\pi$'])
 
