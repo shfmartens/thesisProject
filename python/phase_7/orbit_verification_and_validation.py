@@ -1756,7 +1756,7 @@ class DisplayPeriodicSolutions:
         print('local extrema minimum: ' + str(min(self.continuationParameter[1000:4449])) + ' at member: ' + str(self.continuationParameter[1000:4449].index(min(self.continuationParameter[1000:4449]))+1500))
 
         print('max T: ' + str(max(self.T)) + ' at member: ' + str(self.T.index(max(self.T))))
-        print('Hamiltonian of max T: ' + str(self.continuationParameter))
+        #print('Hamiltonian of max T: ' + str(self.continuationParameter))
 
         xlim = [min(self.continuationParameter), max(self.continuationParameter)]
 
@@ -2348,7 +2348,7 @@ if __name__ == '__main__':
     orbit_types = ['horizontal']
     lagrange_points = [2]
     acceleration_magnitudes = [0.1]
-    alphas = [60.0]
+    alphas = [300.0]
     Hamiltonians = [-1.525]
     low_dpi = False
     varying_quantities = ['Hamiltonian']
