@@ -735,10 +735,14 @@ def load_initial_conditions_augmented_incl_M(file_path):
     return data
 
 def concanate_alpha_varying_files():
-    fileNames =  ['../../data/raw/orbits/augmented/varying_alpha/[100-180]_L2_horizontal_0.05000000000_0.00000000000_-1.50000000000_differential_correction.txt', \
-                  '../../data/raw/orbits/augmented/varying_alpha/[180-260]_L2_horizontal_0.05000000000_0.00000000000_-1.50000000000_differential_correction.txt']
+    fileNames =  ['../../data/raw/orbits/augmented/varying_alpha/[0-60]_L2_horizontal_0.10000000000_0.00000000000_-1.55000000000_differential_correction.txt', \
+                  '../../data/raw/orbits/augmented/varying_alpha/[60_95]_L2_horizontal_0.10000000000_0.00000000000_-1.55000000000_differential_correction.txt',
+                  '../../data/raw/orbits/augmented/varying_alpha/[96_109]_L2_horizontal_0.10000000000_0.00000000000_-1.55000000000_differential_correction.txt',
+                  '../../data/raw/orbits/augmented/varying_alpha/[251-264]_L2_horizontal_0.10000000000_0.00000000000_-1.55000000000_differential_correction.txt',
+                  '../../data/raw/orbits/augmented/varying_alpha/[265-300]_L2_horizontal_0.10000000000_0.00000000000_-1.55000000000_differential_correction.txt',
+                  '../../data/raw/orbits/augmented/varying_alpha/[300-359]_L2_horizontal_0.10000000000_0.00000000000_-1.55000000000_differential_correction.txt']
 
-    outFileName = '../../data/raw/orbits/augmented/varying_alpha/L2_horizontal_0.05000000000_0.00000000000_-1.50000000000_differential_correction.txt'
+    outFileName = '../../data/raw/orbits/augmented/varying_alpha/L2_horizontal_0.10000000000_0.00000000000_-1.55000000000_differential_correction.txt'
 
     with open(outFileName, 'w') as outfile:
         for fname in fileNames:
@@ -747,8 +751,11 @@ def concanate_alpha_varying_files():
                     outfile.write(line)
 
 def reverse_alpha_varying_files():
-    fileName = '../../data/raw/orbits/augmented/varying_alpha/[180-100]_L2_horizontal_0.05000000000_0.00000000000_-1.50000000000_initial_conditions.txt'
-    fileNameOut = '../../data/raw/orbits/augmented/varying_alpha/[100-180]_L2_horizontal_0.05000000000_0.00000000000_-1.50000000000_initial_conditions.txt'
+    #initial_conditions
+    #differential_correction
+    #states_continuation
+    fileName = '../../data/raw/orbits/augmented/varying_alpha/[300-265]_L2_horizontal_0.10000000000_0.00000000000_-1.55000000000_states_continuation.txt'
+    fileNameOut = '../../data/raw/orbits/augmented/varying_alpha/[265-300]_L2_horizontal_0.10000000000_0.00000000000_-1.55000000000_states_continuation.txt'
 
     with open(fileName) as f, open(fileNameOut, 'w') as fout:
         fout.writelines(reversed(f.readlines()))
