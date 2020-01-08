@@ -2349,7 +2349,7 @@ if __name__ == '__main__':
     lagrange_points = [2]
     acceleration_magnitudes = [0.05]
     alphas = [0.0]
-    Hamiltonians = [-1.50]
+    Hamiltonians = [-1.525]
     low_dpi = False
     varying_quantities = ['Alpha']
     plot_as_x_coordinate  = False

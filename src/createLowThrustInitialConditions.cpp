@@ -1649,12 +1649,12 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
               //thrustAndMassTemp(3) = 1.0;
               //propagateAndSaveCollocationProcedure(oddNodesMatrix, Eigen::VectorXd::Zero(numberOfCollocationPoints-1), thrustAndMassTemp, numberOfCollocationPoints, 0, massParameter);
 
-               double incrementTest = 0.05;
+               double incrementTest = 0.01;
 
-               if (oddNodesMatrix(6,0) > 0.0895)
-               {
-                    incrementTest = 0.001;
-               }
+//               if (oddNodesMatrix(6,0) > 0.0895)
+//               {
+//                    incrementTest = 0.001;
+//               }
                std::cout << "\naccelerationMagnitude Most recent converged member: " <<oddNodesMatrix(6,0) << std::endl;
                std::cout << "Hamiltonain converged member: " << computeHamiltonian(massParameter,oddNodesMatrix.block(0,0,10,1)) << std::endl;
 
