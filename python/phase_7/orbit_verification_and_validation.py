@@ -2142,7 +2142,7 @@ class DisplayPeriodicSolutions:
                 xcoords = [126.0, 250.0]
         if self.varyingQuantity == 'Alpha' and self.lagrangePointNr == 2:
             if self.Hamiltonian == -1.55 and self.accelerationMagnitude == 0.1:
-                xcoords = [61, 96, 109, 111, 125, 161]
+                xcoords = [61, 96, 111, 113, 125, 161]
 
             for i in range(2):
                 for j in range(2):
