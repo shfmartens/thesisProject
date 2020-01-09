@@ -33,7 +33,7 @@
 #include "applyCollocation.h"
 #include "computeCollocationCorrection.h"
 #include "interpolatePolynomials.h"
-
+#include "varyingMassAnalysis.h"
 
 double massParameter = tudat::gravitation::circular_restricted_three_body_problem::computeMassParameter( tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER, tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER );
 double maximumThrust = 0.1;
@@ -96,6 +96,13 @@ int main (){
 //    std::cout << "velocity []: " << velocity << std::endl;
 //    std::cout << "eps: " << std::numeric_limits<double>::epsilon( ) << std::endl;
 
+    // ================================
+    // == VaryingMassAnalysis ==
+    // ================================
+
+    int testCaseNumber = 2;
+    // ADAPT SPECIFIC IMPULSE IN STATE MODEL AND IN OUTPUT!
+    varyingMassAnalysis(testCaseNumber, massParameter);
 
 
     // ================================
@@ -111,16 +118,16 @@ int main (){
             {
                 std::cout << "Run Thread " << i << std::endl;
                 std::string orbitType = "horizontal";
-                int continuationIndex = 7; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
-                double accelerationMagnitude = 0.1;
-                double accelerationAngle = 96.0;
+                int continuationIndex = 6; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
+                double accelerationMagnitude = 0.0;
+                double accelerationAngle = 110.0;
                 double accelerationAngle2 = 0.0;
                 double initialMass = 1.0;
                 double ySign = -1.0;
-                double familyHamiltonian = -1.525;
-                int numberOfFamilyMembers = 40;
+                double familyHamiltonian = -1.50;
+                int numberOfFamilyMembers = 100;
                 bool startContinuationFromTextFile = false;
-                createLowThrustInitialConditions(1, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile, numberOfFamilyMembers );
+                //createLowThrustInitialConditions(2, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile, numberOfFamilyMembers );
 
 
 

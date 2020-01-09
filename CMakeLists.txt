@@ -266,6 +266,7 @@ set(CR3BPLT_SOURCES
          "${SRCROOT}/src/morimotoFirstOrderApproximation.cpp"
          "${SRCROOT}/src/floquetApproximation.cpp"
          "${SRCROOT}/src/checkEigenvalues.cpp"
+         "${SRCROOT}/src/varyingMassAnalysis.cpp"
              )
 
 set(CR3BPLT_HEADERS
@@ -299,6 +300,7 @@ set(CR3BPLT_HEADERS
          "${SRCROOT}/src/morimotoFirstOrderApproximation.h"
          "${SRCROOT}/src/floquetApproximation.h"
          "${SRCROOT}/src/checkEigenvalues.h"
+          "${SRCROOT}/src/varyingMassAnalysis.h"
                  )
 
  # Add static libraries.

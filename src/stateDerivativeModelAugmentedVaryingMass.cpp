@@ -25,7 +25,7 @@ Eigen::MatrixXd computeStateDerivativeAugmentedVaryingMass( const double time, c
     double orbitalPeriod = tudat::basic_astrodynamics::computeKeplerOrbitalPeriod( characteristicLength, tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER, tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER / tudat::physical_constants::GRAVITATIONAL_CONSTANT) ;
     double characteristicTime = orbitalPeriod /  ( 2.0 * tudat::mathematical_constants::PI); // inverted mean motion in [s]
     double seaGravitationalAcceleration = tudat::physical_constants::SEA_LEVEL_GRAVITATIONAL_ACCELERATION; // TUDAT
-    double specificImpulse = 3000; // Recheck spacecraft properties
+    double specificImpulse = 3000.0; // Recheck spacecraft properties
 
     double massRate = ( -1.0 * cartesianState(6,0) * characteristicLength ) / (specificImpulse * seaGravitationalAcceleration * characteristicTime );
 

@@ -12,6 +12,7 @@
 
 #include "propagateOrbitAugmented.h"
 #include "stateDerivativeModelAugmented.h"
+#include "createLowThrustInitialConditions.h"
 
 Eigen::VectorXd redstributeNodesOverTrajectory(const Eigen::VectorXd initialStateVector, const int numberOfPatchPoints,  const int numberOfCollocationPoints, const double massParameter)
 {
@@ -232,6 +233,11 @@ std::pair< Eigen::MatrixXd, double >  propagateOrbitAugmentedToFinalCondition(
                 if ( saveFrequency > 0 && ( stepCounter % saveFrequency == 0 ) )
                 {
                     stateHistory[ currentTime ] = currentState.first.block( 0, 0, 10, 1 );
+                    //std::cout << "currentState: " << currentState.first.block( 0, 0, 10, 1 ) << std::endl;
+//                    std::cout.precision(12);
+//                    std::cout << "Hamiltonian: " << computeHamiltonian(massParameter, currentState.first.block( 0, 0, 10, 1 ) ) << std::endl;
+
+
                 }
 
                 currentTime = currentState.second;

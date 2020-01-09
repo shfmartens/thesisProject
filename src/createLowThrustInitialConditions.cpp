@@ -1651,10 +1651,10 @@ void createLowThrustInitialConditions( const int librationPointNr, const double 
 
                double incrementTest = 0.01;
 
-//               if (oddNodesMatrix(6,0) > 0.0895)
-//               {
-//                    incrementTest = 0.001;
-//               }
+               if (oddNodesMatrix(6,0) > 0.0895)
+               {
+                    incrementTest = 0.001;
+               }
                std::cout << "\naccelerationMagnitude Most recent converged member: " <<oddNodesMatrix(6,0) << std::endl;
                std::cout << "Hamiltonain converged member: " << computeHamiltonian(massParameter,oddNodesMatrix.block(0,0,10,1)) << std::endl;
 

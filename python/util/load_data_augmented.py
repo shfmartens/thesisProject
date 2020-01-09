@@ -146,11 +146,34 @@ def load_equilibria_acceleration_deviation(file_path):
     data.columns = ['alpha', 'dx', 'dy', 'dz', 'dxdot', 'dydot', 'dzdot']
     return data
 
+def compute_hamiltonian_from_state(x,y,z,xdot,ydot,zdot,accMag,alpha,mass):
+    EARTH_GRAVITATIONAL_PARAMETER = 3.986004418E14
+    SUN_GRAVITATIONAL_PARAMETER = 1.32712440018e20
+    MOON_GRAVITATIONAL_PARAMETER = SUN_GRAVITATIONAL_PARAMETER / (328900.56 * (1.0 + 81.30059))
+    mass_parameter = MOON_GRAVITATIONAL_PARAMETER / (MOON_GRAVITATIONAL_PARAMETER + EARTH_GRAVITATIONAL_PARAMETER)
+
+    r1 = np.sqrt((x+mass_parameter) ** 2 + y ** 2)
+    r2 = np.sqrt((x-1.0+mass_parameter) ** 2 + y ** 2 )
+    Omega = 0.5*(x ** 2 + y ** 2) + (1.0-mass_parameter)/r1 + (mass_parameter)/r2
+    V = np.sqrt(xdot ** 2 + ydot ** 2)
+    jacobi = 2*Omega - V ** 2
+
+
+    inner_product = x * accMag/mass * np.cos(alpha*np.pi/180.0) + y * accMag/mass * np.sin(alpha*np.pi/180.0)
+    hamiltonian = -0.5*jacobi - inner_product
+
+
+    return hamiltonian
+
+
 def compute_hamiltonian_from_list(xList,yList,accelerationMagnitude,alphaList):
     EARTH_GRAVITATIONAL_PARAMETER = 3.986004418E14
     SUN_GRAVITATIONAL_PARAMETER = 1.32712440018e20
     MOON_GRAVITATIONAL_PARAMETER = SUN_GRAVITATIONAL_PARAMETER / (328900.56 * (1.0 + 81.30059))
     massParameter = MOON_GRAVITATIONAL_PARAMETER / (MOON_GRAVITATIONAL_PARAMETER + EARTH_GRAVITATIONAL_PARAMETER)
+
+    r1 = np.sqrt((massParameter + x) ** 2 + (y ** 2))
+    r2 = np.sqrt(((x - 1 + massParameter) ** 2) + (y ** 2))
 
     hamiltonianList = []
     for i in range(len(xList)):
@@ -735,11 +758,13 @@ def load_initial_conditions_augmented_incl_M(file_path):
     return data
 
 def concanate_alpha_varying_files():
-    fileNames =  ['../../data/raw/orbits/augmented/varying_alpha/[96-122]_L2_horizontal_0.10000000000_0.00000000000_-1.52500000000_differential_correction.txt', \
-                  '../../data/raw/orbits/augmented/varying_alpha/[238-264]_L2_horizontal_0.10000000000_0.00000000000_-1.52500000000_differential_correction.txt']
+    fileNames =  ['../../data/raw/orbits/augmented/varying_alpha/[111-119]_L2_horizontal_0.10000000000_0.00000000000_-1.50000000000_initial_conditions.txt', \
+                  '../../data/raw/orbits/augmented/varying_alpha/[120-138]_L2_horizontal_0.10000000000_0.00000000000_-1.50000000000_initial_conditions.txt', \
+                  '../../data/raw/orbits/augmented/varying_alpha/[222-240]_L2_horizontal_0.10000000000_0.00000000000_-1.50000000000_initial_conditions.txt',
+                  '../../data/raw/orbits/augmented/varying_alpha/[240-249]_L2_horizontal_0.10000000000_0.00000000000_-1.50000000000_initial_conditions.txt']
 
 
-    outFileName = '../../data/raw/orbits/augmented/varying_alpha/L2_horizontal_0.10000000000_0.00000000000_-1.52500000000_differential_correction.txt'
+    outFileName = '../../data/raw/orbits/augmented/varying_alpha/L2_horizontal_0.10000000000_0.00000000000_-1.50000000000_initial_conditions.txt'
 
     with open(outFileName, 'w') as outfile:
         for fname in fileNames:
@@ -747,15 +772,16 @@ def concanate_alpha_varying_files():
                 for line in infile:
                     outfile.write(line)
 
-def reverse_alpha_varying_files():
+def reverse_alpha_files():
     #initial_conditions
     #differential_correction
     #states_continuation
-    fileName = '../../data/raw/orbits/augmented/varying_alpha/[122-96]_L2_horizontal_0.10000000000_0.00000000000_-1.52500000000_initial_conditions.txt'
-    fileNameOut = '../../data/raw/orbits/augmented/varying_alpha/[96-122]_L2_horizontal_0.10000000000_0.00000000000_-1.52500000000_initial_conditions.txt'
+    fileName = '../../data/raw/orbits/augmented/varying_alpha/[119-111]_L2_horizontal_0.10000000000_0.00000000000_-1.50000000000_states_continuation.txt'
+    fileNameOut = '../../data/raw/orbits/augmented/varying_alpha/[111-119]_L2_horizontal_0.10000000000_0.00000000000_-1.50000000000_states_continuation.txt'
 
     with open(fileName) as f, open(fileNameOut, 'w') as fout:
         fout.writelines(reversed(f.readlines()))
 
 if __name__ == '__main__':
     concanate_alpha_varying_files()
+
