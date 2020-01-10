@@ -1330,10 +1330,10 @@ class PeriodicSolutionsCharacterization:
 
 if __name__ == '__main__':
 
-    ballistic_planar_projection = False
+    ballistic_planar_projection = True
     ballistic_bifurcation_analysis = False
     ballistic_stability_analysis = False
-    graphical_projection = True
+    graphical_projection = False
     bifurcation_analysis = False
     stability_analysis = False
     hamiltonian_domain_analysis = False
@@ -1359,9 +1359,9 @@ if __name__ == '__main__':
 
         characterize_periodic_solutions = PeriodicSolutionsCharacterization(lagrange_point_nr,acceleration_magnitude, alpha, hamiltonian,varying_quantity, my_objects, low_dpi,plot_as_x_coordinate,plot_as_family_number)
 
-        characterize_periodic_solutions.ballistic_graphical_projection()
+        #characterize_periodic_solutions.ballistic_graphical_projection()
         #characterize_periodic_solutions.ballistic_bifurcation_analysis()
-        #characterize_periodic_solutions.ballistic_stability_analysis()
+        characterize_periodic_solutions.ballistic_stability_analysis()
 
 
         del characterize_periodic_solutions
