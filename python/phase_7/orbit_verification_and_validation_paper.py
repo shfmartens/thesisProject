@@ -1423,22 +1423,22 @@ if __name__ == '__main__':
         alpha = 0.0
         beta = 0.0
         hamiltonian = -1.50
-        varying_quantity = 'Acceleration'
+        varying_quantity = 'Alpha'
         low_dpi = False
         plot_as_x_coordinate = False
         plot_as_family_number = False
 
 
 
-        orbit1 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
-        orbit2 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 60.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
-        orbit3 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 120.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
-        orbit4 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 180.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
-        orbit5 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 300.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
-        orbit6 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 240.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
-        # orbit7 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, alpha, -1.55, varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
-        # orbit8 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, alpha, -1.525,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
-        # orbit9 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, alpha, -1.50,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
+        orbit1 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.01, 0.0, -1.55, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
+        orbit2 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.01, 60.0, -1.525, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
+        orbit3 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.01, 120.0, -1.50, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
+        orbit4 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.05, 180.0, -1.55, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
+        orbit5 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.05, 300.0, -1.525, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
+        orbit6 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.05, 240.0, -1.50, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
+        orbit7 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.1, alpha, -1.55, varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
+        orbit8 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.1, alpha, -1.525,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
+        orbit9 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.1, alpha, -1.50,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
 
         my_objects = []
         my_objects.append(orbit1)
@@ -1447,9 +1447,9 @@ if __name__ == '__main__':
         my_objects.append(orbit4)
         my_objects.append(orbit5)
         my_objects.append(orbit6)
-        # my_objects.append(orbit7)
-        # my_objects.append(orbit8)
-        # my_objects.append(orbit9)
+        my_objects.append(orbit7)
+        my_objects.append(orbit8)
+        my_objects.append(orbit9)
 
 
         characterize_periodic_solutions = PeriodicSolutionsCharacterization(lagrange_point_nr, acceleration_magnitude,
