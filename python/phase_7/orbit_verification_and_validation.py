@@ -1090,9 +1090,9 @@ class DisplayPeriodicSolutions:
                     self.orbitIdBifurcations.append(row[0])
 
             self.orderOfLinearInstability.append(6 - reduction)
-            self.v1.append(abs(eigenvalue[sorting_indices[0]] + eigenvalue[sorting_indices[5]]) / 2)
-            self.v2.append(abs(eigenvalue[sorting_indices[1]] + eigenvalue[sorting_indices[4]]) / 2)
-            self.v3.append(abs(eigenvalue[sorting_indices[2]] + eigenvalue[sorting_indices[3]]) / 2)
+            self.v1.append((abs(eigenvalue[sorting_indices[0]]) + abs(eigenvalue[sorting_indices[5]])) / 2)
+            self.v2.append((abs(eigenvalue[sorting_indices[1]]) + abs(eigenvalue[sorting_indices[4]])) / 2)
+            self.v3.append((abs(eigenvalue[sorting_indices[2]]) + abs(eigenvalue[sorting_indices[3]])) / 2)
             self.D.append(np.linalg.det(M))
 
             counter_temp = counter_temp + 1
@@ -2355,14 +2355,14 @@ class DisplayPeriodicSolutions:
 
 if __name__ == '__main__':
     orbit_types = ['horizontal']
-    lagrange_points = [2]
+    lagrange_points = [1]
     acceleration_magnitudes = [0.1]
-    alphas = [0.0]
+    alphas = [120.0]
     Hamiltonians = [-1.55]
     low_dpi = False
-    varying_quantities = ['Alpha']
+    varying_quantities = ['Hamiltonian']
     plot_as_x_coordinate  = False
-    plot_as_family_number = False
+    plot_as_family_number = True
 
 
     for orbit_type in orbit_types:
