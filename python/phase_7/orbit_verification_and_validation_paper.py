@@ -1422,7 +1422,7 @@ if __name__ == '__main__':
         acceleration_magnitude = 0.1
         alpha = 0.0
         beta = 0.0
-        hamiltonian = -1.525
+        hamiltonian = -1.50
         varying_quantity = 'Acceleration'
         low_dpi = False
         plot_as_x_coordinate = False
