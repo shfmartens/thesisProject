@@ -235,13 +235,13 @@ class presentationAnimations:
             #plot_color = colors_orbit[plotColorIndexBasedOnVariable_Orbit[k]]
             plot_color = colors_orbit[k]
 
-            if self.varyingQuantity == 'Hamiltonian':
+            if self.orbitObjects[objectCounter].varyingQuantity == 'Hamiltonian':
                 df1String = '../../data/raw/orbits/augmented/L' + str(self.orbitObjects[objectCounter].lagrangePointNr) + '_horizontal_' \
                 + str("{:12.11f}".format(self.orbitObjects[objectCounter].accelerationMagnitude)) + '_' \
                 + str("{:12.11f}".format(self.orbitObjects[objectCounter].alpha)) + '_' \
                 + str("{:12.11f}".format(self.orbitObjects[objectCounter].beta)) + '_' \
                 + str("{:12.11f}".format(self.orbitObjects[objectCounter].Hlt[k])) + '_.txt'
-            if self.varyingQuantity == 'Acceleration':
+            if self.orbitObjects[objectCounter].varyingQuantity == 'Acceleration':
                 df1String = '../../data/raw/orbits/augmented/L' + str(
                     self.orbitObjects[objectCounter].lagrangePointNr) + '_horizontal_' \
                             + str(
@@ -249,7 +249,7 @@ class presentationAnimations:
                             + str("{:12.11f}".format(self.orbitObjects[objectCounter].alpha)) + '_' \
                             + str("{:12.11f}".format(self.orbitObjects[objectCounter].beta)) + '_' \
                             + str("{:12.11f}".format(self.orbitObjects[objectCounter].Hlt[k])) + '_.txt'
-            if self.varyingQuantity == 'Alpha':
+            if self.orbitObjects[objectCounter].varyingQuantity == 'Alpha':
                 df1String = '../../data/raw/orbits/augmented/L' + str(
                     self.orbitObjects[objectCounter].lagrangePointNr) + '_horizontal_' \
                             + str("{:12.11f}".format(self.orbitObjects[objectCounter].accelerationMagnitude)) + '_' \
@@ -277,7 +277,7 @@ class presentationAnimations:
                 # print('objectCounter: ' + str(objectCounter))
                 # print('alpha continuation xminimum at angle: ' + str(self.orbitObjects[objectCounter].alphaContinuation[k]))
                 # print('minimum x2 value: ' + str(minimum_x2))
-        if self.varyingQuantity == 'Hamiltonian':
+        if self.orbitObjects[objectCounter].varyingQuantity == 'Hamiltonian':
             for k in self.orbitObjects[objectCounter].orbitIdBifurcations:
                 plot_color = colors_orbit[k]
                 print('ObjectCounter: ' +str(objectCounter) + ' index bifurcation : ' + str(k))
