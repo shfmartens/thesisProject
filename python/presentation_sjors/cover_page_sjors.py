@@ -154,6 +154,7 @@ class presentationAnimations:
 
     def cover_page_picture(self):
         fig = plt.figure(figsize=self.figSize)
+        ax0 = fig.add_subplot(111)
 
         bodies_df = load_bodies_location()
         u = np.linspace(0, 2 * np.pi, 100)
