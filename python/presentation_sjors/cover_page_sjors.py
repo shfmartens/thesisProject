@@ -254,8 +254,8 @@ class presentationAnimations:
                             + str("{:12.11f}".format(self.orbitObjects[objectCounter].alphaContinuation[k])) + '_' \
                             + str("{:12.11f}".format(self.orbitObjects[objectCounter].beta)) + '_' \
                             + str("{:12.11f}".format(self.orbitObjects[objectCounter].Hlt[k])) + '_.txt'
-                df1 = load_orbit(df1String)
-                ax.plot(df1['x'], df1['y'], color=plot_color, alpha=self.orbitObjects[objectCounter].plotAlpha, linewidth=self.orbitObjects[objectCounter].lineWidth)
+            df1 = load_orbit(df1String)
+            ax.plot(df1['x'], df1['y'], color=plot_color, alpha=self.orbitObjects[objectCounter].plotAlpha, linewidth=self.orbitObjects[objectCounter].lineWidth)
 
             if min(df1['x']) < minimum_x:
                     minimum_x = min(df1['x'])
