@@ -336,7 +336,7 @@ if __name__ == '__main__':
     plot_as_family_number = False
 
     orbit1 = DisplayPeriodicSolutions('horizontal', 1, 0.01, 60.0, -1.525, 'Acceleration',low_dpi, plot_as_x_coordinate, plot_as_family_number)
-    orbit2 = DisplayPeriodicSolutions('horizontal', 2, 0.05, 240.0, -1.55, 'Hamiltonian', low_dpi, plot_as_x_coordinate, plot_as_family_number)
+    orbit2 = DisplayPeriodicSolutions('horizontal', 2, 0.05, 300.0, -1.525, 'Acceleration', low_dpi, plot_as_x_coordinate, plot_as_family_number)
 
     my_objects = []
     my_objects.append(orbit1)
