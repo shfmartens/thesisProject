@@ -181,3 +181,6 @@ if __name__ == '__main__':
                                                                         my_objects, low_dpi, plot_as_x_coordinate,
                                                                         plot_as_family_number)
 
+    presentation_animations.cover_page_picture()
+
+    del presentation_animations
