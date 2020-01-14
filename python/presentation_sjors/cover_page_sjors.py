@@ -179,9 +179,11 @@ class presentationAnimations:
         ax.contourf(xM, yM, zM, colors='black')
         ax.contourf(xE, yE, zE, colors='black')
 
+        # Determine complete the bounds of the colormap
+        continuationParameter_min = 50000
+        continuationParameter_max = -50000
+
         for i in range(1):
-
-
                 if min(self.orbitObjects[i].continuationParameter) < continuationParameter_min:
                     continuationParameter_min = min(self.orbitObjects[i].continuationParameter)
                 if max(self.orbitObjects[i].continuationParameter) > continuationParameter_max:
