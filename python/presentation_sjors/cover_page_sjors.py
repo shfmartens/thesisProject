@@ -320,7 +320,9 @@ class presentationAnimations:
 
         scaleDistance = max((maximum_y - minimum_y), (maximum_x - minimum_x))
 
-
+        ax.set_xlim([(xMiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),
+                            (xMiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
+        ax.set_ylim([yMiddle - 0.5 * scaleDistance * self.spacingFactor, yMiddle + 0.5 * scaleDistance * self.spacingFactor])
 
         plt.savefig('../../data/figures/cover_page.pdf', transparent=True)
         plt.close()
