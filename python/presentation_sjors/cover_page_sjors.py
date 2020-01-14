@@ -324,6 +324,10 @@ class presentationAnimations:
                             (xMiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
         ax.set_ylim([yMiddle - 0.5 * scaleDistance * self.spacingFactor, yMiddle + 0.5 * scaleDistance * self.spacingFactor])
 
+        plt.tight_layout()
+        #fig.subplots_adjust(right=1.1)
+        plt.axis('off')
+
         plt.savefig('../../data/figures/cover_page.pdf', transparent=True)
         plt.close()
 
