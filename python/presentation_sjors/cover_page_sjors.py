@@ -225,7 +225,7 @@ class presentationAnimations:
             plotColorIndexBasedOnVariable_Orbit.append( int(np.round(((variable - continuationParameter_min) / (continuationParameter_max - continuationParameter_min)) * (number_of_colors_orbit - 1))))
 
         orbitIdsPlot_orbit = []
-        orbitIdsPlot_orbit = list(range(0, len(self.orbitObjects[objectCounter].continuationParameter), self.orbitObjects[objectCounter].orbitSpacingFactor))
+        orbitIdsPlot_orbit = list(range(0, len(self.orbitObjects[objectCounter].continuationParameter), 1))
         if orbitIdsPlot_orbit != len(self.orbitObjects[objectCounter].continuationParameter):
             orbitIdsPlot_orbit.append(len(self.orbitObjects[objectCounter].continuationParameter) - 1)
 
