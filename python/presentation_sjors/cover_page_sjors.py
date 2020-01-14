@@ -157,10 +157,8 @@ class presentationAnimations:
         ax = fig.add_subplot(111)
 
         lagrange_points_df = load_lagrange_points_location_augmented(self.accelerationMagnitude, self.alpha)
-        if self.lagrangePointNr == 1:
-            lagrange_point_nrs = ['L1']
-        if self.lagrangePointNr == 2:
-            lagrange_point_nrs = ['L2']
+
+        lagrange_point_nrs = ['L1','L2','L3','L4','L5']
 
         for lagrange_point_nr in lagrange_point_nrs:
             ax.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
