@@ -282,7 +282,7 @@ class presentationAnimations:
                 plot_color = colors_orbit[k]
                 print('ObjectCounter: ' +str(objectCounter) + ' index bifurcation : ' + str(k))
 
-                if self.varyingQuantity == 'Hamiltonian':
+                if self.orbitObjects[objectCounter].varyingQuantity == 'Hamiltonian':
                     df1String = '../../data/raw/orbits/augmented/L' + str(
                         self.orbitObjects[objectCounter].lagrangePointNr) + '_horizontal_' \
                             + str(
@@ -290,7 +290,7 @@ class presentationAnimations:
                             + str("{:12.11f}".format(self.orbitObjects[objectCounter].alpha)) + '_' \
                             + str("{:12.11f}".format(self.orbitObjects[objectCounter].beta)) + '_' \
                             + str("{:12.11f}".format(self.orbitObjects[objectCounter].Hlt[k])) + '_.txt'
-                if self.varyingQuantity == 'Acceleration':
+                if self.orbitObjects[objectCounter].varyingQuantity == 'Acceleration':
                     df1String = '../../data/raw/orbits/augmented/L' + str(
                         self.orbitObjects[objectCounter].lagrangePointNr) + '_horizontal_' \
                                     + str(
@@ -298,7 +298,7 @@ class presentationAnimations:
                                     + str("{:12.11f}".format(self.orbitObjects[objectCounter].alpha)) + '_' \
                                     + str("{:12.11f}".format(self.orbitObjects[objectCounter].beta)) + '_' \
                                     + str("{:12.11f}".format(self.orbitObjects[objectCounter].Hlt[k])) + '_.txt'
-                if self.varyingQuantity == 'Alpha':
+                if self.orbitObjects[objectCounter].varyingQuantity == 'Alpha':
                     df1String = '../../data/raw/orbits/augmented/L' + str(
                             self.orbitObjects[objectCounter].lagrangePointNr) + '_horizontal_' \
                                     + str(
