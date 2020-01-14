@@ -154,24 +154,32 @@ class presentationAnimations:
 
     def cover_page_picture(self):
         fig = plt.figure(figsize=self.figSize)
-        ax0 = fig.add_subplot(111)
+        ax = fig.add_subplot(111)
 
+        lagrange_points_df = load_lagrange_points_location_augmented(self.accelerationMagnitude, self.alpha)
+        if self.lagrangePointNr == 1:
+            lagrange_point_nrs = ['L1']
+        if self.lagrangePointNr == 2:
+            lagrange_point_nrs = ['L2']
+
+        for lagrange_point_nr in lagrange_point_nrs:
+            ax.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+                       color='black', marker='x')
+
+        # Plot bodies
         bodies_df = load_bodies_location()
         u = np.linspace(0, 2 * np.pi, 100)
         v = np.linspace(0, np.pi, 100)
-        # for body in ['Moon']:
-        for body in ['Earth', 'Moon']:
-            x = bodies_df[body]['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df[body]['x']
-            y = bodies_df[body]['r'] * np.outer(np.sin(u), np.sin(v))
-            z = bodies_df[body]['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
-            ax0.plot_surface(x, y, z, color='black')
+        xM = bodies_df['Moon']['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df['Moon']['x']
+        yM = bodies_df['Moon']['r'] * np.outer(np.sin(u), np.sin(v))
+        zM = bodies_df['Moon']['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
 
-        # Lagrange points and bodies
-        lagrange_points_df = load_lagrange_points_location()
-        lagrange_point_nrs = ['L1', 'L2']
-        for lagrange_point_nr in lagrange_point_nrs:
-            ax0.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
-                        lagrange_points_df[lagrange_point_nr]['z'], color='black', marker='x')
+        xE = bodies_df['Earth']['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df['Earth']['x']
+        yE = bodies_df['Earth']['r'] * np.outer(np.sin(u), np.sin(v))
+        zE = bodies_df['Earth']['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
+
+        ax.contourf(xM, yM, zM, colors='black')
+        ax.contourf(xE, yE, zE, colors='black')
 
         plt.savefig('../../data/figures/cover_page.pdf', transparent=True)
         plt.close()
