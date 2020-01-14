@@ -183,7 +183,7 @@ class presentationAnimations:
         continuationParameter_min = 50000
         continuationParameter_max = -50000
 
-        for i in range(1):
+        for i in range(2):
                 if min(self.orbitObjects[i].continuationParameter) < continuationParameter_min:
                     continuationParameter_min = min(self.orbitObjects[i].continuationParameter)
                 if max(self.orbitObjects[i].continuationParameter) > continuationParameter_max:
