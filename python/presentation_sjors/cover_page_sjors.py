@@ -180,28 +180,6 @@ class presentationAnimations:
         ax.contourf(xE, yE, zE, colors='black')
 
         # Determine complete the bounds of the colormap
-        continuationParameter_min = 50000
-        continuationParameter_max = -50000
-
-        for i in range(2):
-                if min(self.orbitObjects[i].continuationParameter) < continuationParameter_min:
-                    continuationParameter_min = min(self.orbitObjects[i].continuationParameter)
-                if max(self.orbitObjects[i].continuationParameter) > continuationParameter_max:
-                    continuationParameter_max = max(self.orbitObjects[i].continuationParameter)
-
-        print('i: ' + str(i))
-        print('continuationParameter_min: ' + str(continuationParameter_min))
-        print('continuationParameter_max: ' + str(continuationParameter_max))
-
-        # Create the colourbar for all instances!
-        if varying_quantity != 'Alpha':
-            sm = plt.cm.ScalarMappable(cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",
-                                   (2000))),norm=plt.Normalize(vmin=continuationParameter_min, vmax=continuationParameter_max))
-        else:
-            sm = plt.cm.ScalarMappable(cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",
-                                                                                               (2000))),norm=plt.Normalize(vmin=0,vmax=360.0))
-
-
         minimum_x = 1000
         minimum_x2 = 1000
         maximum_x = -1000
@@ -209,97 +187,121 @@ class presentationAnimations:
         minimum_y = 1000
         maximum_y = -1000
 
-        objectCounter = 0
-        continuation_normalized_orbit = []
-        continuation_normalized_orbit = [(value - continuationParameter_min) / (continuationParameter_max - continuationParameter_min) \
-        for value in self.orbitObjects[objectCounter].continuationParameter]
+        for i in range(2):
+            continuationParameter_min = 50000
+            continuationParameter_max = -50000
 
-        number_of_colors_orbit = len(self.orbitObjects[objectCounter].continuationParameter)
+            if min(self.orbitObjects[i].continuationParameter) < continuationParameter_min:
+                continuationParameter_min = min(self.orbitObjects[i].continuationParameter)
+            if max(self.orbitObjects[i].continuationParameter) > continuationParameter_max:
+                    continuationParameter_max = max(self.orbitObjects[i].continuationParameter)
 
-        colors_orbit = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r", number_of_colors_orbit))(continuation_normalized_orbit)
+            print('i: ' + str(i))
+            print('continuationParameter_min: ' + str(continuationParameter_min))
+            print('continuationParameter_max: ' + str(continuationParameter_max))
 
-        numberOfPlotColorIndices_Orbit = len(self.orbitObjects[objectCounter].continuationParameter)
-        plotColorIndexBasedOnVariable_Orbit = []
-
-        for variable in self.orbitObjects[objectCounter].continuationParameter:
-            plotColorIndexBasedOnVariable_Orbit.append( int(np.round(((variable - continuationParameter_min) / (continuationParameter_max - continuationParameter_min)) * (number_of_colors_orbit - 1))))
-
-        orbitIdsPlot_orbit = []
-        orbitIdsPlot_orbit = list(range(0, len(self.orbitObjects[objectCounter].continuationParameter), self.orbitObjects[objectCounter].orbitSpacingFactor))
-        if orbitIdsPlot_orbit != len(self.orbitObjects[objectCounter].continuationParameter):
-            orbitIdsPlot_orbit.append(len(self.orbitObjects[objectCounter].continuationParameter) - 1)
-        print('')
-        print('number of plots: ' + str(len(orbitIdsPlot_orbit)))
-        print('')
-        for k in orbitIdsPlot_orbit:
-            #plot_color = colors_orbit[plotColorIndexBasedOnVariable_Orbit[k]]
-            plot_color = colors_orbit[k]
-
-            if self.orbitObjects[objectCounter].varyingQuantity == 'Hamiltonian':
-                df1String = '../../data/raw/orbits/augmented/L' + str(self.orbitObjects[objectCounter].lagrangePointNr) + '_horizontal_' \
-                + str("{:12.11f}".format(self.orbitObjects[objectCounter].accelerationMagnitude)) + '_' \
-                + str("{:12.11f}".format(self.orbitObjects[objectCounter].alpha)) + '_' \
-                + str("{:12.11f}".format(self.orbitObjects[objectCounter].beta)) + '_' \
-                + str("{:12.11f}".format(self.orbitObjects[objectCounter].Hlt[k])) + '_.txt'
-            if self.orbitObjects[objectCounter].varyingQuantity == 'Acceleration':
-                df1String = '../../data/raw/orbits/augmented/L' + str(
-                    self.orbitObjects[objectCounter].lagrangePointNr) + '_horizontal_' \
-                            + str(
-                    "{:12.11f}".format(self.orbitObjects[objectCounter].accelerationContinuation[k])) + '_' \
-                            + str("{:12.11f}".format(self.orbitObjects[objectCounter].alpha)) + '_' \
-                            + str("{:12.11f}".format(self.orbitObjects[objectCounter].beta)) + '_' \
-                            + str("{:12.11f}".format(self.orbitObjects[objectCounter].Hlt[k])) + '_.txt'
-            if self.orbitObjects[objectCounter].varyingQuantity == 'Alpha':
-                df1String = '../../data/raw/orbits/augmented/L' + str(
-                    self.orbitObjects[objectCounter].lagrangePointNr) + '_horizontal_' \
-                            + str("{:12.11f}".format(self.orbitObjects[objectCounter].accelerationMagnitude)) + '_' \
-                            + str("{:12.11f}".format(self.orbitObjects[objectCounter].alphaContinuation[k])) + '_' \
-                            + str("{:12.11f}".format(self.orbitObjects[objectCounter].beta)) + '_' \
-                            + str("{:12.11f}".format(self.orbitObjects[objectCounter].Hlt[k])) + '_.txt'
-            df1 = load_orbit(df1String)
-            ax.plot(df1['x'], df1['y'], color=plot_color, alpha=self.orbitObjects[objectCounter].plotAlpha, linewidth=self.orbitObjects[objectCounter].lineWidth)
-
-            if min(df1['x']) < minimum_x:
-                    minimum_x = min(df1['x'])
-                    # print('objectCounter: ' + str(objectCounter))
-                    # print('alpha continuation xminimum at angle: ' + str(self.orbitObjects[objectCounter].alphaContinuation[k]))
-                    # print('minimum x value: ' + str(minimum_x))
+            # Create the colourbar for all instances!
+            if varying_quantity != 'Alpha':
+                sm = plt.cm.ScalarMappable(cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",
+                                   (2000))),norm=plt.Normalize(vmin=continuationParameter_min, vmax=continuationParameter_max))
+            else:
+                sm = plt.cm.ScalarMappable(cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",
+                                                                                               (2000))),norm=plt.Normalize(vmin=0,vmax=360.0))
 
 
-            if min(df1['y']) < minimum_y:
-                 minimum_y = min(df1['y'])
-            if max(df1['x']) > maximum_x:
-                maximum_x = max(df1['x'])
-            if max(df1['y']) > maximum_y:
-                maximum_y = max(df1['y'])
-            if min(df1['x']) < minimum_x2 and self.orbitObjects[objectCounter].alphaContinuation[k] > 179.0:
-                minimum_x2 = min(df1['x'])
-                # print('objectCounter: ' + str(objectCounter))
-                # print('alpha continuation xminimum at angle: ' + str(self.orbitObjects[objectCounter].alphaContinuation[k]))
-                # print('minimum x2 value: ' + str(minimum_x2))
-        if self.orbitObjects[objectCounter].varyingQuantity == 'Hamiltonian':
-            for k in self.orbitObjects[objectCounter].orbitIdBifurcations:
+
+
+            objectCounter = 0
+            continuation_normalized_orbit = []
+            continuation_normalized_orbit = [(value - continuationParameter_min) / (continuationParameter_max - continuationParameter_min) \
+            for value in self.orbitObjects[objectCounter].continuationParameter]
+
+            number_of_colors_orbit = len(self.orbitObjects[objectCounter].continuationParameter)
+
+            colors_orbit = matplotlib.colors.ListedColormap(sns.color_palette("viridis_r", number_of_colors_orbit))(continuation_normalized_orbit)
+
+            numberOfPlotColorIndices_Orbit = len(self.orbitObjects[objectCounter].continuationParameter)
+            plotColorIndexBasedOnVariable_Orbit = []
+
+            for variable in self.orbitObjects[objectCounter].continuationParameter:
+                plotColorIndexBasedOnVariable_Orbit.append( int(np.round(((variable - continuationParameter_min) / (continuationParameter_max - continuationParameter_min)) * (number_of_colors_orbit - 1))))
+
+            orbitIdsPlot_orbit = []
+            orbitIdsPlot_orbit = list(range(0, len(self.orbitObjects[objectCounter].continuationParameter), self.orbitObjects[objectCounter].orbitSpacingFactor))
+            if orbitIdsPlot_orbit != len(self.orbitObjects[objectCounter].continuationParameter):
+                orbitIdsPlot_orbit.append(len(self.orbitObjects[objectCounter].continuationParameter) - 1)
+            print('')
+            print('number of plots: ' + str(len(orbitIdsPlot_orbit)))
+            print('')
+            for k in orbitIdsPlot_orbit:
+                #plot_color = colors_orbit[plotColorIndexBasedOnVariable_Orbit[k]]
                 plot_color = colors_orbit[k]
-                print('ObjectCounter: ' +str(objectCounter) + ' index bifurcation : ' + str(k))
 
                 if self.orbitObjects[objectCounter].varyingQuantity == 'Hamiltonian':
-                    df1String = '../../data/raw/orbits/augmented/L' + str(
-                        self.orbitObjects[objectCounter].lagrangePointNr) + '_horizontal_' \
-                            + str(
-                        "{:12.11f}".format(self.orbitObjects[objectCounter].accelerationMagnitude)) + '_' \
-                            + str("{:12.11f}".format(self.orbitObjects[objectCounter].alpha)) + '_' \
-                            + str("{:12.11f}".format(self.orbitObjects[objectCounter].beta)) + '_' \
-                            + str("{:12.11f}".format(self.orbitObjects[objectCounter].Hlt[k])) + '_.txt'
+                    df1String = '../../data/raw/orbits/augmented/L' + str(self.orbitObjects[objectCounter].lagrangePointNr) + '_horizontal_' \
+                    + str("{:12.11f}".format(self.orbitObjects[objectCounter].accelerationMagnitude)) + '_' \
+                    + str("{:12.11f}".format(self.orbitObjects[objectCounter].alpha)) + '_' \
+                    + str("{:12.11f}".format(self.orbitObjects[objectCounter].beta)) + '_' \
+                    + str("{:12.11f}".format(self.orbitObjects[objectCounter].Hlt[k])) + '_.txt'
                 if self.orbitObjects[objectCounter].varyingQuantity == 'Acceleration':
                     df1String = '../../data/raw/orbits/augmented/L' + str(
                         self.orbitObjects[objectCounter].lagrangePointNr) + '_horizontal_' \
-                                    + str(
-                            "{:12.11f}".format(self.orbitObjects[objectCounter].accelerationContinuation[k])) + '_' \
+                                + str(
+                        "{:12.11f}".format(self.orbitObjects[objectCounter].accelerationContinuation[k])) + '_' \
+                                + str("{:12.11f}".format(self.orbitObjects[objectCounter].alpha)) + '_' \
+                                + str("{:12.11f}".format(self.orbitObjects[objectCounter].beta)) + '_' \
+                                + str("{:12.11f}".format(self.orbitObjects[objectCounter].Hlt[k])) + '_.txt'
+                if self.orbitObjects[objectCounter].varyingQuantity == 'Alpha':
+                    df1String = '../../data/raw/orbits/augmented/L' + str(
+                        self.orbitObjects[objectCounter].lagrangePointNr) + '_horizontal_' \
+                                + str("{:12.11f}".format(self.orbitObjects[objectCounter].accelerationMagnitude)) + '_' \
+                                + str("{:12.11f}".format(self.orbitObjects[objectCounter].alphaContinuation[k])) + '_' \
+                                + str("{:12.11f}".format(self.orbitObjects[objectCounter].beta)) + '_' \
+                                + str("{:12.11f}".format(self.orbitObjects[objectCounter].Hlt[k])) + '_.txt'
+                df1 = load_orbit(df1String)
+                ax.plot(df1['x'], df1['y'], color=plot_color, alpha=self.orbitObjects[objectCounter].plotAlpha, linewidth=self.orbitObjects[objectCounter].lineWidth)
+
+                if min(df1['x']) < minimum_x:
+                        minimum_x = min(df1['x'])
+                        # print('objectCounter: ' + str(objectCounter))
+                        # print('alpha continuation xminimum at angle: ' + str(self.orbitObjects[objectCounter].alphaContinuation[k]))
+                        # print('minimum x value: ' + str(minimum_x))
+
+
+                if min(df1['y']) < minimum_y:
+                    minimum_y = min(df1['y'])
+                if max(df1['x']) > maximum_x:
+                    maximum_x = max(df1['x'])
+                if max(df1['y']) > maximum_y:
+                    maximum_y = max(df1['y'])
+                if min(df1['x']) < minimum_x2 and self.orbitObjects[objectCounter].alphaContinuation[k] > 179.0:
+                    minimum_x2 = min(df1['x'])
+                    # print('objectCounter: ' + str(objectCounter))
+                    # print('alpha continuation xminimum at angle: ' + str(self.orbitObjects[objectCounter].alphaContinuation[k]))
+                    # print('minimum x2 value: ' + str(minimum_x2))
+            if self.orbitObjects[objectCounter].varyingQuantity == 'Hamiltonian':
+                for k in self.orbitObjects[objectCounter].orbitIdBifurcations:
+                    plot_color = colors_orbit[k]
+                    print('ObjectCounter: ' +str(objectCounter) + ' index bifurcation : ' + str(k))
+
+                    if self.orbitObjects[objectCounter].varyingQuantity == 'Hamiltonian':
+                        df1String = '../../data/raw/orbits/augmented/L' + str(
+                            self.orbitObjects[objectCounter].lagrangePointNr) + '_horizontal_' \
+                                + str(
+                            "{:12.11f}".format(self.orbitObjects[objectCounter].accelerationMagnitude)) + '_' \
+                            + str("{:12.11f}".format(self.orbitObjects[objectCounter].alpha)) + '_' \
+                            + str("{:12.11f}".format(self.orbitObjects[objectCounter].beta)) + '_' \
+                            + str("{:12.11f}".format(self.orbitObjects[objectCounter].Hlt[k])) + '_.txt'
+                    if self.orbitObjects[objectCounter].varyingQuantity == 'Acceleration':
+                        df1String = '../../data/raw/orbits/augmented/L' + str(
+                            self.orbitObjects[objectCounter].lagrangePointNr) + '_horizontal_' \
+                                     + str(
+                                "{:12.11f}".format(self.orbitObjects[objectCounter].accelerationContinuation[k])) + '_' \
                                     + str("{:12.11f}".format(self.orbitObjects[objectCounter].alpha)) + '_' \
                                     + str("{:12.11f}".format(self.orbitObjects[objectCounter].beta)) + '_' \
                                     + str("{:12.11f}".format(self.orbitObjects[objectCounter].Hlt[k])) + '_.txt'
-                if self.orbitObjects[objectCounter].varyingQuantity == 'Alpha':
-                    df1String = '../../data/raw/orbits/augmented/L' + str(
+                    if self.orbitObjects[objectCounter].varyingQuantity == 'Alpha':
+                        df1String = '../../data/raw/orbits/augmented/L' + str(
                             self.orbitObjects[objectCounter].lagrangePointNr) + '_horizontal_' \
                                     + str(
                             "{:12.11f}".format(self.orbitObjects[objectCounter].accelerationMagnitude)) + '_' \
@@ -307,12 +309,12 @@ class presentationAnimations:
                             "{:12.11f}".format(self.orbitObjects[objectCounter].alphaContinuation[k])) + '_' \
                                     + str("{:12.11f}".format(self.orbitObjects[objectCounter].beta)) + '_' \
                                     + str("{:12.11f}".format(self.orbitObjects[objectCounter].Hlt[k])) + '_.txt'
-                    df1 = load_orbit(df1String)
+                        df1 = load_orbit(df1String)
                     ax.plot(df1['x'], df1['y'], color=plot_color,
                                    alpha=self.orbitObjects[objectCounter].plotAlpha,
                                    linewidth=2)
 
-        objectCounter = objectCounter + 1
+            objectCounter = objectCounter + 1
 
 
         xMiddle = minimum_x + ( maximum_x - minimum_x ) / 2
