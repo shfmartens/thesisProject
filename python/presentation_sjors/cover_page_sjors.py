@@ -187,6 +187,7 @@ class presentationAnimations:
         minimum_y = 1000
         maximum_y = -1000
 
+        objectCounter = 0
         for i in range(2):
             continuationParameter_min = 50000
             continuationParameter_max = -50000
@@ -209,9 +210,6 @@ class presentationAnimations:
                                                                                                (2000))),norm=plt.Normalize(vmin=0,vmax=360.0))
 
 
-
-
-            objectCounter = 0
             continuation_normalized_orbit = []
             continuation_normalized_orbit = [(value - continuationParameter_min) / (continuationParameter_max - continuationParameter_min) \
             for value in self.orbitObjects[objectCounter].continuationParameter]
