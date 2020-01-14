@@ -156,7 +156,7 @@ class presentationAnimations:
         fig = plt.figure(figsize=self.figSize)
         ax = fig.add_subplot(111)
 
-        lagrange_points_df = load_lagrange_points_location_augmented(self.accelerationMagnitude, self.alpha)
+        lagrange_points_df = load_lagrange_points_location()
 
         lagrange_point_nrs = ['L1','L2','L3','L4','L5']
 
