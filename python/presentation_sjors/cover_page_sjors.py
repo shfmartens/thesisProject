@@ -164,13 +164,13 @@ class presentationAnimations:
             x = bodies_df[body]['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df[body]['x']
             y = bodies_df[body]['r'] * np.outer(np.sin(u), np.sin(v))
             z = bodies_df[body]['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
-            fig.plot_surface(x, y, z, color='black')
+            ax0.plot_surface(x, y, z, color='black')
 
         # Lagrange points and bodies
         lagrange_points_df = load_lagrange_points_location()
         lagrange_point_nrs = ['L1', 'L2']
         for lagrange_point_nr in lagrange_point_nrs:
-            fig.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
+            ax0.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
                         lagrange_points_df[lagrange_point_nr]['z'], color='black', marker='x')
 
         plt.savefig('../../data/figures/cover_page.pdf', transparent=True)
