@@ -225,10 +225,12 @@ class presentationAnimations:
             plotColorIndexBasedOnVariable_Orbit.append( int(np.round(((variable - continuationParameter_min) / (continuationParameter_max - continuationParameter_min)) * (number_of_colors_orbit - 1))))
 
         orbitIdsPlot_orbit = []
-        orbitIdsPlot_orbit = list(range(0, len(self.orbitObjects[objectCounter].continuationParameter), 1))
+        orbitIdsPlot_orbit = list(range(0, len(self.orbitObjects[objectCounter].continuationParameter), self.orbitObjects[objectCounter].orbitSpacingFactor))
         if orbitIdsPlot_orbit != len(self.orbitObjects[objectCounter].continuationParameter):
             orbitIdsPlot_orbit.append(len(self.orbitObjects[objectCounter].continuationParameter) - 1)
-
+        print('')
+        print('number of plots: ' + str(len(orbitIdsPlot_orbit)))
+        print('')
         for k in orbitIdsPlot_orbit:
             #plot_color = colors_orbit[plotColorIndexBasedOnVariable_Orbit[k]]
             plot_color = colors_orbit[k]
