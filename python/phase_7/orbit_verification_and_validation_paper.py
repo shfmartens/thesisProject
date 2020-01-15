@@ -1334,6 +1334,29 @@ class PeriodicSolutionsCharacterization:
         arr[0].set_ylabel('y [-]')
         arr[0].set_title('Projection of shooting conditions')
 
+        # Plot libration point
+        lagrange_points_df = load_lagrange_points_location()
+        lagrange_point_nrs = ['L1', 'L2', 'L3', 'L4', 'L5']
+
+        for lagrange_point_nr in lagrange_point_nrs:
+            arr[0].scatter(lagrange_points_df[lagrange_point_nr]['x'],
+                            lagrange_points_df[lagrange_point_nr]['y'], color='black', marker='x')
+
+        # Plot bodies
+        bodies_df = load_bodies_location()
+        u = np.linspace(0, 2 * np.pi, 100)
+        v = np.linspace(0, np.pi, 100)
+        xM = bodies_df['Moon']['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df['Moon']['x']
+        yM = bodies_df['Moon']['r'] * np.outer(np.sin(u), np.sin(v))
+        zM = bodies_df['Moon']['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
+
+        xE = bodies_df['Earth']['r'] * np.outer(np.cos(u), np.sin(v)) + bodies_df['Earth']['x']
+        yE = bodies_df['Earth']['r'] * np.outer(np.sin(u), np.sin(v))
+        zE = bodies_df['Earth']['r'] * np.outer(np.ones(np.size(u)), np.cos(v))
+
+        arr[0].contourf(xM, yM, zM, colors='black')
+        arr[0].contourf(xE, yE, zE, colors='black')
+
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'Acceleration':
             if self.orbitObjects[0].alpha < 59.0:
                 alphaTitle1 = '0'
@@ -1361,6 +1384,27 @@ class PeriodicSolutionsCharacterization:
             elif self.orbitObjects[1].alpha > 241.0 and self.orbitObjects[1].alpha < 301.0:
                 alphaTitle2 = '\\frac{5}{3}\\pi'
 
+
+
+        # Plot the shooting conditions
+        arr[0].scatter(self.orbitObjects[0].x,self.orbitObjects[0].y)
+        arr[1].scatter(self.orbitObjects[1].x, self.orbitObjects[1].y)
+
+        minimum_x = min(min(self.orbitObjects[0].x),min(self.orbitObjects[1].x))
+        minimum_y = min(min(self.orbitObjects[0].y), min(self.orbitObjects[1].y))
+
+        maximum_x = max(max(self.orbitObjects[0].x), max(self.orbitObjects[1].x))
+        maximum_y = max(max(self.orbitObjects[0].y), max(self.orbitObjects[1].y))
+
+        xMiddle = minimum_x + (maximum_x - minimum_x) / 2
+        yMiddle = minimum_y + (maximum_y - minimum_y) / 2
+
+        scaleDistance = max((maximum_y - minimum_y), (maximum_x - minimum_x))
+
+        arr[0].set_xlim([(xMiddle - 0.5 * scaleDistance * self.figureRatioWide * self.spacingFactor),(xMiddle + 0.5 * scaleDistance * self.figureRatioWide * self.spacingFactor)])
+        arr[0].set_ylim([yMiddle - 0.5 * scaleDistance * self.spacingFactor, yMiddle + 0.5 * scaleDistance * self.spacingFactor])
+
+
         if self.varyingQuantity == 'Hamiltonian':
             arr[1].set_xlabel('$H_{lt}$ [-]')
         elif self.varyingQuantity == 'Acceleration':
@@ -1380,6 +1424,8 @@ class PeriodicSolutionsCharacterization:
 
         plt.tight_layout()
         plt.subplots_adjust(top=0.83)
+
+
 
         if self.varyingQuantity == 'Hamiltonian':
             if self.lowDpi:
