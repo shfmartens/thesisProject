@@ -1418,10 +1418,16 @@ class PeriodicSolutionsCharacterization:
                 orbitIdsPlot_orbit1 = list(range(0, len(Orbit1.continuationParameter), 1))
 
 
+
                 arr[0].scatter(self.orbitObjects[0].x, self.orbitObjects[0].y, c=colors_orbit1,s=2)
                 arr[0].scatter(self.orbitObjects[1].x, self.orbitObjects[1].y, c=colors_orbit2,s=2)
 
+                divider = make_axes_locatable(arr[0])
 
+                cax = divider.append_axes("left", size="100%", pad=0.0)
+
+                # cbar = plt.colorbar(sm, cax=cax, label='$|| \\lambda ||$ [-]', ticks=self.cbarTicksAngle)
+                cbar = arr[0].colorbar(sm, cax=cax, format='%.2f', label=Orbit1.continuationLabel)
         # Plot the shooting conditions
 
 
