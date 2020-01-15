@@ -1334,6 +1334,33 @@ class PeriodicSolutionsCharacterization:
         arr[0].set_ylabel('y [-]')
         arr[0].set_title('Projection of shooting conditions')
 
+        if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'Acceleration':
+            if self.self.orbitObjects[0].alpha < 59.0:
+                alphaTitle1 = '0'
+            elif self.self.orbitObjects[0].alpha > 1.0 and self.self.orbitObjects[0].alpha < 61.0:
+                alphaTitle1 = '\\frac{1}{3}\\pi'
+            elif self.self.orbitObjects[0].alpha > 61.0 and self.self.orbitObjects[0].alpha < 121.0:
+                alphaTitle1 = '\\frac{2}{3}\\pi'
+            elif self.self.orbitObjects[0].alpha > 121.0 and self.self.orbitObjects[0].alpha < 181.0:
+                alphaTitle1 = '\\pi'
+            elif self.self.orbitObjects[0].alpha > 181.0 and self.self.orbitObjects[0].alpha < 241.0:
+                alphaTitle1 = '\\frac{4}{3}\\pi'
+            elif self.self.orbitObjects[0].alpha > 241.0 and self.self.orbitObjects[0].alpha < 301.0:
+                alphaTitle1 = '\\frac{5}{3}\\pi'
+
+            if self.self.orbitObjects[1].alpha < 59.0:
+                alphaTitle2 = '0'
+            elif self.self.orbitObjects[1].alpha > 1.0 and self.self.orbitObjects[1].alpha < 61.0:
+                alphaTitle2 = '\\frac{1}{3}\\pi'
+            elif self.self.orbitObjects[1].alpha > 61.0 and self.self.orbitObjects[1].alpha < 121.0:
+                alphaTitle2 = '\\frac{2}{3}\\pi'
+            elif self.self.orbitObjects[1].alpha > 121.0 and self.self.orbitObjects[1].alpha < 181.0:
+                alphaTitle2 = '\\pi'
+            elif self.self.orbitObjects[1].alpha > 181.0 and self.self.orbitObjects[1].alpha < 241.0:
+                alphaTitle2 = '\\frac{4}{3}\\pi'
+            elif self.self.orbitObjects[1].alpha > 241.0 and self.self.orbitObjects[1].alpha < 301.0:
+                alphaTitle2 = '\\frac{5}{3}\\pi'
+
         if self.varyingQuantity == 'Hamiltonian':
             arr[1].set_xlabel('$H_{lt}$ [-]')
         elif self.varyingQuantity == 'Acceleration':
@@ -1341,12 +1368,15 @@ class PeriodicSolutionsCharacterization:
         else:
             arr[1].set_xlabel('$\\alpha$ [rad]')
 
-        arr[1].set_ylabel('$\\Delta \\bar{R}$, $\\Delta \\bar{V}$ [-]')
+        arr[1].set_ylabel('$||\\Delta \\bar{R}||$, $||\\Delta \\bar{V}||$ [-]')
         arr[1].set_title('Deviation analysis')
 
 
 
         if self.varyingQuantity == 'Hamiltonian':
+            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($a_{lt} = ' + str(
+                "{:3.2f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + alphaTitle1 + '$ rad and ' + alphaTitle2 + ' rad ) ' + ' - Shooting symmetry verification',
+                         size=self.suptitleSize)
             if self.lowDpi:
                 plt.savefig('../../data/figures/orbits/varying_hamiltonian/L' + str(self.lagrangePointNr) + '_horizontal_' \
                             + str("{:5.4f}".format(self.accelerationMagnitude)) + '_' + str("{:5.4f}".format(self.alpha)) + \
