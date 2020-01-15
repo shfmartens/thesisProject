@@ -1404,7 +1404,7 @@ class PeriodicSolutionsCharacterization:
         arr[0].set_xlim([(xMiddle - 0.5 * scaleDistance * self.figureRatioWide * self.spacingFactor),(xMiddle + 0.5 * scaleDistance * self.figureRatioWide * self.spacingFactor)])
         arr[0].set_ylim([yMiddle - 0.5 * scaleDistance * self.spacingFactor, yMiddle + 0.5 * scaleDistance * self.spacingFactor])
 
-        arr[0].set_aspect(1.0)
+        #arr[0].set_aspect(1.0)
 
         if self.varyingQuantity == 'Hamiltonian':
             arr[1].set_xlabel('$H_{lt}$ [-]')
