@@ -1374,7 +1374,7 @@ class PeriodicSolutionsCharacterization:
 
 
         if self.varyingQuantity == 'Hamiltonian':
-            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + self.orbitTypeForTitle + ' ($a_{lt} = ' + str(
+            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + ' ($a_{lt} = ' + str(
                 "{:3.2f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + alphaTitle1 + '$ rad and ' + alphaTitle2 + ' rad ) ' + ' - Shooting symmetry verification',
                          size=self.suptitleSize)
             if self.lowDpi:
