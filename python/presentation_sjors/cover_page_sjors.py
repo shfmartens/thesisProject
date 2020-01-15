@@ -165,8 +165,8 @@ class presentationAnimations:
         lagrange_point_nrs = ['L1','L2','L3','L4','L5']
 
         for lagrange_point_nr in lagrange_point_nrs:
-            ax.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],
-                       color='black', marker='x',markersize=8)
+            ax.scatter(lagrange_points_df[lagrange_point_nr]['x'], lagrange_points_df[lagrange_point_nr]['y'],5,
+                       color='black', marker='x')
 
         # Plot bodies and equilibria
         bodies_df = load_bodies_location()
