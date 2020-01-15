@@ -1432,17 +1432,9 @@ class PeriodicSolutionsCharacterization:
 
                 orbitIdsPlot_orbit1 = list(range(0, len(Orbit1.continuationParameter), 1))
 
-                if orbitIdsPlot_orbit1 != len(Orbit1.continuationParameter):
-                    orbitIdsPlot_orbit1.append(len(Orbit1.continuationParameter) - 1)
 
-                orbitIdsPlot_orbit2 = list(range(0, len(Orbit2.continuationParameter), 1))
-                if orbitIdsPlot_orbit2 != len(Orbit2.continuationParameter):
-                    orbitIdsPlot_orbit2.append(len(Orbit2.continuationParameter) - 1)
-
-
-
-                arr[0].scatter(self.orbitObjects[0].x, self.orbitObjects[0].y, c=plotColorIndexBasedOnHlt_Orbit1)
-                arr[0].scatter(self.orbitObjects[1].x, self.orbitObjects[1].y, c=plotColorIndexBasedOnHlt_Orbit2)
+                arr[0].scatter(self.orbitObjects[0].x, self.orbitObjects[0].y, c=colors_orbit1)
+                arr[0].scatter(self.orbitObjects[1].x, self.orbitObjects[1].y, c=colors_orbit2)
 
 
         # Plot the shooting conditions
