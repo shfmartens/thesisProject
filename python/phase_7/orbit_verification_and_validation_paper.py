@@ -1327,16 +1327,59 @@ class PeriodicSolutionsCharacterization:
         plt.close()
         pass
 
+    def shooting_conditions_analysis(self):
+        f, arr = plt.subplots(1, 2, figsize=self.figSizeWide)
+
+
+        if self.varyingQuantity == 'Hamiltonian':
+            if self.lowDpi:
+                plt.savefig('../../data/figures/orbits/varying_hamiltonian/L' + str(self.lagrangePointNr) + '_horizontal_' \
+                            + str("{:5.4f}".format(self.accelerationMagnitude)) + '_' + str("{:5.4f}".format(self.alpha)) + \
+                            '_shooting_analysis.png', transparent=True, dpi=self.dpi, bbox_inches='tight', pad_inches=0)
+            else:
+                plt.savefig('../../data/figures/orbits/varying_hamiltonian/L' + str(self.lagrangePointNr) + '_horizontal_' \
+                            + str("{:5.4f}".format(self.accelerationMagnitude)) + '_' + str("{:5.4f}".format(self.alpha)) + \
+                            '_shooting_analysis.png', transparent=True, dpi=300)
+
+        if self.varyingQuantity == 'Acceleration':
+            if self.lowDpi:
+                plt.savefig('../../data/figures/orbits/varying_acceleration/L' + str(self.lagrangePointNr) + '_horizontal_' \
+                            + str("{:5.4f}".format(self.alpha)) + '_' + str("{:12.11f}".format(self.Hamiltonian)) + \
+                            '_shooting_analysis.png', transparent=True, dpi=self.dpi)
+
+            else:
+                plt.savefig(
+                    '../../data/figures/orbits/varying_acceleration/L' + str(self.lagrangePointNr) + '_horizontal_' \
+                    + str("{:5.4f}".format(self.alpha)) + '_' + str("{:12.11f}".format(self.Hamiltonian)) + \
+                    '_shooting_analysis.png', transparent=True, dpi=300)
+
+        if self.varyingQuantity == 'Alpha':
+            if self.lowDpi:
+                plt.savefig('../../data/figures/orbits/varying_alpha/L' + str(self.lagrangePointNr) + '_horizontal_' \
+                            + str("{:5.4f}".format(self.accelerationMagnitude)) + '_' + str("{:12.11f}".format(self.Hamiltonian)) + \
+                            '_shooting_analysis.png', transparent=True, dpi=self.dpi)
+
+            else:
+                plt.savefig(
+                    '../../data/figures/orbits/varying_alpha/L' + str(self.lagrangePointNr) + '_horizontal_' \
+                    + str("{:5.4f}".format(self.accelerationMagnitude)) + '_' + str("{:12.11f}".format(self.Hamiltonian)) + \
+                    '_shooting_analysis.png', transparent=True, dpi=300)
+
+        plt.close()
+
+
+
 
 if __name__ == '__main__':
 
-    ballistic_planar_projection = True
+    ballistic_planar_projection = False
     ballistic_bifurcation_analysis = False
     ballistic_stability_analysis = False
     graphical_projection = False
     bifurcation_analysis = False
     stability_analysis = False
     hamiltonian_domain_analysis = False
+    shooting_analysis = True
 
     if ballistic_planar_projection == True:
         lagrange_point_nr = 1
@@ -1570,7 +1613,31 @@ if __name__ == '__main__':
 
         del characterize_periodic_solutions
 
+    if shooting_analysis == True:
+        lagrange_point_nr = 1
+        acceleration_magnitude = 0.01
+        alpha = 0.0
+        beta = 0.0
+        hamiltonian = 0.0
+        varying_quantity = 'Hamiltonian'
+        low_dpi = False
+        plot_as_x_coordinate = False
+        plot_as_family_number = False
 
+        orbitL1 = DisplayPeriodicSolutions('horizontal', 1, acceleration_magnitude, 60.0, beta, varying_quantity,low_dpi, plot_as_x_coordinate, plot_as_family_number)
+        orbitL2 = DisplayPeriodicSolutions('horizontal', 1, acceleration_magnitude, 300.0, beta, varying_quantity,low_dpi, plot_as_x_coordinate, plot_as_family_number)
+
+        my_objects = []
+        my_objects.append(orbitL1)
+        my_objects.append(orbitL2)
+
+        characterize_periodic_solutions = PeriodicSolutionsCharacterization(lagrange_point_nr, acceleration_magnitude,
+                                                                            alpha, hamiltonian, varying_quantity,
+                                                                            my_objects,
+                                                                            low_dpi, plot_as_x_coordinate,
+                                                                            plot_as_family_number)
+
+        characterize_periodic_solutions.shooting_conditions_analysis()
 
 
 
