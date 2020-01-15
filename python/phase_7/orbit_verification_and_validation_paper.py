@@ -1480,7 +1480,7 @@ class PeriodicSolutionsCharacterization:
                 "{:3.2f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + alphaTitle1 + '$ rad and $' + alphaTitle2 + '$ rad ) ' + ' - Shooting symmetry verification',
                          size=self.suptitleSize)
 
-        plt.tight_layout()
+        #plt.tight_layout()
         plt.subplots_adjust(top=0.83)
 
 
