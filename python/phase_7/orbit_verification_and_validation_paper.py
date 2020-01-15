@@ -1335,30 +1335,30 @@ class PeriodicSolutionsCharacterization:
         arr[0].set_title('Projection of shooting conditions')
 
         if self.varyingQuantity == 'Hamiltonian' or self.varyingQuantity == 'Acceleration':
-            if self.self.orbitObjects[0].alpha < 59.0:
+            if self.orbitObjects[0].alpha < 59.0:
                 alphaTitle1 = '0'
-            elif self.self.orbitObjects[0].alpha > 1.0 and self.self.orbitObjects[0].alpha < 61.0:
+            elif self.orbitObjects[0].alpha > 1.0 and self.orbitObjects[0].alpha < 61.0:
                 alphaTitle1 = '\\frac{1}{3}\\pi'
-            elif self.self.orbitObjects[0].alpha > 61.0 and self.self.orbitObjects[0].alpha < 121.0:
+            elif self.orbitObjects[0].alpha > 61.0 and self.orbitObjects[0].alpha < 121.0:
                 alphaTitle1 = '\\frac{2}{3}\\pi'
-            elif self.self.orbitObjects[0].alpha > 121.0 and self.self.orbitObjects[0].alpha < 181.0:
+            elif self.orbitObjects[0].alpha > 121.0 and self.orbitObjects[0].alpha < 181.0:
                 alphaTitle1 = '\\pi'
-            elif self.self.orbitObjects[0].alpha > 181.0 and self.self.orbitObjects[0].alpha < 241.0:
+            elif self.orbitObjects[0].alpha > 181.0 and self.orbitObjects[0].alpha < 241.0:
                 alphaTitle1 = '\\frac{4}{3}\\pi'
-            elif self.self.orbitObjects[0].alpha > 241.0 and self.self.orbitObjects[0].alpha < 301.0:
+            elif self.orbitObjects[0].alpha > 241.0 and self.orbitObjects[0].alpha < 301.0:
                 alphaTitle1 = '\\frac{5}{3}\\pi'
 
             if self.self.orbitObjects[1].alpha < 59.0:
                 alphaTitle2 = '0'
-            elif self.self.orbitObjects[1].alpha > 1.0 and self.self.orbitObjects[1].alpha < 61.0:
+            elif self.self.orbitObjects[1].alpha > 1.0 and self.orbitObjects[1].alpha < 61.0:
                 alphaTitle2 = '\\frac{1}{3}\\pi'
-            elif self.self.orbitObjects[1].alpha > 61.0 and self.self.orbitObjects[1].alpha < 121.0:
+            elif self.self.orbitObjects[1].alpha > 61.0 and self.orbitObjects[1].alpha < 121.0:
                 alphaTitle2 = '\\frac{2}{3}\\pi'
-            elif self.self.orbitObjects[1].alpha > 121.0 and self.self.orbitObjects[1].alpha < 181.0:
+            elif self.self.orbitObjects[1].alpha > 121.0 and self.orbitObjects[1].alpha < 181.0:
                 alphaTitle2 = '\\pi'
-            elif self.self.orbitObjects[1].alpha > 181.0 and self.self.orbitObjects[1].alpha < 241.0:
+            elif self.self.orbitObjects[1].alpha > 181.0 and self.orbitObjects[1].alpha < 241.0:
                 alphaTitle2 = '\\frac{4}{3}\\pi'
-            elif self.self.orbitObjects[1].alpha > 241.0 and self.self.orbitObjects[1].alpha < 301.0:
+            elif self.self.orbitObjects[1].alpha > 241.0 and self.orbitObjects[1].alpha < 301.0:
                 alphaTitle2 = '\\frac{5}{3}\\pi'
 
         if self.varyingQuantity == 'Hamiltonian':
