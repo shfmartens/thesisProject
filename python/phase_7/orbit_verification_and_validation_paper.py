@@ -1401,7 +1401,7 @@ class PeriodicSolutionsCharacterization:
 
         scaleDistance = max((maximum_y - minimum_y), (maximum_x - minimum_x))
 
-        arr[0].set_xlim([(xMiddle - 0.5 * scaleDistance * self.figureRatioWide * self.spacingFactor),(xMiddle + 0.5 * scaleDistance * self.figureRatioWide * self.spacingFactor)])
+        arr[0].set_xlim([(xMiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(xMiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
         arr[0].set_ylim([yMiddle - 0.5 * scaleDistance * self.spacingFactor, yMiddle + 0.5 * scaleDistance * self.spacingFactor])
 
         #arr[0].set_aspect(1.0)
