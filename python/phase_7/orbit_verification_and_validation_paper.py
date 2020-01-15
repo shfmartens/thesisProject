@@ -1379,7 +1379,7 @@ class PeriodicSolutionsCharacterization:
                          size=self.suptitleSize)
 
         plt.tight_layout()
-        plt.subplots_adjust(top=0.9)
+        plt.subplots_adjust(top=0.83)
 
         if self.varyingQuantity == 'Hamiltonian':
             if self.lowDpi:
