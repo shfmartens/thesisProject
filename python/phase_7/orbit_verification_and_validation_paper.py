@@ -1388,7 +1388,7 @@ class PeriodicSolutionsCharacterization:
 
         # Plot the shooting conditions
         arr[0].scatter(self.orbitObjects[0].x,self.orbitObjects[0].y)
-        arr[1].scatter(self.orbitObjects[1].x, self.orbitObjects[1].y)
+        arr[0].scatter(self.orbitObjects[1].x, self.orbitObjects[1].y)
 
         minimum_x = min(min(self.orbitObjects[0].x),min(self.orbitObjects[1].x))
         minimum_y = min(min(self.orbitObjects[0].y), min(self.orbitObjects[1].y))
@@ -1404,6 +1404,7 @@ class PeriodicSolutionsCharacterization:
         arr[0].set_xlim([(xMiddle - 0.5 * scaleDistance * self.figureRatioWide * self.spacingFactor),(xMiddle + 0.5 * scaleDistance * self.figureRatioWide * self.spacingFactor)])
         arr[0].set_ylim([yMiddle - 0.5 * scaleDistance * self.spacingFactor, yMiddle + 0.5 * scaleDistance * self.spacingFactor])
 
+        arr[0].set_aspect(1.0)
 
         if self.varyingQuantity == 'Hamiltonian':
             arr[1].set_xlabel('$H_{lt}$ [-]')
