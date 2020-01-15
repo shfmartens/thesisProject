@@ -1406,25 +1406,10 @@ class PeriodicSolutionsCharacterization:
                 colors_orbit2 = matplotlib.colors.ListedColormap(
                     sns.color_palette("viridis_r", number_of_colors_orbit2))(continuation_normalized_orbit2)
                 print('length of colors_orbit_1:' + str(len(colors_orbit1)))
-                print(colors_orbit1.tolist())
+                #print(colors_orbit1.tolist())
 
-                numberOfPlotColorIndices_Orbit1 = len(Orbit1.continuationParameter)
-                numberOfPlotColorIndices_Orbit2 = len(Orbit2.continuationParameter)
 
-                plotColorIndexBasedOnHlt_Orbit1 = []
-                plotColorIndexBasedOnHlt_Orbit2 = []
-
-                # numberOfPlotColorIndices_Orbit2
-                # numberOfPlotColorIndices_Orbit1
-                for hamiltonian in Orbit1.continuationParameter:
-                    plotColorIndexBasedOnHlt_Orbit1.append( \
-                        int(np.round(((hamiltonian - Hlt_min) / (Hlt_max - Hlt_min)) * (number_of_colors_orbit1 - 1))))
-
-                for hamiltonian in Orbit2.continuationParameter:
-                    plotColorIndexBasedOnHlt_Orbit2.append( \
-                        int(np.round(((hamiltonian - Hlt_min) / (Hlt_max - Hlt_min)) * (number_of_colors_orbit2 - 1))))
-
-                print(plotColorIndexBasedOnHlt_Orbit1)
+                #print(plotColorIndexBasedOnHlt_Orbit1)
                 sm = plt.cm.ScalarMappable(cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",
                                                                                                    (
                                                                                                        number_of_colors_orbit1))),
@@ -1433,8 +1418,8 @@ class PeriodicSolutionsCharacterization:
                 orbitIdsPlot_orbit1 = list(range(0, len(Orbit1.continuationParameter), 1))
 
 
-                arr[0].scatter(self.orbitObjects[0].x, self.orbitObjects[0].y, c=colors_orbit1)
-                arr[0].scatter(self.orbitObjects[1].x, self.orbitObjects[1].y, c=colors_orbit2)
+                arr[0].scatter(self.orbitObjects[0].x, self.orbitObjects[0].y, c=colors_orbit1,s=2)
+                arr[0].scatter(self.orbitObjects[1].x, self.orbitObjects[1].y, c=colors_orbit2,s=2)
 
 
         # Plot the shooting conditions
