@@ -1426,8 +1426,8 @@ class PeriodicSolutionsCharacterization:
                 position_handle = arr[0].get_position().bounds
                 position_handle2 = arr[0].get_position().bounds
 
-                colourbar_base = position_handle2[1] +0.05
-                colourbar_height = position_handle[1] + position_handle[3] - colourbar_base -0.1
+                colourbar_base = position_handle2[1] +0.02
+                colourbar_height = position_handle[1] + position_handle[3] - colourbar_base -0.05
 
 
                 axColorbar = f.add_axes([0.45, colourbar_base, 0.02, colourbar_height])
