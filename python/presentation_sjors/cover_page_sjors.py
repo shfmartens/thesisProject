@@ -188,7 +188,7 @@ class presentationAnimations:
         maximum_y = -1000
 
         objectCounter = 0
-        for i in range(1):
+        for i in range(2):
             continuationParameter_min = 50000
             continuationParameter_max = -50000
 
