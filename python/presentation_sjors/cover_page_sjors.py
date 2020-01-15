@@ -332,6 +332,7 @@ class presentationAnimations:
         plt.tight_layout()
         #fig.subplots_adjust(right=1.1)
         plt.axis('off')
+        ax.set_aspect(1.0)
 
         plt.savefig('../../data/figures/cover_page.pdf', transparent=True)
         plt.close()
