@@ -99,7 +99,7 @@ class presentationAnimations:
 
         # Title figure dimensions
         self.figSizeTitle = (7 , 7*1.5)
-        self.figureRatioTitle = (7, (7*1.5)
+        self.figureRatioTitle = (7, 7*1.5)
 
 
         # figure with two subplots next to eachother
