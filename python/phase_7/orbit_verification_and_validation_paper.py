@@ -1348,7 +1348,7 @@ class PeriodicSolutionsCharacterization:
             elif self.orbitObjects[0].alpha > 241.0 and self.orbitObjects[0].alpha < 301.0:
                 alphaTitle1 = '\\frac{5}{3}\\pi'
 
-            if self.self.orbitObjects[1].alpha < 59.0:
+            if self.orbitObjects[1].alpha < 59.0:
                 alphaTitle2 = '0'
             elif self.orbitObjects[1].alpha > 1.0 and self.orbitObjects[1].alpha < 61.0:
                 alphaTitle2 = '\\frac{1}{3}\\pi'
