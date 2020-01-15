@@ -92,8 +92,8 @@ class presentationAnimations:
         self.figSize = (7 * (1 + np.sqrt(5)) / 2, 7)
         self.figureRatio = (7 * (1 + np.sqrt(5)) / 2) / 7
 
-        self.figSizeLarge = (7 * (1 + np.sqrt(5)) / 2, 7*1.5)
-        self.figRatioLarge = (7 * (1 + np.sqrt(5)) / 2) / (7*1.5)
+        self.figSizeLarge = (7 * (1 + np.sqrt(5)) / 2, 7*2)
+        self.figRatioLarge = (7 * (1 + np.sqrt(5)) / 2) / (7*2)
 
         self.figureRatioSix = (7 * (1 + np.sqrt(5)) / 2) * 2/ (7*3)
 
