@@ -92,14 +92,15 @@ class presentationAnimations:
         self.figSize = (7 * (1 + np.sqrt(5)) / 2, 7)
         self.figureRatio = (7 * (1 + np.sqrt(5)) / 2) / 7
 
-        self.figSizeLarge = (7 * (1 + np.sqrt(5)) / 2, 7*2)
-        self.figRatioLarge = (7 * (1 + np.sqrt(5)) / 2) / (7*2)
+        self.figSizeLarge = (7 * (1 + np.sqrt(5)) / 2, 7*1.5)
+        self.figRatioLarge = (7 * (1 + np.sqrt(5)) / 2) / (7*1.5)
 
         self.figureRatioSix = (7 * (1 + np.sqrt(5)) / 2) * 2/ (7*3)
 
         # Title figure dimensions
-        self.figSizeTitle = ((7 * (1 + np.sqrt(5)) / 2), 7*1.5)
-        self.figureRatioTitle = (7 * (1 + np.sqrt(5)) / 2) / (7*1.5)
+        self.figSizeTitle = ((7 * (1 + np.sqrt(5)) / 2), 7*2)
+        self.figureRatioTitle = (7 * (1 + np.sqrt(5)) / 2) / (7*2)
+
 
         # figure with two subplots next to eachother
         self.figSizeWide = (7 * (1 + np.sqrt(5)) / 2, 3.5)
