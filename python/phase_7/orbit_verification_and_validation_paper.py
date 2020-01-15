@@ -1384,11 +1384,69 @@ class PeriodicSolutionsCharacterization:
             elif self.orbitObjects[1].alpha > 241.0 and self.orbitObjects[1].alpha < 301.0:
                 alphaTitle2 = '\\frac{5}{3}\\pi'
 
+                # Create new color maps
+                Orbit1 = self.orbitObjects[0]
+                Orbit2 = self.orbitObjects[1]
+
+                Hlt_min = min(min(Orbit1.continuationParameter), min(Orbit2.continuationParameter))
+                Hlt_max = max(max(Orbit1.continuationParameter), max(Orbit2.continuationParameter))
+
+                continuation_normalized_orbit1 = [(value - Hlt_min) / (Hlt_max - Hlt_min) for value in
+                                                  Orbit1.continuationParameter]
+                continuation_normalized_orbit2 = [(value - Hlt_min) / (Hlt_max - Hlt_min) for value in
+                                                  Orbit2.continuationParameter]
+
+                # print(continuation_normalized_orbit1)
+
+                number_of_colors_orbit1 = len(Orbit1.continuationParameter)
+                number_of_colors_orbit2 = len(Orbit2.continuationParameter)
+
+                colors_orbit1 = matplotlib.colors.ListedColormap(
+                    sns.color_palette("viridis_r", number_of_colors_orbit1))(continuation_normalized_orbit1)
+                colors_orbit2 = matplotlib.colors.ListedColormap(
+                    sns.color_palette("viridis_r", number_of_colors_orbit2))(continuation_normalized_orbit2)
+                print('length of colors_orbit_1:' + str(len(colors_orbit1)))
+                print(colors_orbit1.tolist())
+
+                numberOfPlotColorIndices_Orbit1 = len(Orbit1.continuationParameter)
+                numberOfPlotColorIndices_Orbit2 = len(Orbit2.continuationParameter)
+
+                plotColorIndexBasedOnHlt_Orbit1 = []
+                plotColorIndexBasedOnHlt_Orbit2 = []
+
+                # numberOfPlotColorIndices_Orbit2
+                # numberOfPlotColorIndices_Orbit1
+                for hamiltonian in Orbit1.continuationParameter:
+                    plotColorIndexBasedOnHlt_Orbit1.append( \
+                        int(np.round(((hamiltonian - Hlt_min) / (Hlt_max - Hlt_min)) * (number_of_colors_orbit1 - 1))))
+
+                for hamiltonian in Orbit2.continuationParameter:
+                    plotColorIndexBasedOnHlt_Orbit2.append( \
+                        int(np.round(((hamiltonian - Hlt_min) / (Hlt_max - Hlt_min)) * (number_of_colors_orbit2 - 1))))
+
+                print(plotColorIndexBasedOnHlt_Orbit1)
+                sm = plt.cm.ScalarMappable(cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",
+                                                                                                   (
+                                                                                                       number_of_colors_orbit1))),
+                                           norm=plt.Normalize(vmin=Hlt_min, vmax=Hlt_max))
+
+                orbitIdsPlot_orbit1 = list(range(0, len(Orbit1.continuationParameter), 1))
+
+                if orbitIdsPlot_orbit1 != len(Orbit1.continuationParameter):
+                    orbitIdsPlot_orbit1.append(len(Orbit1.continuationParameter) - 1)
+
+                orbitIdsPlot_orbit2 = list(range(0, len(Orbit2.continuationParameter), 1))
+                if orbitIdsPlot_orbit2 != len(Orbit2.continuationParameter):
+                    orbitIdsPlot_orbit2.append(len(Orbit2.continuationParameter) - 1)
+
+
+
+                arr[0].scatter(self.orbitObjects[0].x, self.orbitObjects[0].y, c=plotColorIndexBasedOnHlt_Orbit1)
+                arr[0].scatter(self.orbitObjects[1].x, self.orbitObjects[1].y, c=plotColorIndexBasedOnHlt_Orbit2)
 
 
         # Plot the shooting conditions
-        arr[0].scatter(self.orbitObjects[0].x,self.orbitObjects[0].y)
-        arr[0].scatter(self.orbitObjects[1].x, self.orbitObjects[1].y)
+
 
         minimum_x = min(min(self.orbitObjects[0].x),min(self.orbitObjects[1].x))
         minimum_y = min(min(self.orbitObjects[0].y), min(self.orbitObjects[1].y))
