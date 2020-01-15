@@ -1430,7 +1430,7 @@ class PeriodicSolutionsCharacterization:
                 colourbar_height = position_handle[1] + position_handle[3] - colourbar_base
 
 
-                axColorbar = f.add_axes([0.4, colourbar_base, 0.02, colourbar_height])
+                axColorbar = f.add_axes([0.5, colourbar_base, 0.02, colourbar_height])
                 axColorbar.get_xaxis().set_visible(False)
                 axColorbar.get_yaxis().set_visible(False)
                 axColorbar.set_visible(False)
@@ -1481,7 +1481,7 @@ class PeriodicSolutionsCharacterization:
                          size=self.suptitleSize)
 
         #plt.tight_layout()
-        plt.subplots_adjust(top=0.83)
+        plt.subplots_adjust(bottom=0.06,top=0.83)
 
 
 
