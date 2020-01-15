@@ -98,8 +98,8 @@ class presentationAnimations:
         self.figureRatioSix = (7 * (1 + np.sqrt(5)) / 2) * 2/ (7*3)
 
         # Title figure dimensions
-        self.figSizeTitle = ((7 * (1 + np.sqrt(5)) / 2), 7*2)
-        self.figureRatioTitle = (7 * (1 + np.sqrt(5)) / 2) / (7*2)
+        self.figSizeTitle = ((7 * (1 + np.sqrt(5)) / 2), 7*2.5)
+        self.figureRatioTitle = (7 * (1 + np.sqrt(5)) / 2) / (7*2.5)
 
 
         # figure with two subplots next to eachother
