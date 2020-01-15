@@ -317,6 +317,11 @@ class presentationAnimations:
 
         xMiddle = minimum_x + ( maximum_x - minimum_x ) / 2
         yMiddle = minimum_y + ( maximum_y - minimum_y ) / 2
+        print('maximum_y: ' + str(maximum_y))
+        print('minimum_y: ' + str(minimum_y))
+        print('maximum_x: ' + str(maximum_x))
+        print('minimum_x: ' + str(minimum_x))
+
 
         scaleDistance = max((maximum_y - minimum_y), (maximum_x - minimum_x))
 
