@@ -97,6 +97,9 @@ class presentationAnimations:
 
         self.figureRatioSix = (7 * (1 + np.sqrt(5)) / 2) * 2/ (7*3)
 
+        # Title figure dimensions
+        self.figSizeTitle = ((7 * (1 + np.sqrt(5)) / 2), 7*1.5)
+        self.figureRatioTitle = (7 * (1 + np.sqrt(5)) / 2) / (7*1.5)
 
         # figure with two subplots next to eachother
         self.figSizeWide = (7 * (1 + np.sqrt(5)) / 2, 3.5)
@@ -153,7 +156,7 @@ class presentationAnimations:
         pass
 
     def cover_page_picture(self):
-        fig = plt.figure(figsize=self.figSize)
+        fig = plt.figure(figsize=self.figSizeTitle)
         ax = fig.add_subplot(111)
 
         lagrange_points_df = load_lagrange_points_location()
@@ -325,14 +328,14 @@ class presentationAnimations:
 
         scaleDistance = max((maximum_y - minimum_y), (maximum_x - minimum_x))
 
-        ax.set_xlim([(xMiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),
-                            (xMiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
+        ax.set_xlim([(xMiddle - 0.5 * scaleDistance * self.figureRatioTitle * self.spacingFactor),
+                            (xMiddle + 0.5 * scaleDistance * self.figureRatioTitle * self.spacingFactor)])
         ax.set_ylim([yMiddle - 0.5 * scaleDistance * self.spacingFactor, yMiddle + 0.5 * scaleDistance * self.spacingFactor])
 
         plt.tight_layout()
         #fig.subplots_adjust(right=1.1)
         plt.axis('off')
-        ax.set_aspect(1.0)
+        #ax.set_aspect(1.0)
 
         plt.savefig('../../data/figures/cover_page.pdf', transparent=True)
         plt.close()
