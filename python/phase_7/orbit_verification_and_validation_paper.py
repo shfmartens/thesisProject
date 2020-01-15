@@ -1330,6 +1330,21 @@ class PeriodicSolutionsCharacterization:
     def shooting_conditions_analysis(self):
         f, arr = plt.subplots(1, 2, figsize=self.figSizeWide)
 
+        arr[0,0].set_xlabel('x [-]')
+        arr[0,0].set_ylabel('y [-]')
+        arr[0,0].set_title('Projection of shooting conditions')
+
+        if self.varyingQuantity == 'Hamiltonian':
+            arr[0, 1].set_xlabel('$H_{lt}$ [-]')
+        elif self.varyingQuantity == 'Acceleration':
+            arr[0, 1].set_xlabel('$a_{lt}$ [-]')
+        else:
+            arr[0,1].set_xlabel('$\\alpha$ [rad]')
+
+        arr[0, 1].set_ylabel('$\\Delta \\bar{R}$, $\\Delta \\bar{V}$ [-]')
+        arr[0, 1].set_title('Deviation analysis')
+
+
 
         if self.varyingQuantity == 'Hamiltonian':
             if self.lowDpi:
