@@ -1854,7 +1854,7 @@ if __name__ == '__main__':
 
         my_objects = []
         my_objects.append(orbitL1)
-        #my_objects.append(orbitL2)
+        my_objects.append(orbitL2)
 
         characterize_periodic_solutions = PeriodicSolutionsCharacterization(lagrange_point_nr, acceleration_magnitude,
                                                                             alpha, hamiltonian, varying_quantity,
