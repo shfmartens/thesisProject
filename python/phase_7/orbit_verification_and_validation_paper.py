@@ -1476,7 +1476,14 @@ class PeriodicSolutionsCharacterization:
                 print('len velocity_deviation: ' + str(len(velocity_deviation)))
                 print('len cont_par: ' + str(len(continuation_parameter_deviation)))
 
+                if self.varyingQuantity == 'Hamiltonian':
+                    thirdLabel = '$|\\Delta H_{lt}|$'
+                else:
+                    thirdLabel = '$|\\Delta a_{lt}|$'
 
+                arr[1].plot(self.orbitObjects[0].orbitsId[0:minimum_length],position_deviation,color=self.plottingColors['tripleLine'][0],label='||$\\Delta \\bar{R}||$')
+                arr[1].plot(self.orbitObjects[0].orbitsId[0:minimum_length],velocity_deviation,color=self.plottingColors['tripleLine'][1],label='||$\\Delta \\bar{V}||$')
+                arr[1].plot(self.orbitObjects[0].orbitsId[0:minimum_length], velocity_deviation,color=self.plottingColors['tripleLine'][2], label=thirdLabel)
         if self.varyingQuantity == 'Alpha':
             Orbit1 = self.orbitObjects[0]
 
@@ -1546,9 +1553,9 @@ class PeriodicSolutionsCharacterization:
         #arr[0].set_aspect(1.0)
 
         if self.varyingQuantity == 'Hamiltonian':
-            arr[1].set_xlabel('$H_{lt}$ [-]')
+            arr[1].set_xlabel('Orbit number [-]')
         elif self.varyingQuantity == 'Acceleration':
-            arr[1].set_xlabel('$a_{lt}$ [-]')
+            arr[1].set_xlabel('Orbit number [-]')
         else:
             arr[1].set_xlabel('$\\alpha$ [rad]')
 
