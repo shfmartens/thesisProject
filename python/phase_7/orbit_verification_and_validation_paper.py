@@ -1470,7 +1470,7 @@ class PeriodicSolutionsCharacterization:
                     velocity_deviation.append(np.sqrt((self.orbitObjects[0].xdot[i] - self.orbitObjects[1].xdot[i]) ** 2 + \
                                                       (self.orbitObjects[0].ydot[i] - self.orbitObjects[1].ydot[i]) ** 2))
                     continuation_parameter_deviation.append(
-                        np.sqrt((self.hamiltonian[0].continuationParameter[i] - self.orbitObjects[1].continuationParameter[i]) ** 2 ))
+                        np.sqrt((self.orbitObjects[0].continuationParameter[i] - self.orbitObjects[1].continuationParameter[i]) ** 2 ))
 
                 print('len position_deviation: ' + str(position_deviation))
                 print('len velocity_deviation: ' + str(velocity_deviation))
