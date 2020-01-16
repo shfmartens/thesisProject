@@ -1482,8 +1482,8 @@ class PeriodicSolutionsCharacterization:
                     thirdLabel = '$|\\Delta a_{lt}|$'
 
                 arr[1].plot(self.orbitObjects[0].orbitsId[0:minimum_length],position_deviation,color=self.plottingColors['tripleLine'][0],label='||$\\Delta \\bar{R}||$')
-                arr[1].plot(self.orbitObjects[0].orbitsId[0:minimum_length],velocity_deviation,color=self.plottingColors['tripleLine'][1],label='||$\\Delta \\bar{V}||$')
-                arr[1].plot(self.orbitObjects[0].orbitsId[0:minimum_length], velocity_deviation,color=self.plottingColors['tripleLine'][2], label=thirdLabel)
+                #arr[1].plot(self.orbitObjects[0].orbitsId[0:minimum_length],velocity_deviation,color=self.plottingColors['tripleLine'][1],label='||$\\Delta \\bar{V}||$')
+                arr[1].plot(self.orbitObjects[0].orbitsId[0:minimum_length], hamiltonian_domain_analysis,color=self.plottingColors['tripleLine'][2], label=thirdLabel)
         if self.varyingQuantity == 'Alpha':
             Orbit1 = self.orbitObjects[0]
 
