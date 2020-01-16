@@ -1461,8 +1461,20 @@ class PeriodicSolutionsCharacterization:
                 minimum_length = min(len(self.orbitObjects[0].continuationParameter),len(self.orbitObjects[1].continuationParameter))
                 print(minimum_length)
 
+                position_deviation = []
+                velocity_deviation = []
+                continuation_parameter_deviation = []
                 for i in range(minimum_length):
-                    print(i)
+                    position_deviation.append(np.sqrt( (self.orbitObjects[0].x[i]-self.orbitObjects[1].x[i]) ** 2 + \
+                                              (self.orbitObjects[0].y[i] - self.orbitObjects[1].y[i]) ** 2))
+                    velocity_deviation.append(np.sqrt((self.orbitObjects[0].xdot[i] - self.orbitObjects[1].xdot[i]) ** 2 + \
+                                                      (self.orbitObjects[0].ydot[i] - self.orbitObjects[1].ydot[i]) ** 2))
+                    continuation_parameter_deviation.append(
+                        np.sqrt((self.hamiltonian[0].continuationParameter[i] - self.orbitObjects[1].continuationParameter[i]) ** 2 ))
+
+                print('len position_deviation: ' + str(position_deviation))
+                print('len velocity_deviation: ' + str(velocity_deviation))
+                print('len cont_par: ' + str(continuation_parameter_deviation))
 
 
         if self.varyingQuantity == 'Alpha':
