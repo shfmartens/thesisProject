@@ -1537,7 +1537,7 @@ class PeriodicSolutionsCharacterization:
                 "{:3.2f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + alphaTitle1 + '$ rad and $' + alphaTitle2 + '$ rad ) ' + ' - Shooting symmetry verification',
                          size=self.suptitleSize)
         if self.varyingQuantity == 'Acceleration':
-            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + ' ($a_{lt} = ' + str(
+            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + ' ($H_{lt} = ' + str(
                 "{:3.3f}".format(self.Hamiltonian)) + '$, $\\alpha = ' + alphaTitle1 + '$ rad and $' + alphaTitle2 + '$ rad ) ' + ' - Shooting symmetry verification',
                          size=self.suptitleSize)
 
