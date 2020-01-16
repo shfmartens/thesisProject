@@ -1430,7 +1430,7 @@ class PeriodicSolutionsCharacterization:
                 colourbar_height = position_handle[1] + position_handle[3] - colourbar_base -0.047
 
 
-                axColorbar = f.add_axes([0.4, colourbar_base, 0.02, colourbar_height])
+                axColorbar = f.add_axes([0.45, colourbar_base, 0.02, colourbar_height])
                 axColorbar.get_xaxis().set_visible(False)
                 axColorbar.get_yaxis().set_visible(False)
                 axColorbar.set_visible(False)
