@@ -143,6 +143,9 @@ class DisplayPeriodicSolutions:
         self.ydotPhaseHalf = []
         self.zdotPhaseHalf = []
 
+        self.xdot = []
+        self.ydot = []
+
         self.numberOfCollocationPoints = []
         for row in statesContinuation_df.iterrows():
             self.orbitsId.append(row[1][0]+1)
@@ -154,6 +157,9 @@ class DisplayPeriodicSolutions:
             self.alphaContinuation.append(row[1][10])
             self.alphaContinuationRad.append(row[1][10]/180.0*np.pi)
             self.numberOfCollocationPoints.append(row[1][13])
+
+            self.xdot.append(row[1][6])
+            self.ydot.append(row[1][7])
 
         for row in differentialCorrections_df.iterrows():
             self.numberOfIterations.append(row[1][0])
