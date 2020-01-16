@@ -1546,7 +1546,7 @@ class PeriodicSolutionsCharacterization:
                          size=self.suptitleSize)
         if self.varyingQuantity == 'Alpha':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + ' ($H_{lt} = ' + str(
-                "{:3.3f}".format(self.Hamiltonian)) + '$, $a_{lt}= ' + str("{:3.2f}".format(self.accelerationMagnitude)) + '$ rad) ' + ' - Shooting symmetry verification',
+                "{:3.3f}".format(self.Hamiltonian)) + '$, $a_{lt}= ' + str("{:3.2f}".format(self.accelerationMagnitude)) + '$) ' + ' - Shooting symmetry verification',
                          size=self.suptitleSize)
 
         #plt.tight_layout()
