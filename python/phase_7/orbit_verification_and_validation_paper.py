@@ -1499,6 +1499,10 @@ class PeriodicSolutionsCharacterization:
 
             cbar = plt.colorbar(sm, cax=cax, label=self.continuationLabel)
 
+            if self.varyingQuantity == 'Alpha':
+                cbar.set_ticks([0, 90, 180, 270, 360])
+                cbar.set_ticklabels(['$0$', '$\\frac{1}{2}\\pi$', '$\\pi$', '$\\frac{3}{2}\\pi$', '$2\\pi$'])
+
             minimum_x = min(self.orbitObjects[0].x)
             minimum_y = min(self.orbitObjects[0].y)
 
@@ -1539,6 +1543,10 @@ class PeriodicSolutionsCharacterization:
         if self.varyingQuantity == 'Acceleration':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + ' ($H_{lt} = ' + str(
                 "{:3.3f}".format(self.Hamiltonian)) + '$, $\\alpha = ' + alphaTitle1 + '$ rad and $' + alphaTitle2 + '$ rad ) ' + ' - Shooting symmetry verification',
+                         size=self.suptitleSize)
+        if self.varyingQuantity == 'Acceleration':
+            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + ' ($H_{lt} = ' + str(
+                "{:3.3f}".format(self.Hamiltonian)) + '$, $a_{lt}= ' + str("{:3.2f}".format(self.accelerationMagnitude)) + '$ rad ) ' + ' - Shooting symmetry verification',
                          size=self.suptitleSize)
 
         #plt.tight_layout()
