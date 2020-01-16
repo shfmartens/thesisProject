@@ -1472,9 +1472,9 @@ class PeriodicSolutionsCharacterization:
                     continuation_parameter_deviation.append(
                         np.sqrt((self.orbitObjects[0].continuationParameter[i] - self.orbitObjects[1].continuationParameter[i]) ** 2 ))
 
-                print('len position_deviation: ' + str(position_deviation))
-                print('len velocity_deviation: ' + str(velocity_deviation))
-                print('len cont_par: ' + str(continuation_parameter_deviation))
+                print('len position_deviation: ' + str(len(position_deviation)))
+                print('len velocity_deviation: ' + str(len(velocity_deviation)))
+                print('len cont_par: ' + str(len(continuation_parameter_deviation)))
 
 
         if self.varyingQuantity == 'Alpha':
