@@ -1454,6 +1454,10 @@ class PeriodicSolutionsCharacterization:
 
                 scaleDistance = max((maximum_y - minimum_y), (maximum_x - minimum_x))
 
+                ### Compute deviations
+                print('len continuation parameter 0: '+ str(len(self.orbitObjects[0].continuationParameter) ))
+                print('len continuation parameter 1: ' + str(len(self.orbitObjects[1].continuationParameter)))
+
         if self.varyingQuantity == 'Alpha':
             Orbit1 = self.orbitObjects[0]
 
@@ -1515,12 +1519,10 @@ class PeriodicSolutionsCharacterization:
             scaleDistance = max((maximum_y - minimum_y), (maximum_x - minimum_x))
 
         # Plot the shooting conditions
-
-
-
-
         arr[0].set_xlim([(xMiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(xMiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
         arr[0].set_ylim([yMiddle - 0.5 * scaleDistance * self.spacingFactor, yMiddle + 0.5 * scaleDistance * self.spacingFactor])
+
+
 
         #arr[0].set_aspect(1.0)
 
@@ -1838,17 +1840,17 @@ if __name__ == '__main__':
 
     if shooting_analysis == True:
         lagrange_point_nr = 1
-        acceleration_magnitude = 0.05
+        acceleration_magnitude = 0.01
         alpha = 0.0
         beta = 0.0
         hamiltonian = -1.525
-        varying_quantity = 'Alpha'
+        varying_quantity = 'Hamiltonian'
         low_dpi = False
         plot_as_x_coordinate = False
         plot_as_family_number = False
 
         orbitL1 = DisplayPeriodicSolutions('horizontal', 1, acceleration_magnitude, 60.0, hamiltonian, varying_quantity,low_dpi, plot_as_x_coordinate, plot_as_family_number)
-        #orbitL2 = DisplayPeriodicSolutions('horizontal', 1, acceleration_magnitude, 300.0, hamiltonian, varying_quantity,low_dpi, plot_as_x_coordinate, plot_as_family_number)
+        orbitL2 = DisplayPeriodicSolutions('horizontal', 1, acceleration_magnitude, 300.0, hamiltonian, varying_quantity,low_dpi, plot_as_x_coordinate, plot_as_family_number)
 
         my_objects = []
         my_objects.append(orbitL1)
