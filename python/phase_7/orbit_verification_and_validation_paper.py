@@ -1492,7 +1492,7 @@ class PeriodicSolutionsCharacterization:
 
                     #arr[1].plot(self.orbitObjects[0].orbitsId[0:minimum_length],velocity_deviation,color=self.plottingColors['tripleLine'][1],label='||$\\Delta \\bar{V}||$')
                 arr[1].plot(self.orbitObjects[0].orbitsId[0:minimum_length], continuation_parameter_deviation,color=self.plottingColors['tripleLine'][2], label=thirdLabel)
-                lgd = arr[1].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.83), markerscale=9)
+                lgd = arr[1].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.83), markerscale=8)
                 arr[1].set_ylim([1.0e-12,1.0e1])
                 arr[0].set_xlim([0,maximum_length])
 
