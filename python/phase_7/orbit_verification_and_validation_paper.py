@@ -1488,7 +1488,7 @@ class PeriodicSolutionsCharacterization:
                     thirdLabel = '$|\\Delta a_{lt}|$'
 
                 #arr[1].plot(self.orbitObjects[0].orbitsId[0:minimum_length],position_deviation,color=self.plottingColors['tripleLine'][0],label='||$\\Delta \\bar{R}||$')
-                arr[1].plot(self.orbitObjects[0].orbitsId[0:minimum_length], x_deviation,color=self.plottingColors['tripleLine'][0], label='|$\\Delta x}|$')
+                arr[1].plot(self.orbitObjects[0].orbitsId[0:minimum_length], x_deviation,color=self.plottingColors['tripleLine'][0], label='|$\\Delta x|$')
                 arr[1].plot(self.orbitObjects[0].orbitsId[0:minimum_length], y_deviation,color=self.plottingColors['tripleLine'][1], label='|$\\Delta y|$')
 
                     #arr[1].plot(self.orbitObjects[0].orbitsId[0:minimum_length],velocity_deviation,color=self.plottingColors['tripleLine'][1],label='||$\\Delta \\bar{V}||$')
