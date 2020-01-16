@@ -1590,7 +1590,7 @@ class PeriodicSolutionsCharacterization:
                          size=self.suptitleSize)
 
         #plt.tight_layout()
-        plt.subplots_adjust(left=0.065,bottom=0.13,top=0.83,wspace = 0.35,right=0.87)
+        plt.subplots_adjust(left=0.065,bottom=0.13,top=0.83,wspace = 0.4,right=0.87)
 
 
 
