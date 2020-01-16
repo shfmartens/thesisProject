@@ -1458,6 +1458,10 @@ class PeriodicSolutionsCharacterization:
                 print('len continuation parameter 0: '+ str(len(self.orbitObjects[0].continuationParameter) ))
                 print('len continuation parameter 1: ' + str(len(self.orbitObjects[1].continuationParameter)))
 
+                minimum_length = min(len(self.orbitObjects[0].continuationParameter),len(self.orbitObjects[1].continuationParameter))
+                print(minimum_length)
+
+
         if self.varyingQuantity == 'Alpha':
             Orbit1 = self.orbitObjects[0]
 
