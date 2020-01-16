@@ -1495,6 +1495,7 @@ class PeriodicSolutionsCharacterization:
                 arr[1].plot(self.orbitObjects[0].orbitsId[0:minimum_length], continuation_parameter_deviation,color=self.plottingColors['tripleLine'][2], label=thirdLabel)
                 lgd = arr[1].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 1), markerscale=10)
                 arr[1].set_ylim([1.0e-12,1.0e1])
+                
 
         if self.varyingQuantity == 'Alpha':
             Orbit1 = self.orbitObjects[0]
