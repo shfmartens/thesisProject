@@ -1457,8 +1457,8 @@ class PeriodicSolutionsCharacterization:
         if self.varyingQuantity == 'Alpha':
             Orbit1 = self.orbitObjects[0]
 
-            Hlt_min = min(Orbit1.continuationParameter)
-            Hlt_max = max(Orbit1.continuationParameter)
+            Hlt_min = 0.0
+            Hlt_max = 360.0
 
             continuation_normalized_orbit1 = [(value - Hlt_min) / (Hlt_max - Hlt_min) for value in
                                               Orbit1.continuationParameter]
