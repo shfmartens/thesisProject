@@ -1443,22 +1443,79 @@ class PeriodicSolutionsCharacterization:
 
                 cbar = plt.colorbar(sm, cax=cax, label=self.continuationLabel)
 
+                minimum_x = min(min(self.orbitObjects[0].x),min(self.orbitObjects[1].x))
+                minimum_y = min(min(self.orbitObjects[0].y),min(self.orbitObjects[1].y))
+
+                maximum_x = max(max(self.orbitObjects[0].x),max(self.orbitObjects[1].x))
+                maximum_y = max(max(self.orbitObjects[0].y),max(self.orbitObjects[1].y))
+
+                xMiddle = minimum_x + (maximum_x - minimum_x) / 2
+                yMiddle = minimum_y + (maximum_y - minimum_y) / 2
+
+                scaleDistance = max((maximum_y - minimum_y), (maximum_x - minimum_x))
+
+        if self.varyingQuantity == 'Alpha':
+            Orbit1 = self.orbitObjects[0]
+
+            Hlt_min = min(Orbit1.continuationParameter)
+            Hlt_max = max(Orbit1.continuationParameter)
+
+            continuation_normalized_orbit1 = [(value - Hlt_min) / (Hlt_max - Hlt_min) for value in
+                                              Orbit1.continuationParameter]
+
+            # print(continuation_normalized_orbit1)
+
+            number_of_colors_orbit1 = len(Orbit1.continuationParameter)
+
+            colors_orbit1 = matplotlib.colors.ListedColormap(
+                sns.color_palette("viridis_r", number_of_colors_orbit1))(continuation_normalized_orbit1)
+
+            sm = plt.cm.ScalarMappable(cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",
+                                                                                               (number_of_colors_orbit1))),
+                                       norm=plt.Normalize(vmin=Hlt_min, vmax=Hlt_max))
+
+            orbitIdsPlot_orbit1 = list(range(0, len(Orbit1.continuationParameter), 1))
+
+            arr[0].scatter(self.orbitObjects[0].x, self.orbitObjects[0].y, c=colors_orbit1, s=2)
+
+            sm.set_array([])
+
+            position_handle = arr[0].get_position().bounds
+            position_handle2 = arr[0].get_position().bounds
+
+            colourbar_base = position_handle2[1] + 0.02
+            colourbar_height = position_handle[1] + position_handle[3] - colourbar_base - 0.047
+
+            axColorbar = f.add_axes([0.45, colourbar_base, 0.02, colourbar_height])
+            axColorbar.get_xaxis().set_visible(False)
+            axColorbar.get_yaxis().set_visible(False)
+            axColorbar.set_visible(False)
+
+            divider = make_axes_locatable(axColorbar)
+
+            cax = divider.append_axes("left", size="100%", pad=0.0)
+
+            # plt.subplots_adjust(left=0.065, bottom=0.05, top=0.96)
+
+            cbar = plt.colorbar(sm, cax=cax, label=self.continuationLabel)
+
+            minimum_x = min(self.orbitObjects[0].x)
+            minimum_y = min(self.orbitObjects[0].y)
+
+            maximum_x = max(self.orbitObjects[0].x)
+            maximum_y = max(self.orbitObjects[0].y)
+
+            xMiddle = minimum_x + (maximum_x - minimum_x) / 2
+            yMiddle = minimum_y + (maximum_y - minimum_y) / 2
+
+            scaleDistance = max((maximum_y - minimum_y), (maximum_x - minimum_x))
 
         # Plot the shooting conditions
 
 
-        minimum_x = min(min(self.orbitObjects[0].x),min(self.orbitObjects[1].x))
-        minimum_y = min(min(self.orbitObjects[0].y), min(self.orbitObjects[1].y))
 
-        maximum_x = max(max(self.orbitObjects[0].x), max(self.orbitObjects[1].x))
-        maximum_y = max(max(self.orbitObjects[0].y), max(self.orbitObjects[1].y))
 
-        xMiddle = minimum_x + (maximum_x - minimum_x) / 2
-        yMiddle = minimum_y + (maximum_y - minimum_y) / 2
-
-        scaleDistance = max((maximum_y - minimum_y), (maximum_x - minimum_x))
-
-        arr[0].set_xlim([(xMiddle - 0.5 * scaleDistance * self.figureRatioWide * self.spacingFactor),(xMiddle + 0.5 * scaleDistance * self.figureRatioWide * self.spacingFactor)])
+        arr[0].set_xlim([(xMiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(xMiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
         arr[0].set_ylim([yMiddle - 0.5 * scaleDistance * self.spacingFactor, yMiddle + 0.5 * scaleDistance * self.spacingFactor])
 
         #arr[0].set_aspect(1.0)
@@ -1478,6 +1535,10 @@ class PeriodicSolutionsCharacterization:
         if self.varyingQuantity == 'Hamiltonian':
             plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + ' ($a_{lt} = ' + str(
                 "{:3.2f}".format(self.accelerationMagnitude)) + '$, $\\alpha = ' + alphaTitle1 + '$ rad and $' + alphaTitle2 + '$ rad ) ' + ' - Shooting symmetry verification',
+                         size=self.suptitleSize)
+        if self.varyingQuantity == 'Acceleration':
+            plt.suptitle('$L_' + str(self.lagrangePointNr) + '$ ' + ' ($a_{lt} = ' + str(
+                "{:3.3f}".format(self.Hamiltonian)) + '$, $\\alpha = ' + alphaTitle1 + '$ rad and $' + alphaTitle2 + '$ rad ) ' + ' - Shooting symmetry verification',
                          size=self.suptitleSize)
 
         #plt.tight_layout()
