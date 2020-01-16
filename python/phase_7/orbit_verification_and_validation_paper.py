@@ -1462,11 +1462,17 @@ class PeriodicSolutionsCharacterization:
                 print(minimum_length)
 
                 position_deviation = []
+                x_deviation = []
+                y_deviation = []
+
+
                 velocity_deviation = []
                 continuation_parameter_deviation = []
                 for i in range(minimum_length):
                     position_deviation.append(np.sqrt( (self.orbitObjects[0].x[i]-self.orbitObjects[1].x[i]) ** 2 + \
                                               (self.orbitObjects[0].y[i] - self.orbitObjects[1].y[i]) ** 2))
+                    x_deviation.append(np.sqrt((self.orbitObjects[0].x[i] - self.orbitObjects[1].x[i]) ** 2 ))
+                    y_deviation.append(np.sqrt((self.orbitObjects[0].y[i] - -1.0 *self.orbitObjects[1].y[i]) ** 2 ))
                     velocity_deviation.append(np.sqrt((self.orbitObjects[0].xdot[i] - self.orbitObjects[1].xdot[i]) ** 2 + \
                                                       (self.orbitObjects[0].ydot[i] - self.orbitObjects[1].ydot[i]) ** 2))
                     continuation_parameter_deviation.append(
@@ -1481,8 +1487,11 @@ class PeriodicSolutionsCharacterization:
                 else:
                     thirdLabel = '$|\\Delta a_{lt}|$'
 
-                arr[1].plot(self.orbitObjects[0].orbitsId[0:minimum_length],position_deviation,color=self.plottingColors['tripleLine'][0],label='||$\\Delta \\bar{R}||$')
-                #arr[1].plot(self.orbitObjects[0].orbitsId[0:minimum_length],velocity_deviation,color=self.plottingColors['tripleLine'][1],label='||$\\Delta \\bar{V}||$')
+                #arr[1].plot(self.orbitObjects[0].orbitsId[0:minimum_length],position_deviation,color=self.plottingColors['tripleLine'][0],label='||$\\Delta \\bar{R}||$')
+                arr[1].plot(self.orbitObjects[0].orbitsId[0:minimum_length], x_deviation,color=self.plottingColors['tripleLine'][0], label='|$\\Delta x}|$')
+                arr[1].plot(self.orbitObjects[0].orbitsId[0:minimum_length], y_deviation,color=self.plottingColors['tripleLine'][1], label='|$\\Delta y|$')
+
+                    #arr[1].plot(self.orbitObjects[0].orbitsId[0:minimum_length],velocity_deviation,color=self.plottingColors['tripleLine'][1],label='||$\\Delta \\bar{V}||$')
                 arr[1].plot(self.orbitObjects[0].orbitsId[0:minimum_length], continuation_parameter_deviation,color=self.plottingColors['tripleLine'][2], label=thirdLabel)
         if self.varyingQuantity == 'Alpha':
             Orbit1 = self.orbitObjects[0]
