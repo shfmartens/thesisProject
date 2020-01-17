@@ -1487,6 +1487,15 @@ class PeriodicSolutionsCharacterization:
                         short_object_index = 0
                         long_object_index = 1
 
+                    print('maximum length: ' + str(maximum_length))
+                    print('minimum length: ' + str(minimum_length))
+                    print('object0 length: ' + str(len(self.orbitObjects[0].continuationParameter)))
+                    print('object1 length: ' + str(len(self.orbitObjects[1].continuationParameter)))
+                    print('short_object_index: ' + str(short_object_index))
+                    print('long_object_index: ' + str(long_object_index))
+
+
+
 
 
 
