@@ -1612,6 +1612,9 @@ class PeriodicSolutionsCharacterization:
         print('value alpha: ' + str(value_alpha))
         print('index_alpha: ' + str(index_alpha))
 
+        print('value_minus_alpha: ' + str(value_alpha))
+        print('index_minus_alpha: ' + str(index_alpha))
+
 
 
 
