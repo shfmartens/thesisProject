@@ -1580,7 +1580,6 @@ class PeriodicSolutionsCharacterization:
         arr[0].set_xlim([(xMiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(xMiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
         arr[0].set_ylim([yMiddle - 0.5 * scaleDistance * self.spacingFactor, yMiddle + 0.5 * scaleDistance * self.spacingFactor])
 
-        #arr[1].set_xlim([0, maximum_length])
 
         #arr[0].set_aspect(1.0)
 
@@ -1898,16 +1897,16 @@ if __name__ == '__main__':
 
     if shooting_analysis == True:
         lagrange_point_nr = 1
-        acceleration_magnitude = 0.05
+        acceleration_magnitude = 0.01
         alpha = 0.0
         beta = 0.0
         hamiltonian = -1.525
-        varying_quantity = 'Hamiltonian'
+        varying_quantity = 'Alpha'
         low_dpi = False
         plot_as_x_coordinate = False
         plot_as_family_number = False
 
-        orbitL1 = DisplayPeriodicSolutions('horizontal', 1, acceleration_magnitude, 60.0, hamiltonian, varying_quantity,low_dpi, plot_as_x_coordinate, plot_as_family_number)
+        orbitL1 = DisplayPeriodicSolutions('horizontal', 1, acceleration_magnitude, 0.0, hamiltonian, varying_quantity,low_dpi, plot_as_x_coordinate, plot_as_family_number)
         orbitL2 = DisplayPeriodicSolutions('horizontal', 1, acceleration_magnitude, 300.0, hamiltonian, varying_quantity,low_dpi, plot_as_x_coordinate, plot_as_family_number)
 
         my_objects = []
