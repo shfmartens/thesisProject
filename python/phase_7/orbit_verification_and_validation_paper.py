@@ -1949,10 +1949,10 @@ if __name__ == '__main__':
 
     if shooting_analysis == True:
         lagrange_point_nr = 1
-        acceleration_magnitude = 0.01
+        acceleration_magnitude = 0.1
         alpha = 0.0
         beta = 0.0
-        hamiltonian = -1.525
+        hamiltonian = -1.55
         varying_quantity = 'Alpha'
         low_dpi = False
         plot_as_x_coordinate = False
