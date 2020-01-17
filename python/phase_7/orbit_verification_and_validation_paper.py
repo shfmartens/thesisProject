@@ -1593,9 +1593,15 @@ class PeriodicSolutionsCharacterization:
         arr[1].set_ylabel('$||\\Delta \\bar{R}||$, $||\\Delta \\bar{V}||$ [-]')
         arr[1].set_title('Deviation analysis')
 
+        value_alpha = []
+        index_alpha = []
+        value_minus_alpha = []
+        index_minus_alpha = []
         ## Obtain symmetry analysis [DEVIATIONS DUE TO PHASE SHIFT!]
         for i in range(len(Orbit1.alphaContinuation)):
-            print(i)
+            currentAlpha = Orbit1.alphaContinuation[i]
+            print(currentAlpha)
+            #if Orbit1.alphaContinuation[i] > 0.5 and Orbit1.alphaContinuation[i] < 197.5
 
 
 
