@@ -1579,7 +1579,8 @@ class PeriodicSolutionsCharacterization:
         # Plot the shooting conditions
         arr[0].set_xlim([(xMiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(xMiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
         arr[0].set_ylim([yMiddle - 0.5 * scaleDistance * self.spacingFactor, yMiddle + 0.5 * scaleDistance * self.spacingFactor])
-        arr[1].set_xlim([0, maximum_length])
+
+        #arr[1].set_xlim([0, maximum_length])
 
         #arr[0].set_aspect(1.0)
 
