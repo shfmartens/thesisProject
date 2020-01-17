@@ -1509,11 +1509,11 @@ class PeriodicSolutionsCharacterization:
                     thirdLabel = '$|\\Delta a_{lt}|$'
 
                 #arr[1].plot(self.orbitObjects[0].orbitsId[0:minimum_length],position_deviation,color=self.plottingColors['tripleLine'][0],label='||$\\Delta \\bar{R}||$')
-                arr[1].semilogy(self.orbitObjects[0].orbitsId[0:minimum_length], x_deviation,color=self.plottingColors['tripleLine'][0], label='$|\\Delta x|$')
-                arr[1].semilogy(self.orbitObjects[0].orbitsId[0:minimum_length], y_deviation,color=self.plottingColors['tripleLine'][1], label='$|y^{i}_{'+str(alphaTitle1)+'}+y^{i}_{'+str(alphaTitle2)+'}|$')
+                arr[1].semilogy(self.orbitObjects[0].orbitsId[0:maximum_length], x_deviation,color=self.plottingColors['tripleLine'][0], label='$|\\Delta x|$')
+                arr[1].semilogy(self.orbitObjects[0].orbitsId[0:maximum_length], y_deviation,color=self.plottingColors['tripleLine'][1], label='$|y^{i}_{'+str(alphaTitle1)+'}+y^{i}_{'+str(alphaTitle2)+'}|$')
 
                     #arr[1].plot(self.orbitObjects[0].orbitsId[0:minimum_length],velocity_deviation,color=self.plottingColors['tripleLine'][1],label='||$\\Delta \\bar{V}||$')
-                arr[1].plot(self.orbitObjects[0].orbitsId[0:minimum_length], continuation_parameter_deviation,color=self.plottingColors['tripleLine'][2], label=thirdLabel)
+                arr[1].plot(self.orbitObjects[0].orbitsId[0:maximum_length], continuation_parameter_deviation,color=self.plottingColors['tripleLine'][2], label=thirdLabel)
                 lgd = arr[1].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.83), markerscale=8)
                 arr[1].set_ylim([1.0e-12,1.0e1])
                 arr[0].set_xlim([0,maximum_length])
