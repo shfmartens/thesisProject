@@ -1600,9 +1600,14 @@ class PeriodicSolutionsCharacterization:
         ## Obtain symmetry analysis [DEVIATIONS DUE TO PHASE SHIFT!]
         for i in range(len(Orbit1.alphaContinuation)):
             currentAlpha = Orbit1.alphaContinuation[i]
-            print(currentAlpha)
-            
-            #if Orbit1.alphaContinuation[i] > 0.5 and Orbit1.alphaContinuation[i] < 197.5
+            #print(currentAlpha)
+            if Orbit1.alphaContinuation[i] > 0.5 and Orbit1.alphaContinuation[i] < 197.5
+                value_alpha.append(currentAlpha)
+                index_alpha.append(Orbit1.alphaContinuation.index(currentAlpha))
+
+        print('value alpha: ' + str(value_alpha))
+        print('index_alpha: ' + str(index_alpha))
+
 
 
 
