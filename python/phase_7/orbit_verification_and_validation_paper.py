@@ -1622,7 +1622,8 @@ class PeriodicSolutionsCharacterization:
             arr[1].plot(value_alpha,x_deviation,color=self.plottingColors['tripleLine'][0], label='$|\\Delta x|$')
             arr[1].plot(value_alpha,y_deviation,color=self.plottingColors['tripleLine'][1], label='$|y^{i}_{\\alpha}+y^{i}_{-\\alpha}|$')
             arr[1].plot(value_alpha,continuation_parameter_deviation,color=self.plottingColors['tripleLine'][2],label='$|\\Delta \\alpha|$')
-
+            arr[1].set_xlim([0,180.0])
+            arr[1].set_ylim([1.0e-12, 1.0e1])
 
         # Plot the shooting conditions
         arr[0].set_xlim([(xMiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(xMiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
