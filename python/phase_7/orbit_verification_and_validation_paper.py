@@ -1494,6 +1494,11 @@ class PeriodicSolutionsCharacterization:
                     print('short_object_index: ' + str(short_object_index))
                     print('long_object_index: ' + str(long_object_index))
 
+                    print('check final member long index length-1: ' + str(self.orbitObjects[long_object_index].x[minimum_length - 1]))
+                    print('check final member long index length: ' + str(self.orbitObjects[long_object_index].x[minimum_length]))
+                    print('check final member short index length-1: ' + str(self.orbitObjects[short_object_index].x[minimum_length - 1]))
+                    print('check final member short index length: ' + str(self.orbitObjects[short_object_index].x[minimum_length]))
+
 
 
 
