@@ -1621,7 +1621,7 @@ class PeriodicSolutionsCharacterization:
 
             arr[1].plot(value_alpha,x_deviation,color=self.plottingColors['tripleLine'][0], label='$|\\Delta x|$')
             arr[1].plot(value_alpha,y_deviation,color=self.plottingColors['tripleLine'][1], label='$|y^{i}_{\\alpha}+y^{i}_{-\\alpha}|$')
-            arr[1].plot(value_alpha,continuation_parameter_deviation,color=self.plottingColors['tripleLine'][2],labek='$|\\Delta \\alpha|$')
+            arr[1].plot(value_alpha,continuation_parameter_deviation,color=self.plottingColors['tripleLine'][2],label='$|\\Delta \\alpha|$')
 
 
         # Plot the shooting conditions
