@@ -1761,8 +1761,8 @@ class DisplayPeriodicSolutions:
         print('Minimum Continuation parameter ' + str(min(self.continuationParameter)) + ' at member: ' + str(self.continuationParameter.index(min(self.continuationParameter))))
         print('Maximum Continuation parameter ' + str(max(self.continuationParameter)) + ' at member: ' + str(self.continuationParameter.index(max(self.continuationParameter))))
 
-        print('Minimum T ' + str(min(self.T)) + ' at member: ' + str(self.continuationParameter.index(min(self.T))))
-        print('Maximum T ' + str(max(self.T)) + ' at member: ' + str(self.continuationParameter.index(max(self.T))))
+        print('Minimum T ' + str(min(self.T)) + ' at member: ' + str(self.T.index(min(self.T))))
+        print('Maximum T ' + str(max(self.T)) + ' at member: ' + str(self.T.index(max(self.T))))
 
         print('Minimum v1 ' + str(min(self.v1)) + ' at member: ' + str(self.v1.index(min(self.v1))))
         print('Maximum v1 ' + str(max(self.v1)) + ' at member: ' + str(self.v1.index(max(self.v1))))
