@@ -1735,8 +1735,8 @@ class DisplayPeriodicSolutions:
                 "{:7.6f}".format(self.alpha)) + '_monodromy_analysis.png', transparent=True, dpi=300, bbox_inches='tight')
         if self.varyingQuantity == 'Alpha':
             if self.lowDPI:
-                plt.savefig('../../data/figures/orbits/varying_alpha/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
-                "{:7.6f}".format(self.alpha)) + '_monodromy_analysis.png', transparent=True, dpi=self.dpi, bbox_inches='tight')
+                plt.savefig('../../data/figures/orbits/varying_alpha/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str("{:7.6f}".format(self.Hamiltonian)) + '_' + str(
+                "{:7.6f}".format(self.accelerationMagnitude)) + '_monodromy_analysis.png', transparent=True, dpi=self.dpi, bbox_inches='tight')
             else:
                 plt.savefig('../../data/figures/orbits/varying_alpha/L' + str(
                 self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
@@ -2362,11 +2362,11 @@ class DisplayPeriodicSolutions:
 if __name__ == '__main__':
     orbit_types = ['horizontal']
     lagrange_points = [1,2]
-    acceleration_magnitudes = [0.1]
-    alphas = [60.0,120.0,180.0,240.0,300.0]
-    Hamiltonians = [-1.55]
+    acceleration_magnitudes = [0.01,0.05,0.1]
+    alphas = [0.0]
+    Hamiltonians = [-1.55,-1.525,-1.50]
     low_dpi = False
-    varying_quantities = ['Hamiltonian']
+    varying_quantities = ['Alpha']
     plot_as_x_coordinate  = False
     plot_as_family_number = True
 
@@ -2381,11 +2381,11 @@ if __name__ == '__main__':
                                          alpha, Hamiltonian, varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
 
                             #display_periodic_solutions.plot_families()
-                            display_periodic_solutions.plot_periodicity_validation()
-                            display_periodic_solutions.plot_monodromy_analysis()
+                            #display_periodic_solutions.plot_periodicity_validation()
+                            #display_periodic_solutions.plot_monodromy_analysis()
                             display_periodic_solutions.plot_monodromy_analysis_old()
-                            display_periodic_solutions.plot_stability()
-                            display_periodic_solutions.plot_continuation_procedure()
+                            #display_periodic_solutions.plot_stability()
+                            #display_periodic_solutions.plot_continuation_procedure()
                             #display_periodic_solutions.plot_increment_of_orbits()
 
 
