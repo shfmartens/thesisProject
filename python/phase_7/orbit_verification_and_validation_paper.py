@@ -1625,7 +1625,7 @@ class PeriodicSolutionsCharacterization:
             arr[1].set_xlim([0,180.0])
             arr[1].set_ylim([1.0e-12, 1.0e1])
             lgd = arr[1].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.83), markerscale=8)
-
+            print(y_deviation)
         # Plot the shooting conditions
         arr[0].set_xlim([(xMiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(xMiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
         arr[0].set_ylim([yMiddle - 0.5 * scaleDistance * self.spacingFactor, yMiddle + 0.5 * scaleDistance * self.spacingFactor])
