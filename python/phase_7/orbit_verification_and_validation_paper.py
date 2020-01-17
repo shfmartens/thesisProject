@@ -1605,6 +1605,10 @@ class PeriodicSolutionsCharacterization:
                 value_alpha.append(currentAlpha)
                 index_alpha.append(Orbit1.alphaContinuation.index(currentAlpha))
 
+                minus_alpha = 360.0-currentAlpha
+                value_minus_alpha.append(minus_alpha)
+                index_minus_alpha.append(Orbit1.alphaContinuation.index(minus_alpha))
+
         print('value alpha: ' + str(value_alpha))
         print('index_alpha: ' + str(index_alpha))
 
