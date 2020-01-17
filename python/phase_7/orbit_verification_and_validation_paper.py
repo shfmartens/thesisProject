@@ -1477,9 +1477,19 @@ class PeriodicSolutionsCharacterization:
                     continuation_parameter_deviation.append(
                         np.sqrt((self.orbitObjects[0].continuationParameter[i] - self.orbitObjects[1].continuationParameter[i]) ** 2 ))
 
-                print('len position_deviation: ' + str(len(position_deviation)))
-                print('len velocity_deviation: ' + str(len(velocity_deviation)))
-                print('len cont_par: ' + str(len(continuation_parameter_deviation)))
+                short_object_index = 0
+                long_object_index = 0
+                if maximum_length > minimum_length:
+                    if len(self.orbitObjects[0].continuationParameter) > len(self.orbitObjects[1].continuationParameter):
+                        short_object_index = 1
+                        long_object_index = 0
+                    else:
+                        short_object_index = 0
+                        long_object_index = 1
+
+
+
+
 
                 if self.varyingQuantity == 'Hamiltonian':
                     thirdLabel = '$|\\Delta H_{lt}|$'
@@ -1878,11 +1888,11 @@ if __name__ == '__main__':
 
     if shooting_analysis == True:
         lagrange_point_nr = 1
-        acceleration_magnitude = 0.01
+        acceleration_magnitude = 0.05
         alpha = 0.0
         beta = 0.0
         hamiltonian = -1.525
-        varying_quantity = 'Angle'
+        varying_quantity = 'Hamiltonian'
         low_dpi = False
         plot_as_x_coordinate = False
         plot_as_family_number = False
