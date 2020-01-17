@@ -2370,6 +2370,8 @@ if __name__ == '__main__':
     plot_as_x_coordinate  = False
     plot_as_family_number = True
 
+    
+
 
     for orbit_type in orbit_types:
         for lagrange_point in lagrange_points:
