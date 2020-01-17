@@ -1767,7 +1767,7 @@ class DisplayPeriodicSolutions:
         print('Minimum v1 ' + str(min(self.v1)) + ' at member: ' + str(self.v1.index(min(self.v1))))
         print('Maximum v1 ' + str(max(self.v1)) + ' at member: ' + str(self.v1.index(max(self.v1))))
 
-        print('alpha Cont: ' +str(self.alphaContinuation))
+        #print('alpha Cont: ' +str(self.alphaContinuation))
         # print('local extrema max: ' + str(max(self.continuationParameter[800:1500])) + ' at member: ' + str(self.continuationParameter[800:1500].index(max(self.continuationParameter[800:1500]))+800))
         # print('local extrema minimum: ' + str(min(self.continuationParameter[1000:4449])) + ' at member: ' + str(self.continuationParameter[1000:4449].index(min(self.continuationParameter[1000:4449]))+1500))
         #
