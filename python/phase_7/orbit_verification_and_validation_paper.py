@@ -1619,9 +1619,9 @@ class PeriodicSolutionsCharacterization:
                              self.orbitObjects[0].continuationParameter[
                                  loop_index_minus_alpha]) ** 2))
 
-            arr[1].plot(value_alpha,x_deviation,color=self.plottingColors['tripleLine'][0], label='$|\\Delta x|$')
-            arr[1].plot(value_alpha,y_deviation,color=self.plottingColors['tripleLine'][1], label='$|y^{i}_{\\alpha}+y^{i}_{-\\alpha}|$')
-            arr[1].plot(value_alpha,continuation_parameter_deviation,color=self.plottingColors['tripleLine'][2],label='$|\\Delta \\alpha|$')
+            arr[1].semilogy(value_alpha,x_deviation,color=self.plottingColors['tripleLine'][0], label='$|\\Delta x|$')
+            arr[1].semilogy(value_alpha,y_deviation,color=self.plottingColors['tripleLine'][1], label='$|y^{i}_{\\alpha}+y^{i}_{-\\alpha}|$')
+            #arr[1].plot(value_alpha,continuation_parameter_deviation,color=self.plottingColors['tripleLine'][2],label='$|\\Delta \\alpha|$')
             arr[1].set_xlim([0,180.0])
             arr[1].set_ylim([1.0e-12, 1.0e1])
             lgd = arr[1].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.83), markerscale=8)
