@@ -1609,7 +1609,10 @@ class PeriodicSolutionsCharacterization:
                          size=self.suptitleSize)
 
         #plt.tight_layout()
-        plt.subplots_adjust(left=0.0655,bottom=0.13,top=0.83,wspace = 0.43,right=0.87)
+        if self.varyingQuantity =! 'Alpha':
+            plt.subplots_adjust(left=0.065,bottom=0.13,top=0.83,wspace = 0.43,right=0.87)
+        else:
+            plt.subplots_adjust(left=0.0655, bottom=0.13, top=0.83, wspace=0.43, right=0.87)
 
 
 
@@ -1901,12 +1904,12 @@ if __name__ == '__main__':
         alpha = 0.0
         beta = 0.0
         hamiltonian = -1.525
-        varying_quantity = 'Hamiltonian'
+        varying_quantity = 'Alpha'
         low_dpi = False
         plot_as_x_coordinate = False
         plot_as_family_number = False
 
-        orbitL1 = DisplayPeriodicSolutions('horizontal', 1, acceleration_magnitude, 0.0, hamiltonian, varying_quantity,low_dpi, plot_as_x_coordinate, plot_as_family_number)
+        orbitL1 = DisplayPeriodicSolutions('horizontal', 1, acceleration_magnitude, 60.0, hamiltonian, varying_quantity,low_dpi, plot_as_x_coordinate, plot_as_family_number)
         orbitL2 = DisplayPeriodicSolutions('horizontal', 1, acceleration_magnitude, 300.0, hamiltonian, varying_quantity,low_dpi, plot_as_x_coordinate, plot_as_family_number)
 
         my_objects = []
