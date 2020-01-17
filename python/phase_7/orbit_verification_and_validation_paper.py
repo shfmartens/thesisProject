@@ -1506,11 +1506,11 @@ class PeriodicSolutionsCharacterization:
                 else:
                     thirdLabel = '$|\\Delta a_{lt}|$'
 
-                #arr[1].plot(self.orbitObjects[0].orbitsId[0:minimum_length],position_deviation,color=self.plottingColors['tripleLine'][0],label='||$\\Delta \\bar{R}||$')
+                #arr[1].plot(self.orbitObjects[long_object_index].orbitsId[0:maximum_lengthh],position_deviation,color=self.plottingColors['tripleLine'][0],label='||$\\Delta \\bar{R}||$')
                 arr[1].semilogy(self.orbitObjects[long_object_index].orbitsId[0:maximum_length], x_deviation,color=self.plottingColors['tripleLine'][0], label='$|\\Delta x|$')
                 arr[1].semilogy(self.orbitObjects[long_object_index].orbitsId[0:maximum_length], y_deviation,color=self.plottingColors['tripleLine'][1], label='$|y^{i}_{'+str(alphaTitle1)+'}+y^{i}_{'+str(alphaTitle2)+'}|$')
 
-                    #arr[1].plot(self.orbitObjects[0].orbitsId[0:minimum_length],velocity_deviation,color=self.plottingColors['tripleLine'][1],label='||$\\Delta \\bar{V}||$')
+                #arr[1].plot(self.orbitObjects[long_object_index].orbitsId[0:maximum_length],velocity_deviation,color=self.plottingColors['tripleLine'][1],label='||$\\Delta \\bar{V}||$')
                 arr[1].plot(self.orbitObjects[long_object_index].orbitsId[0:maximum_length], continuation_parameter_deviation,color=self.plottingColors['tripleLine'][2], label=thirdLabel)
                 lgd = arr[1].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.83), markerscale=8)
                 arr[1].set_ylim([1.0e-12,1.0e1])
@@ -1579,8 +1579,7 @@ class PeriodicSolutionsCharacterization:
         # Plot the shooting conditions
         arr[0].set_xlim([(xMiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(xMiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
         arr[0].set_ylim([yMiddle - 0.5 * scaleDistance * self.spacingFactor, yMiddle + 0.5 * scaleDistance * self.spacingFactor])
-
-
+        arr[1].set_xlim([0, maximum_length])
 
         #arr[0].set_aspect(1.0)
 
