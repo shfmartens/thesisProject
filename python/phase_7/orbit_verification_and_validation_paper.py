@@ -1601,6 +1601,7 @@ class PeriodicSolutionsCharacterization:
         for i in range(len(Orbit1.alphaContinuation)):
             currentAlpha = Orbit1.alphaContinuation[i]
             print(currentAlpha)
+            
             #if Orbit1.alphaContinuation[i] > 0.5 and Orbit1.alphaContinuation[i] < 197.5
 
 
