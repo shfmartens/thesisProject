@@ -1463,10 +1463,9 @@ class PeriodicSolutionsCharacterization:
                 position_deviation = []
                 x_deviation = []
                 y_deviation = []
-
-
                 velocity_deviation = []
                 continuation_parameter_deviation = []
+
                 for i in range(minimum_length):
                     position_deviation.append(np.sqrt( (self.orbitObjects[0].x[i]-self.orbitObjects[1].x[i]) ** 2 + \
                                               (self.orbitObjects[0].y[i] - self.orbitObjects[1].y[i]) ** 2))
@@ -1576,6 +1575,55 @@ class PeriodicSolutionsCharacterization:
 
             scaleDistance = max((maximum_y - minimum_y), (maximum_x - minimum_x))
 
+            value_alpha = []
+            index_alpha = []
+            value_minus_alpha = []
+            index_minus_alpha = []
+            ## Obtain symmetry analysis [DEVIATIONS DUE TO PHASE SHIFT!]
+            for i in range(len(Orbit1.alphaContinuation)):
+                currentAlpha = Orbit1.alphaContinuation[i]
+                # print(currentAlpha)
+                if Orbit1.alphaContinuation[i] > 0.5 and Orbit1.alphaContinuation[i] < 179.5:
+                    value_alpha.append(currentAlpha)
+                    index_alpha.append(Orbit1.alphaContinuation.index(currentAlpha))
+
+                    minus_alpha = 360.0 - currentAlpha
+                    value_minus_alpha.append(minus_alpha)
+                    index_minus_alpha.append(Orbit1.alphaContinuation.index(minus_alpha))
+
+            value_list_length = min(len(value_alpha), len(value_minus_alpha))
+
+            position_deviation = []
+            x_deviation = []
+            y_deviation = []
+            velocity_deviation = []
+            continuation_parameter_deviation = []
+
+            for i in range(value_list_length):
+                loop_index_alpha = index_alpha[i]
+                loop_index_minus_alpha = index_minus_alpha[i]
+
+                position_deviation.append(np.sqrt(
+                    (self.orbitObjects[0].x[loop_index_alpha] - self.orbitObjects[0].x[loop_index_minus_alpha]) ** 2 + \
+                    (self.orbitObjects[0].y[loop_index_alpha] - self.orbitObjects[0].y[loop_index_minus_alpha]) ** 2))
+                x_deviation.append(np.sqrt(
+                    (self.orbitObjects[0].x[loop_index_alpha] - self.orbitObjects[0].x[loop_index_minus_alpha]) ** 2))
+                y_deviation.append(np.sqrt((self.orbitObjects[0].y[loop_index_alpha] - -1.0 * self.orbitObjects[0].y[
+                    loop_index_minus_alpha]) ** 2))
+                velocity_deviation.append(np.sqrt((self.orbitObjects[0].xdot[loop_index_alpha] -
+                                                   self.orbitObjects[0].xdot[loop_index_minus_alpha]) ** 2 + \
+                                                  (self.orbitObjects[0].ydot[loop_index_alpha] -
+                                                   self.orbitObjects[0].ydot[loop_index_minus_alpha]) ** 2))
+                continuation_parameter_deviation.append(
+                    np.sqrt((self.orbitObjects[0].continuationParameter[loop_index_alpha] -
+                             self.orbitObjects[0].continuationParameter[
+                                 loop_index_minus_alpha]) ** 2))
+
+            arr[1].plot(value_alpha,x_deviation,color=self.plottingColors['tripleLine'][0], label='$|\\Delta x|$')
+            arr[1].plot(value_alpha,y_deviation,color=self.plottingColors['tripleLine'][1], label='$|y^{i}_{\\alpha}+y^{i}_{-\\alpha}|$')
+            arr[1].plot(value_alpha,continuation_parameter_deviation,color=self.plottingColors['tripleLine'][2],labek='$|\\Delta \\alpha|$')
+
+
         # Plot the shooting conditions
         arr[0].set_xlim([(xMiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(xMiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
         arr[0].set_ylim([yMiddle - 0.5 * scaleDistance * self.spacingFactor, yMiddle + 0.5 * scaleDistance * self.spacingFactor])
@@ -1592,31 +1640,6 @@ class PeriodicSolutionsCharacterization:
 
         arr[1].set_ylabel('$||\\Delta \\bar{R}||$, $||\\Delta \\bar{V}||$ [-]')
         arr[1].set_title('Deviation analysis')
-
-        value_alpha = []
-        index_alpha = []
-        value_minus_alpha = []
-        index_minus_alpha = []
-        ## Obtain symmetry analysis [DEVIATIONS DUE TO PHASE SHIFT!]
-        for i in range(len(Orbit1.alphaContinuation)):
-            currentAlpha = Orbit1.alphaContinuation[i]
-            #print(currentAlpha)
-            if Orbit1.alphaContinuation[i] > 0.5 and Orbit1.alphaContinuation[i] < 179.5:
-                value_alpha.append(currentAlpha)
-                index_alpha.append(Orbit1.alphaContinuation.index(currentAlpha))
-
-                minus_alpha = 360.0-currentAlpha
-                value_minus_alpha.append(minus_alpha)
-                index_minus_alpha.append(Orbit1.alphaContinuation.index(minus_alpha))
-
-        print('value alpha: ' + str(value_alpha))
-        print('index_alpha: ' + str(index_alpha))
-
-        print('value_minus_alpha: ' + str(value_minus_alpha))
-        print('index_minus_alpha: ' + str(index_minus_alpha))
-
-
-
 
 
         if self.varyingQuantity == 'Hamiltonian':
