@@ -1522,8 +1522,6 @@ class PeriodicSolutionsCharacterization:
             Hlt_min = 0.0
             Hlt_max = 360.0
 
-            print(Orbit1.alphaContinuation)
-
             continuation_normalized_orbit1 = [(value - Hlt_min) / (Hlt_max - Hlt_min) for value in
                                               Orbit1.continuationParameter]
 
@@ -1594,6 +1592,11 @@ class PeriodicSolutionsCharacterization:
 
         arr[1].set_ylabel('$||\\Delta \\bar{R}||$, $||\\Delta \\bar{V}||$ [-]')
         arr[1].set_title('Deviation analysis')
+
+        ## Obtain symmetry analysis [DEVIATIONS DUE TO PHASE SHIFT!]
+        for i in range(len(Orbit1.alphaContinuation)):
+            print(i)
+
 
 
 
