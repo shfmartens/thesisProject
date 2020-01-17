@@ -1876,12 +1876,12 @@ class DisplayPeriodicSolutions:
         if self.varyingQuantity == 'Alpha':
             if self.lowDPI:
                 plt.savefig('../../data/figures/orbits/varying_alpha/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
-                "{:7.6f}".format(self.alpha)) + '_monodromy_analysis_OLD.png', transparent=True, dpi=self.dpi, bbox_inches='tight')
+                "{:7.6f}".format(self.Hamiltonian)) + '_monodromy_analysis_OLD.png', transparent=True, dpi=self.dpi, bbox_inches='tight')
             else:
                 plt.savefig('../../data/figures/orbits/varying_alpha/L' + str(
                 self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
                 "{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
-                "{:7.6f}".format(self.alpha)) + '_monodromy_analysis_OLD.png', transparent=True, dpi=300, bbox_inches='tight')
+                "{:7.6f}".format(self.Hamiltonian)) + '_monodromy_analysis_OLD.png', transparent=True, dpi=300, bbox_inches='tight')
 
         pass
 
@@ -2030,12 +2030,12 @@ class DisplayPeriodicSolutions:
         if self.varyingQuantity == 'Alpha':
             if self.lowDPI:
                 plt.savefig('../../data/figures/orbits/varying_alpha/L' + str(self.lagrangePointNr) + '_' + self.orbitType + '_' + str("{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
-                "{:7.6f}".format(self.alpha)) + '_stability.png', transparent=True, dpi=self.dpi, bbox_inches='tight')
+                "{:7.6f}".format(self.Hamiltonian)) + '_stability.png', transparent=True, dpi=self.dpi, bbox_inches='tight')
             else:
                 plt.savefig('../../data/figures/orbits/varying_alpha/L' + str(
                 self.lagrangePointNr) + '_' + self.orbitType + '_' + str(
                 "{:7.6f}".format(self.accelerationMagnitude)) + '_' + str(
-                "{:7.6f}".format(self.alpha)) + '_stability.png', transparent=True,dpi=300, bbox_inches='tight')
+                "{:7.6f}".format(self.Hamiltonian)) + '_stability.png', transparent=True,dpi=300, bbox_inches='tight')
 
 
         pass
@@ -2370,7 +2370,7 @@ if __name__ == '__main__':
     plot_as_x_coordinate  = False
     plot_as_family_number = True
 
-    
+
 
 
     for orbit_type in orbit_types:
@@ -2386,7 +2386,7 @@ if __name__ == '__main__':
                             #display_periodic_solutions.plot_periodicity_validation()
                             #display_periodic_solutions.plot_monodromy_analysis()
                             display_periodic_solutions.plot_monodromy_analysis_old()
-                            #display_periodic_solutions.plot_stability()
+                            display_periodic_solutions.plot_stability()
                             #display_periodic_solutions.plot_continuation_procedure()
                             #display_periodic_solutions.plot_increment_of_orbits()
 
