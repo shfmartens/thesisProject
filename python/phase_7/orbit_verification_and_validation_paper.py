@@ -1601,7 +1601,7 @@ class PeriodicSolutionsCharacterization:
         for i in range(len(Orbit1.alphaContinuation)):
             currentAlpha = Orbit1.alphaContinuation[i]
             #print(currentAlpha)
-            if Orbit1.alphaContinuation[i] > 0.5 and Orbit1.alphaContinuation[i] < 197.5:
+            if Orbit1.alphaContinuation[i] > 0.5 and Orbit1.alphaContinuation[i] < 179.5:
                 value_alpha.append(currentAlpha)
                 index_alpha.append(Orbit1.alphaContinuation.index(currentAlpha))
 
