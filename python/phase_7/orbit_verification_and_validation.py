@@ -1761,6 +1761,9 @@ class DisplayPeriodicSolutions:
         print('Minimum Continuation parameter ' + str(min(self.continuationParameter)) + ' at member: ' + str(self.continuationParameter.index(min(self.continuationParameter))))
         print('Maximum Continuation parameter ' + str(max(self.continuationParameter)) + ' at member: ' + str(self.continuationParameter.index(max(self.continuationParameter))))
 
+        print('Minimum T ' + str(min(self.T)) + ' at member: ' + str(self.continuationParameter.index(min(self.T))))
+        print('Maximum T ' + str(max(self.T)) + ' at member: ' + str(self.continuationParameter.index(max(self.T))))
+
         print('Minimum v1 ' + str(min(self.v1)) + ' at member: ' + str(self.v1.index(min(self.v1))))
         print('Maximum v1 ' + str(max(self.v1)) + ' at member: ' + str(self.v1.index(max(self.v1))))
 
@@ -2362,12 +2365,12 @@ class DisplayPeriodicSolutions:
 
 if __name__ == '__main__':
     orbit_types = ['horizontal']
-    lagrange_points = [2]
-    acceleration_magnitudes = [0.1]
+    lagrange_points = [1,2]
+    acceleration_magnitudes = [0.0]
     alphas = [0.0]
     Hamiltonians = [-1.55,-1.525,-1.50]
     low_dpi = False
-    varying_quantities = ['Alpha']
+    varying_quantities = ['Hamiltonian']
     plot_as_x_coordinate  = False
     plot_as_family_number = False
 
