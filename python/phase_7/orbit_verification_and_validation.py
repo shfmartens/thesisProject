@@ -1757,6 +1757,8 @@ class DisplayPeriodicSolutions:
         bifurcationHamiltonian = []
         for i in self.orbitIdBifurcations:
             bifurcationHamiltonian.append(self.continuationParameter[i])
+            print('member: ' + str(self.orbitIdBifurcations[i]) + ' contintuation  value: ' + str("{:2.12f}".format(self.continuationParameter[i]) )
+                  
         print('Continuation Parameter value at bifurcations: ' + str(bifurcationHamiltonian))
         print('Minimum Continuation parameter ' + str("{:2.12f}".format(min(self.continuationParameter))) + ' at member: ' + str(self.continuationParameter.index(min(self.continuationParameter))))
         print('Maximum Continuation parameter ' + str("{:2.12f}".format(max(self.continuationParameter))) + ' at member: ' + str(self.continuationParameter.index(max(self.continuationParameter))))
