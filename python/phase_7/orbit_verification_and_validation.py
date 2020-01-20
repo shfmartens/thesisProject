@@ -1758,8 +1758,8 @@ class DisplayPeriodicSolutions:
         for i in self.orbitIdBifurcations:
             bifurcationHamiltonian.append(self.continuationParameter[i])
         print('Continuation Parameter value at bifurcations: ' + str(bifurcationHamiltonian))
-        print('Minimum Continuation parameter ' + str(min(self.continuationParameter)) + ' at member: ' + str(self.continuationParameter.index(min(self.continuationParameter))))
-        print('Maximum Continuation parameter ' + str(max(self.continuationParameter)) + ' at member: ' + str(self.continuationParameter.index(max(self.continuationParameter))))
+        print('Minimum Continuation parameter ' + str("{:2.12f}".format(min(self.continuationParameter))) + ' at member: ' + str(self.continuationParameter.index(min(self.continuationParameter))))
+        print('Maximum Continuation parameter ' + str("{:2.12f}".format(max(self.continuationParameter))) + ' at member: ' + str(self.continuationParameter.index(max(self.continuationParameter))))
 
         print('Minimum T ' + str("{:2.12f}".format(min(self.T))) + ' at member: ' + str(self.T.index(min(self.T))))
         print('Maximum T ' + str("{:2.12f}".format(max(self.T))) + ' at member: ' + str(self.T.index(max(self.T))))
@@ -2365,7 +2365,7 @@ class DisplayPeriodicSolutions:
 
 if __name__ == '__main__':
     orbit_types = ['horizontal']
-    lagrange_points = [1]
+    lagrange_points = [2]
     acceleration_magnitudes = [0.01]
     alphas = [0.0,60.0,120.0,180.0,240.0,300.0]
     Hamiltonians = [-1.55]
