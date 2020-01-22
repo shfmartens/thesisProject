@@ -1717,7 +1717,7 @@ if __name__ == '__main__':
     shooting_analysis = False
 
     if ballistic_planar_projection == True:
-        lagrange_point_nr = 1
+        lagrange_point_nr = 2
         acceleration_magnitude = 0.0
         alpha = 0.0
         beta = 0.0
