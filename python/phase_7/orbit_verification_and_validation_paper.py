@@ -1168,6 +1168,7 @@ class PeriodicSolutionsCharacterization:
         #arr[1].set_ylim([1.0e-1, 1.0e1])
         arr[0].set_xlabel(self.continuationLabel)
         #arr[1].set_xlabel(self.continuationLabel)
+        arr[1].set_xlim([0,0.1])
 
         arr[0].set_ylabel('Stability Index [-]')
 
@@ -1795,11 +1796,11 @@ if __name__ == '__main__':
         del characterize_periodic_solutions
 
     if  graphical_projection == True:
-        lagrange_point_nr = 2
+        lagrange_point_nr = 1
         acceleration_magnitude = 0.1
         alpha = 0.0
         beta = 0.0
-        hamiltonian = -1.50
+        hamiltonian = -1.55
         varying_quantity = 'Acceleration'
         low_dpi = False
         plot_as_x_coordinate = False
