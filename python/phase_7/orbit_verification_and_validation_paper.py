@@ -105,6 +105,8 @@ class PeriodicSolutionsCharacterization:
 
         self.figureRatioWide = (7 * (1 + np.sqrt(5)) / 2) / 3.5
 
+        self.figSizeThird = (7 * (1 + np.sqrt(5)) / 2, 3.5 * 0.75)
+
         # Colour schemes
         n_colors = 3
         n_colors_4 = 4
