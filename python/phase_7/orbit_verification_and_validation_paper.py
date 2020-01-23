@@ -1331,7 +1331,7 @@ class PeriodicSolutionsCharacterization:
         pass
 
     def shooting_conditions_analysis(self):
-        f, arr = plt.subplots(1, 2, figsize=self.figSizeWide)
+        f, arr = plt.subplots(1, 2, figsize=self.figSizeThird)
 
         arr[0].set_xlabel('x [-]')
         arr[0].set_ylabel('y [-]')
