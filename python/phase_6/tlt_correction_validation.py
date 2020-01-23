@@ -515,7 +515,7 @@ class TLTCorrectorValidation:
         ax4.set_xlim([(Xmiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(Xmiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
         ax4.set_ylim([Ymiddle - 0.5 * scaleDistance * self.spacingFactor, Ymiddle + 0.5 * scaleDistance * self.spacingFactor])
 
-        ax1.set_title('Initial guess from Floquet controller')
+        ax1.set_title('Initial guess from Floquet targeter')
         ax2.set_title('Cycle 1 - Level I ouput')
         ax3.set_title('Cycle 1 - Level II ouput')
         ax4.set_title('Cycle 2 - Level I ouput')
