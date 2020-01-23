@@ -1385,136 +1385,136 @@ class PeriodicSolutionsCharacterization:
             elif self.orbitObjects[1].alpha > 241.0 and self.orbitObjects[1].alpha < 301.0:
                 alphaTitle2 = '\\frac{5}{3}\\pi'
 
-                # Create new color maps
-                Orbit1 = self.orbitObjects[0]
-                Orbit2 = self.orbitObjects[1]
+            # Create new color maps
+            Orbit1 = self.orbitObjects[0]
+            Orbit2 = self.orbitObjects[1]
 
-                Hlt_min = min(min(Orbit1.continuationParameter), min(Orbit2.continuationParameter))
-                Hlt_max = max(max(Orbit1.continuationParameter), max(Orbit2.continuationParameter))
+            Hlt_min = min(min(Orbit1.continuationParameter), min(Orbit2.continuationParameter))
+            Hlt_max = max(max(Orbit1.continuationParameter), max(Orbit2.continuationParameter))
 
-                continuation_normalized_orbit1 = [(value - Hlt_min) / (Hlt_max - Hlt_min) for value in
+            continuation_normalized_orbit1 = [(value - Hlt_min) / (Hlt_max - Hlt_min) for value in
                                                   Orbit1.continuationParameter]
-                continuation_normalized_orbit2 = [(value - Hlt_min) / (Hlt_max - Hlt_min) for value in
+            continuation_normalized_orbit2 = [(value - Hlt_min) / (Hlt_max - Hlt_min) for value in
                                                   Orbit2.continuationParameter]
 
-                # print(continuation_normalized_orbit1)
+            # print(continuation_normalized_orbit1)
 
-                number_of_colors_orbit1 = len(Orbit1.continuationParameter)
-                number_of_colors_orbit2 = len(Orbit2.continuationParameter)
+            number_of_colors_orbit1 = len(Orbit1.continuationParameter)
+            number_of_colors_orbit2 = len(Orbit2.continuationParameter)
 
-                colors_orbit1 = matplotlib.colors.ListedColormap(
+            colors_orbit1 = matplotlib.colors.ListedColormap(
                     sns.color_palette("viridis_r", number_of_colors_orbit1))(continuation_normalized_orbit1)
-                colors_orbit2 = matplotlib.colors.ListedColormap(
+            colors_orbit2 = matplotlib.colors.ListedColormap(
                     sns.color_palette("viridis_r", number_of_colors_orbit2))(continuation_normalized_orbit2)
-                print('length of colors_orbit_1:' + str(len(colors_orbit1)))
-                #print(colors_orbit1.tolist())
+            print('length of colors_orbit_1:' + str(len(colors_orbit1)))
+            #print(colors_orbit1.tolist())
 
 
-                #print(plotColorIndexBasedOnHlt_Orbit1)
-                sm = plt.cm.ScalarMappable(cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",
+            #print(plotColorIndexBasedOnHlt_Orbit1)
+            sm = plt.cm.ScalarMappable(cmap=matplotlib.colors.ListedColormap(sns.color_palette("viridis_r",
                                                                                                    (
                                                                                                        number_of_colors_orbit1))),
                                            norm=plt.Normalize(vmin=Hlt_min, vmax=Hlt_max))
 
-                orbitIdsPlot_orbit1 = list(range(0, len(Orbit1.continuationParameter), 1))
+            orbitIdsPlot_orbit1 = list(range(0, len(Orbit1.continuationParameter), 1))
 
 
-                arr[0].scatter(self.orbitObjects[0].x, self.orbitObjects[0].y, c=colors_orbit1,s=2)
-                arr[0].scatter(self.orbitObjects[1].x, self.orbitObjects[1].y, c=colors_orbit2,s=2)
+            arr[0].scatter(self.orbitObjects[0].x, self.orbitObjects[0].y, c=colors_orbit1,s=2)
+            arr[0].scatter(self.orbitObjects[1].x, self.orbitObjects[1].y, c=colors_orbit2,s=2)
 
-                sm.set_array([])
+            sm.set_array([])
 
-                position_handle = arr[0].get_position().bounds
-                position_handle2 = arr[0].get_position().bounds
+            position_handle = arr[0].get_position().bounds
+            position_handle2 = arr[0].get_position().bounds
 
-                colourbar_base = position_handle2[1] +0.02
-                colourbar_height = position_handle[1] + position_handle[3] - colourbar_base -0.047
+            colourbar_base = position_handle2[1] +0.02
+            colourbar_height = position_handle[1] + position_handle[3] - colourbar_base -0.047
 
 
-                axColorbar = f.add_axes([0.4, colourbar_base, 0.02, colourbar_height])
-                axColorbar.get_xaxis().set_visible(False)
-                axColorbar.get_yaxis().set_visible(False)
-                axColorbar.set_visible(False)
+            axColorbar = f.add_axes([0.4, colourbar_base, 0.02, colourbar_height])
+            axColorbar.get_xaxis().set_visible(False)
+            axColorbar.get_yaxis().set_visible(False)
+            axColorbar.set_visible(False)
 
-                divider = make_axes_locatable(axColorbar)
+            divider = make_axes_locatable(axColorbar)
 
-                cax = divider.append_axes("left", size="100%", pad=0.0)
+            cax = divider.append_axes("left", size="100%", pad=0.0)
 
-                #plt.subplots_adjust(left=0.065, bottom=0.05, top=0.96)
+            #plt.subplots_adjust(left=0.065, bottom=0.05, top=0.96)
 
-                cbar = plt.colorbar(sm, cax=cax, label=self.continuationLabel)
+            cbar = plt.colorbar(sm, cax=cax, label=self.continuationLabel)
 
-                minimum_x = min(min(self.orbitObjects[0].x),min(self.orbitObjects[1].x))
-                minimum_y = min(min(self.orbitObjects[0].y),min(self.orbitObjects[1].y))
+            minimum_x = min(min(self.orbitObjects[0].x),min(self.orbitObjects[1].x))
+            minimum_y = min(min(self.orbitObjects[0].y),min(self.orbitObjects[1].y))
 
-                maximum_x = max(max(self.orbitObjects[0].x),max(self.orbitObjects[1].x))
-                maximum_y = max(max(self.orbitObjects[0].y),max(self.orbitObjects[1].y))
+            maximum_x = max(max(self.orbitObjects[0].x),max(self.orbitObjects[1].x))
+            maximum_y = max(max(self.orbitObjects[0].y),max(self.orbitObjects[1].y))
 
-                xMiddle = minimum_x + (maximum_x - minimum_x) / 2
-                yMiddle = minimum_y + (maximum_y - minimum_y) / 2
+            xMiddle = minimum_x + (maximum_x - minimum_x) / 2
+            yMiddle = minimum_y + (maximum_y - minimum_y) / 2
 
-                scaleDistance = max((maximum_y - minimum_y), (maximum_x - minimum_x))
+            scaleDistance = max((maximum_y - minimum_y), (maximum_x - minimum_x))
 
-                ### Compute deviations
+            ### Compute deviations
 
-                minimum_length = min(len(self.orbitObjects[0].continuationParameter),len(self.orbitObjects[1].continuationParameter))
-                maximum_length = max(len(self.orbitObjects[0].continuationParameter),len(self.orbitObjects[1].continuationParameter))
-                print(minimum_length)
+            minimum_length = min(len(self.orbitObjects[0].continuationParameter),len(self.orbitObjects[1].continuationParameter))
+            maximum_length = max(len(self.orbitObjects[0].continuationParameter),len(self.orbitObjects[1].continuationParameter))
+            print(minimum_length)
 
-                position_deviation = []
-                x_deviation = []
-                y_deviation = []
-                velocity_deviation = []
-                continuation_parameter_deviation = []
+            position_deviation = []
+            x_deviation = []
+            y_deviation = []
+            velocity_deviation = []
+            continuation_parameter_deviation = []
 
-                for i in range(minimum_length):
-                    position_deviation.append(np.sqrt( (self.orbitObjects[0].x[i]-self.orbitObjects[1].x[i]) ** 2 + \
+            for i in range(minimum_length):
+                position_deviation.append(np.sqrt( (self.orbitObjects[0].x[i]-self.orbitObjects[1].x[i]) ** 2 + \
                                               (self.orbitObjects[0].y[i] - self.orbitObjects[1].y[i]) ** 2))
-                    x_deviation.append(np.sqrt((self.orbitObjects[0].x[i] - self.orbitObjects[1].x[i]) ** 2 ))
-                    y_deviation.append(np.sqrt((self.orbitObjects[0].y[i] - -1.0 *self.orbitObjects[1].y[i]) ** 2 ))
-                    velocity_deviation.append(np.sqrt((self.orbitObjects[0].xdot[i] - self.orbitObjects[1].xdot[i]) ** 2 + \
+                x_deviation.append(np.sqrt((self.orbitObjects[0].x[i] - self.orbitObjects[1].x[i]) ** 2 ))
+                y_deviation.append(np.sqrt((self.orbitObjects[0].y[i] - -1.0 *self.orbitObjects[1].y[i]) ** 2 ))
+                velocity_deviation.append(np.sqrt((self.orbitObjects[0].xdot[i] - self.orbitObjects[1].xdot[i]) ** 2 + \
                                                       (self.orbitObjects[0].ydot[i] - self.orbitObjects[1].ydot[i]) ** 2))
-                    continuation_parameter_deviation.append(
-                        np.sqrt((self.orbitObjects[0].continuationParameter[i] - self.orbitObjects[1].continuationParameter[i]) ** 2 ))
+                continuation_parameter_deviation.append(
+                    np.sqrt((self.orbitObjects[0].continuationParameter[i] - self.orbitObjects[1].continuationParameter[i]) ** 2 ))
 
-                short_object_index = 0
-                long_object_index = 0
-                if maximum_length > minimum_length:
-                    if len(self.orbitObjects[0].continuationParameter) > len(self.orbitObjects[1].continuationParameter):
-                        short_object_index = 1
-                        long_object_index = 0
-                    else:
-                        short_object_index = 0
-                        long_object_index = 1
-
-                    for i in range(minimum_length,maximum_length):
-                        position_deviation.append(np.sqrt((self.orbitObjects[long_object_index].x[i]) ** 2 + \
-                                                      (self.orbitObjects[long_object_index].y[i]) ** 2))
-                        x_deviation.append(np.sqrt(( self.orbitObjects[long_object_index].x[i]) ** 2))
-                        y_deviation.append(np.sqrt((self.orbitObjects[long_object_index].y[i] ) ** 2))
-                        velocity_deviation.append(
-                        np.sqrt((self.orbitObjects[long_object_index].xdot[i]) ** 2 + \
-                                ( self.orbitObjects[long_object_index].ydot[i]) ** 2))
-                        continuation_parameter_deviation.append(
-                            np.sqrt((self.orbitObjects[long_object_index].continuationParameter[i]) ** 2))
-
-
-
-
-                if self.varyingQuantity == 'Hamiltonian':
-                    thirdLabel = '$|\\Delta H_{lt}|$'
+            short_object_index = 0
+            long_object_index = 0
+            if maximum_length > minimum_length:
+                if len(self.orbitObjects[0].continuationParameter) > len(self.orbitObjects[1].continuationParameter):
+                    short_object_index = 1
+                    long_object_index = 0
                 else:
-                    thirdLabel = '$|\\Delta a_{lt}|$'
+                    short_object_index = 0
+                    long_object_index = 1
 
-                #arr[1].plot(self.orbitObjects[long_object_index].orbitsId[0:maximum_lengthh],position_deviation,color=self.plottingColors['tripleLine'][0],label='||$\\Delta \\bar{R}||$')
-                arr[1].semilogy(self.orbitObjects[long_object_index].orbitsId[0:maximum_length], x_deviation,color=self.plottingColors['tripleLine'][0], label='$|\\Delta x|$')
-                arr[1].semilogy(self.orbitObjects[long_object_index].orbitsId[0:maximum_length], y_deviation,color=self.plottingColors['tripleLine'][1], label='$|y^{i}_{'+str(alphaTitle1)+'}+y^{i}_{'+str(alphaTitle2)+'}|$')
+                for i in range(minimum_length,maximum_length):
+                    position_deviation.append(np.sqrt((self.orbitObjects[long_object_index].x[i]) ** 2 + \
+                                                      (self.orbitObjects[long_object_index].y[i]) ** 2))
+                    x_deviation.append(np.sqrt(( self.orbitObjects[long_object_index].x[i]) ** 2))
+                    y_deviation.append(np.sqrt((self.orbitObjects[long_object_index].y[i] ) ** 2))
+                    velocity_deviation.append(
+                    np.sqrt((self.orbitObjects[long_object_index].xdot[i]) ** 2 + \
+                                ( self.orbitObjects[long_object_index].ydot[i]) ** 2))
+                    continuation_parameter_deviation.append(
+                        np.sqrt((self.orbitObjects[long_object_index].continuationParameter[i]) ** 2))
 
-                #arr[1].plot(self.orbitObjects[long_object_index].orbitsId[0:maximum_length],velocity_deviation,color=self.plottingColors['tripleLine'][1],label='||$\\Delta \\bar{V}||$')
-                arr[1].plot(self.orbitObjects[long_object_index].orbitsId[0:maximum_length], continuation_parameter_deviation,color=self.plottingColors['tripleLine'][2], label=thirdLabel)
-                lgd = arr[1].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.83), markerscale=8)
-                arr[1].set_ylim([1.0e-12,1.0e1])
-                arr[1].set_xlim([0,maximum_length])
+
+
+
+            if self.varyingQuantity == 'Hamiltonian':
+                thirdLabel = '$|\\Delta H_{lt}|$'
+            else:
+                thirdLabel = '$|\\Delta a_{lt}|$'
+
+            #arr[1].plot(self.orbitObjects[long_object_index].orbitsId[0:maximum_lengthh],position_deviation,color=self.plottingColors['tripleLine'][0],label='||$\\Delta \\bar{R}||$')
+            arr[1].semilogy(self.orbitObjects[long_object_index].orbitsId[0:maximum_length], x_deviation,color=self.plottingColors['tripleLine'][0], label='$|\\Delta x|$')
+            arr[1].semilogy(self.orbitObjects[long_object_index].orbitsId[0:maximum_length], y_deviation,color=self.plottingColors['tripleLine'][1], label='$|y^{i}_{'+str(alphaTitle1)+'}+y^{i}_{'+str(alphaTitle2)+'}|$')
+
+            #arr[1].plot(self.orbitObjects[long_object_index].orbitsId[0:maximum_length],velocity_deviation,color=self.plottingColors['tripleLine'][1],label='||$\\Delta \\bar{V}||$')
+            arr[1].plot(self.orbitObjects[long_object_index].orbitsId[0:maximum_length], continuation_parameter_deviation,color=self.plottingColors['tripleLine'][2], label=thirdLabel)
+            lgd = arr[1].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.83), markerscale=8)
+            arr[1].set_ylim([1.0e-12,1.0e1])
+            arr[1].set_xlim([0,maximum_length])
 
         if self.varyingQuantity == 'Alpha':
             Orbit1 = self.orbitObjects[0]
@@ -1627,6 +1627,7 @@ class PeriodicSolutionsCharacterization:
             arr[1].set_ylim([1.0e-12, 1.0e1])
             lgd = arr[1].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.83), markerscale=8)
             print(y_deviation)
+
         # Plot the shooting conditions
         arr[0].set_xlim([(xMiddle - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(xMiddle + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
         arr[0].set_ylim([yMiddle - 0.5 * scaleDistance * self.spacingFactor, yMiddle + 0.5 * scaleDistance * self.spacingFactor])
