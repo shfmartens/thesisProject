@@ -1331,7 +1331,7 @@ class PeriodicSolutionsCharacterization:
         pass
 
     def shooting_conditions_analysis(self):
-        f, arr = plt.subplots(1, 2, figsize=self.figSizeThird)
+        f, arr = plt.subplots(1, 2, figsize=self.figSizeWide)
 
         arr[0].set_xlabel('x [-]')
         arr[0].set_ylabel('y [-]')
@@ -1663,7 +1663,7 @@ class PeriodicSolutionsCharacterization:
 
         #plt.tight_layout()
         if self.varyingQuantity != 'Alpha':
-            plt.subplots_adjust(left=0.065,bottom=0.13,top=0.9,wspace = 0.43,right=0.87)
+            plt.subplots_adjust(left=0.065,bottom=0.13,top=0.83,wspace = 0.43,right=0.87)
         else:
             plt.subplots_adjust(left=0.069, bottom=0.13, top=0.83, wspace=0.43, right=0.87)
 
