@@ -1953,7 +1953,7 @@ if __name__ == '__main__':
 
     if shooting_analysis == True:
         lagrange_point_nr = 1
-        acceleration_magnitude = 0.01
+        acceleration_magnitude = 0.05
         alpha = 0.0
         beta = 0.0
         hamiltonian = -1.55
@@ -1962,8 +1962,8 @@ if __name__ == '__main__':
         plot_as_x_coordinate = False
         plot_as_family_number = False
 
-        orbitL1 = DisplayPeriodicSolutions('horizontal', 1, acceleration_magnitude, 120.0, hamiltonian, varying_quantity,low_dpi, plot_as_x_coordinate, plot_as_family_number)
-        orbitL2 = DisplayPeriodicSolutions('horizontal', 1, acceleration_magnitude, 240.0, hamiltonian, varying_quantity,low_dpi, plot_as_x_coordinate, plot_as_family_number)
+        orbitL1 = DisplayPeriodicSolutions('horizontal', 1, acceleration_magnitude, 60.0, hamiltonian, varying_quantity,low_dpi, plot_as_x_coordinate, plot_as_family_number)
+        orbitL2 = DisplayPeriodicSolutions('horizontal', 1, acceleration_magnitude, 300.0, hamiltonian, varying_quantity,low_dpi, plot_as_x_coordinate, plot_as_family_number)
 
         my_objects = []
         my_objects.append(orbitL1)
