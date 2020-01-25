@@ -1962,6 +1962,7 @@ if __name__ == '__main__':
         plot_as_x_coordinate = False
         plot_as_family_number = False
 
+
         orbitL1 = DisplayPeriodicSolutions('horizontal', 2, 0.1, 60.0, hamiltonian, varying_quantity,low_dpi, plot_as_x_coordinate, plot_as_family_number)
         orbitL2 = DisplayPeriodicSolutions('horizontal', 2, acceleration_magnitude, 300.0, hamiltonian, varying_quantity,low_dpi, plot_as_x_coordinate, plot_as_family_number)
 
