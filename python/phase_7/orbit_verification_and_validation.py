@@ -1504,9 +1504,10 @@ class DisplayPeriodicSolutions:
                     arr[i,j].set_xticks([0,90,180,270,360])
                     arr[i,j].set_xticklabels(['$0$','$\\frac{1}{2}\\pi$','$\\pi$','$\\frac{3}{2}\\pi$','$2\\pi$'])
 
+        print('self.varyingQuantity:' + str(self.varyingQuantity))
+        print('self.lagrangePointNr:' + str(self.lagrangePointNr))
+
         if self.varyingQuantity == 'Alpha' and self.lagrangePointNr == 1:
-            print('self.varyingQuantity:' +  str(self.varyingQuantity))
-            print('self.lagrangePointNr:' +  str(self.lagrangePointNr))
             print('self.accelerationMagnitude:' + str(self.accelerationMagnitude))
 
             if self.Hamiltonian == -1.50 and self.accelerationMagnitude == 0.05:
@@ -1514,6 +1515,8 @@ class DisplayPeriodicSolutions:
             if self.Hamiltonian == -1.55 and self.accelerationMagnitude == 0.1:
                 xcoords = [93.0,123.0,237.0,267.0]
             if self.Hamiltonian == -1.525 and self.accelerationMagnitude == 0.1:
+                print('CONDITION REACHED:')
+
                 xcoords = [110, 146.0, 214.0, 253.0]
             if self.Hamiltonian == -1.50 and self.accelerationMagnitude == 0.1:
                 xcoords = [126.0, 250.0]
