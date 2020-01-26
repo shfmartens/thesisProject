@@ -1473,7 +1473,12 @@ class DisplayPeriodicSolutions:
         # added these three lines
         lns = lns1 + lns2
         labs = [l.get_label() for l in lns]
-        arr[2,1].legend(lns, labs, frameon=True, loc='upper left')
+
+        if self.varyingQuantity != 'Alpha':
+            arr[2,1].legend(lns, labs, frameon=True, loc='upper left')
+        else:
+            arr[2, 1].legend(lns, labs, frameon=True, loc='upper center')
+
 
         arr[0, 0].set_ylabel('$||\\mathbf{F}||$ [-]')
         arr[0, 1].set_ylabel('$\Delta \\bar{R}$ [-]')
@@ -2387,7 +2392,7 @@ class DisplayPeriodicSolutions:
 if __name__ == '__main__':
     orbit_types = ['horizontal']
     lagrange_points = [1]
-    acceleration_magnitudes = [0.1]
+    acceleration_magnitudes = [0.05]
     alphas = [0.0]
     Hamiltonians = [-1.50]
     low_dpi = False
