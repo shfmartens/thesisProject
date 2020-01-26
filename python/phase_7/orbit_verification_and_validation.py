@@ -1524,10 +1524,10 @@ class DisplayPeriodicSolutions:
             if self.Hamiltonian == -1.55 and self.accelerationMagnitude == 0.1:
                 xcoords = [61,96,109,251,265,301]
 
-            for i in range(3):
-                for j in range(2):
-                    for xc in xcoords:
-                        arr[i,j].axvline(x=xc,color='red',linestyle='--',linewidth=0.5)
+        for i in range(3):
+            for j in range(2):
+                for xc in xcoords:
+                    arr[i,j].axvline(x=xc,color='red',linestyle='--',linewidth=0.5)
 
         ax2.grid(False)
         plt.tight_layout()
