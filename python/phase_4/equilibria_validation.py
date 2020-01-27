@@ -2007,9 +2007,9 @@ class DisplayEquilibriaValidation:
 
         print('first plot complete!')
 
-        ax0.text(-0.941, 0.3, '3e-2', fontsize=5, rotation=72, rotation_mode='anchor')
-        ax0.text(0.575, 0.794, '3e-2', fontsize=5, rotation=320, rotation_mode='anchor')
-        ax0.text(0.59, -0.821, '3e-2', fontsize=5, rotation=40, rotation_mode='anchor')
+        ax0.text(-0.941, 0.3, '3e-3', fontsize=5, rotation=72, rotation_mode='anchor')
+        ax0.text(0.575, 0.794, '3e-3', fontsize=5, rotation=320, rotation_mode='anchor')
+        ax0.text(0.59, -0.821, '3e-3', fontsize=5, rotation=40, rotation_mode='anchor')
 
         ax0.text(0.91, 0.26, '0.1', fontsize=7, rotation=0, rotation_mode='anchor')
         # ax0.text(0.91, -0.305, '0.1', fontsize=8, rotation=0, rotation_mode='anchor')
@@ -2048,7 +2048,7 @@ class DisplayEquilibriaValidation:
         #ax1.text(0.833, 0.055, '0.2', fontsize=8, rotation=0, rotation_mode='anchor')
         #ax1.text(0.832, 0.073, '0.25', fontsize=7, rotation=0, rotation_mode='anchor')
 
-        ax1.text(1.146, 0.009, '3e-2', fontsize=4, rotation=0, rotation_mode='anchor')
+        ax1.text(1.146, 0.009, '3e-3', fontsize=4, rotation=0, rotation_mode='anchor')
         ax1.text(1.143, 0.051, '0.1', fontsize=7, rotation=0, rotation_mode='anchor')
         ax1.text(1.105, 0.164, '0.25', fontsize=7, rotation=0, rotation_mode='anchor')
 
@@ -2680,8 +2680,8 @@ if __name__ == '__main__':
     ### Contours
 
     lagrange_point_nrs = [1,2,3,4,5]
-    acceleration_magnitudes = [0.003,0.00873,0.07,0.1]
-    seeds = [0.0]
+    acceleration_magnitudes = [0.003,0.1,0,25]
+    seeds = [180.0]
     continuations = ['backward']
     alphas = [0.0]
     low_dpi = False
@@ -2693,7 +2693,7 @@ if __name__ == '__main__':
 
 
     #display_equilibria_validation.plot_eigenvalue_acceleration_paper()
-    #display_equilibria_validation.plot_contours_zoom_and_wide_angle()
+    display_equilibria_validation.plot_contours_zoom_and_wide_angle()
     #display_equilibria_validation.plot_contours_zoom_and_wide_acc()
     #display_equilibria_validation.plot_equilibria_validation()
     # #
