@@ -1839,9 +1839,9 @@ if __name__ == '__main__':
         my_objects.append(orbit4)
         my_objects.append(orbit5)
         my_objects.append(orbit6)
-        # my_objects.append(orbit7)
-        # my_objects.append(orbit8)
-        # my_objects.append(orbit9)
+        my_objects.append(orbit7)
+        my_objects.append(orbit8)
+        my_objects.append(orbit9)
 
 
         characterize_periodic_solutions = PeriodicSolutionsCharacterization(lagrange_point_nr, acceleration_magnitude,
