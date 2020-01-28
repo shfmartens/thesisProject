@@ -1179,6 +1179,15 @@ class PeriodicSolutionsCharacterization:
         arr[0].set_title('$\\nu_{1}$')
         #arr[1].set_title('$\\nu_{2}$')
 
+        if self.varyingQuantity == 'Alpha':
+            arr[0].set_xlim([0,360])
+            arr[1].set_xlim([0,360])
+
+            arr[0].set_xticks([0, 90, 180, 270, 360])
+            arr[0].set_xticklabels(['$0$', '$\\frac{1}{2}\\pi$', '$\\pi$', '$\\frac{3}{2}\\pi$', '$2\\pi$'])
+
+            arr[1].set_xticks([0, 90, 180, 270, 360])
+            arr[1].set_xticklabels(['$0$', '$\\frac{1}{2}\\pi$', '$\\pi$', '$\\frac{3}{2}\\pi$', '$2\\pi$'])
 
         f.subplots_adjust(left=0.06,bottom=0.25,top=0.89)
 
@@ -1801,7 +1810,7 @@ if __name__ == '__main__':
         del characterize_periodic_solutions
 
     if  graphical_projection == True:
-        lagrange_point_nr = 2
+        lagrange_point_nr = 1
         acceleration_magnitude = 0.1
         alpha = 0.0
         beta = 0.0
@@ -1813,15 +1822,15 @@ if __name__ == '__main__':
 
 
 
-        orbit1 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 0.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
-        orbit2 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 60.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
-        orbit3 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 120.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
-        orbit4 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 180.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
-        orbit5 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 300.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
-        orbit6 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, acceleration_magnitude, 240.0, hamiltonian, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
-        # orbit7 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.1, alpha, hamiltonian, varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
-        # orbit8 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.1, alpha, hamiltonian,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
-        # orbit9 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.1, alpha, hamiltonian,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
+        orbit1 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.01, alpha, -1.55, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
+        orbit2 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.01, alpha, -1.525, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
+        orbit3 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.01, alpha, -1.50, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
+        orbit4 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.05, alpha, -1.55, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
+        orbit5 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.05, alpha, -1.525, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
+        orbit6 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.05, alpha, -1.50, varying_quantity, low_dpi,plot_as_x_coordinate,plot_as_family_number)
+        orbit7 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.1, alpha, -1.55, varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
+        orbit8 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.1, alpha, -1.525,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
+        orbit9 = DisplayPeriodicSolutions('horizontal', lagrange_point_nr, 0.1, alpha, -1.50,varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
 
         my_objects = []
         my_objects.append(orbit1)
