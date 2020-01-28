@@ -366,8 +366,10 @@ class PeriodicSolutionsCharacterization:
         ax1.set_ylim(
             [Ymiddle1 - 0.5 * scaleDistance * self.spacingFactor, Ymiddle1 + 0.5 * scaleDistance * self.spacingFactor])
 
-        ax2.set_xlim([(Xmiddle2 - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),
-                      (Xmiddle2 + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
+        # ax2.set_xlim([(Xmiddle2 - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),
+        #               (Xmiddle2 + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
+        # ax2.set_ylim([Ymiddle2 - 0.5 * scaleDistance * self.spacingFactor, Ymiddle2 + 0.5 * scaleDistance * self.spacingFactor])
+        ax2.set_xlim([(Xmiddle1 - 0.5 * scaleDistance * self.figureRatio * self.spacingFactor),(Xmiddle1 + 0.5 * scaleDistance * self.figureRatio * self.spacingFactor)])
         ax2.set_ylim([Ymiddle2 - 0.5 * scaleDistance * self.spacingFactor, Ymiddle2 + 0.5 * scaleDistance * self.spacingFactor])
 
         ax1.set_aspect(1.0)
