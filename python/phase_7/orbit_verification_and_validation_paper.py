@@ -1810,7 +1810,7 @@ if __name__ == '__main__':
         del characterize_periodic_solutions
 
     if  graphical_projection == True:
-        lagrange_point_nr = 1
+        lagrange_point_nr = 2
         acceleration_magnitude = 0.1
         alpha = 0.0
         beta = 0.0
@@ -1847,9 +1847,9 @@ if __name__ == '__main__':
         characterize_periodic_solutions = PeriodicSolutionsCharacterization(lagrange_point_nr, acceleration_magnitude,
                                                                             alpha, hamiltonian, varying_quantity, my_objects,low_dpi,plot_as_x_coordinate,plot_as_family_number)
 
-        #characterize_periodic_solutions.graphical_projection()
+        characterize_periodic_solutions.graphical_projection()
         #characterize_periodic_solutions.bifurcation_analysis()
-        characterize_periodic_solutions.stability_analysis()
+        #characterize_periodic_solutions.stability_analysis()
 
         del characterize_periodic_solutions
 
