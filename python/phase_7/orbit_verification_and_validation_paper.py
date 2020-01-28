@@ -1019,9 +1019,9 @@ class PeriodicSolutionsCharacterization:
                     arr[i,j].semilogy(self.orbitObjects[objectCounter].continuationParameter, Orbit_l1, c=self.plottingColors['lambda1'],label='$|\lambda_{1}|$')
                     arr[i,j].semilogy(self.orbitObjects[objectCounter].continuationParameter, Orbit_l2, c=self.plottingColors['lambda2'],label='$|\lambda_{2}|$')
                     arr[i,j].semilogy(self.orbitObjects[objectCounter].continuationParameter, Orbit_l3, c=self.plottingColors['lambda3'],label='$|\lambda_{3}|$')
-                    arr[i,j].semilogy(self.orbitObjects[objectCounter].continuationParameter, Orbit_l4, c=self.plottingColors['lambda4'],label='$|\\frac{1}{\lambda_{1}}|$')
-                    arr[i,j].semilogy(self.orbitObjects[objectCounter].continuationParameter, Orbit_l5, c=self.plottingColors['lambda5'],label='$|\\frac{1}{\lambda_{2}}|$')
-                    arr[i,j].semilogy(self.orbitObjects[objectCounter].continuationParameter, Orbit_l6, c=self.plottingColors['lambda6'],label='$|\\frac{1}{\lambda_{3}}|$')
+                    arr[i,j].semilogy(self.orbitObjects[objectCounter].continuationParameter, Orbit_l4, c=self.plottingColors['lambda4'],label='$\\frac{1}{|\lambda_{3}|}$')
+                    arr[i,j].semilogy(self.orbitObjects[objectCounter].continuationParameter, Orbit_l5, c=self.plottingColors['lambda5'],label='$\\frac{1}{|\lambda_{2}|}$')
+                    arr[i,j].semilogy(self.orbitObjects[objectCounter].continuationParameter, Orbit_l6, c=self.plottingColors['lambda6'],label='$\\frac{1}{|\lambda_{1}|}$')
 
                     size = 3
                     arr[i+1, j].scatter(self.orbitObjects[objectCounter].continuationParameter,np.angle(self.orbitObjects[objectCounter].lambda2, deg=True),c=self.plottingColors['lambda2'], s=size)
@@ -1712,10 +1712,10 @@ class PeriodicSolutionsCharacterization:
 
 if __name__ == '__main__':
 
-    ballistic_planar_projection = True
+    ballistic_planar_projection = False
     ballistic_bifurcation_analysis = False
     ballistic_stability_analysis = False
-    graphical_projection = False
+    graphical_projection = True
     bifurcation_analysis = False
     stability_analysis = False
     hamiltonian_domain_analysis = False
@@ -1801,7 +1801,7 @@ if __name__ == '__main__':
         del characterize_periodic_solutions
 
     if  graphical_projection == True:
-        lagrange_point_nr = 2
+        lagrange_point_nr = 1
         acceleration_magnitude = 0.01
         alpha = 0.0
         beta = 0.0
