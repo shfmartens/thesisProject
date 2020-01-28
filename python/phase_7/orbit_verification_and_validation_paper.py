@@ -1192,7 +1192,7 @@ class PeriodicSolutionsCharacterization:
         f.subplots_adjust(left=0.06,bottom=0.25,top=0.89)
 
 
-        lgd = arr[1].legend(frameon=True, loc='center left', bbox_to_anchor=(1, 0.5), prop={'size': 8})
+        lgd = arr[1].legend(frameon=True, loc='center left', bbox_to_anchor=(1.03, 0.5), prop={'size': 8})
 
 
         if self.varyingQuantity == 'Hamiltonian':
