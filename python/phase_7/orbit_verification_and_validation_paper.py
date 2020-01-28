@@ -431,10 +431,10 @@ class PeriodicSolutionsCharacterization:
         ax1.semilogy(Orbit1.continuationParameter, Orbit1_l1, c=self.plottingColors['lambda1'],label='$|\lambda_{1}|$')
         ax1.semilogy(Orbit1.continuationParameter, Orbit1_l2, c=self.plottingColors['lambda2'],label='$|\lambda_{2}|$')
         ax1.semilogy(Orbit1.continuationParameter, Orbit1_l3, c=self.plottingColors['lambda3'],label='$|\lambda_{3}|$')
-        ax1.semilogy(Orbit1.continuationParameter, Orbit1_l4, c=self.plottingColors['lambda4'],label='$|\\frac{1}{\lambda_{1}}|$')
-        ax1.semilogy(Orbit1.continuationParameter, Orbit1_l5, c=self.plottingColors['lambda5'],label='$|\\frac{1}{\lambda_{2}}|$')
-        ax1.semilogy(Orbit1.continuationParameter, Orbit1_l6, c=self.plottingColors['lambda6'],label='$|\\frac{1}{\lambda_{3}}|$')
-        ax1.set_title('$|\lambda_1| \geq |\lambda_2| \geq |\lambda_3| = 1 = |1/\lambda_3| \geq |1/\lambda_2| \geq |1/\lambda_1|$')
+        ax1.semilogy(Orbit1.continuationParameter, Orbit1_l4, c=self.plottingColors['lambda4'],label='$\\frac{1}{|\lambda_{3}|}$')
+        ax1.semilogy(Orbit1.continuationParameter, Orbit1_l5, c=self.plottingColors['lambda5'],label='$\\frac{1}{|\lambda_{2}|}$')
+        ax1.semilogy(Orbit1.continuationParameter, Orbit1_l6, c=self.plottingColors['lambda6'],label='$\\frac{1}{|\lambda_{1}|}$')
+        ax1.set_title('$|\lambda_1| \geq |\lambda_2| \geq |\lambda_3| = 1 = 1/|\lambda_3| \geq 1/|\lambda_2| \geq 1/|\lambda_1|$')
 
 
         ax2.scatter(Orbit1.continuationParameter, np.angle(Orbit1.lambda2, deg=True), c=self.plottingColors['lambda2'], s=size)
@@ -1742,8 +1742,8 @@ if __name__ == '__main__':
 
         characterize_periodic_solutions = PeriodicSolutionsCharacterization(lagrange_point_nr,acceleration_magnitude, alpha, hamiltonian,varying_quantity, my_objects, low_dpi,plot_as_x_coordinate,plot_as_family_number)
 
-        characterize_periodic_solutions.ballistic_graphical_projection()
-        #characterize_periodic_solutions.ballistic_bifurcation_analysis()
+        #characterize_periodic_solutions.ballistic_graphical_projection()
+        characterize_periodic_solutions.ballistic_bifurcation_analysis()
         #characterize_periodic_solutions.ballistic_stability_analysis()
 
 
