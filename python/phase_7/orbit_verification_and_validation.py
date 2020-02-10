@@ -1695,8 +1695,9 @@ class DisplayPeriodicSolutions:
             if self.Hamiltonian == -1.55 and self.accelerationMagnitude == 0.1:
                 xcoords = [61.0, 96.0, 109.0, 251.0, 265.0, 301.0]
 
-        for i in range(2):
-            for xc in xcoords:
+        if self.varyingQuantity == 'Alpha':
+            for i in range(2):
+                for xc in xcoords:
                     arr[i].axvline(x=xc, color='red', linestyle='--', linewidth=0.5)
 
         #arr[1, 0].set_title('Order of linear instability')
