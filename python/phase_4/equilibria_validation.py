@@ -2012,14 +2012,14 @@ class DisplayEquilibriaValidation:
         ax0.text(0.59, -0.821, '3e-3', fontsize=5, rotation=40, rotation_mode='anchor')
 
         ax0.text(0.91, 0.26, '0.1', fontsize=7, rotation=0, rotation_mode='anchor')
-        # ax0.text(0.91, -0.305, '0.1', fontsize=8, rotation=0, rotation_mode='anchor')
+        ax0.text(0.91, -0.305, '0.1', fontsize=8, rotation=0, rotation_mode='anchor')
         #
         #ax0.text(0.87, 0.17, '0.25', fontsize=7, rotation=0, rotation_mode='anchor')
         #ax0.text(0.87, -0.2, '0.25', fontsize=7, rotation=0, rotation_mode='anchor')
         ax0.text(-1.12, -0.06, '0.25', fontsize=7, rotation=90, rotation_mode='anchor')
 
 
-        customAccArrayZoom = [0.003, 0.1, 0.25]
+        customAccArrayZoom = [0.003,0.1,0.25]
         customSeedsZoom = [0.0]
         customContinuationZoom = ['forward']
         for accMag in customAccArrayZoom:
@@ -2757,14 +2757,14 @@ if __name__ == '__main__':
     lagrange_point_nrs = [1,2,3]
     acceleration_magnitudes = [0.1]
 
-    for acceleration_magnitude in acceleration_magnitudes:
-         display_equilibria_validation = DisplayEquilibriaValidation(lagrange_point_nrs, acceleration_magnitude,alphas, seeds, continuations, low_dpi=low_dpi)
-         display_equilibria_validation.plot_equilibria_validation_propagation()
-         #display_equilibria_validation.plot_equilibria_acceleration()
-
-         plt.close('all')
-
-         del display_equilibria_validation
+    # for acceleration_magnitude in acceleration_magnitudes:
+    #      display_equilibria_validation = DisplayEquilibriaValidation(lagrange_point_nrs, acceleration_magnitude,alphas, seeds, continuations, low_dpi=low_dpi)
+    #      display_equilibria_validation.plot_equilibria_validation_propagation()
+    #      #display_equilibria_validation.plot_equilibria_acceleration()
+    #
+    #      plt.close('all')
+    #
+    #      del display_equilibria_validation
 
 
     #

@@ -125,11 +125,11 @@ class VaryingMassAnalysis:
         arr[0,0].set_ylabel('y [-]')
         arr[0,0].set_title('Planar projection')
 
-        arr[0, 1].set_xlabel('T [-]')
+        arr[0, 1].set_xlabel('$\\tau$  [-]')
         arr[0, 1].set_ylabel('$H_{lt}$ [-]')
         arr[0, 1].set_title('Hamiltonian evolution')
 
-        arr[1,0].set_xlabel('T [-]')
+        arr[1,0].set_xlabel('$\\tau$ [-]')
         arr[1,0].set_ylabel('$m$ [-]')
         arr[1,0].set_title('Mass evolution')
 
@@ -250,6 +250,7 @@ class VaryingMassAnalysis:
                                                row[1][7], row[1][8], 1.0)-compute_hamiltonian_from_state(row[1][1], row[1][2], row[1][3], row[1][4], row[1][5], row[1][6],
                                                row[1][7], row[1][8], row[1][10]))
 
+        print('HLT period: ' + str(Hlt_varying[len(Hlt_varying)-1]))
         #arr[0, 1].yaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.1f'))
         arr[0, 1].plot(time_constant, Hlt_constant, color=self.plottingColors['doubleLine'][0], label='$\\dot{m} = 0$',linestyle='-')
         arr[0, 1].plot(time_varying, Hlt_varying, color=self.plottingColors['doubleLine'][1],label='$\\dot{m} \\neq 0$', linestyle='--')
@@ -275,8 +276,9 @@ class VaryingMassAnalysis:
            if i > 0 and i <len(Hlt_varying)-1:
                Delta_Hlt.append(Hlt_varying[i]-Hlt_varying[i-1])
 
-        arr[1,1].plot(mass_varying[1:len(mass_varying)-1],Delta_Hlt)
+        arr[1,1].plot(mass_varying[1:len(mass_varying)-1],Delta_Hlt,color=self.plottingColors['singleLine'],label='$\Delta H_{lt}$')
         arr[1,1].set_xlim([1,min(mass_varying)])
+        arr[1,1].legend(frameon=True, loc='lower left', markerscale=11)
         #arr[1, 1].yaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%1.1e'))
 
         plt.tight_layout()
@@ -300,10 +302,10 @@ class VaryingMassAnalysis:
 if __name__ == '__main__':
 
     lagrange_point_nr = 1
-    acceleration_magnitude = 0.01
-    specific_impulses = [1500,2000,3000]
+    acceleration_magnitude = 0.1
+    specific_impulses = [3000]
     alpha = 0.0
-    member = 1938
+    member = 2167
     low_dpi = False
 
     for specific_impulse in specific_impulses:
@@ -311,7 +313,7 @@ if __name__ == '__main__':
                                                      specific_impulse, low_dpi)
 
         analyze_varying_mass.verify_howell_reasoning()
-        #analyze_varying_mass.analyze_varying_mass_effect()
+        analyze_varying_mass.analyze_varying_mass_effect()
 
         del analyze_varying_mass
 
