@@ -1724,11 +1724,11 @@ if __name__ == '__main__':
     ballistic_planar_projection = False
     ballistic_bifurcation_analysis = False
     ballistic_stability_analysis = False
-    graphical_projection = True
+    graphical_projection = False
     bifurcation_analysis = False
     stability_analysis = False
     hamiltonian_domain_analysis = False
-    shooting_analysis = False
+    shooting_analysis = True
 
     if ballistic_planar_projection == True:
         lagrange_point_nr = 2
@@ -1967,15 +1967,15 @@ if __name__ == '__main__':
         acceleration_magnitude = 0.1
         alpha = 0.0
         beta = 0.0
-        hamiltonian = -1.55
+        hamiltonian = -1.525
         varying_quantity = 'Hamiltonian'
         low_dpi = False
         plot_as_x_coordinate = False
         plot_as_family_number = False
 
 
-        orbitL1 = DisplayPeriodicSolutions('horizontal', 2, 0.1, 60.0, hamiltonian, varying_quantity,low_dpi, plot_as_x_coordinate, plot_as_family_number)
-        orbitL2 = DisplayPeriodicSolutions('horizontal', 2, 0.1, 300.0, hamiltonian, varying_quantity,low_dpi, plot_as_x_coordinate, plot_as_family_number)
+        orbitL1 = DisplayPeriodicSolutions('horizontal', 1, 0.1, 60.0, hamiltonian, varying_quantity,low_dpi, plot_as_x_coordinate, plot_as_family_number)
+        orbitL2 = DisplayPeriodicSolutions('horizontal', 1, 0.1, 300.0, hamiltonian, varying_quantity,low_dpi, plot_as_x_coordinate, plot_as_family_number)
 
         my_objects = []
         my_objects.append(orbitL1)
