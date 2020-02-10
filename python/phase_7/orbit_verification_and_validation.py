@@ -2158,7 +2158,7 @@ class DisplayPeriodicSolutions:
 
             lns = lns0 + lns1 + lns2
         labs = [l.get_label() for l in lns]
-        arr[1, 1].legend(lns, labs, frameon=True, loc='center left', bbox_to_anchor=(1.0, 0.5), markerscale=15)
+        arr[1, 1].legend(lns, labs, frameon=True, loc='center left', bbox_to_anchor=(1.05, 0.5), markerscale=15)
 
         for i in range(2):
             for j in range(2):
@@ -2391,12 +2391,12 @@ class DisplayPeriodicSolutions:
 
 if __name__ == '__main__':
     orbit_types = ['horizontal']
-    lagrange_points = [2]
-    acceleration_magnitudes = [0.1]
-    alphas = [0.0]
+    lagrange_points = [1]
+    acceleration_magnitudes = [0.05]
+    alphas = [300]
     Hamiltonians = [-1.55]
     low_dpi = False
-    varying_quantities = ['Alpha']
+    varying_quantities = ['Hamiltonian']
     plot_as_x_coordinate  = False
     plot_as_family_number = False
 
@@ -2413,11 +2413,11 @@ if __name__ == '__main__':
                                          alpha, Hamiltonian, varying_quantity, low_dpi, plot_as_x_coordinate, plot_as_family_number)
 
                             #display_periodic_solutions.plot_families()
-                            display_periodic_solutions.plot_periodicity_validation()
+                            #display_periodic_solutions.plot_periodicity_validation()
                             #display_periodic_solutions.plot_monodromy_analysis()
                             #display_periodic_solutions.plot_monodromy_analysis_old()
                             #display_periodic_solutions.plot_stability()
-                            #display_periodic_solutions.plot_continuation_procedure()
+                            display_periodic_solutions.plot_continuation_procedure()
                             #display_periodic_solutions.plot_increment_of_orbits()
 
 
