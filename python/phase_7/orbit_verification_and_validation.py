@@ -2180,10 +2180,11 @@ class DisplayPeriodicSolutions:
             if self.Hamiltonian == -1.55 and self.accelerationMagnitude == 0.1:
                 xcoords = [61, 96, 111, 113, 125, 161]
 
-        for i in range(2):
-            for j in range(2):
-                for xc in xcoords:
-                    arr[i, j].axvline(x=xc, color='red', linestyle='--', linewidth=0.5)
+        if self.varyingQuantity == 'Alpha':
+            for i in range(2):
+                for j in range(2):
+                    for xc in xcoords:
+                        arr[i, j].axvline(x=xc, color='red', linestyle='--', linewidth=0.5)
 
         plt.tight_layout()
         plt.subplots_adjust(top=0.88)
