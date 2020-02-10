@@ -52,7 +52,7 @@ class PeriodicSolutionsCharacterization:
             if varying_quantity == 'Hamiltonian':
                 self.continuationLabel = '$H_{lt}$ [-]'
             if varying_quantity == 'Alpha':
-                self.continuationLabel = '$\\alpha$ [-]'
+                self.continuationLabel = '$\\alpha$ [rad]'
             if varying_quantity == 'Acceleration':
                 self.continuationLabel = '$a_{lt}$ [-]'
         elif plot_as_x_coordinate == True and plot_as_family_number == False:
