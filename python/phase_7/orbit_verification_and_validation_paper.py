@@ -1189,7 +1189,7 @@ class PeriodicSolutionsCharacterization:
             arr[1].set_xticks([0, 90, 180, 270, 360])
             arr[1].set_xticklabels(['$0$', '$\\frac{1}{2}\\pi$', '$\\pi$', '$\\frac{3}{2}\\pi$', '$2\\pi$'])
 
-        f.subplots_adjust(left=0.06,bottom=0.25,top=0.89)
+        f.subplots_adjust(left=0.06,bottom=0.23,top=0.89)
 
 
         lgd = arr[1].legend(frameon=True, loc='center left', bbox_to_anchor=(1.03, 0.5), prop={'size': 8})
@@ -1849,7 +1849,7 @@ if __name__ == '__main__':
 
         characterize_periodic_solutions.graphical_projection()
         #characterize_periodic_solutions.bifurcation_analysis()
-        #characterize_periodic_solutions.stability_analysis()
+        characterize_periodic_solutions.stability_analysis()
 
         del characterize_periodic_solutions
 
