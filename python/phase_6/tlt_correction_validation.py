@@ -101,6 +101,10 @@ class TLTCorrectorValidation:
         self.lineWidth = 1
 
     def plot_tlt_visualization(self):
+
+        print(sns.color_palette("viridis", 6)[4])
+        print(sns.color_palette("viridis", 6)[1])
+
         if self.numberOfCycles == 2:
             fig = plt.figure(figsize=self.figSize)
 
