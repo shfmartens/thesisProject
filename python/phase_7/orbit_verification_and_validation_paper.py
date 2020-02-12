@@ -255,6 +255,7 @@ class PeriodicSolutionsCharacterization:
             print(i)
             print(plotColorIndexBasedOnHlt_Orbit1[i])
             print(plot_color1)
+            print(Orbit1.Hlt[i])
 
             df1 = load_orbit('../../data/raw/orbits/augmented/L' + str(Orbit1.lagrangePointNr) + '_' + Orbit1.orbitType + '_' \
                             + str("{:12.11f}".format(Orbit1.accelerationMagnitude)) + '_' \
@@ -1762,7 +1763,7 @@ if __name__ == '__main__':
 
     if ballistic_bifurcation_analysis == True:
         lagrange_point_nr = 1
-        acceleration_magnitude = 0.05
+        acceleration_magnitude = 0.0
         alpha = 0.0
         beta = 0.0
         hamiltonian = 0.0
