@@ -249,7 +249,7 @@ class PeriodicSolutionsCharacterization:
             orbitIdsPlot_orbit2.append(len(Orbit2.continuationParameter) - 1)
 
         orbitIdsPlot_orbit1 = []
-        orbitIdsPlot_orbit1 = [100]
+        orbitIdsPlot_orbit1 = [300]
         for i in orbitIdsPlot_orbit1:
             plot_color1 = colors_orbit1[i]
             print(i)
