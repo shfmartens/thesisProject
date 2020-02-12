@@ -1782,7 +1782,9 @@ if __name__ == '__main__':
                                                                             alpha, hamiltonian, varying_quantity, my_objects,
                                                                             low_dpi,plot_as_x_coordinate,plot_as_family_number)
 
-        characterize_periodic_solutions.ballistic_bifurcation_analysis()
+        #characterize_periodic_solutions.ballistic_bifurcation_analysis()
+        characterize_periodic_solutions.ballistic_graphical_projection()
+
 
         del characterize_periodic_solutions
 
