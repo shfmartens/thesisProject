@@ -43,66 +43,21 @@ int main (){
      //================================
      //== Compute equilibria, comment out when computing low-thrust intial positions ==
      //================================
-//    Eigen::Vector3d tempVector; tempVector.setZero();
-//    tempVector(0) = 0.01;
-//        tempVector(1) = 0.04;
-//        tempVector(2) = 0.066;
 
-//    for(int k = 0; k < 1; k++)
-//    {
-//        double alpha = 0.0;
-//        double accMag = 0.0107;
-//        for (int i = 4; i < 5  ; i++)
-//        {
-//            double tempAcc = 0.0;
-//            double tempAng = 0.0;
 
-//           Eigen::Vector2d equilibriumTest = createEquilibriumLocations(i, tempAcc,  tempAng, "acceleration", 1.0, massParameter);
-//           Eigen::VectorXd hamiltonianTest(10); hamiltonianTest.setZero();
-//           hamiltonianTest.segment(0,2) = equilibriumTest;
-//           hamiltonianTest(6) = tempAcc;
-//           hamiltonianTest(7) = tempAng;
-
-//            double testHamiltonianValue = computeHamiltonian(massParameter, hamiltonianTest);
-//            std::cout << "\n== Eq result =="<< std::endl
-//                      << "librationPointNr: " << i << std::endl
-//                      << "alt: " << tempAcc << std::endl
-//                      << "alpha: " << tempAng << std::endl
-//                      << "equilibriumLocation: \n" << equilibriumTest << std::endl
-//                      << "testHamiltonianValue: \n" << testHamiltonianValue << std::endl
-
-//                      << "=================" << std::endl;
+     Eigen::Vector2d equilibriumTest = createEquilibriumLocations(1, 0.1,  180.0, "acceleration", 1.0, massParameter);
 
 
 
-//        }
 
-
-//    double semiMajorAxis = 384400*1000;
-//    double EarthGravPar = tudat::celestial_body_constants::EARTH_GRAVITATIONAL_PARAMETER;
-//    double MoonGravPar = tudat::celestial_body_constants::MOON_GRAVITATIONAL_PARAMETER;
-//    double GravConst = tudat::physical_constants::GRAVITATIONAL_CONSTANT;
-//    double moonMass = MoonGravPar/GravConst;
-
-//    std::cout.precision(14);
-//    double period = tudat::basic_astrodynamics::computeKeplerOrbitalPeriod(semiMajorAxis, EarthGravPar, moonMass  );
-//    double velocity = semiMajorAxis / (period/(2.0*tudat::mathematical_constants::PI));
-//    std::cout << "semi major axis [m]: " << semiMajorAxis << std::endl;
-//    std::cout << "EARTH GM [[m^3 s^-2]]: " << EarthGravPar << std::endl;
-//    std::cout << "Moon GM [[m^3 s^-2]]: " << MoonGravPar << std::endl;
-//    std::cout << "GravConst [meter^3 per kilogram per second^2]: " << GravConst << std::endl;
-//    std::cout << "moonMass []: " << moonMass << std::endl;
-//    std::cout << "period []: " << (period /tudat::physical_constants::SIDEREAL_DAY)<< std::endl;
-//    std::cout << "velocity []: " << velocity << std::endl;
-//    std::cout << "eps: " << std::numeric_limits<double>::epsilon( ) << std::endl;
 
     // ================================
     // == VaryingMassAnalysis ==
     // ================================
 
-    int testCaseNumber = 2;
-    // ADAPT SPECIFIC IMPULSE IN STATE MODEL AND IN OUTPUT!
-    varyingMassAnalysis(testCaseNumber, massParameter);
+//    int testCaseNumber = 2;
+//    // ADAPT SPECIFIC IMPULSE IN STATE MODEL AND IN OUTPUT!
+//    varyingMassAnalysis(testCaseNumber, massParameter);
 
 
     // ================================
@@ -120,14 +75,14 @@ int main (){
                 std::string orbitType = "horizontal";
                 int continuationIndex = 6; //1: Continuate for H, 6: acceleration, 7: alpha, 8: beta
                 double accelerationMagnitude = 0.0;
-                double accelerationAngle = 110.0;
+                double accelerationAngle = 0.0;
                 double accelerationAngle2 = 0.0;
                 double initialMass = 1.0;
                 double ySign = -1.0;
                 double familyHamiltonian = -1.50;
                 int numberOfFamilyMembers = 100;
                 bool startContinuationFromTextFile = false;
-                //createLowThrustInitialConditions(2, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile, numberOfFamilyMembers );
+                createLowThrustInitialConditions(2, ySign, orbitType, continuationIndex, accelerationMagnitude, accelerationAngle, accelerationAngle2, initialMass, familyHamiltonian, startContinuationFromTextFile, numberOfFamilyMembers );
 
 
 
@@ -462,32 +417,3 @@ int main (){
 }
 
 
-//int testCollocPoints = 5;
-//int numberOfSegments = testCollocPoints-1;
-//int numberOfOddPoints = 3*numberOfSegments+1;
-
-
-//Eigen::MatrixXd collocationDesignVector = Eigen::MatrixXd::Zero(83,1);
-//Eigen::VectorXd previousDesignVector = Eigen::VectorXd::Zero(11*numberOfOddPoints);
-
-//std::ifstream inFile;
-////std::string path = "/Users/Sjors/Desktop/designvector.txt";
-//std::string path = "../designvector.txt";
-
-//inFile.open(path);
-
-//if (!inFile) {
-//    std::cout << "Unable to open file datafile.txt" << std::endl;
-//} else
-//{
-
-//    int i = 0;
-//    double x;
-//    while(inFile >> x)
-//    {
-
-//        collocationDesignVector(i) = x;
-//        i++;
-//    }
-
-//}
